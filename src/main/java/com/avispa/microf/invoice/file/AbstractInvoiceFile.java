@@ -1,17 +1,12 @@
-package com.avispa.microf.invoice;
-
+package com.avispa.microf.invoice.file;
 
 import com.avispa.microf.InputParameters;
-import com.avispa.microf.invoice.replacer.DocxReplacer;
+import com.avispa.microf.invoice.InvoiceDAO;
 import com.avispa.microf.invoice.replacer.ITemplateReplacer;
-import com.avispa.microf.numeral.NumeralToStringConverter;
 import com.avispa.microf.rendition.Rendition;
-import com.avispa.microf.util.FormatUtils;
 import com.avispa.microf.util.PropertiesUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +14,7 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.Closeable;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,20 +22,21 @@ import java.util.Map;
 /**
  * @author Rafał Hiszpański
  */
-public class InvoiceFile implements Closeable {
-    private static final Logger log = LoggerFactory.getLogger(InvoiceFile.class);
+public abstract class AbstractInvoiceFile implements IInvoiceFile {
+    private static final Logger log = LoggerFactory.getLogger(AbstractInvoiceFile.class);
 
     private InvoiceDAO dao;
-    private XWPFDocument invoice;
-    private ITemplateReplacer replacer;
+    protected ITemplateReplacer replacer;
 
-    public InvoiceFile(InputParameters input) throws IOException {
+    public AbstractInvoiceFile(InputParameters input) {
         this.dao = new InvoiceDAO(input);
-        this.invoice = new XWPFDocument(ClassLoader.getSystemClassLoader().getResourceAsStream("vat_invoice_variables_template.docx"));
-        this.replacer = new DocxReplacer(invoice);
+        //this.replacer = replacer;
     }
 
+    @Override
     public void generate() {
+        String appVersion = PropertiesUtils.getApplicationVersion();
+
         Map<String, String> variables = new HashMap<>();
         variables.put("invoice_number", dao.getInvoiceNumber());
         variables.put("invoice_date", dao.getInvoiceDate());
@@ -55,21 +49,12 @@ public class InvoiceFile implements Closeable {
         variables.put("gross_value", dao.getGrossValue());
         variables.put("gross_value_in_words", dao.getGrossValueInWords());
         variables.put("payment_date", dao.getPaymentDate());
-        variables.put("version", PropertiesUtils.getApplicationVersion());
+        variables.put("version", appVersion.substring(0, appVersion.indexOf('-')));
 
         replacer.replaceVariables(variables);
     }
 
-    public void save() throws IOException {
-        String inputPath = getInvoiceName() + ".docx";
-        String renditionPath = getInvoiceName() + "." + Rendition.RENDITION_EXT;
-        try(FileOutputStream out = new FileOutputStream(inputPath)) {
-            invoice.write(out);
-        }
-
-        new Rendition().generateRendition(inputPath, renditionPath);
-    }
-
+    @Override
     public void print() throws IOException, PrinterException {
         String sourcePath = getInvoiceName() + "." + Rendition.RENDITION_EXT;
 
@@ -93,12 +78,7 @@ public class InvoiceFile implements Closeable {
         //Desktop.getDesktop().print(new File(filePath));
     }
 
-    @Override
-    public void close() throws IOException {
-        invoice.close();
-    }
-
-    private String getInvoiceName() {
+    protected String getInvoiceName() {
         return dao.getInvoiceNumber().replace("/","_");
     }
 }

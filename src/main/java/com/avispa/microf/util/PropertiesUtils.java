@@ -1,6 +1,6 @@
 package com.avispa.microf.util;
 
-import com.avispa.microf.invoice.InvoiceFile;
+import com.avispa.microf.invoice.file.ODFInvoiceFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +11,7 @@ import java.util.Properties;
  * @author Rafał Hiszpański
  */
 public class PropertiesUtils {
-    private static final Logger log = LoggerFactory.getLogger(InvoiceFile.class);
+    private static final Logger log = LoggerFactory.getLogger(ODFInvoiceFile.class);
     private static final Properties properties = new Properties();
 
     static {

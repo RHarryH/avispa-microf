@@ -19,8 +19,7 @@ import java.util.Map;
 /**
  * @author Rafał Hiszpański
  */
-public class DocxReplacer implements ITemplateReplacer{
-    private static final String VARIABLE_TEMPLATE = "${%s}";
+public class DocxReplacer extends AbstractReplacer{
     private XWPFDocument document;
 
     public DocxReplacer(XWPFDocument document) {
@@ -86,7 +85,7 @@ public class DocxReplacer implements ITemplateReplacer{
         List<XWPFRun> runs = p.getRuns();
 
         for (Map.Entry<String, String> variable : variables.entrySet()) {
-            String name = String.format(VARIABLE_TEMPLATE, variable.getKey());
+            String name = convertToVariable(variable.getKey());
             String value = variable.getValue();
             TextSegment found = p.searchText(name, new PositionInParagraph());
             if (found != null) {
@@ -121,9 +120,5 @@ public class DocxReplacer implements ITemplateReplacer{
         }
 
         return count;
-    }
-
-    private String convertToVariable(String name) {
-        return String.format(VARIABLE_TEMPLATE, name);
     }
 }

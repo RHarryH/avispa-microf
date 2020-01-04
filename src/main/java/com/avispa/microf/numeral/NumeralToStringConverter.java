@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -137,14 +138,14 @@ public class NumeralToStringConverter {
                         index++;
                         digit = Character.getNumericValue(triplet.charAt(index));
                         sb.append(TEENS[digit]).append(" ");
-                        appendPower(sb, tripletNumber, digit);
+                        appendPower(sb, tripletNumber, digit, true);
                     } else {
                         sb.append(TENS[digit]).append(" ");
                     }
                     break;
                 case 2:
                     sb.append(UNITS[digit]).append(" ");
-                    appendPower(sb, tripletNumber, digit);
+                    appendPower(sb, tripletNumber, digit, false);
                     break;
                 default:
                     System.err.println("Unknown");
@@ -152,14 +153,18 @@ public class NumeralToStringConverter {
         }
     }
 
-    private static void appendPower(StringBuilder sb, int tripletNumber, int digit) {
+    private static void appendPower(StringBuilder sb, int tripletNumber, int digit, boolean teens) {
         if (tripletNumber != 0) {
-            if (digit == 1) {
-                sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
-            } else if (digit > 3) {
+            if(teens) {
                 sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
             } else {
-                sb.append(POWERS[tripletNumber][NOMINATIVE_PLURAL]);
+                if (digit == 1) {
+                    sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
+                } else if (digit > 3) {
+                    sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
+                } else {
+                    sb.append(POWERS[tripletNumber][NOMINATIVE_PLURAL]);
+                }
             }
             sb.append(" ");
         }
@@ -189,12 +194,14 @@ public class NumeralToStringConverter {
                 if ((number % 100 != 0 || lastDigit != 0) && power != 0) {
                     arrayDeque.add(" ");
 
-                    if (lastDigit == 1) {
-                        arrayDeque.add(POWERS[power][NOMINATIVE_SINGULAR]);
-                    } else if (lastDigit > 3) {
-                        arrayDeque.add(POWERS[power][GENITIVE_PLURAL]);
-                    } else {
-                        arrayDeque.add(POWERS[power][NOMINATIVE_PLURAL]);
+                    if (number % 10 != 1) { // add only when we don't deal with teens
+                        if (lastDigit == 1) {
+                            arrayDeque.add(POWERS[power][NOMINATIVE_SINGULAR]);
+                        } else if (lastDigit > 3) {
+                            arrayDeque.add(POWERS[power][GENITIVE_PLURAL]);
+                        } else {
+                            arrayDeque.add(POWERS[power][NOMINATIVE_PLURAL]);
+                        }
                     }
                 }
                 if (number % 10 != 1) {
@@ -203,6 +210,7 @@ public class NumeralToStringConverter {
                     }
                     arrayDeque.add(UNITS[lastDigit]);
                 } else { // == 1
+                    arrayDeque.add(POWERS[power][GENITIVE_PLURAL]); // always add plural version of genitive
                     arrayDeque.add(" ");
                     arrayDeque.add(TEENS[lastDigit]);
                     number /= 10;
@@ -239,7 +247,7 @@ public class NumeralToStringConverter {
     }
 
     public static String convert(BigDecimal number) {
-        return convert(number.toPlainString(), '.');
+        return convert(number.setScale(2, RoundingMode.HALF_UP).toPlainString(), '.');
     }
 
     public static void main(String[] args) {

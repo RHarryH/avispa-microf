@@ -6,7 +6,7 @@
 
     <groupId>com.avispa.microf</groupId>
     <artifactId>microF</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>microf</name>
     <!-- FIXME change it to the project's website -->
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -34,6 +34,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
         </dependency>
         <dependency>
           <groupId>org.apache.poi</groupId>
@@ -48,8 +53,15 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>5.5.2</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- OpenDocument Format framework -->
+        <dependency>
+            <groupId>org.odftoolkit</groupId>
+            <artifactId>odfdom-java</artifactId>
+            <version>0.8.7</version>
         </dependency>
 
         <!-- Swing -->
@@ -81,11 +93,25 @@
             <version>1.1.1</version>
         </dependency>
 
-        <!-- PDF Management -->
+        <!-- ODT2PDF conversion -->
+        <dependency>
+            <groupId>org.jodconverter</groupId>
+            <artifactId>jodconverter-local</artifactId>
+            <version>4.2.2</version>
+        </dependency>
+
+        <!-- PDF Management (print) -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>2.0.17</version>
+        </dependency>
+
+        <!-- required by GUI Designer -->
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>forms_rt</artifactId>
+            <version>7.0.3</version>
         </dependency>
     </dependencies>
 
@@ -111,9 +137,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
-                <configuration>
-                    <forkCount>0</forkCount>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -138,6 +161,27 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- required to compile GUI -->
+            <!-- https://stackoverflow.com/questions/32135018/lambda-expressions-and-java-1-8-in-ideauidesigner -->
+            <!--<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>ideauidesigner-maven-plugin</artifactId>
+                <version>1.0-beta-1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>javac2</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <fork>true</fork>
+                    <debug>true</debug>
+                    <failOnError>true</failOnError>
+                </configuration>
+            </plugin>-->
         </plugins>
     </build>
 

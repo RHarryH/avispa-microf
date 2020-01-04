@@ -71,6 +71,18 @@ class NumeralToStringConverterTest {
     }
 
     @Test
+    void mixedThousandTest2() {
+        assertEquals("trzynaście tysięcy dwieście sześćdziesiąt cztery", convert("13264"));
+        assertEquals("trzynaście tysięcy dwieście sześćdziesiąt cztery", convert(13264));
+    }
+
+    @Test
+    void mixedThousandTest3() {
+        assertEquals("jedenaście tysięcy", convert("11000"));
+        assertEquals("jedenaście tysięcy", convert(11000));
+    }
+
+    @Test
     void mixedMillionTest() {
         assertEquals("dwadzieścia pięć milionów sześćset szesnaście tysięcy sto siedemdziesiąt pięć", convert("25616175"));
         assertEquals("dwadzieścia pięć milionów sześćset szesnaście tysięcy sto siedemdziesiąt pięć", convert(25616175));
