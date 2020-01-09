@@ -4,7 +4,7 @@ import com.avispa.microf.InputParameters;
 import com.avispa.microf.invoice.InvoiceDAO;
 import com.avispa.microf.invoice.replacer.ITemplateReplacer;
 import com.avispa.microf.rendition.Rendition;
-import com.avispa.microf.util.PropertiesUtils;
+import com.avispa.microf.util.InternalConfiguration;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.slf4j.Logger;
@@ -30,12 +30,11 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
 
     public AbstractInvoiceFile(InputParameters input) {
         this.dao = new InvoiceDAO(input);
-        //this.replacer = replacer;
     }
 
     @Override
     public void generate() {
-        String appVersion = PropertiesUtils.getApplicationVersion();
+        String appVersion = InternalConfiguration.getApplicationVersion();
 
         Map<String, String> variables = new HashMap<>();
         variables.put("invoice_number", dao.getInvoiceNumber());
@@ -74,8 +73,6 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
                 log.error("PrinterJob did not complete succesfully", e);
             }
         }
-
-        //Desktop.getDesktop().print(new File(filePath));
     }
 
     protected String getInvoiceName() {

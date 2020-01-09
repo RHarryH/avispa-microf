@@ -41,7 +41,7 @@ public class OfficeInvoiceFile extends AbstractInvoiceFile{
             log.error("Unable to save document");
         }
 
-        new Rendition().generateRendition(inputPath, renditionPath);
+        new Rendition().generate(inputPath, renditionPath);
     }
 
     @Override

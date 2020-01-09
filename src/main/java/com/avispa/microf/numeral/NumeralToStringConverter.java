@@ -1,7 +1,6 @@
 package com.avispa.microf.numeral;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.StopWatch;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * @author Rafał Hiszpański
  */
-public class NumeralToStringConverter {
+public final class NumeralToStringConverter {
     private static final Logger log = LoggerFactory.getLogger(NumeralToStringConverter.class);
 
     private static final String ZERO_TRIPLET = "000";
@@ -57,6 +56,13 @@ public class NumeralToStringConverter {
                 "bilion", "biliony", "bilionów"
             }
     };
+    private static final String[] CURRENCY = new String[]{
+            "złoty", "złote", "złotych"
+    };
+
+    private NumeralToStringConverter() {
+
+    }
 
     /**
      * Convert number provided as string to words form
@@ -84,13 +90,18 @@ public class NumeralToStringConverter {
 
         if(integer.equals(ZERO)) {
             sb.append("zero");
+            sb.append(" ");
+            sb.append(CURRENCY[GENITIVE_PLURAL]);
         } else {
             int size = triplets.size();
             for(int i = 0; i < size; i++) {
-                convertTriplet(sb, triplets.get(i), size - i - 1);
+                String triplet = triplets.get(i);
+                convertTriplet(sb, triplet, size - i - 1);
             }
 
-            sb.setLength(sb.length() - 1);
+            appendCurrency(sb, number);
+
+            //sb.setLength(sb.length() - 1);
         }
 
         if(!StringUtils.isEmpty(decimal)) {
@@ -122,7 +133,7 @@ public class NumeralToStringConverter {
 
         int length = triplet.length();
         int begin = 3 - length;
-        for(int j = begin; j < 3; j++) {
+        for(int j = begin;j < 3; j++) {
             int index = j - begin;
             int digit = Character.getNumericValue(triplet.charAt(index));
             if (digit == 0) {
@@ -148,8 +159,30 @@ public class NumeralToStringConverter {
                     appendPower(sb, tripletNumber, digit, false);
                     break;
                 default:
-                    System.err.println("Unknown");
+                    log.error("Unknown digit position");
             }
+        }
+    }
+
+    private static void appendCurrency(StringBuilder sb, String number) {
+        int lastDigit = Character.getNumericValue(number.charAt(number.length() - 1));
+        boolean isTeen = false;
+        if(number.length() > 1 && Character.getNumericValue(number.charAt(number.length() - 2)) == 1) {
+            isTeen = true;
+        }
+
+        if(number.length() == 1) {
+            if(lastDigit == 1) {
+                sb.append(CURRENCY[NOMINATIVE_SINGULAR]);
+            } else if (lastDigit > 4 || lastDigit == 0) {
+                sb.append(CURRENCY[GENITIVE_PLURAL]);
+            }
+        } else if(isTeen) {
+            sb.append(CURRENCY[GENITIVE_PLURAL]);
+        } else if (lastDigit > 1 && lastDigit < 5) {
+            sb.append(CURRENCY[NOMINATIVE_PLURAL]);
+        } else {
+            sb.append(CURRENCY[GENITIVE_PLURAL]);
         }
     }
 
@@ -248,87 +281,5 @@ public class NumeralToStringConverter {
 
     public static String convert(BigDecimal number) {
         return convert(number.setScale(2, RoundingMode.HALF_UP).toPlainString(), '.');
-    }
-
-    public static void main(String[] args) {
-        log.info("String Conversion");
-        convertStringTest("25616175");
-        convertStringTest("16175");
-        convertStringTest("75");
-        convertStringTest("112");
-        convertStringTest("5");
-        convertStringTest("16000");
-        convertStringTest("1000");
-        convertStringTest("100");
-        convertStringTest("12");
-        convertStringTest("2001");
-
-        log.info("Number Conversion");
-        convertNumberTest(new BigDecimal("12.56").setScale(2));
-        convertNumberTest(new BigDecimal("25616175").setScale(2));
-        convertNumberTest(new BigDecimal("16175").setScale(2));
-        convertNumberTest(new BigDecimal("75").setScale(2));
-        convertNumberTest(new BigDecimal("112").setScale(2));
-        convertNumberTest(new BigDecimal("5").setScale(2));
-        convertNumberTest(new BigDecimal("16000").setScale(2));
-        convertNumberTest(new BigDecimal("1000").setScale(2));
-        convertNumberTest(new BigDecimal("100").setScale(2));
-        convertNumberTest(new BigDecimal("12").setScale(2));
-        convertNumberTest(new BigDecimal("2001").setScale(2));
-
-        perfromanceComparison();
-    }
-
-    private static void convertStringTest(String number) {
-        log.info(String.format("%s -> '%s'", number, convert(number,'.')));
-    }
-
-    private static void convertNumberTest(int number) {
-        log.info(String.format("%s -> '%s'", number, convert(number)));
-    }
-
-    private static void convertNumberTest(BigDecimal number) {
-        log.info(String.format("%s -> '%s'", number, convert(number)));
-    }
-
-    public static void perfromanceComparison() {
-        StopWatch s = new StopWatch();
-        s.start();
-        for(int i = 0; i < 10000000; i++) {
-            convert("16175", '.');
-            convert("75", '.');
-            convert("112", '.');
-            convert("5", '.');
-            convert("16000", '.');
-            convert("1000", '.');
-            convert("100", '.');
-        }
-        log.info(s.toString());
-
-        s.reset();
-        s.start();
-        for(int i = 0; i < 10000000; i++) {
-            convert(16175);
-            convert(75);
-            convert(112);
-            convert(5);
-            convert(16000);
-            convert(1000);
-            convert(100);
-        }
-        log.info(s.toString());
-
-        s.reset();
-        s.start();
-        for(int i = 0; i < 10000000; i++) {
-            convert(new BigDecimal("16175").setScale(2));
-            convert(new BigDecimal("75").setScale(2));
-            convert(new BigDecimal("112").setScale(2));
-            convert(new BigDecimal("5").setScale(2));
-            convert(new BigDecimal("16000").setScale(2));
-            convert(new BigDecimal("1000").setScale(2));
-            convert(new BigDecimal("100").setScale(2));
-        }
-        log.info(s.toString());
     }
 }

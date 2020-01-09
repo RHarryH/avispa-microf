@@ -7,7 +7,11 @@ import java.math.BigDecimal;
 /**
  * @author Rafał Hiszpański
  */
-public class VatTaxRate {
+public final class VatTaxRate {
+
+    private VatTaxRate() {
+
+    }
 
     public static final BigDecimal VAT_23 = new BigDecimal("0.23", FormatUtils.mathContext);
     public static final BigDecimal VAT_08 = new BigDecimal("0.08", FormatUtils.mathContext);

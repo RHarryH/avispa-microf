@@ -12,8 +12,8 @@ public class MicroF {
 
     public static void main( String[] args ) {
         JFrame frame = new JFrame("Avispa μF");
-        frame.setContentPane(new MainPanel().panel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(new MainPanel().getPanel());
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);

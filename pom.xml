@@ -6,7 +6,7 @@
 
     <groupId>com.avispa.microf</groupId>
     <artifactId>microF</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <name>microf</name>
     <!-- FIXME change it to the project's website -->
@@ -161,27 +161,25 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- required to compile GUI -->
-            <!-- https://stackoverflow.com/questions/32135018/lambda-expressions-and-java-1-8-in-ideauidesigner -->
-            <!--<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>ideauidesigner-maven-plugin</artifactId>
-                <version>1.0-beta-1</version>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.4</version>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
-                            <goal>javac2</goal>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
-
-                <configuration>
-                    <fork>true</fork>
-                    <debug>true</debug>
-                    <failOnError>true</failOnError>
-                </configuration>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 
