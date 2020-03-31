@@ -29,6 +29,12 @@ class NumeralToStringConverterTest {
     }
 
     @Test
+    void roundTenTest() {
+        assertEquals("pięćdziesiąt złotych", convert("50"));
+        assertEquals("pięćdziesiąt", convert(50));
+    }
+
+    @Test
     void teenTest() {
         assertEquals("dwanaście złotych", convert("12"));
         assertEquals("dwanaście", convert(12));
@@ -86,6 +92,13 @@ class NumeralToStringConverterTest {
     void mixedMillionTest() {
         assertEquals("dwadzieścia pięć milionów sześćset szesnaście tysięcy sto siedemdziesiąt pięć złotych", convert("25616175"));
         assertEquals("dwadzieścia pięć milionów sześćset szesnaście tysięcy sto siedemdziesiąt pięć", convert(25616175));
+    }
+
+
+    @Test
+    void mixedTenTest() {
+        assertEquals("dziewiętnaście tysięcy pięćdziesiąt złotych 24/100", convert("19050.24"));
+        assertEquals("dziewiętnaście tysięcy pięćdziesiąt", convert(19050));
     }
 
     @NotNull

@@ -99,7 +99,7 @@ public final class NumeralToStringConverter {
                 convertTriplet(sb, triplet, size - i - 1);
             }
 
-            appendCurrency(sb, number);
+            appendCurrency(sb, integer);
 
             //sb.setLength(sb.length() - 1);
         }
