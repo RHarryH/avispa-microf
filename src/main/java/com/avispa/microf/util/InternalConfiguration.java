@@ -11,11 +11,13 @@ import java.util.Properties;
  */
 public final class InternalConfiguration {
     private static final Logger log = LoggerFactory.getLogger(InternalConfiguration.class);
-    private static final Properties properties = new Properties();
+    private static Version version;
 
     static {
         try {
+            Properties properties = new Properties();
             properties.load(InternalConfiguration.class.getClassLoader().getResourceAsStream("microf.properties"));
+            version = new Version(properties.getProperty("microf.version"));
         } catch (IOException e) {
             log.error("Error while loading properties");
         }
@@ -25,7 +27,7 @@ public final class InternalConfiguration {
 
     }
 
-    public static String getApplicationVersion() {
-        return properties.getProperty("microf.version");
+    public static String getReleaseApplicationVersion() {
+        return version.getReleaseNumber();
     }
 }

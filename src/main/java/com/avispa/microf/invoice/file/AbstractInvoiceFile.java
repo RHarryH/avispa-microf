@@ -34,8 +34,6 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
 
     @Override
     public void generate() {
-        String appVersion = InternalConfiguration.getApplicationVersion();
-
         Map<String, String> variables = new HashMap<>();
         variables.put("invoice_number", dao.getInvoiceNumber());
         variables.put("invoice_date", dao.getInvoiceDate());
@@ -48,7 +46,7 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
         variables.put("gross_value", dao.getGrossValue());
         variables.put("gross_value_in_words", dao.getGrossValueInWords());
         variables.put("payment_date", dao.getPaymentDate());
-        variables.put("version", appVersion.substring(0, appVersion.indexOf('-')));
+        variables.put("version", InternalConfiguration.getReleaseApplicationVersion());
 
         replacer.replaceVariables(variables);
     }
