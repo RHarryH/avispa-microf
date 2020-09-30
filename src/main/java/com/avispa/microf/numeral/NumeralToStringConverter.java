@@ -156,7 +156,7 @@ public final class NumeralToStringConverter {
                     break;
                 case 2:
                     sb.append(UNITS[digit]).append(" ");
-                    appendPower(sb, tripletNumber, digit, false);
+                    appendPower(sb, tripletNumber, digit, triplet.length() > 1);
                     break;
                 default:
                     log.error("Unknown digit position");
@@ -228,10 +228,10 @@ public final class NumeralToStringConverter {
                     arrayDeque.add(" ");
 
                     if (number % 10 != 1) { // add only when we don't deal with teens
-                        if (lastDigit == 1) {
-                            arrayDeque.add(POWERS[power][NOMINATIVE_SINGULAR]);
-                        } else if (lastDigit > 3) {
+                        if (number != 0 || lastDigit > 3) {
                             arrayDeque.add(POWERS[power][GENITIVE_PLURAL]);
+                        } else if (lastDigit == 1) {
+                            arrayDeque.add(POWERS[power][NOMINATIVE_SINGULAR]);
                         } else {
                             arrayDeque.add(POWERS[power][NOMINATIVE_PLURAL]);
                         }
