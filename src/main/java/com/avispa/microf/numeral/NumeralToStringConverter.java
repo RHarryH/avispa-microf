@@ -1,7 +1,6 @@
 package com.avispa.microf.numeral;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +110,6 @@ public final class NumeralToStringConverter {
         return sb.toString();
     }
 
-    @NotNull
     /**
      * Split integer part to triplets containing max 3 digits
      */
