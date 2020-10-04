@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Spring Boot Thymeleaf Hello World Example</title>
+
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.2.1/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">rafalhiszpanski.pl</a>
+</nav>
+
+<h1>Form</h1>
+<form action="#" th:action="@{/invoice/generate}" th:object="${invoice}" method="post">
+    <p>Serial Number: <input type="text" th:field="*{serialNumber}" /></p>
+    <p>Invoice Date: <input type="date" th:field="*{invoiceDate}" /></p>
+    <p>Service Date: <input type="date" th:field="*{serviceDate}" /></p>
+    <p>Value: <input type="number" th:field="*{value}" /></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+</body>
+</html>
