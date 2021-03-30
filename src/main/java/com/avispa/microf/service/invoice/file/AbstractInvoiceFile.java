@@ -42,13 +42,14 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
         variables.put("invoice_date", invoice.getInvoiceDateAsString());
         variables.put("service_date", invoice.getServiceDateAsString());
         variables.put("quantity", "1");
-        variables.put("price_no_discount", invoice.getValueAsString());
-        variables.put("price", invoice.getValueAsString());
-        variables.put("value", invoice.getValueAsString());
+        variables.put("price_no_discount", invoice.getNetValueAsString());
+        variables.put("price", invoice.getNetValueAsString());
+        variables.put("net_value", invoice.getNetValueAsString());
         variables.put("vat", invoice.getVatAsString());
         variables.put("gross_value", invoice.getGrossValueAsString());
         variables.put("gross_value_in_words", invoice.getGrossValueInWords());
         variables.put("payment_date", invoice.getPaymentDateAsString());
+        variables.put("comments", invoice.getComments());
         variables.put("version", InternalConfiguration.getReleaseApplicationVersion());
 
         replacer.replaceVariables(variables);

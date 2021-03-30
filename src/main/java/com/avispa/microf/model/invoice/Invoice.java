@@ -44,14 +44,15 @@ public class Invoice implements Serializable {
     private LocalDate serviceDate;
 
     @Convert(converter = BigDecimalConverter.class)
-    @Column(name = "value")
-    private BigDecimal value;
+    @Column(name = "net_value")
+    private BigDecimal netValue;
 
     private String invoiceNumber;
     private LocalDate paymentDate;
     private BigDecimal vat;
     private BigDecimal grossValue;
     private String grossValueInWords;
+    private String comments;
 
     // TODO: private List<Position> positions;
     // TODO: list of vat taxes summarized
@@ -64,8 +65,8 @@ public class Invoice implements Serializable {
         this.paymentDate = this.invoiceDate.plusDays(14);
         this.invoiceNumber = getInvoiceNumber(this.invoiceDate.getYear(), this.invoiceDate.getMonthValue(), this.serialNumber);
 
-        this.vat = VatTaxRate.VAT_23.multiply(this.value);
-        this.grossValue = this.value.add(this.vat);
+        this.vat = VatTaxRate.VAT_23.multiply(this.netValue);
+        this.grossValue = this.netValue.add(this.vat);
         this.grossValueInWords = NumeralToStringConverter.convert(this.grossValue);
     }
 
@@ -88,8 +89,8 @@ public class Invoice implements Serializable {
         return FormatUtils.format(paymentDate);
     }
 
-    public String getValueAsString() {
-        return FormatUtils.format(value);
+    public String getNetValueAsString() {
+        return FormatUtils.format(netValue);
     }
 
     public String getVatAsString() {
