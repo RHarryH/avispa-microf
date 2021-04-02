@@ -14,4 +14,6 @@ public interface IInvoiceFile extends Closeable {
     void generate();
     void save();
     void print() throws IOException, PrinterException;
+
+    byte[] asByteArray() throws IOException;
 }

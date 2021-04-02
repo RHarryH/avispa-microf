@@ -48,6 +48,4 @@ public class OfficeInvoiceFile extends AbstractInvoiceFile{
     public void close() throws IOException {
         invoice.close();
     }
-
-
 }
