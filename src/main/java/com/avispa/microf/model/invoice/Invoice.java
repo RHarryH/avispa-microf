@@ -7,7 +7,6 @@ import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -36,11 +35,9 @@ public class Invoice implements Serializable {
     private int serialNumber;
 
     @Column(name = "invoice_date", columnDefinition = "DATE")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate invoiceDate;
 
     @Column(name = "service_date", columnDefinition = "DATE")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate serviceDate;
 
     @Convert(converter = BigDecimalConverter.class)

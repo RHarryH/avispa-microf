@@ -1,14 +1,17 @@
 package com.avispa.microf.service.invoice.file;
 
-
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.service.invoice.replacer.OdtReplacer;
 import com.avispa.microf.service.rendition.RenditionService;
+import org.apache.commons.io.IOUtils;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Rafał Hiszpański
@@ -32,8 +35,9 @@ public class ODFInvoiceFile extends AbstractInvoiceFile {
 
     @Override
     public void save() {
-        String inputPath = getInvoiceName() + "." + EXT;
-        String renditionPath = getInvoiceName() + "." + RenditionService.RENDITION_EXT;
+        String invoiceName = getInvoiceName();
+        String inputPath = invoiceName + "." + EXT;
+        String renditionPath = invoiceName + "." + RenditionService.RENDITION_EXT;
         try(FileOutputStream out = new FileOutputStream(inputPath)) {
             invoice.save(out);
         } catch(Exception e) {

@@ -12,13 +12,13 @@ class VersionTest {
     private Version releaseVersion = new Version("1.0.3");
 
     @Test
-    public void snapshotVersion() {
+    void snapshotVersion() {
         assertEquals("1.0.3-SNAPSHOT", snapshotVersion.getNumber());
         assertEquals("1.0.3", snapshotVersion.getReleaseNumber());
     }
 
     @Test
-    public void releaseVersion() {
+    void releaseVersion() {
         assertEquals("1.0.3", releaseVersion.getNumber());
         assertEquals("1.0.3", releaseVersion.getReleaseNumber());
     }
