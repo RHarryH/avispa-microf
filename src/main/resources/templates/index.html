@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:insert="general.html :: headerfiles">
+    </head>
+    <body>
+        <div th:replace="general.html :: navigation"></div>
+
+        <main role="main" class="container">
+            <div class="starter-template">
+                <h1>Spring Boot Web Thymeleaf Example</h1>
+                <h2>
+                    <span th:text="'Hello, ' + ${message}"></span>
+                </h2>
+            </div>
+
+            <table class="table table-striped">
+                <caption>Invoices</caption>
+                <thead>
+                    <tr>
+                        <th scope="col"> Serial Number </th>
+                        <th scope="col"> Invoice Date </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr scope="col" th:if="${invoices.empty}">
+                        <td colspan="2"> No Invoices Available </td>
+                    </tr>
+                    <tr scope="col" th:each="invoice : ${invoices}">
+                        <td><span th:text="${invoice.serialNumber}"> Serial Number </span></td>
+                        <td><span th:text="${invoice.invoiceDate}"> Invoice Date </span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+        <div th:replace="general.html :: footer"></div>
+    </body>
+</html>

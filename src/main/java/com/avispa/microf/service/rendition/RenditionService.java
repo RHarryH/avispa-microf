@@ -70,7 +70,7 @@ public class RenditionService {
                 }
             }
 
-            log.debug("PDF rendition generated succesfully");
+            log.debug("PDF rendition generated successfully");
         } catch (Exception e) {
             log.error("PDF rendition cannot be generated", e);
         }
