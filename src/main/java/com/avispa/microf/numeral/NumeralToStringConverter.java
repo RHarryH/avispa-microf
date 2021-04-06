@@ -188,6 +188,11 @@ public final class NumeralToStringConverter {
         if (tripletNumber != 0) {
             if(teens) {
                 sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
+                /*if (digit > 1 && digit < 5) {
+                    sb.append(POWERS[tripletNumber][NOMINATIVE_PLURAL]);
+                } else {
+                    sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
+                }*/
             } else {
                 if (digit == 1) {
                     sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
@@ -241,6 +246,11 @@ public final class NumeralToStringConverter {
                     }
                     arrayDeque.add(UNITS[lastDigit]);
                 } else { // == 1
+                    /*if (lastDigit > 1 && lastDigit < 5) {
+                        arrayDeque.add(POWERS[power][NOMINATIVE_PLURAL]);
+                    } else {
+                        arrayDeque.add(POWERS[power][GENITIVE_PLURAL]);
+                    }*/
                     arrayDeque.add(POWERS[power][GENITIVE_PLURAL]); // always add plural version of genitive
                     arrayDeque.add(" ");
                     arrayDeque.add(TEENS[lastDigit]);

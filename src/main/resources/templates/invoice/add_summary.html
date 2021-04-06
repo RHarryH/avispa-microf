@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+    <head th:insert="fragments/general.html :: headerfiles">
+    </head>
+    <body>
+        <div th:replace="fragments/general.html :: navigation"></div>
+
+        <main role="main" class="container">
+            <div th:replace="fragments/invoice.html :: summary (${invoice}, @{'/invoice/add'}, 'Add another invoice')"></div>
+        </main>
+
+        <div th:replace="fragments/general.html :: footer"></div>
+    </body>
+</html>

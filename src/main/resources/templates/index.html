@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:insert="general.html :: headerfiles">
+    <head th:insert="fragments/general.html :: headerfiles">
     </head>
     <body>
-        <div th:replace="general.html :: navigation"></div>
+        <div th:replace="fragments/general.html :: navigation"></div>
 
         <main role="main" class="container">
             <div class="starter-template">
-                <h1>Spring Boot Web Thymeleaf Example</h1>
+                <h1>AVISPA μF Invoice Manager</h1>
                 <h2>
                     <span th:text="'Hello, ' + ${message}"></span>
                 </h2>
@@ -19,20 +19,44 @@
                     <tr>
                         <th scope="col"> Serial Number </th>
                         <th scope="col"> Invoice Date </th>
+                        <th scope="col"> Service Date </th>
+                        <th scope="col"> Net Value </th>
+                        <th scope="col"> Comments </th>
+                        <th scope="col"> Edit </th>
+                        <th scope="col"> Delete </th>
+                        <th scope="col"> Download </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr scope="col" th:if="${invoices.empty}">
-                        <td colspan="2"> No Invoices Available </td>
+                        <td colspan="7"> No Invoices Available </td>
                     </tr>
                     <tr scope="col" th:each="invoice : ${invoices}">
                         <td><span th:text="${invoice.serialNumber}"> Serial Number </span></td>
                         <td><span th:text="${invoice.invoiceDate}"> Invoice Date </span></td>
+                        <td><span th:text="${invoice.serviceDate}"> Service Date </span></td>
+                        <td><span th:text="${invoice.netValue} + 'PLN'"> Net Value </span></td>
+                        <td><span th:text="${invoice.comments}"> Comments </span></td>
+                        <td>
+                            <form th:action="@{/invoice/update/{id}(id = ${invoice.id})}" th:object="${invoice}" method="get">
+                                <button class="btn bi bi-pencil-fill" data-toggle="tooltip" data-placement="bottom" title="Edit invoice" type="submit"></button>
+                            </form>
+                        </td>
+                        <td>
+                            <form th:action="@{/invoice/delete/{id}(id = ${invoice.id})}" th:object="${invoice}" method="get">
+                                <button class="btn bi bi-trash-fill" data-toggle="tooltip" data-placement="bottom" title="Delete invoice" type="submit"></button>
+                            </form>
+                        </td>
+                        <td>
+                            <form th:action="@{/invoice/rendition/{id}(id = ${invoice.id})}" method="get">
+                                <button class="btn bi bi-file-earmark-arrow-down-fill" data-toggle="tooltip" data-placement="bottom" title="Download pdf rendition" type="submit"></button>
+                            </form>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </main>
 
-        <div th:replace="general.html :: footer"></div>
+        <div th:replace="fragments/general.html :: footer"></div>
     </body>
 </html>

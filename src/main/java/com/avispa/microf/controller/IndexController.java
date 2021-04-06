@@ -14,8 +14,12 @@ public class IndexController {
     @Value("${welcome.message}")
     private String message;
 
+    private final InvoiceRepository invoiceRepository;
+
     @Autowired
-    private InvoiceRepository invoiceRepository;
+    private IndexController(InvoiceRepository invoiceRepository) {
+        this.invoiceRepository = invoiceRepository;
+    }
 
     @GetMapping("/")
     public String main(Model model) {
