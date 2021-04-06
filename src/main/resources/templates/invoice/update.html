@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:insert="fragments/general.html :: headerfiles">
+    </head>
+    <body>
+        <div th:replace="fragments/general.html :: navigation"></div>
+
+        <main role="main" class="container">
+            <h1>Edit invoice</h1>
+            <div th:replace="fragments/invoice.html :: invoiceForm (@{/invoice/update/{id}(id=${invoice.id})}, 'Edit invoice', ${invoice})"></div>
+        </main>
+
+        <div th:replace="fragments/general.html :: footer"></div>
+    </body>
+</html>
