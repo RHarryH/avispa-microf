@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -44,12 +45,19 @@ public class Invoice implements Serializable {
     @Column(name = "net_value")
     private BigDecimal netValue;
 
-    private String invoiceNumber;
-    private LocalDate paymentDate;
-    private BigDecimal vat;
-    private BigDecimal grossValue;
-    private String grossValueInWords;
+    @Column(name = "comments")
     private String comments;
+
+    @Transient
+    private String invoiceNumber;
+    @Transient
+    private LocalDate paymentDate;
+    @Transient
+    private BigDecimal vat;
+    @Transient
+    private BigDecimal grossValue;
+    @Transient
+    private String grossValueInWords;
 
     // TODO: private List<Position> positions;
     // TODO: list of vat taxes summarized
@@ -60,11 +68,15 @@ public class Invoice implements Serializable {
 
     public void computeIndirectValues() {
         this.paymentDate = this.invoiceDate.plusDays(14);
-        this.invoiceNumber = getInvoiceNumber(this.invoiceDate.getYear(), this.invoiceDate.getMonthValue(), this.serialNumber);
+        this.invoiceNumber = getInvoiceNumber();
 
         this.vat = VatTaxRate.VAT_23.multiply(this.netValue);
         this.grossValue = this.netValue.add(this.vat);
         this.grossValueInWords = NumeralToStringConverter.convert(this.grossValue);
+    }
+
+    public String getInvoiceNumber() {
+        return getInvoiceNumber(this.invoiceDate.getYear(), this.invoiceDate.getMonthValue(), this.serialNumber);
     }
 
     private String getInvoiceNumber(int year, int month, int serialNumber) {

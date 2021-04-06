@@ -1,18 +1,21 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
-    <head th:insert="general.html :: headerfiles">
+    <head th:insert="fragments/general.html :: headerfiles">
     </head>
     <body>
-        <div th:replace="general.html :: navigation"></div>
+        <div th:replace="fragments/general.html :: navigation"></div>
 
         <main role="main" class="container">
-        <h1>Result</h1>
+            <div th:replace="fragments/invoice.html :: summary (${invoice}, @{'/'}, 'Go back to main site')"></div>
+            <!--<h1>Summary</h1>
             <p th:text="'Serial number: ' + ${invoice.serialNumber}"></p>
             <p th:text="'Invoice Date: ' + ${invoice.invoiceDate}"></p>
             <p th:text="'Service Date: ' + ${invoice.serviceDate}"></p>
             <p th:text="'Net Value: ' + ${invoice.netValue}"></p>
             <p th:text="'Comments: ' + ${invoice.comments}"></p>
-            <a href="/invoice/generate">Generate another invoice</a>
+            <a href="/invoice/add">Add another invoice</a>-->
         </main>
+
+        <div th:replace="fragments/general.html :: footer"></div>
     </body>
 </html>
