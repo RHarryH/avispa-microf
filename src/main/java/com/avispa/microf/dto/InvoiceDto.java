@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class InvoiceDto implements Serializable {
-    private long id;
+    private Long id;
     private int serialNumber = 1;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate invoiceDate;

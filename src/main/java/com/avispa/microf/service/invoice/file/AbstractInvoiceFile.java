@@ -1,10 +1,12 @@
 package com.avispa.microf.service.invoice.file;
 
+import com.avispa.cms.model.content.Content;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.service.invoice.replacer.ITemplateReplacer;
 import com.avispa.microf.util.SpringContext;
 import com.avispa.microf.util.Version;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,14 +42,17 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
         replacer.replaceVariables(variables);
     }
 
-    public String getInputPath() {
-        String invoiceName = getInvoiceName();
-        return invoiceName + "." + getExtension();
+    protected Content getContent(String path) {
+        Content content = new Content();
+        content.setExtension(getExtension());
+        content.setFileStorePath(Paths.get(path, content.getUuid().toString()).toString());
+
+        return content;
     }
 
     protected abstract String getExtension();
 
-    protected String getInvoiceName() {
+    /*protected String getInvoiceName() {
         return invoice.getInvoiceNumber().replace("/","_");
-    }
+    }*/
 }

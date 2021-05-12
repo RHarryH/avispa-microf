@@ -1,5 +1,6 @@
 package com.avispa.microf.model.invoice;
 
+import com.avispa.cms.model.document.Document;
 import com.avispa.microf.constants.VatTaxRate;
 import com.avispa.microf.model.converter.BigDecimalConverter;
 import com.avispa.microf.numeral.NumeralToStringConverter;
@@ -11,11 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Transient;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -25,12 +22,8 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-public class Invoice implements Serializable {
+public class Invoice extends Document {
     private static final String INVOICE_NUMBER_TEMPLATE = "F/%d/%s/%s";
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
 
     @Column(name = "serial_number")
     private int serialNumber;

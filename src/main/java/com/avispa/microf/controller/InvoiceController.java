@@ -1,11 +1,15 @@
 package com.avispa.microf.controller;
 
+import com.avispa.cms.model.content.Content;
+import com.avispa.cms.model.content.ContentRepository;
+import com.avispa.cms.model.filestore.FileStore;
 import com.avispa.cms.service.rendition.RenditionService;
 import com.avispa.microf.dto.InvoiceDto;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.service.invoice.file.IInvoiceFile;
 import com.avispa.microf.service.invoice.file.ODFInvoiceFile;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -26,7 +30,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Set;
 
 /**
  * @author Rafał Hiszpański
@@ -34,16 +38,22 @@ import java.nio.file.Paths;
 @Slf4j
 @Controller
 @RequestMapping("/invoice")
+@RequiredArgsConstructor
 public class InvoiceController {
 
     private final InvoiceRepository invoiceRepository;
+    private final ContentRepository contentRepository;
     private final RenditionService renditionService;
     //private InvoiceMapper invoiceMapper;
 
+    private FileStore fileStore;
+
     @Autowired
-    private InvoiceController(InvoiceRepository invoiceRepository, RenditionService renditionService) {
+    public InvoiceController(InvoiceRepository invoiceRepository, ContentRepository contentRepository, RenditionService renditionService, FileStore fileStore) {
         this.invoiceRepository = invoiceRepository;
+        this.contentRepository = contentRepository;
         this.renditionService = renditionService;
+        this.fileStore = fileStore;
     }
 
     @GetMapping("/add")
@@ -63,10 +73,12 @@ public class InvoiceController {
         Invoice invoice = convertToEntity(invoiceDto);
         try (IInvoiceFile invoiceFile = new ODFInvoiceFile(invoice)) {
             invoiceFile.generate();
-            invoiceFile.save();
+            Content content = invoiceFile.save(fileStore.getRootPath());
+            content.setDocument(invoice);
             invoiceRepository.save(invoice);
+            contentRepository.save(content);
 
-            renditionService.generate(invoiceFile.getInputPath());
+            renditionService.generate(content);
         } catch (FileNotFoundException e) {
             log.error("Cannot open template file", e);
         } catch (IOException e) {
@@ -96,10 +108,15 @@ public class InvoiceController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") long id) {
+    public String delete(@PathVariable("id") long id) {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(InvoiceNotFoundException::new);
+
+        Set<Content> contents = invoice.getContents();
+
+        contentRepository.deleteAll(contents);
         invoiceRepository.delete(invoice);
+
         return "redirect:/";
     }
 
@@ -110,16 +127,16 @@ public class InvoiceController {
 
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> download(@PathVariable long id) throws IOException {
-
-        // ...
         Invoice invoice = invoiceRepository.getOne(id);
-        Path path = Paths.get(invoice.getInvoiceNumber().replace("/","_") + ".pdf");
-        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+        Content content = contentRepository.findByDocumentIdAndExtension(invoice.getId(), "pdf");
+        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Path.of(content.getFileStorePath())));
+
+        String renditionName = invoice.getInvoiceNumber().replace("/","_") + ".pdf";
 
         return ResponseEntity.ok()
-                .header("Content-disposition", "attachment; filename="+ path.getFileName())
+                .header("Content-disposition", "attachment; filename=" + renditionName)
                 //.headers(headers)
-                .contentLength(Files.size(path))
+                .contentLength(content.getSize())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
