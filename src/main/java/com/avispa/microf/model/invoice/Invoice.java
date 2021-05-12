@@ -42,8 +42,6 @@ public class Invoice extends Document {
     private String comments;
 
     @Transient
-    private String invoiceNumber;
-    @Transient
     private LocalDate paymentDate;
     @Transient
     private BigDecimal vat;
@@ -60,15 +58,16 @@ public class Invoice extends Document {
     }
 
     public void computeIndirectValues() {
+        this.setObjectName(getInvoiceNumber());
+
         this.paymentDate = this.invoiceDate.plusDays(14);
-        this.invoiceNumber = getInvoiceNumber();
 
         this.vat = VatTaxRate.VAT_23.multiply(this.netValue);
         this.grossValue = this.netValue.add(this.vat);
         this.grossValueInWords = NumeralToStringConverter.convert(this.grossValue);
     }
 
-    public String getInvoiceNumber() {
+    private String getInvoiceNumber() {
         return getInvoiceNumber(this.invoiceDate.getYear(), this.invoiceDate.getMonthValue(), this.serialNumber);
     }
 

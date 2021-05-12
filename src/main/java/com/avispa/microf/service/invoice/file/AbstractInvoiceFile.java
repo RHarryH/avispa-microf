@@ -25,7 +25,7 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
     @Override
     public void generate() {
         Map<String, String> variables = new HashMap<>();
-        variables.put("invoice_number", invoice.getInvoiceNumber());
+        variables.put("invoice_number", invoice.getObjectName());
         variables.put("invoice_date", invoice.getInvoiceDateAsString());
         variables.put("service_date", invoice.getServiceDateAsString());
         variables.put("quantity", "1");
