@@ -32,6 +32,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 
+import static com.avispa.cms.util.Extensions.PDF;
+
 /**
  * @author Rafał Hiszpański
  */
@@ -128,10 +130,10 @@ public class InvoiceController {
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> download(@PathVariable long id) throws IOException {
         Invoice invoice = invoiceRepository.getOne(id);
-        Content content = contentRepository.findByDocumentIdAndExtension(invoice.getId(), "pdf");
+        Content content = contentRepository.findByDocumentIdAndExtension(invoice.getId(), PDF);
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Path.of(content.getFileStorePath())));
 
-        String renditionName = invoice.getInvoiceNumber().replace("/","_") + ".pdf";
+        String renditionName = invoice.getObjectName().replace("/","_") + "." + PDF;
 
         return ResponseEntity.ok()
                 .header("Content-disposition", "attachment; filename=" + renditionName)
