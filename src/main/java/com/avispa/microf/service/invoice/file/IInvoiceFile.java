@@ -1,5 +1,7 @@
 package com.avispa.microf.service.invoice.file;
 
+import com.avispa.cms.model.content.Content;
+
 import java.io.Closeable;
 
 /**
@@ -7,7 +9,5 @@ import java.io.Closeable;
  */
 public interface IInvoiceFile extends Closeable {
     void generate();
-    void save();
-
-    String getInputPath();
+    Content save(String path);
 }

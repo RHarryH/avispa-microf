@@ -29,7 +29,7 @@
                 </thead>
                 <tbody>
                     <tr scope="col" th:if="${invoices.empty}">
-                        <td colspan="7"> No Invoices Available </td>
+                        <td colspan="8"> No Invoices Available </td>
                     </tr>
                     <tr scope="col" th:each="invoice : ${invoices}">
                         <td><span th:text="${invoice.serialNumber}"> Serial Number </span></td>
@@ -48,7 +48,7 @@
                             </form>
                         </td>
                         <td>
-                            <form th:action="@{/invoice/rendition/{id}(id = ${invoice.id})}" method="get">
+                            <form th:if="${invoice.hasPdfRendition()}" th:action="@{/invoice/rendition/{id}(id = ${invoice.id})}" method="get">
                                 <button class="btn bi bi-file-earmark-arrow-down-fill" data-toggle="tooltip" data-placement="bottom" title="Download pdf rendition" type="submit"></button>
                             </form>
                         </td>
