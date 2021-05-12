@@ -18,6 +18,7 @@
                 <thead>
                     <tr>
                         <th scope="col"> Serial Number </th>
+                        <th scope="col"> Invoice Name </th>
                         <th scope="col"> Invoice Date </th>
                         <th scope="col"> Service Date </th>
                         <th scope="col"> Net Value </th>
@@ -29,10 +30,11 @@
                 </thead>
                 <tbody>
                     <tr scope="col" th:if="${invoices.empty}">
-                        <td colspan="8"> No Invoices Available </td>
+                        <td colspan="9"> No Invoices Available </td>
                     </tr>
                     <tr scope="col" th:each="invoice : ${invoices}">
                         <td><span th:text="${invoice.serialNumber}"> Serial Number </span></td>
+                        <td><span th:text="${invoice.objectName}"> Invoice Name </span></td>
                         <td><span th:text="${invoice.invoiceDate}"> Invoice Date </span></td>
                         <td><span th:text="${invoice.serviceDate}"> Service Date </span></td>
                         <td><span th:text="${invoice.netValue} + 'PLN'"> Net Value </span></td>

@@ -9,8 +9,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = "com.avispa")
-@EntityScan("com.avispa.cms.model") // required to use CMS entities
-@EnableJpaRepositories("com.avispa.cms.model") // required to use CMS repositories
+@EntityScan(basePackages = {"com.avispa.microf.model", "com.avispa.cms.model"}) // required to use CMS entities
+@EnableJpaRepositories(basePackages = {"com.avispa.microf.model", "com.avispa.cms.model"}) // required to use CMS repositories
 @PropertySource("classpath:application.properties")
 @PropertySource("file:./microf.properties")
 @Import(CmsConfiguration.class)
