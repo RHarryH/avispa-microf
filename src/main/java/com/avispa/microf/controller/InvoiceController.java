@@ -11,7 +11,6 @@ import com.avispa.microf.service.invoice.file.IInvoiceFile;
 import com.avispa.microf.service.invoice.file.ODFInvoiceFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -30,9 +29,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Set;
 
-import static com.avispa.cms.util.Extensions.PDF;
+import static com.avispa.cms.util.Formats.PDF;
 
 /**
  * @author Rafał Hiszpański
@@ -46,17 +44,8 @@ public class InvoiceController {
     private final InvoiceRepository invoiceRepository;
     private final ContentRepository contentRepository;
     private final RenditionService renditionService;
+    private final FileStore fileStore;
     //private InvoiceMapper invoiceMapper;
-
-    private FileStore fileStore;
-
-    @Autowired
-    public InvoiceController(InvoiceRepository invoiceRepository, ContentRepository contentRepository, RenditionService renditionService, FileStore fileStore) {
-        this.invoiceRepository = invoiceRepository;
-        this.contentRepository = contentRepository;
-        this.renditionService = renditionService;
-        this.fileStore = fileStore;
-    }
 
     @GetMapping("/add")
     public String getForm(Model model) {
@@ -78,7 +67,6 @@ public class InvoiceController {
             Content content = invoiceFile.save(fileStore.getRootPath());
             content.setDocument(invoice);
             invoiceRepository.save(invoice);
-            contentRepository.save(content);
 
             renditionService.generate(content);
         } catch (FileNotFoundException e) {
@@ -114,9 +102,6 @@ public class InvoiceController {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(InvoiceNotFoundException::new);
 
-        Set<Content> contents = invoice.getContents();
-
-        contentRepository.deleteAll(contents);
         invoiceRepository.delete(invoice);
 
         return "redirect:/";
