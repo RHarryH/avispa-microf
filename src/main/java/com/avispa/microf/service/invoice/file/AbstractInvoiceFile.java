@@ -51,8 +51,4 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
     }
 
     protected abstract String getExtension();
-
-    /*protected String getInvoiceName() {
-        return invoice.getInvoiceNumber().replace("/","_");
-    }*/
 }
