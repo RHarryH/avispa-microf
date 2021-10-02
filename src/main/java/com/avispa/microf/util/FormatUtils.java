@@ -18,9 +18,7 @@ public class FormatUtils {
 
     static {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator(',');
-
-        decimalFormat = new DecimalFormat("0.00", symbols);
+        decimalFormat = new DecimalFormat("#,##0.0#", symbols);
     }
 
     private FormatUtils() {
