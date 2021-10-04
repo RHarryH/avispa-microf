@@ -40,18 +40,19 @@
                         <td><span th:text="${invoice.netValue} + 'PLN'"> Net Value </span></td>
                         <td><span th:text="${invoice.comments}"> Comments </span></td>
                         <td>
-                            <form th:action="@{/invoice/update/{id}(id = ${invoice.id})}" th:object="${invoice}" method="get">
-                                <button class="btn bi bi-pencil-fill" data-toggle="tooltip" data-placement="bottom" title="Edit invoice" type="submit"></button>
+                            <form th:action="@{/invoice/update/{id}(id = ${invoice.id})}" method="get">
+                                <button class="btn bi bi-pencil-fill" type="submit" data-toggle="tooltip" data-placement="bottom" title="Edit invoice"></button>
                             </form>
                         </td>
                         <td>
-                            <form th:action="@{/invoice/delete/{id}(id = ${invoice.id})}" th:object="${invoice}" method="get">
-                                <button class="btn bi bi-trash-fill" data-toggle="tooltip" data-placement="bottom" title="Delete invoice" type="submit"></button>
-                            </form>
+                            <span data-toggle="modal" data-target="#invoice-delete-modal">
+                                <button class="btn bi bi-trash-fill delete-button" type="button" data-toggle="tooltip" data-placement="bottom" title="Delete invoice"></button>
+                                <input type="hidden" id="invoice-id" th:value="${invoice.id}">
+                            </span>
                         </td>
                         <td>
                             <form th:if="${invoice.hasPdfRendition()}" th:action="@{/invoice/rendition/{id}(id = ${invoice.id})}" method="get">
-                                <button class="btn bi bi-file-earmark-arrow-down-fill" data-toggle="tooltip" data-placement="bottom" title="Download pdf rendition" type="submit"></button>
+                                <button class="btn bi bi-file-earmark-arrow-down-fill" type="submit" data-toggle="tooltip" data-placement="bottom" title="Download pdf rendition"></button>
                             </form>
                         </td>
                     </tr>
@@ -60,5 +61,15 @@
         </main>
 
         <div th:replace="fragments/general.html :: footer"></div>
+
+        <!--/* Modal is created once but invoice id varies in each row and has to be added dynamically */-->
+        <script>
+            $(".delete-button").on('click', function () {
+                const id = $(this).parent().find("#invoice-id").val();
+                $("#invoice-delete-modal").find("#modal-accept-form").attr("action", "/invoice/delete/" + id);
+            });
+        </script>
+
+        <th:block th:replace="fragments/modal :: modal('invoice-delete-modal', 'Deletion', 'Do you really want to delete this invoice?', 'delete')">modal</th:block>
     </body>
 </html>
