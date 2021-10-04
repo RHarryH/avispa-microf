@@ -43,13 +43,17 @@ public class InvoiceController {
         return "invoice/add";
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", params="submit")
     public String addInvoice(@ModelAttribute("invoice") InvoiceDto invoiceDto) {
-        //Invoice invoice = convertToEntity(invoiceDto);
         Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
         invoiceService.addInvoice(invoice);
 
-        return "invoice/add_summary";
+        return "invoice/add-summary";
+    }
+
+    @PostMapping(value = "/add", params="cancel")
+    public String cancelAdd() {
+        return "redirect:/";
     }
 
     @GetMapping("/update/{id}")
@@ -59,7 +63,7 @@ public class InvoiceController {
         return "invoice/update";
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping(value = "/update/{id}", params="submit")
     public String update(@PathVariable long id, @ModelAttribute("invoice") InvoiceDto invoiceDto, BindingResult result) {
         // TODO: understand
         /*if (result.hasErrors()) {
@@ -69,7 +73,12 @@ public class InvoiceController {
 
         Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
         invoiceService.updateInvoice(invoice);
-        return "invoice/edit_summary";
+        return "invoice/update-summary";
+    }
+
+    @PostMapping(value = "/update/*", params="cancel")
+    public String cancelUpdate() {
+        return "redirect:/";
     }
 
     @GetMapping("/delete/{id}")
