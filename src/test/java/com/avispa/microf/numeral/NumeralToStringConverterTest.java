@@ -94,16 +94,33 @@ class NumeralToStringConverterTest {
     }
 
     @Test
+    void mixedThousandTest5() {
+        assertEquals("dwadzieścia tysięcy sześćset sześćdziesiąt cztery złote", convert("20664"));
+        assertEquals("dwadzieścia tysięcy sześćset sześćdziesiąt cztery", convert(20664));
+    }
+
+    @Test
+    void mixedThousandTest6() {
+        assertEquals("dziewiętnaście tysięcy pięćdziesiąt złotych 24/100", convert("19050.24"));
+        assertEquals("dziewiętnaście tysięcy pięćdziesiąt", convert(19050));
+    }
+
+    @Test
+    void mixedThousandTest7() {
+        assertEquals("trzydzieści dwa tysiące sześćset trzydzieści dwa złote", convert("32632"));
+        assertEquals("trzydzieści dwa tysiące sześćset trzydzieści dwa", convert(32632));
+    }
+
+    @Test
+    void mixedThousandTest8() {
+        assertEquals("pięćset trzydzieści dwa tysiące trzydzieści osiem złotych", convert("532038"));
+        assertEquals("pięćset trzydzieści dwa tysiące trzydzieści osiem złotych", convert(532038));
+    }
+
+    @Test
     void mixedMillionTest() {
         assertEquals("dwadzieścia pięć milionów sześćset szesnaście tysięcy sto siedemdziesiąt pięć złotych", convert("25616175"));
         assertEquals("dwadzieścia pięć milionów sześćset szesnaście tysięcy sto siedemdziesiąt pięć", convert(25616175));
-    }
-
-
-    @Test
-    void mixedTenTest() {
-        assertEquals("dziewiętnaście tysięcy pięćdziesiąt złotych 24/100", convert("19050.24"));
-        assertEquals("dziewiętnaście tysięcy pięćdziesiąt", convert(19050));
     }
 
     private String convert(String s) {

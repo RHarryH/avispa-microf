@@ -1,6 +1,6 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.cms.model.document.Document;
+import com.avispa.ecm.model.document.Document;
 import com.avispa.microf.constants.VatTaxRate;
 import com.avispa.microf.model.converter.BigDecimalConverter;
 import com.avispa.microf.numeral.NumeralToStringConverter;

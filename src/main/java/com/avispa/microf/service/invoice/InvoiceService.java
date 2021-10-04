@@ -1,9 +1,9 @@
 package com.avispa.microf.service.invoice;
 
-import com.avispa.cms.model.content.Content;
-import com.avispa.cms.model.content.ContentRepository;
-import com.avispa.cms.model.filestore.FileStore;
-import com.avispa.cms.service.rendition.RenditionService;
+import com.avispa.ecm.model.content.Content;
+import com.avispa.ecm.model.content.ContentRepository;
+import com.avispa.ecm.model.filestore.FileStore;
+import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.microf.controller.InvoiceNotFoundException;
 import com.avispa.microf.dto.AttachementDto;
 import com.avispa.microf.model.invoice.Invoice;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import static com.avispa.cms.util.Formats.PDF;
+import static com.avispa.ecm.util.Formats.PDF;
 
 /**
  * @author Rafał Hiszpański

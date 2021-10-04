@@ -1,6 +1,6 @@
 package com.avispa.microf.service.invoice.file;
 
-import com.avispa.cms.model.content.Content;
+import com.avispa.ecm.model.content.Content;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.service.invoice.replacer.ITemplateReplacer;
 import com.avispa.microf.util.SpringContext;
