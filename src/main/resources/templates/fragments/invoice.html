@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <div class="container" th:fragment="invoiceForm (action, buttonName, invoice)">
+    <div class="container" th:fragment="invoiceForm (action, invoice, add)">
         <div class="row">
             <div class="col-sm-10 mt-5">
                 <form action="#" th:action="${action}" th:object="${invoice}" method="post">
@@ -42,8 +42,11 @@
                         </div>
                     </div>
                     <div>
-                        <button class="btn btn-primary" type="submit"><span th:text="${buttonName}"></span></button>
-                        <button class="btn btn-secondary" type="reset">Reset form</button>
+                        <button class="btn btn-primary" type="submit" name="submit">
+                            <span th:text="${add} ? 'Add invoice' : 'Edit invoice'"></span>
+                        </button>
+                        <button th:if="${add == true}" class="btn btn-secondary" type="reset">Reset form</button>
+                        <button class="btn btn-danger" type="submit" name="cancel" formnovalidate><span th:text="Cancel"></span></button>
                     </div>
                 </form>
             </div>
