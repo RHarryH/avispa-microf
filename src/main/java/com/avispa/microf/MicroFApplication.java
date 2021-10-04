@@ -1,6 +1,6 @@
 package com.avispa.microf;
 
-import com.avispa.cms.CmsConfiguration;
+import com.avispa.ecm.EcmConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -15,11 +15,11 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.util.Locale;
 
 @SpringBootApplication(scanBasePackages = "com.avispa")
-@EntityScan(basePackages = {"com.avispa.microf.model", "com.avispa.cms.model"}) // required to use CMS entities
-@EnableJpaRepositories(basePackages = {"com.avispa.microf.model", "com.avispa.cms.model"}) // required to use CMS repositories
+@EntityScan(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use CMS entities
+@EnableJpaRepositories(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use CMS repositories
 @PropertySource("classpath:application.properties")
 @PropertySource("file:./microf.properties")
-@Import({CmsConfiguration.class})
+@Import({EcmConfiguration.class})
 public class MicroFApplication {
 	/*@Bean
 	@Description("Spring Message Resolver")
