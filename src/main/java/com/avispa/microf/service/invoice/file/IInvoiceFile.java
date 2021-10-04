@@ -1,6 +1,6 @@
 package com.avispa.microf.service.invoice.file;
 
-import com.avispa.cms.model.content.Content;
+import com.avispa.ecm.model.content.Content;
 
 import java.io.Closeable;
 
