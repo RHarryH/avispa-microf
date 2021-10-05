@@ -1,6 +1,12 @@
 package com.avispa.microf;
 
 import com.avispa.ecm.EcmConfiguration;
+import com.avispa.microf.model.invoice.InvoiceRepository;
+import com.avispa.microf.service.invoice.counter.CounterStrategy;
+import com.avispa.microf.service.invoice.counter.impl.ContinuousCounterStrategy;
+import com.avispa.microf.service.invoice.counter.impl.MonthCounterStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -28,6 +34,21 @@ public class MicroFApplication {
 		messageSource.setBasename("application");
 		return messageSource;
 	}*/
+
+	@Value("${microf.invoice.counterStrategy}")
+	private String counterStrategyName;
+
+	// Optioanlly can be realized with Spring interface Condition and @Conditional annotation
+	@Bean
+	public CounterStrategy counterStrategy(@Autowired InvoiceRepository invoiceRepository) {
+		if(counterStrategyName.equals("continuousCounterStrategy")) {
+			return new ContinuousCounterStrategy(invoiceRepository);
+		} else if(counterStrategyName.equals("monthCounterStrategy")) {
+			return new MonthCounterStrategy(invoiceRepository);
+		} else {
+			throw new IllegalStateException(String.format("Unknown invoice counter strategy %s", counterStrategyName));
+		}
+	}
 
 	@Bean
 	public LocaleResolver localeResolver() {

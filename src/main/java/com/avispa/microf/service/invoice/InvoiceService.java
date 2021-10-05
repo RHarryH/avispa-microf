@@ -8,6 +8,7 @@ import com.avispa.microf.controller.InvoiceNotFoundException;
 import com.avispa.microf.dto.AttachementDto;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceRepository;
+import com.avispa.microf.service.invoice.counter.CounterStrategy;
 import com.avispa.microf.service.invoice.file.IInvoiceFile;
 import com.avispa.microf.service.invoice.file.ODFInvoiceFile;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,10 @@ public class InvoiceService {
     private final ContentRepository contentRepository;
     private final RenditionService renditionService;
     private final FileStore fileStore;
+    private final CounterStrategy counterStrategy;
 
     public void addInvoice(Invoice invoice) {
+        invoice.setSerialNumber(counterStrategy.getNextSerialNumber(invoice));
         try (IInvoiceFile invoiceFile = new ODFInvoiceFile(invoice)) {
             invoiceFile.generate();
             Content content = invoiceFile.save(fileStore.getRootPath());
