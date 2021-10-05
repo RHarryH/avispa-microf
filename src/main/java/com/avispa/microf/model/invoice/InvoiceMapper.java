@@ -18,7 +18,9 @@ public abstract class InvoiceMapper {
     protected void convertGroupingSeparator(InvoiceDto invoiceDto, @MappingTarget Invoice invoice) {
         // converts normal space to non-breaking space used as grouping separator
         // in Polish and French (and probably mode) locales
-        invoiceDto.setNetValue(invoiceDto.getNetValue().replace(' ', '\u00a0'));
+        if(null != invoiceDto.getNetValue()) {
+            invoiceDto.setNetValue(invoiceDto.getNetValue().replace(' ', '\u00a0'));
+        }
     }
 
     @AfterMapping
