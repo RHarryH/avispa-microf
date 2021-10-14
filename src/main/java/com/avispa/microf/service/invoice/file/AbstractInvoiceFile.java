@@ -9,6 +9,7 @@ import com.avispa.microf.util.Version;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
@@ -45,7 +46,7 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
     protected Content getContent(String path) {
         Content content = new Content();
         content.setExtension(getExtension());
-        content.setFileStorePath(Paths.get(path, content.getUuid().toString()).toString());
+        content.setFileStorePath(Paths.get(path, UUID.randomUUID().toString()).toString());
 
         return content;
     }
