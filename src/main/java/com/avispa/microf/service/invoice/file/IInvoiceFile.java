@@ -1,13 +1,16 @@
 package com.avispa.microf.service.invoice.file;
 
-import com.avispa.ecm.model.content.Content;
-
 import java.io.Closeable;
+import java.nio.file.Path;
 
 /**
  * @author Rafał Hiszpański
  */
 public interface IInvoiceFile extends Closeable {
+
     void generate();
-    Content save(String path);
+
+    Path save(String path);
+
+    String getExtension();
 }
