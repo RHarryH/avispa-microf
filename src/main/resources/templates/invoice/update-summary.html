@@ -6,7 +6,7 @@
         <div th:replace="fragments/general.html :: navigation"></div>
 
         <main role="main" class="container">
-            <div th:replace="fragments/invoice.html :: summary (${invoice}, @{'/'}, 'Go back to main site')"></div>
+            <div th:replace="fragments/invoice.html :: summary(invoice=${invoice})"></div>
         </main>
 
         <div th:replace="fragments/general.html :: footer"></div>
