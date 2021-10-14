@@ -1,7 +1,5 @@
 package com.avispa.microf.service.invoice.file;
 
-
-import com.avispa.ecm.model.content.Content;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.service.invoice.replacer.DocxReplacer;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -10,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
@@ -31,20 +32,21 @@ public class OfficeInvoiceFile extends AbstractInvoiceFile{
     }
 
     @Override
-    public Content save(String path) {
-        Content content = getContent(path);
-        try(FileOutputStream out = new FileOutputStream(content.getFileStorePath())) {
+    public Path save(String path) {
+        Path fileStorePath = Paths.get(path, UUID.randomUUID().toString());
+
+        try(FileOutputStream out = new FileOutputStream(fileStorePath.toString())) {
             invoice.write(out);
 
         } catch(IOException e) {
             log.error("Unable to save document", e);
         }
 
-        return content;
+        return fileStorePath;
     }
 
     @Override
-    protected String getExtension() {
+    public String getExtension() {
         return "docx";
     }
 
