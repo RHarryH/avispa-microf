@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
@@ -58,22 +59,21 @@ public class InvoiceController {
     }
 
     @GetMapping("/update/{id}")
-    public String showUpdateForm(@PathVariable long id, Model model) {
+    public String showUpdateForm(@PathVariable UUID id, Model model) {
         Invoice invoice = invoiceService.findById(id);
         model.addAttribute("invoice", invoiceMapper.convertToDto(invoice));
         return "invoice/update";
     }
 
     @PostMapping(value = "/update/{id}", params="submit")
-    public String update(@PathVariable long id, @ModelAttribute("invoice") InvoiceDto invoiceDto, BindingResult result) {
+    public String update(@PathVariable UUID id, @ModelAttribute("invoice") InvoiceDto invoiceDto, BindingResult result) {
         // TODO: understand
         /*if (result.hasErrors()) {
             invoiceDto.setId(id);
             return "invoice/result";
         }*/
 
-        Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
-        invoiceService.updateInvoice(invoice);
+        invoiceService.updateInvoice(invoiceDto);
         return "invoice/update-summary";
     }
 
@@ -83,14 +83,14 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") long id) {
+    public String delete(@PathVariable("id") UUID id) {
         invoiceService.deleteInvoice(id);
 
         return "redirect:/";
     }
 
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> download(@PathVariable long id) throws IOException {
+    public ResponseEntity<Resource> download(@PathVariable UUID id) throws IOException {
         AttachementDto attachementDto = invoiceService.getRendition(id);
 
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Path.of(attachementDto.getPath())));

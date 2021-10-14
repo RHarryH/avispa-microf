@@ -1,7 +1,6 @@
 package com.avispa.microf.model.invoice;
 
 import com.avispa.microf.dto.InvoiceDto;
-import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
@@ -23,16 +22,20 @@ public abstract class InvoiceMapper {
         }
     }
 
-    @AfterMapping
+    /*@AfterMapping
     protected void computeIndirectValues(InvoiceDto invoiceDto, @MappingTarget Invoice invoice) {
         invoice.computeIndirectValues();
-    }
+    }*/
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.0#")
+    @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.00")
     public abstract InvoiceDto convertToDto(Invoice invoice);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.0#")
+    @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.00")
     public abstract Invoice convertToEntity(InvoiceDto dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.00")
+    public abstract void updateInvoiceFromDto(InvoiceDto invoiceDto, @MappingTarget Invoice invoice);
 }
