@@ -4,7 +4,7 @@ import com.avispa.ecm.model.configuration.EcmConfigObject;
 import com.avispa.ecm.model.configuration.autoname.Autoname;
 import com.avispa.ecm.model.configuration.autoname.AutonameService;
 import com.avispa.ecm.model.content.Content;
-import com.avispa.ecm.model.content.ContentRepository;
+import com.avispa.ecm.model.content.ContentService;
 import com.avispa.ecm.model.context.ContextService;
 import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
-    private final ContentRepository contentRepository;
+    private final ContentService contentService;
     private final RenditionService renditionService;
     private final FileStore fileStore;
     private final CounterStrategy counterStrategy;
@@ -64,9 +65,8 @@ public class InvoiceService {
 
         try (IInvoiceFile invoiceFile = new ODFInvoiceFile(invoice)) {
             invoiceFile.generate();
-            Content content = invoiceFile.save(fileStore.getRootPath());
-            content.setDocument(invoice);
-            contentRepository.save(content);
+            Path fileStorePath = invoiceFile.save(fileStore.getRootPath());
+            Content content = contentService.createNewContent(invoiceFile.getExtension(), invoice, fileStorePath);
 
             renditionService.generate(content);
         } catch (FileNotFoundException e) {
@@ -82,7 +82,7 @@ public class InvoiceService {
         invoiceMapper.updateInvoiceFromDto(invoiceDto, invoice);
 
         // delete old content and create new one
-        contentRepository.deleteByDocument(invoice);
+        contentService.deleteByDocument(invoice);
         generateInvoiceContent(invoice);
     }
 
@@ -94,7 +94,7 @@ public class InvoiceService {
         Invoice invoice = findById(id);
         String renditionName = invoice.getObjectName().replace("/","_") + "." + PDF;
 
-        Content content = contentRepository.findByDocumentIdAndExtension(id, PDF);
+        Content content = contentService.findRenditionByDocumentId(id);
 
         return new AttachementDto(renditionName, content.getFileStorePath(), content.getSize());
     }
