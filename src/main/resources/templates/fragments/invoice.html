@@ -46,15 +46,15 @@
             </div>
         </div>
     </div>
-    <div th:fragment="summary (invoice, href, text)">
+    <div th:fragment="summary">
         <h1>Summary</h1>
         <div th:object="${invoice}">
-            <!--<p th:text="'Invoice Number: ' + *{objectName}"></p>-->
             <p th:text="'Invoice Date: ' + *{invoiceDate}"></p>
             <p th:text="'Service Date: ' + *{serviceDate}"></p>
             <p th:text="'Net Value: ' + *{netValue}"></p>
             <p th:text="'Comments: ' + *{comments}"></p>
-            <a th:href="${href}"><span th:text="${text}" /></a>
+            <p></p><a th:if="${!#strings.isEmpty(href)}" th:href="${href}"><span th:text="${text}" /></a></p>
+            <p><a th:href="'/'">Go back to main site</a></p>
         </div>
     </div>
 </body>
