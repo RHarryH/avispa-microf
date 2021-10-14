@@ -61,8 +61,6 @@ public class InvoiceService {
     }
 
     private void generateInvoiceContent(Invoice invoice) {
-        invoice.computeIndirectValues();
-
         try (IInvoiceFile invoiceFile = new ODFInvoiceFile(invoice)) {
             invoiceFile.generate();
             Path fileStorePath = invoiceFile.save(fileStore.getRootPath());
