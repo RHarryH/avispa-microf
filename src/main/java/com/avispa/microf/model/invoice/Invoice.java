@@ -7,7 +7,6 @@ import com.avispa.microf.numeral.NumeralToStringConverter;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -26,7 +25,7 @@ public class Invoice extends Document {
     private static final String INVOICE_NUMBER_TEMPLATE = "F/%d/%s/%s";
 
     @Column(name = "serial_number")
-    private int serialNumber;
+    private Integer serialNumber;
 
     @Column(name = "invoice_date", columnDefinition = "DATE")
     private LocalDate invoiceDate;
@@ -58,24 +57,11 @@ public class Invoice extends Document {
     }
 
     public void computeIndirectValues() {
-        this.setObjectName(getInvoiceNumber());
-
         this.paymentDate = this.invoiceDate.plusDays(14);
 
         this.vat = VatTaxRate.VAT_23.multiply(this.netValue);
         this.grossValue = this.netValue.add(this.vat);
         this.grossValueInWords = NumeralToStringConverter.convert(this.grossValue);
-    }
-
-    private String getInvoiceNumber() {
-        return getInvoiceNumber(this.invoiceDate.getYear(), this.invoiceDate.getMonthValue(), this.serialNumber);
-    }
-
-    private String getInvoiceNumber(int year, int month, int serialNumber) {
-        String monthPadded = StringUtils.leftPad(Integer.toString(month), 2, "0");
-        String serialPadded = StringUtils.leftPad(Integer.toString(serialNumber), 3, "0");
-
-        return String.format(INVOICE_NUMBER_TEMPLATE, year, monthPadded, serialPadded);
     }
 
     public String getInvoiceDateAsString() {

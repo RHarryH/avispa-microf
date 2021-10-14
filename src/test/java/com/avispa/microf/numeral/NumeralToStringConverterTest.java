@@ -17,6 +17,12 @@ class NumeralToStringConverterTest {
 
     @Test
     void unitTest() {
+        assertEquals("dwa złote", convert("2"));
+        assertEquals("dwa", convert(2));
+    }
+
+    @Test
+    void unitTest2() {
         assertEquals("siedem złotych", convert("7"));
         assertEquals("siedem", convert(7));
     }

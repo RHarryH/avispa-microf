@@ -1,12 +1,18 @@
 package com.avispa.microf.service.invoice;
 
+import com.avispa.ecm.model.configuration.EcmConfigObject;
+import com.avispa.ecm.model.configuration.autoname.Autoname;
+import com.avispa.ecm.model.configuration.autoname.AutonameService;
 import com.avispa.ecm.model.content.Content;
 import com.avispa.ecm.model.content.ContentRepository;
+import com.avispa.ecm.model.context.ContextService;
 import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.microf.controller.InvoiceNotFoundException;
 import com.avispa.microf.dto.AttachementDto;
+import com.avispa.microf.dto.InvoiceDto;
 import com.avispa.microf.model.invoice.Invoice;
+import com.avispa.microf.model.invoice.InvoiceMapper;
 import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.service.invoice.counter.CounterStrategy;
 import com.avispa.microf.service.invoice.file.IInvoiceFile;
@@ -14,9 +20,12 @@ import com.avispa.microf.service.invoice.file.ODFInvoiceFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 import static com.avispa.ecm.util.Formats.PDF;
 
@@ -29,18 +38,35 @@ import static com.avispa.ecm.util.Formats.PDF;
 public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
+    private final InvoiceMapper invoiceMapper;
     private final ContentRepository contentRepository;
     private final RenditionService renditionService;
     private final FileStore fileStore;
     private final CounterStrategy counterStrategy;
 
+    private final AutonameService autonameService;
+    private final ContextService contextService;
+
+    @Transactional
     public void addInvoice(Invoice invoice) {
+        invoiceRepository.save(invoice);
+
         invoice.setSerialNumber(counterStrategy.getNextSerialNumber(invoice));
+
+        List<EcmConfigObject> configObjectList = contextService.getMatchingConfigurations(invoice);
+        configObjectList.stream().filter(e -> e instanceof Autoname).findFirst().ifPresent(a -> autonameService.apply((Autoname) a, invoice));
+
+        generateInvoiceContent(invoice);
+    }
+
+    private void generateInvoiceContent(Invoice invoice) {
+        invoice.computeIndirectValues();
+
         try (IInvoiceFile invoiceFile = new ODFInvoiceFile(invoice)) {
             invoiceFile.generate();
             Content content = invoiceFile.save(fileStore.getRootPath());
             content.setDocument(invoice);
-            invoiceRepository.save(invoice);
+            contentRepository.save(content);
 
             renditionService.generate(content);
         } catch (FileNotFoundException e) {
@@ -50,15 +76,21 @@ public class InvoiceService {
         }
     }
 
-    public void updateInvoice(Invoice invoice) {
-        invoiceRepository.save(invoice);
+    @Transactional
+    public void updateInvoice(InvoiceDto invoiceDto) {
+        Invoice invoice = findById(invoiceDto.getId());
+        invoiceMapper.updateInvoiceFromDto(invoiceDto, invoice);
+
+        // delete old content and create new one
+        contentRepository.deleteByDocument(invoice);
+        generateInvoiceContent(invoice);
     }
 
-    public void deleteInvoice(Long id) {
+    public void deleteInvoice(UUID id) {
         invoiceRepository.delete(findById(id));
     }
 
-    public AttachementDto getRendition(Long id) {
+    public AttachementDto getRendition(UUID id) {
         Invoice invoice = findById(id);
         String renditionName = invoice.getObjectName().replace("/","_") + "." + PDF;
 
@@ -67,7 +99,7 @@ public class InvoiceService {
         return new AttachementDto(renditionName, content.getFileStorePath(), content.getSize());
     }
 
-    public Invoice findById(Long id) {
+    public Invoice findById(UUID id) {
         return invoiceRepository.findById(id)
                 .orElseThrow(InvoiceNotFoundException::new);
     }
