@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AttachementDto {
+public class ContentDto {
     private String name;
     private String path;
     private long size;
