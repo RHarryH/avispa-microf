@@ -1,6 +1,6 @@
 package com.avispa.microf.controller;
 
-import com.avispa.microf.dto.AttachementDto;
+import com.avispa.microf.dto.ContentDto;
 import com.avispa.microf.dto.InvoiceDto;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceMapper;
@@ -91,14 +91,14 @@ public class InvoiceController {
 
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> download(@PathVariable UUID id) throws IOException {
-        AttachementDto attachementDto = invoiceService.getRendition(id);
+        ContentDto contentDto = invoiceService.getRendition(id);
 
-        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Path.of(attachementDto.getPath())));
+        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Path.of(contentDto.getPath())));
 
         return ResponseEntity.ok()
-                .header("Content-disposition", "attachment; filename=" + attachementDto.getName())
+                .header("Content-disposition", "attachment; filename=" + contentDto.getName())
                 //.headers(headers)
-                .contentLength(attachementDto.getSize())
+                .contentLength(contentDto.getSize())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
