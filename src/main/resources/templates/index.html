@@ -1,67 +1,84 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" lang="en">
     <head th:insert="fragments/general.html :: headerfiles">
     </head>
     <body>
         <div th:replace="fragments/general.html :: navigation"></div>
 
-        <main role="main" class="container">
-            <div class="starter-template">
-                <h1>AVISPA μF Invoice Manager</h1>
-                <h2>
-                    <span th:text="'Hello, ' + ${message}"></span>
-                </h2>
+        <main role="main" class="container-fluid">
+            <div class="row">
+                <div class="col-2">
+                    <nav aria-label="Sidebar">
+                        <div class="nav nav-tabs" id="nav-tab-sidebar" role="tablist">
+                            <button class="nav-link active" id="nav-repository-tab" data-bs-toggle="tab" data-bs-target="#nav-repository" type="button" role="tab" aria-controls="nav-repository" aria-selected="true">Repository</button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tab-sidebarContent">
+                        <th:block th:insert="fragments/widgets/repository-widget.html :: repository-widget"></th:block>
+                    </div>
+                </div>
+                <div class="col">
+                    <nav aria-label="Center">
+                        <div class="nav nav-tabs" id="nav-tab-center" role="tablist">
+                            <button class="nav-link active" id="nav-properties-tab" data-bs-toggle="tab" data-bs-target="#nav-properties" type="button" role="tab" aria-controls="nav-properties" aria-selected="true">Properties</button>
+                            <button class="nav-link" id="nav-invoices-tab" data-bs-toggle="tab" data-bs-target="#nav-invoices" type="button" role="tab" aria-controls="nav-invoices" aria-selected="true">Invoices</button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tab-centerContent">
+                        <th:block th:insert="fragments/widgets/properties-widget.html :: properties-widget"></th:block>
+                        <div class="tab-pane fade" id="nav-invoices" role="tabpanel" aria-labelledby="nav-invoices-tab">
+                            <table class="table table-striped mt-2">
+                                <caption>Invoices</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Serial Number</th>
+                                        <th scope="col">Invoice Name</th>
+                                        <th scope="col">Invoice Date</th>
+                                        <th scope="col">Service Date</th>
+                                        <th scope="col">Net Value</th>
+                                        <th scope="col">Comments</th>
+                                        <th scope="col">Edit</th>
+                                        <th scope="col">Delete</th>
+                                        <th scope="col">Download</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr scope="col" th:if="${invoices.empty}">
+                                        <td colspan="9"> No Invoices Available </td>
+                                    </tr>
+                                    <tr scope="col" th:each="invoice : ${invoices}">
+                                        <td><span th:text="${invoice.serialNumber}"> Serial Number </span></td>
+                                        <td><span th:text="${invoice.objectName}"> Invoice Name </span></td>
+                                        <td><span th:text="${invoice.invoiceDate}"> Invoice Date </span></td>
+                                        <td><span th:text="${invoice.serviceDate}"> Service Date </span></td>
+                                        <td><span th:text="${invoice.netValue} + 'PLN'"> Net Value </span></td>
+                                        <td><span th:text="${invoice.comments}"> Comments </span></td>
+                                        <td>
+                                            <form th:action="@{/invoice/update/{id}(id = ${invoice.id})}" method="get">
+                                                <button class="btn bi bi-pencil-fill" type="submit" data-toggle="tooltip" data-placement="bottom" title="Edit invoice"></button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <span data-bs-toggle="modal" data-bs-target="#invoice-delete-modal">
+                                                <button class="btn bi bi-trash-fill delete-button" type="button" data-toggle="tooltip" data-placement="bottom" title="Delete invoice"></button>
+                                                <input type="hidden" id="invoice-id" th:value="${invoice.id}">
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <form th:if="${invoice.hasPdfRendition()}" th:action="@{/invoice/rendition/{id}(id = ${invoice.id})}" method="get">
+                                                <button class="btn bi bi-file-earmark-arrow-down-fill" type="submit" data-toggle="tooltip" data-placement="bottom" title="Download PDF rendition"></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <table class="table table-striped">
-                <caption>Invoices</caption>
-                <thead>
-                    <tr>
-                        <th scope="col"> Serial Number </th>
-                        <th scope="col"> Invoice Name </th>
-                        <th scope="col"> Invoice Date </th>
-                        <th scope="col"> Service Date </th>
-                        <th scope="col"> Net Value </th>
-                        <th scope="col"> Comments </th>
-                        <th scope="col"> Edit </th>
-                        <th scope="col"> Delete </th>
-                        <th scope="col"> Download </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr scope="col" th:if="${invoices.empty}">
-                        <td colspan="9"> No Invoices Available </td>
-                    </tr>
-                    <tr scope="col" th:each="invoice : ${invoices}">
-                        <td><span th:text="${invoice.serialNumber}"> Serial Number </span></td>
-                        <td><span th:text="${invoice.objectName}"> Invoice Name </span></td>
-                        <td><span th:text="${invoice.invoiceDate}"> Invoice Date </span></td>
-                        <td><span th:text="${invoice.serviceDate}"> Service Date </span></td>
-                        <td><span th:text="${invoice.netValue} + 'PLN'"> Net Value </span></td>
-                        <td><span th:text="${invoice.comments}"> Comments </span></td>
-                        <td>
-                            <form th:action="@{/invoice/update/{id}(id = ${invoice.id})}" method="get">
-                                <button class="btn bi bi-pencil-fill" type="submit" data-toggle="tooltip" data-placement="bottom" title="Edit invoice"></button>
-                            </form>
-                        </td>
-                        <td>
-                            <span data-toggle="modal" data-target="#invoice-delete-modal">
-                                <button class="btn bi bi-trash-fill delete-button" type="button" data-toggle="tooltip" data-placement="bottom" title="Delete invoice"></button>
-                                <input type="hidden" id="invoice-id" th:value="${invoice.id}">
-                            </span>
-                        </td>
-                        <td>
-                            <form th:if="${invoice.hasPdfRendition()}" th:action="@{/invoice/rendition/{id}(id = ${invoice.id})}" method="get">
-                                <button class="btn bi bi-file-earmark-arrow-down-fill" type="submit" data-toggle="tooltip" data-placement="bottom" title="Download pdf rendition"></button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </main>
 
-        <div th:replace="fragments/general.html :: footer"></div>
-
+        <th:block th:replace="fragments/general.html :: footer"></th:block>
         <!--/* Modal is created once but invoice id varies in each row and has to be added dynamically */-->
         <script>
             $(".delete-button").on('click', function () {

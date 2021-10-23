@@ -1,6 +1,5 @@
-package com.avispa.microf.dto;
+package com.avispa.microf.dto.content;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +8,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 public class ContentDto {
     private String name;
     private String path;

@@ -1,6 +1,6 @@
 package com.avispa.microf.controller;
 
-import com.avispa.microf.dto.ContentDto;
+import com.avispa.microf.dto.content.ContentDto;
 import com.avispa.microf.dto.InvoiceDto;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceMapper;
@@ -89,7 +89,7 @@ public class InvoiceController {
         return "redirect:/";
     }
 
-    @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<Resource> download(@PathVariable UUID id) throws IOException {
         ContentDto contentDto = invoiceService.getRendition(id);
 
@@ -99,7 +99,7 @@ public class InvoiceController {
                 .header("Content-disposition", "attachment; filename=" + contentDto.getName())
                 //.headers(headers)
                 .contentLength(contentDto.getSize())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
 }
