@@ -1,29 +1,20 @@
 package com.avispa.microf.controller;
 
+import com.avispa.ecm.model.folder.FolderRepository;
 import com.avispa.microf.model.invoice.InvoiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@RequiredArgsConstructor
 public class IndexController {
-
-    // inject via application.properties
-    @Value("${welcome.message}")
-    private String message;
-
     private final InvoiceRepository invoiceRepository;
-
-    @Autowired
-    private IndexController(InvoiceRepository invoiceRepository) {
-        this.invoiceRepository = invoiceRepository;
-    }
+    private final FolderRepository folderRepository;
 
     @GetMapping("/")
     public String main(Model model) {
-        model.addAttribute("message", message);
         model.addAttribute("invoices", invoiceRepository.findAll());
 
         return "index"; //view

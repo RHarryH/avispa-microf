@@ -1,38 +1,133 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" lang="en">
     <head th:fragment="headerfiles">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <title>AVISPA μF Invoice Manager</title>
+        <title th:text="${@environment.getProperty('spring.application.name')}"></title>
 
-        <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.2.1/css/bootstrap.min.css}"/>
-        <link th:rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css}">
+        <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+        <link th:rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.0/font/bootstrap-icons.css}">
         <link th:rel="stylesheet" th:href="@{/css/main.css}"/>
+
+        <!--<link th:rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.11/themes/default/style.min.css}" />-->
+        <link th:rel="stylesheet" th:href="@{webjars/jstree/themes/default/style.min.css}" />
     </head>
     <body>
-        <nav th:fragment="navigation" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="/">rafalhiszpanski.pl</a>
+        <nav th:fragment="navigation" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" aria-label="Navigation bar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">μF</a>
+                <div class="collapse navbar-collapse" id="navbarScroll">
+                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Invoice
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                <li><a class="dropdown-item" th:href="@{/invoice/add}">Add new</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </nav>
-        <aside>
-            <div>This is a sidebar</div>
-        </aside>
-        <div class="another">This is another sidebar</div>
         <footer th:fragment="footer">
+            <nav class="navbar navbar-light bg-light fixed-bottom" aria-label="Footer">
+                <div class="container-fluid">
+                    <div class="ms-auto">
+                        <span th:text="${@environment.getProperty('spring.application.name') + ' v' + @environment.getProperty('microf.version') + ', © ' + #dates.year(#dates.createNow()) + ' '}">
+                        </span>
+                        <a href="https://rafalhiszpanski.pl">Rafał Hiszpański</a>
+                    </div>
+                </div>
+            </nav>
+
             <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
             <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
             <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
             <script th:src="@{/webjars/jquery.inputmask/jquery.inputmask.min.js}"></script>
+            <!--<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.11/jstree.min.js}"></script>-->
+            <script th:src="@{webjars/jstree/jstree.min.js}"></script>
 
-            <script>
+            <script type="text/javascript">
                 $(":input").inputmask();
                 $(function () {
-                    $('[data-toggle="tooltip"]').tooltip()
+                    $('[data-toggle="tooltip"]').tooltip();
                 })
-            </script>
 
-            <a th:href="@{/invoice/add}">Add invoice</a> |
-            <span th:text="${@environment.getProperty('microf.version')}"></span>
+                $(document).ready(function () {
+                    const directoryTree = $('#directory-tree');
+
+                    $("#refresh-button").click(function (e) {
+                        e.preventDefault();
+                        directoryTree.jstree(true).settings.core.data = {
+                            'url': '/directory',
+                            'data': function (node) {
+                                return {'id': node.id};
+                            }
+                        };
+                        directoryTree.jstree(true).refresh();
+                    });
+
+                    $.jstree.defaults.core.themes.variant = "large";
+                    directoryTree
+                        .on('ready.jstree refresh.jstree', function (e) {
+                            const nodesNumber = directoryTree.jstree(true).get_json('#').length;
+                            if(nodesNumber > 0) {
+                                directoryTree.toggleClass("d-none");
+                                $('#directory-empty-text').toggleClass("d-none");
+                                $('#export-button').toggleClass("d-none");
+                            }
+                        })
+                        .on('changed.jstree', function(e, data) {
+                            console.log(data.node.id);
+                        })
+                        .jstree(
+                        {
+                            'core': {
+                                'multiple': false,
+                                'themes' : { "stripes" : true, "dots": false },
+                                'data': {
+                                    'url' : '/directory',
+                                    'data' : function (node) {
+                                        return { 'id' : node.id };
+                                    }
+                                },
+                            },
+                            /*"types" : {
+                                "#" : {
+                                    "max_children" : 1,
+                                    //"max_depth" : 4,
+                                    "valid_children" : ["root"]
+                                },
+                                "root" : {
+                                    "icon" : "bi bi-archive-fill",
+                                    "valid_children" : ["default"]
+                                },
+                                "folder" : {
+                                    "icon" : "bi bi-folder-fill",
+                                    "valid_children" : ["default", "file"]
+                                },
+                                "default" : { // unknown file type
+                                    "icon" : "bi bi-file-earmark",
+                                    "valid_children" : []
+                                },
+                                "pdf" : {
+                                    "icon" : "bi bi-file-earmark-pdf",
+                                    "valid_children" : []
+                                },
+                                "odt" : {
+                                    "icon" : "bi bi-file-earmark-word",
+                                    "valid_children" : []
+                                }
+                            },*/
+                            'plugins' : [
+                                /*"types", */'sort'
+                            ]
+                        }
+                    );
+                });
+            </script>
         </footer>
     </body>
 </html>
