@@ -8,8 +8,9 @@ import com.avispa.ecm.model.context.ContextService;
 import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.microf.controller.InvoiceNotFoundException;
-import com.avispa.microf.dto.ContentDto;
+import com.avispa.microf.dto.content.ContentDto;
 import com.avispa.microf.dto.InvoiceDto;
+import com.avispa.microf.dto.content.ContentMapper;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceMapper;
 import com.avispa.microf.model.invoice.InvoiceRepository;
@@ -36,7 +37,10 @@ public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
+
     private final ContentService contentService;
+    private final ContentMapper contentMapper;
+
     private final RenditionService renditionService;
     private final FileStore fileStore;
     private final CounterStrategy counterStrategy;
@@ -83,9 +87,7 @@ public class InvoiceService {
     }
 
     public ContentDto getRendition(UUID id) {
-        Content content = contentService.findRenditionByDocumentId(id);
-
-        return new ContentDto(content.getObjectName(), content.getFileStorePath(), content.getSize());
+        return contentMapper.convertToDto(contentService.findPdfRenditionByDocumentId(id));
     }
 
     public Invoice findById(UUID id) {

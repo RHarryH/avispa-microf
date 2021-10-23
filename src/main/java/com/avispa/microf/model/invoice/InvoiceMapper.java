@@ -22,11 +22,6 @@ public abstract class InvoiceMapper {
         }
     }
 
-    /*@AfterMapping
-    protected void computeIndirectValues(InvoiceDto invoiceDto, @MappingTarget Invoice invoice) {
-        invoice.computeIndirectValues();
-    }*/
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.00")
     public abstract InvoiceDto convertToDto(Invoice invoice);

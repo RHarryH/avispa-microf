@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <body>
+        <div th:fragment="repository-widget" class="tab-pane fade show active" id="nav-repository" role="tabpanel" aria-labelledby="nav-repository-tab">
+            <div class="row row-cols-1 mt-2">
+                <div class="col mb-2  d-grid gap-2 d-md-block">
+                    <button id="export-button" class="btn btn-sm btn-primary bi bi-box-arrow-down d-none" type="submit">Export</button>
+
+                    <button id="refresh-button" class="btn btn-sm btn-primary bi bi-arrow-repeat" type="submit">Refresh</button>
+                </div>
+                <div class="col mb-2">
+                    <div id="directory-tree" class="overflow-auto d-none"></div>
+                    <span id="directory-empty-text">Repository is empty</span>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
