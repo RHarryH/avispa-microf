@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <body>
         <!-- Modal -->
         <div th:fragment="modal(id, title, body, method)" class="modal fade" th:id="${id}" tabindex="-1" role="dialog" aria-labelledby="modalTitle"
@@ -7,16 +7,16 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle" th:text="${title}" />
+                        <h5 class="modal-title" id="modalTitle" th:text="${title}"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <span th:text="${body}" />
+                        <span th:text="${body}"></span>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Reject</button>
                         <form id="modal-accept-form" th:method="${method}">
-                            <button type="submit" class="btn btn-primary">Accept</button>
+                            <button type="submit" data-bs-dismiss="modal" class="btn btn-primary">Accept</button>
                         </form>
                     </div>
                 </div>

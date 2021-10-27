@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
     <head th:fragment="headerfiles">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -49,84 +49,13 @@
             <!--<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.11/jstree.min.js}"></script>-->
             <script th:src="@{webjars/jstree/jstree.min.js}"></script>
 
+            <script th:src="@{/js/widgets.js}"></script>
+
             <script type="text/javascript">
                 $(":input").inputmask();
                 $(function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 })
-
-                $(document).ready(function () {
-                    const directoryTree = $('#directory-tree');
-
-                    $("#refresh-button").click(function (e) {
-                        e.preventDefault();
-                        directoryTree.jstree(true).settings.core.data = {
-                            'url': '/directory',
-                            'data': function (node) {
-                                return {'id': node.id};
-                            }
-                        };
-                        directoryTree.jstree(true).refresh();
-                    });
-
-                    $.jstree.defaults.core.themes.variant = "large";
-                    directoryTree
-                        .on('ready.jstree refresh.jstree', function (e) {
-                            const nodesNumber = directoryTree.jstree(true).get_json('#').length;
-                            if(nodesNumber > 0) {
-                                directoryTree.toggleClass("d-none");
-                                $('#directory-empty-text').toggleClass("d-none");
-                                $('#export-button').toggleClass("d-none");
-                            }
-                        })
-                        .on('changed.jstree', function(e, data) {
-                            console.log(data.node.id);
-                        })
-                        .jstree(
-                        {
-                            'core': {
-                                'multiple': false,
-                                'themes' : { "stripes" : true, "dots": false },
-                                'data': {
-                                    'url' : '/directory',
-                                    'data' : function (node) {
-                                        return { 'id' : node.id };
-                                    }
-                                },
-                            },
-                            /*"types" : {
-                                "#" : {
-                                    "max_children" : 1,
-                                    //"max_depth" : 4,
-                                    "valid_children" : ["root"]
-                                },
-                                "root" : {
-                                    "icon" : "bi bi-archive-fill",
-                                    "valid_children" : ["default"]
-                                },
-                                "folder" : {
-                                    "icon" : "bi bi-folder-fill",
-                                    "valid_children" : ["default", "file"]
-                                },
-                                "default" : { // unknown file type
-                                    "icon" : "bi bi-file-earmark",
-                                    "valid_children" : []
-                                },
-                                "pdf" : {
-                                    "icon" : "bi bi-file-earmark-pdf",
-                                    "valid_children" : []
-                                },
-                                "odt" : {
-                                    "icon" : "bi bi-file-earmark-word",
-                                    "valid_children" : []
-                                }
-                            },*/
-                            'plugins' : [
-                                /*"types", */'sort'
-                            ]
-                        }
-                    );
-                });
             </script>
         </footer>
     </body>

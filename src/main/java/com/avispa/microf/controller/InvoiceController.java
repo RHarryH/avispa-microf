@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -83,10 +84,9 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") UUID id) {
+    @ResponseBody // it will just return status 200
+    public void delete(@PathVariable("id") UUID id) {
         invoiceService.deleteInvoice(id);
-
-        return "redirect:/";
     }
 
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
