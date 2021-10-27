@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -93,5 +94,9 @@ public class InvoiceService {
     public Invoice findById(UUID id) {
         return invoiceRepository.findById(id)
                 .orElseThrow(InvoiceNotFoundException::new);
+    }
+
+    public List<Invoice> findAll() {
+        return invoiceRepository.findAll();
     }
 }
