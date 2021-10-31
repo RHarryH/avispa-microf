@@ -1,15 +1,25 @@
 package com.avispa.microf.model.widget;
 
-import com.avispa.ecm.model.document.Document;
-import com.avispa.ecm.model.document.DocumentRepository;
+import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.EcmObjectRepository;
+import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
+import com.avispa.ecm.model.context.ContextService;
+import com.avispa.microf.model.property.PropertyPageMapper;
 import com.avispa.microf.service.invoice.InvoiceService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -18,10 +28,13 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/widget")
 @RequiredArgsConstructor
+@Slf4j
 public class WidgetController {
 
     private final InvoiceService invoiceService;
-    private final DocumentRepository documentRepository;
+    private final EcmObjectRepository<EcmObject> ecmObjectRepository;
+    private final PropertyPageMapper propertyPageMapper;
+    private final ContextService contextService;
 
     @GetMapping("/invoice-list-widget")
     public String getInvoiceListWidget(Model model) {
@@ -37,11 +50,38 @@ public class WidgetController {
     @GetMapping(value={"/properties-widget", "/properties-widget/{id}"})
     public String getPropertiesWidget(@PathVariable(required = false) UUID id, Model model) {
         if(null != id) {
-            model.addAttribute("properties", documentRepository.findById(id).map(Document::getObjectName).orElse("Document not found"));
+            EcmObject ecmObject = ecmObjectRepository.findById(id).get();
+
+            Map<String, Object> fields = null;
+            try {
+                fields = introspect(ecmObject);
+            } catch (Exception e) {
+                log.error("Exception: ", e);
+            }
+
+            model.addAttribute("properties", fields);
+
+            PropertyPage propertyPage = (PropertyPage) contextService.getMatchingConfigurations(ecmObject).stream()
+                    .filter(c -> c instanceof PropertyPage)
+                    .findFirst()
+                    .get();
+            model.addAttribute("propertyPage", propertyPageMapper.convertToDto(propertyPage, ecmObject));
         } else {
-            model.addAttribute("properties", "Document not found");
+            model.addAttribute("properties", new HashMap<>());
         }
         return "fragments/widgets/properties-widget :: properties-widget";
+    }
+
+    public static Map<String, Object> introspect(Object obj) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        BeanInfo info = Introspector.getBeanInfo(obj.getClass());
+        for (PropertyDescriptor pd : info.getPropertyDescriptors()) {
+            Method reader = pd.getReadMethod();
+            if (reader != null) {
+                result.put(pd.getName(), reader.invoke(obj));
+            }
+        }
+        return result;
     }
 
 }

@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <body>
+        <div th:fragment="property-page">
+            <div th:each="property : ${propertyPage?.properties}" class="row mb-3 my-2">
+                <label th:for="${property.name}" th:text="${property.label}" class="col-sm-2 col-form-label">Property name</label>
+                <div class="col">
+<!--                    __${property.attributes}__-->
+                    <input th:type="${property.type}" th:attr="__${property.attributes}__" class="form-control"
+                           th:id="${property.name}" th:value="${property.value}" th:readonly="${propertyPage.readonly}"
+                           th:required="${property.required}"/>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

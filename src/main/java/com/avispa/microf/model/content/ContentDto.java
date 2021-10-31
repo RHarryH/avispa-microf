@@ -1,4 +1,4 @@
-package com.avispa.microf.dto.content;
+package com.avispa.microf.model.content;
 
 import lombok.Getter;
 import lombok.Setter;

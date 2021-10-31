@@ -1,7 +1,7 @@
 package com.avispa.microf.controller;
 
-import com.avispa.microf.dto.content.ContentDto;
-import com.avispa.microf.dto.InvoiceDto;
+import com.avispa.microf.model.content.ContentDto;
+import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceMapper;
 import com.avispa.microf.service.invoice.InvoiceService;

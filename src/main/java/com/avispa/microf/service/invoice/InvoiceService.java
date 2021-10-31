@@ -1,16 +1,16 @@
 package com.avispa.microf.service.invoice;
 
-import com.avispa.ecm.model.configuration.autolink.Autolink;
-import com.avispa.ecm.model.configuration.autoname.Autoname;
+import com.avispa.ecm.model.configuration.callable.autolink.Autolink;
+import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
 import com.avispa.ecm.model.content.Content;
 import com.avispa.ecm.model.content.ContentService;
 import com.avispa.ecm.model.context.ContextService;
 import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.microf.controller.InvoiceNotFoundException;
-import com.avispa.microf.dto.content.ContentDto;
-import com.avispa.microf.dto.InvoiceDto;
-import com.avispa.microf.dto.content.ContentMapper;
+import com.avispa.microf.model.content.ContentDto;
+import com.avispa.microf.model.invoice.InvoiceDto;
+import com.avispa.microf.model.content.ContentMapper;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceMapper;
 import com.avispa.microf.model.invoice.InvoiceRepository;
