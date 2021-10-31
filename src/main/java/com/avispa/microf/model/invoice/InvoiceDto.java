@@ -1,4 +1,4 @@
-package com.avispa.microf.dto;
+package com.avispa.microf.model.invoice;
 
 import lombok.Getter;
 import lombok.Setter;
