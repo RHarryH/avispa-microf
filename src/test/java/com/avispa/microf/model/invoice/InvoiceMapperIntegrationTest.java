@@ -1,6 +1,5 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.microf.dto.InvoiceDto;
 import com.avispa.microf.util.FormatUtils;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
