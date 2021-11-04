@@ -113,10 +113,16 @@ function createDirectoryTree() {
             $('#export-button').toggleClass("d-none");
         }
     }).on('changed.jstree', function (e, data) {
-        $(document).trigger("widget:reload", {
-            "widgetName": "properties-widget",
-            "id": data.node.id
-        });
+        if(data.action === 'select_node') {
+            $(document).trigger("widget:reload", {
+                "widgetName": "properties-widget",
+                "id": data.node.id
+            });
+        } else if(data.action === 'deselect_node') { // do not pass id
+            $(document).trigger("widget:reload", {
+                "widgetName": "properties-widget"
+            });
+        }
     }).jstree(
         {
             'core': {
