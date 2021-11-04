@@ -8,10 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PropertyDto {
-    private String name;
-    private Object value;
-
+public class ControlDto {
     private String label;
 
     private String type;

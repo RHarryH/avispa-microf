@@ -14,23 +14,26 @@
         <link th:rel="stylesheet" th:href="@{webjars/jstree/themes/default/style.min.css}" />
     </head>
     <body>
-        <nav th:fragment="navigation" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" aria-label="Navigation bar">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">μF</a>
-                <div class="collapse navbar-collapse" id="navbarScroll">
-                    <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Invoice
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                                <li><a class="dropdown-item" th:href="@{/invoice/add}">Add new</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+        <header th:fragment="navigation">
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" aria-label="Navigation bar">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">μF</a>
+                    <div class="collapse navbar-collapse" id="navbarScroll">
+                        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Invoice
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                    <li><a class="dropdown-item" th:href="@{/invoice/add}">Add new</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </header>
+
         <footer class="mt-5" th:fragment="footer">
             <nav class="navbar navbar-light bg-light fixed-bottom" aria-label="Footer">
                 <div class="container-fluid">
