@@ -80,7 +80,7 @@ class PropertyPageMapperIntegrationTest {
             ControlDto controlDto = propertyPageDto.getControls().get(i);
             Control control = propertyPage.getControls().get(i);
 
-            assertEquals(control.getLabel(), controlDto.getLabel());
+            assertEquals("Label", controlDto.getLabel());
             assertEquals(control.getType().getName(), controlDto.getType());
         }
     }
