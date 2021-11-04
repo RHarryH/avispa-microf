@@ -2,8 +2,8 @@ package com.avispa.microf.model.property.mapper;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.propertypage.controls.PropertyControl;
+import com.avispa.ecm.util.reflect.PropertyUtils;
 import com.avispa.microf.model.property.PropertyControlDto;
-import com.avispa.microf.util.ReflectUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -26,9 +26,9 @@ public interface PropertyControlMapper extends BaseControlMapper{
 
     @AfterMapping
     default void setControlValue(@Context EcmObject object,
-                                  @MappingTarget PropertyControlDto propertyControlDto) {
+                                 @MappingTarget PropertyControlDto propertyControlDto) {
         try {
-            Object value = ReflectUtils.getFieldValue(object, propertyControlDto.getName());
+            Object value = PropertyUtils.getPropertyValue(object, propertyControlDto.getName());
             if(null != value) {
                 if(value instanceof LocalDateTime) {
                     LocalDateTime localDateTime = (LocalDateTime)value;
