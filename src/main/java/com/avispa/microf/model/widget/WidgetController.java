@@ -10,7 +10,6 @@ import com.avispa.microf.service.invoice.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +44,6 @@ public class WidgetController {
     }
 
     @GetMapping(value={"/properties-widget", "/properties-widget/{id}"})
-    @Transactional
     public String getPropertiesWidget(@PathVariable Optional<UUID> id, Model model) {
         id.flatMap(ecmObjectRepository::findById).ifPresentOrElse(ecmObject -> {
             PropertyPageDto propertyPageDto = contextService.getConfiguration(ecmObject, PropertyPage.class)
