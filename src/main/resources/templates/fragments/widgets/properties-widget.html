@@ -1,15 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
     <body>
-        <div id="properties-widget" th:fragment="properties-widget">
+        <div id="properties-widget" class="py-3" th:fragment="properties-widget">
             <th:block th:replace="fragments/property-page :: property-page">Property page</th:block>
-            <hr>
-            <div th:each="property : ${properties}" class="row mb-3 my-2">
-                <label th:for="${property.key}" th:text="${property.key}" class="col-sm-2 col-form-label">Property name</label>
-                <div class="col">
-                    <input type="text" class="form-control" th:id="${property.key}" th:value="${property.value}" readonly/>
-                </div>
-            </div>
         </div>
     </body>
 </html>

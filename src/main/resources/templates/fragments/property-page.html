@@ -1,16 +1,44 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
     <body>
-        <div th:fragment="property-page">
-            <div th:each="property : ${propertyPage?.properties}" class="row mb-3 my-2">
-                <label th:for="${property.name}" th:text="${property.label}" class="col-sm-2 col-form-label">Property name</label>
-                <div class="col">
-<!--                    __${property.attributes}__-->
-                    <input th:type="${property.type}" th:attr="__${property.attributes}__" class="form-control"
-                           th:id="${property.name}" th:value="${property.value}" th:readonly="${propertyPage.readonly}"
-                           th:required="${property.required}"/>
-                </div>
-            </div>
+        <div class="row g-3 mb-3" th:fragment="property-page">
+            <th:block th:each="control : ${propertyPage?.controls}">
+                <th:block th:switch="${control.type}">
+                    <th:block th:case="label">
+                        <h3 th:text="${control.label}" class="col">Label</h3>
+                    </th:block>
+                    <th:block th:case="separator">
+                        <hr>
+                    </th:block>
+                    <th:block th:case="currency">
+                        <div class="col-sm-2">
+                            <label th:for="${control.name}" th:text="${control.label}" class="col-form-label">Property name</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <span class="input-group-text">PLN</span>
+                                <input type="text" th:id="${control.name}" class="form-control"
+                                       data-inputmask="'alias': 'numeric', 'groupSeparator': ' ', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
+                                       th:value="${control.value}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"
+                                       autocomplete="off"/>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:case="*">
+                        <div class="col-sm-2">
+                            <label th:for="${control.name}" th:text="${control.label}" class="col-form-label">Property name</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <input th:type="${control.type}" th:id="${control.name}" class="form-control" th:attr="__${control.attributes}__"
+                                   th:value="${control.value}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
+                        </div>
+                    </th:block>
+                </th:block>
+            </th:block>
+            <th:block th:if="${propertyPage == null}">
+                <span th:if="${nothingSelected}">Nothing is selected</span>
+                <span th:unless="${nothingSelected}">Property Page for selected object is not defined</span>
+            </th:block>
         </div>
     </body>
 </html>
