@@ -108,9 +108,13 @@ function createDirectoryTree() {
 
         const nodesNumber = directoryTree.jstree(true).get_json('#').length;
         if (nodesNumber > 0) {
-            directoryTree.toggleClass("d-none");
-            $('#directory-empty-text').toggleClass("d-none");
-            $('#export-button').toggleClass("d-none");
+            directoryTree.removeClass("d-none");
+            $('#directory-empty-text').addClass("d-none");
+            $('#export-button').removeClass("d-none");
+        } else {
+            directoryTree.addClass("d-none");
+            $('#directory-empty-text').removeClass("d-none");
+            $('#export-button').addClass("d-none");
         }
     }).on('changed.jstree', function (e, data) {
         if(data.action === 'select_node') {
