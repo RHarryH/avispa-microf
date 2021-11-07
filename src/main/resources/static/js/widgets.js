@@ -74,7 +74,10 @@ function registerWidgetReloadEvent() {
             if(widgetName === 'repository-widget') {
                 createDirectoryTree();
             }
-        })
+        }).fail(function (jqXHR) {
+            const html = $(jqXHR.responseText).attr("id", widgetName); // add widget identifier
+            $(componentId).prepend(html); // replace widget content with error page
+        });
     });
 
     $(document).on("widget:reload", function (event, data) {
@@ -92,7 +95,10 @@ function registerWidgetReloadEvent() {
             if(data.widgetName === 'repository-widget') {
                 createDirectoryTree();
             }
-        })
+        }).fail(function (jqXHR) {
+            const html = $(jqXHR.responseText).attr("id", data.widgetName);  // add widget identifier
+            $('#' + data.widgetName).replaceWith(html); // replace widget content with error page
+        });
     });
 }
 

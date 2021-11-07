@@ -1,14 +1,14 @@
 package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.document.Document;
-import com.avispa.microf.model.converter.BigDecimalConverter;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.validation.constraints.Digits;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -30,8 +30,9 @@ public class Invoice extends Document {
     @Column(name = "service_date", columnDefinition = "DATE")
     private LocalDate serviceDate;
 
-    @Convert(converter = BigDecimalConverter.class)
-    @Column(name = "net_value")
+    @Column(name = "net_value", precision=9, scale=2)
+    @Digits(integer=7, fraction=2)
+    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
     private BigDecimal netValue;
 
     @Column(name = "comments")

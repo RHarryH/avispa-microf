@@ -10,5 +10,4 @@ import lombok.Setter;
 @Setter
 public class PropertyControlDto extends ControlDto {
     private String name;
-    private Object value;
 }

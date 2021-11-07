@@ -14,11 +14,12 @@ import java.time.format.DateTimeFormatter;
 public class FormatUtils {
     public static final MathContext mathContext = new MathContext(2, RoundingMode.HALF_UP);
     private static final String DATE_FORMAT = "yyyy-MM-dd";
-    private static DecimalFormat decimalFormat;
+    public static final String DEFAULT_DECIMAL_FORMAT = "#,##0.00";
+    private static final DecimalFormat decimalFormat;
 
     static {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        decimalFormat = new DecimalFormat("#,##0.00", symbols);
+        decimalFormat = new DecimalFormat(DEFAULT_DECIMAL_FORMAT, symbols);
     }
 
     private FormatUtils() {
