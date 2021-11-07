@@ -12,6 +12,5 @@ public class DirectoryNode {
     private String parent;
     private String text;
     private String href;
-    //private String type;
-    private String icon;
+    private String type;
 }
