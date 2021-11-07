@@ -14,12 +14,12 @@ public class AppErrorController implements ErrorController {
     @RequestMapping("/error")
     public ModelAndView handleError(HttpServletRequest request) {
         
-        ModelAndView errorPage = new ModelAndView("error");
+        ModelAndView errorPage = new ModelAndView("error :: error");
         String errorMessage = "";
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (status != null) {
-            int statusCode = Integer.valueOf(status.toString());
+            int statusCode = Integer.parseInt(status.toString());
 
             switch (statusCode) {
                 case 400: {

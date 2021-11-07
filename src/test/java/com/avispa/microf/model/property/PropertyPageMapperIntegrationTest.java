@@ -12,15 +12,8 @@ import com.avispa.microf.model.property.mapper.OrganizationControlMapper;
 import com.avispa.microf.model.property.mapper.PropertyControlMapper;
 import com.avispa.microf.model.property.mapper.PropertyPageMapper;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -49,7 +42,7 @@ class PropertyPageMapperIntegrationTest {
     }
 
     @Test
-    void givenInvoiceToDto_whenMaps_thenCorrect() {
+    void givenPropertyPageToDto_whenMaps_thenCorrect() {
         PropertyPage propertyPage = new PropertyPage();
 
         List<Control> controls = new ArrayList<>(2);
@@ -76,13 +69,14 @@ class PropertyPageMapperIntegrationTest {
         PropertyPageDto propertyPageDto = mapper.convertToDto(propertyPage, document);
 
         assertEquals(propertyPage.getControls().size(), propertyPageDto.getControls().size());
-        for(int i = 0; i < propertyPageDto.getControls().size(); i++) {
-            ControlDto controlDto = propertyPageDto.getControls().get(i);
-            Control control = propertyPage.getControls().get(i);
 
-            assertEquals("Label", controlDto.getLabel());
-            assertEquals(control.getType().getName(), controlDto.getType());
-        }
+        ControlDto controlDto = propertyPageDto.getControls().get(0);
+        assertEquals("Object name", controlDto.getLabel());
+        assertEquals("text", controlDto.getType());
+
+        controlDto = propertyPageDto.getControls().get(1);
+        assertEquals("Label", controlDto.getLabel());
+        assertEquals("label", controlDto.getType());
     }
 
     private Document createDocument() {

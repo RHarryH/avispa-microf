@@ -51,6 +51,7 @@ public class WidgetController {
                     .orElse(null); // return null otherwise
 
             model.addAttribute("propertyPage", propertyPageDto);
+            model.addAttribute("ecmObject", ecmObject);
         },
         () -> model.addAttribute("nothingSelected", true)
         );
