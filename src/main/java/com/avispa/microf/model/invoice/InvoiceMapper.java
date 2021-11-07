@@ -1,5 +1,6 @@
 package com.avispa.microf.model.invoice;
 
+import com.avispa.microf.util.FormatUtils;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,12 +21,12 @@ public abstract class InvoiceMapper {
         }
     }
 
-    @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.00")
+    @Mapping(source = "netValue", target= "netValue", numberFormat = FormatUtils.DEFAULT_DECIMAL_FORMAT)
     public abstract InvoiceDto convertToDto(Invoice invoice);
 
-    @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.00")
+    @Mapping(source = "netValue", target= "netValue", numberFormat = FormatUtils.DEFAULT_DECIMAL_FORMAT)
     public abstract Invoice convertToEntity(InvoiceDto dto);
 
-    @Mapping(source = "netValue", target= "netValue", numberFormat = "#,##0.00")
+    @Mapping(source = "netValue", target= "netValue", numberFormat = FormatUtils.DEFAULT_DECIMAL_FORMAT)
     public abstract void updateInvoiceFromDto(InvoiceDto invoiceDto, @MappingTarget Invoice invoice);
 }
