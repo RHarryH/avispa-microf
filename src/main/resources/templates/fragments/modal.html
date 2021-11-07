@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <body>
         <!-- Modal -->
-        <div th:fragment="modal(id, title, body, method)" class="modal fade" th:id="${id}" tabindex="-1" role="dialog" aria-labelledby="modalTitle"
+        <div th:fragment="modal(id, title, body)" class="modal fade" th:id="${id}" tabindex="-1" role="dialog" aria-labelledby="modalTitle"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -15,9 +15,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Reject</button>
-                        <form id="modal-accept-form" th:method="${method}">
-                            <button type="submit" data-bs-dismiss="modal" class="btn btn-primary">Accept</button>
-                        </form>
+                        <button id="modal-accept-button" type="submit" data-bs-dismiss="modal" class="btn btn-primary">Accept</button>
+                        <input type="hidden" id="modal-hidden"/>
                     </div>
                 </div>
             </div>
