@@ -24,7 +24,7 @@ function createNotification(type, message) {
 function createContainer(type) {
     let container = $("<div></div>");
     container.addClass("toast");
-    //container.attr("data-bs-autohide", false);
+    container.attr("data-bs-autohide", false);
     if (type === "error") {
         container.attr("alert", "status");
         container.attr("aria-live", "assertive");
@@ -83,10 +83,24 @@ function createContent(container, message) {
 }
 
 function initToast(container) {
-    $("#notifications").append(container);
+    let notifications = $("#notifications");
+    notifications.append(container);
     let toast = bootstrap.Toast.getOrCreateInstance(container);
     toast.show();
     container.on("hidden.bs.toast", function () {
         container.remove();
     });
+
+    verifyMax(notifications);
+}
+
+const MAX_NOTIFICATIONS_NUMBER = 6;
+
+function verifyMax(notifications) {
+    // If number of notifications is greater than configured value
+    // then hide them faster than auto hiding. This will remove them
+    // completely.
+    if (notifications.children().length > MAX_NOTIFICATIONS_NUMBER) {
+        bootstrap.Toast.getInstance(notifications.children().first()).hide();
+    }
 }
