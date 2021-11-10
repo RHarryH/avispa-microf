@@ -30,7 +30,10 @@ function registerInvoicesWidget() {
             $(document).trigger("widget:reload", {
                 "widgetName": "repository-widget"
             });
-        })
+            successNotification("Invoice deleted successfully!");
+        }).fail(function(e) {
+            errorNotification("Error when deleting invoice!");
+        });
     }).on("click", ".delete-button", function () { // modal is created once but invoice id varies in each row and has to be added dynamically
         const id = $(this).parent().find("#invoice-id").val();
         $("#invoice-delete-modal").find("#modal-hidden").attr("value", id);
