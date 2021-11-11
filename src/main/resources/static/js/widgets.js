@@ -70,19 +70,22 @@ function registerPropertiesWidget() {
 
 function registerWidgetReloadEvent() {
     $(document).on("widget:load", function (event, widgetName, componentId) {
-        $.ajax({
-            "method": "get",
-            "url": "widget/" + widgetName
-        }).done(function (fragment) { // get from controller
-            $(componentId).prepend(fragment)
+        const component = $(componentId);
+        if(component.length) {
+            $.ajax({
+                "method": "get",
+                "url": "widget/" + widgetName
+            }).done(function (fragment) { // get from controller
+                component.prepend(fragment)
 
-            if(widgetName === "repository-widget") {
-                createDirectoryTree();
-            }
-        }).fail(function (jqXHR) {
-            const html = $(jqXHR.responseText).attr("id", widgetName); // add widget identifier
-            $(componentId).prepend(html); // replace widget content with error page
-        });
+                if (widgetName === "repository-widget") {
+                    createDirectoryTree();
+                }
+            }).fail(function (jqXHR) {
+                const html = $(jqXHR.responseText).attr("id", widgetName); // add widget identifier
+                component.prepend(html); // replace widget content with error page
+            });
+        }
     });
 
     $(document).on("widget:reload", function (event, data) {
@@ -91,19 +94,23 @@ function registerWidgetReloadEvent() {
             url += "/" + data.id;
         }
 
-        $.ajax({
-            "method": "get",
-            "url": "widget/" + url
-        }).done(function (fragment) { // get from controller
-            $("#" + data.widgetName).replaceWith(fragment); // update snippet of page
+        const widget = $("#" + data.widgetName);
 
-            if(data.widgetName === "repository-widget") {
-                createDirectoryTree();
-            }
-        }).fail(function (jqXHR) {
-            const html = $(jqXHR.responseText).attr("id", data.widgetName);  // add widget identifier
-            $("#" + data.widgetName).replaceWith(html); // replace widget content with error page
-        });
+        if(widget.length) {
+            $.ajax({
+                "method": "get",
+                "url": "widget/" + url
+            }).done(function (fragment) { // get from controller
+                widget.replaceWith(fragment); // update snippet of page
+
+                if (data.widgetName === "repository-widget") {
+                    createDirectoryTree();
+                }
+            }).fail(function (jqXHR) {
+                const html = $(jqXHR.responseText).attr("id", data.widgetName);  // add widget identifier
+                widget.replaceWith(html); // replace widget content with error page
+            });
+        }
     });
 }
 
