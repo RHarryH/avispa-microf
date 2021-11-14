@@ -12,7 +12,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,14 +45,7 @@ public class InvoiceController {
         invoiceService.addInvoice(invoice);
     }
 
-    @GetMapping("/update/{id}")
-    public String showUpdateForm(@PathVariable UUID id, Model model) {
-        Invoice invoice = invoiceService.findById(id);
-        model.addAttribute("invoice", invoiceMapper.convertToDto(invoice));
-        return "invoice/update";
-    }
-
-    @PostMapping(value = "/update/{id}", params="submit")
+    @PostMapping(value = "/update/{id}")
     public String update(@PathVariable UUID id, @ModelAttribute("invoice") InvoiceDto invoiceDto, BindingResult result) {
         // TODO: understand
         /*if (result.hasErrors()) {
@@ -63,11 +55,6 @@ public class InvoiceController {
 
         invoiceService.updateInvoice(invoiceDto);
         return "invoice/update-summary";
-    }
-
-    @PostMapping(value = "/update/*", params="cancel")
-    public String cancelUpdate() {
-        return "redirect:/";
     }
 
     @DeleteMapping("/delete/{id}")

@@ -32,8 +32,8 @@ function registerInvoicesWidget() {
         }).fail(function(e) {
             errorNotification("Error when deleting invoice!");
         });
-    }).on("click", ".delete-button", function () { // modal is created once but invoice id varies in each row and has to be added dynamically
-        const id = $(this).parent().find("#invoice-id").val();
+    }).on("click", ".invoice-delete-button", function () { // modal is created once but invoice id varies in each row and has to be added dynamically
+        const id = $(this).attr("value");
         $("#invoice-delete-modal").find("#modal-hidden").attr("value", id);
     });
 }
@@ -101,6 +101,8 @@ function registerWidgetReloadEvent() {
 function initializeWidgets(widgetName) {
     switch (widgetName) {
         case "invoice-list-widget":
+            createInvoiceUpdateModal();
+
             let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
