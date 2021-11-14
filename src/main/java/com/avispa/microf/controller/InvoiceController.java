@@ -1,8 +1,8 @@
 package com.avispa.microf.controller;
 
 import com.avispa.microf.model.content.ContentDto;
-import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.Invoice;
+import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.InvoiceMapper;
 import com.avispa.microf.service.invoice.InvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -39,24 +39,11 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
     private final InvoiceMapper invoiceMapper;
 
-    @GetMapping("/add")
-    public String getForm(Model model) {
-        model.addAttribute("invoice", new InvoiceDto());
-
-        return "invoice/add";
-    }
-
-    @PostMapping(value = "/add", params="submit")
-    public String addInvoice(@ModelAttribute("invoice") InvoiceDto invoiceDto) {
+    @PostMapping(value = "/add")
+    @ResponseBody // it will just return status 200
+    public void addInvoice(@ModelAttribute("ecmObject") InvoiceDto invoiceDto) {
         Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
         invoiceService.addInvoice(invoice);
-
-        return "invoice/add-summary";
-    }
-
-    @PostMapping(value = "/add", params="cancel")
-    public String cancelAdd() {
-        return "redirect:/";
     }
 
     @GetMapping("/update/{id}")

@@ -1,4 +1,4 @@
-package com.avispa.microf.model.ui;
+package com.avispa.microf.model.ui.widget;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;

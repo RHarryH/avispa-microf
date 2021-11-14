@@ -1,4 +1,4 @@
-package com.avispa.microf.model.ui;
+package com.avispa.microf.model.ui.modal;
 
 import com.avispa.ecm.model.configuration.upsert.Upsert;
 import com.avispa.ecm.model.context.ContextService;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/ui")
 @RequiredArgsConstructor
-public class UpsertController {
+public class ModalController {
     private final ContextService contextService;
     private final PropertyPageMapper propertyPageMapper;
 
@@ -34,13 +34,13 @@ public class UpsertController {
         model.addAttribute("propertyPage", propertyPageDto);
         model.addAttribute("ecmObject", invoiceDto);
 
-        ModalDto modalDto = ModalDto.builder()
+        Modal modal = Modal.builder()
                 .id("invoice-add-modal")
                 .title("Add new invoice")
                 .action("/invoice/add")
                 .insert(true)
                 .build();
-        model.addAttribute("modal", modalDto);
+        model.addAttribute("modal", modal);
         return "fragments/modal :: upsertModal";
     }
 }

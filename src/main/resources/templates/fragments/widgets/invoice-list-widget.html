@@ -30,18 +30,18 @@
                     <td><span th:text="${invoice.comments}"> Comments </span></td>
                     <td>
                         <form th:action="@{/invoice/update/{id}(id = ${invoice.id})}" method="get">
-                            <button class="btn bi bi-pencil-fill" type="submit" data-toggle="tooltip" data-placement="bottom" title="Edit invoice"></button>
+                            <button class="btn bi bi-pencil-fill" type="submit" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit invoice"></button>
                         </form>
                     </td>
                     <td>
                         <span data-bs-toggle="modal" data-bs-target="#invoice-delete-modal">
-                            <button class="btn bi bi-trash-fill delete-button" type="button" data-toggle="tooltip" data-placement="bottom" title="Delete invoice"></button>
+                            <button class="btn bi bi-trash-fill delete-button" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete invoice"></button>
                             <input type="hidden" id="invoice-id" th:value="${invoice.id}">
                         </span>
                     </td>
                     <td>
                         <form th:if="${invoice.hasPdfRendition()}" th:action="@{/invoice/rendition/{id}(id = ${invoice.id})}" method="get">
-                            <button class="btn bi bi-file-earmark-arrow-down-fill" type="submit" data-toggle="tooltip" data-placement="bottom" title="Download PDF rendition"></button>
+                            <button class="btn bi bi-file-earmark-arrow-down-fill" type="submit" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Download PDF rendition"></button>
                         </form>
                     </td>
                 </tr>
