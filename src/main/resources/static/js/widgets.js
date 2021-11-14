@@ -11,10 +11,10 @@ $(document).ready(function () {
 });
 
 function registerInvoicesWidget() {
-    $('#nav-invoices').on("click", "#modal-accept-button", function (e) { // when modal form will be clicked
+    $('#nav-invoices').on("click", ".modal-accept-button", function (e) { // when modal form will be clicked
         e.preventDefault(); // disable default behavior
 
-        const id = $("#invoice-delete-modal").find("#modal-hidden").attr("value");
+        const id = $("#invoice-delete-modal .modal-accept-button").attr("value");
 
         // call deletion event
         $.ajax({
@@ -34,7 +34,7 @@ function registerInvoicesWidget() {
         });
     }).on("click", ".invoice-delete-button", function () { // modal is created once but invoice id varies in each row and has to be added dynamically
         const id = $(this).attr("value");
-        $("#invoice-delete-modal").find("#modal-hidden").attr("value", id);
+        $("#invoice-delete-modal .modal-accept-button").attr("value", id);
     });
 }
 
