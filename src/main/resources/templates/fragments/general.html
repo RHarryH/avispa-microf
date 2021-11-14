@@ -25,8 +25,7 @@
                                     Invoice
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                                    <li><a class="dropdown-item" th:href="@{/invoice/add}">Add new</a></li>
-                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#invoice-add-modal">Add new with modal</a></li>
+                                    <li><a id="invoice-add" class="dropdown-item" href="#">Add new</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -46,8 +45,6 @@
                 </div>
             </nav>
 
-            <th:block th:replace="fragments/modal :: modal('invoice-add-modal', 'Add new invoice', 'Here we should have upsert loaded?')">modal</th:block>
-
             <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
             <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
             <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
@@ -56,14 +53,8 @@
             <script th:src="@{/webjars/jstree/jstree.min.js}"></script>
 
             <script th:src="@{/js/notifications.js}"></script>
+            <script th:src="@{/js/modals.js}"></script>
             <script th:src="@{/js/widgets.js}"></script>
-
-            <script type="text/javascript">
-                $(":input").inputmask();
-                $(function () {
-                    $('[data-toggle="tooltip"]').tooltip();
-                })
-            </script>
         </footer>
     </body>
 </html>

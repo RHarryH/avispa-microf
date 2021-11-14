@@ -1,4 +1,4 @@
-package com.avispa.microf.model.ui;
+package com.avispa.microf.model.ui.modal;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Builder
 @Getter
-class ModalDto {
+class Modal {
     private String id;
     private String title;
     private String action;

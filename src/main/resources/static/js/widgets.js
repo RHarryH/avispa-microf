@@ -1,8 +1,6 @@
 $(document).ready(function () {
-
     registerInvoicesWidget();
     registerRepositoryWidget();
-    registerPropertiesWidget();
 
     registerWidgetReloadEvent();
 
@@ -41,31 +39,21 @@ function registerInvoicesWidget() {
 }
 
 function registerRepositoryWidget() {
-    $(document).ready(function (e) {
-        $.jstree.defaults.core.themes.variant = "large";
+    $.jstree.defaults.core.themes.variant = "large";
 
-        $("#nav-repository").on("click", "#refresh-button", function (e) {
-            e.preventDefault();
+    $("#nav-repository").on("click", "#refresh-button", function (e) {
+        e.preventDefault();
 
-            const directoryTree = $("#directory-tree");
+        const directoryTree = $("#directory-tree");
 
-            directoryTree.jstree(true).settings.core.data = {
-                "url": "/directory",
-                "data": function (node) {
-                    return {"id": node.id};
-                }
-            };
-            directoryTree.jstree(true).refresh();
-        });
+        directoryTree.jstree(true).settings.core.data = {
+            "url": "/directory",
+            "data": function (node) {
+                return {"id": node.id};
+            }
+        };
+        directoryTree.jstree(true).refresh();
     });
-}
-
-function registerPropertiesWidget() {
-    /*$('#nav-properties').on('click', '#yolo', function () {
-        $.get("properties/44a169d7-cd0f-4215-9f61-a44075bf7001").done(function(fragment) { // get from controller
-            $("#text").replaceWith(fragment); // update snippet of page
-        });
-    });*/
 }
 
 function registerWidgetReloadEvent() {
@@ -78,9 +66,7 @@ function registerWidgetReloadEvent() {
             }).done(function (fragment) { // get from controller
                 component.prepend(fragment)
 
-                if (widgetName === "repository-widget") {
-                    createDirectoryTree();
-                }
+                initializeWidgets(widgetName);
             }).fail(function (jqXHR) {
                 const html = $(jqXHR.responseText).attr("id", widgetName); // add widget identifier
                 component.prepend(html); // replace widget content with error page
@@ -103,15 +89,28 @@ function registerWidgetReloadEvent() {
             }).done(function (fragment) { // get from controller
                 widget.replaceWith(fragment); // update snippet of page
 
-                if (data.widgetName === "repository-widget") {
-                    createDirectoryTree();
-                }
+                initializeWidgets(data.widgetName);
             }).fail(function (jqXHR) {
                 const html = $(jqXHR.responseText).attr("id", data.widgetName);  // add widget identifier
                 widget.replaceWith(html); // replace widget content with error page
             });
         }
     });
+}
+
+function initializeWidgets(widgetName) {
+    switch (widgetName) {
+        case "invoice-list-widget":
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+
+            break;
+        case "repository-widget":
+            createDirectoryTree();
+            break;
+    }
 }
 
 function createDirectoryTree() {

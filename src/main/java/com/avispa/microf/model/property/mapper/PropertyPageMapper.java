@@ -1,6 +1,5 @@
 package com.avispa.microf.model.property.mapper;
 
-import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.controls.Control;
 import com.avispa.ecm.model.configuration.propertypage.controls.OrganizationControl;
@@ -23,13 +22,13 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         uses = ControlMapper.class)
 public abstract class/*interface*/ PropertyPageMapper {
-    @Mapping(target = "readonly", constant = "true")
+    @Mapping(target = "readonly",  expression="java( readonly )")
     // TODO: use when new version of mapstruct will be released
     //@SubClassMapping(source = OrganizationControl.class, target = ControlMapper.class)
     //@SubClassMapping(source = PropertyControl.class, target = PropertyControlMapper.class)
     // TODO: remove when new version of mapstruct will be released
     @Mapping(target = "controls", qualifiedByName = "controlListToControlDtoList")
-    public abstract PropertyPageDto convertToDto(PropertyPage propertyPage, @Context EcmObject object);
+    public abstract PropertyPageDto convertToDto(PropertyPage propertyPage, @Context Object object, @Context boolean readonly);
 
     // TODO: remove when new version of mapstruct will be released
     @Autowired
@@ -38,7 +37,7 @@ public abstract class/*interface*/ PropertyPageMapper {
     private PropertyControlMapper propertyControlMapper;
 
     @Named("controlListToControlDtoList")
-    protected List<ControlDto> controlListToControlDtoList(List<Control> list, @Context EcmObject object) {
+    protected List<ControlDto> controlListToControlDtoList(List<Control> list, @Context Object object) {
         if ( list == null ) {
             return null;
         }
@@ -56,6 +55,4 @@ public abstract class/*interface*/ PropertyPageMapper {
 
         return list1;
     }
-
-    //PropertyPage convertToEntity(PropertyPageDto propertyPageDto);
 }

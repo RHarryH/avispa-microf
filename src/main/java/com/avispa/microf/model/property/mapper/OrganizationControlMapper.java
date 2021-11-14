@@ -1,6 +1,5 @@
 package com.avispa.microf.model.property.mapper;
 
-import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.propertypage.controls.OrganizationControl;
 import com.avispa.ecm.util.expression.ExpressionResolver;
 import com.avispa.microf.model.property.ControlDto;
@@ -21,10 +20,10 @@ public abstract class OrganizationControlMapper implements BaseControlMapper{
     private ExpressionResolver expressionResolver;
 
     @Mapping(target="label", qualifiedByName = "resolveLabel")
-    public abstract ControlDto toOrganizationControlDto(OrganizationControl control, @Context EcmObject object);
+    public abstract ControlDto toOrganizationControlDto(OrganizationControl control, @Context Object object);
 
     @Named("resolveLabel")
-    protected String resolveLabel(String label, @Context EcmObject object) {
+    protected String resolveLabel(String label, @Context Object object) {
         return expressionResolver.resolve(object, label);
     }
 }
