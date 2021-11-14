@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
     <body>
-        <div class="row g-3 mb-3" th:fragment="property-page" th:object="${ecmObject}">
+        <div class="row g-3 mb-3" th:fragment="property-page" th:object="${object}">
             <th:block th:each="control : ${propertyPage?.controls}">
                 <th:block th:switch="${control.type}">
                     <th:block th:case="label">
