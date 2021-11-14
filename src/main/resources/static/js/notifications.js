@@ -24,7 +24,7 @@ function createNotification(type, message) {
 function createContainer(type) {
     let container = $("<div></div>");
     container.addClass("toast");
-    container.attr("data-bs-autohide", false);
+    //container.attr("data-bs-autohide", false);
     if (type === "error") {
         container.attr("alert", "status");
         container.attr("aria-live", "assertive");
