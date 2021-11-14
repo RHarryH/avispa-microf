@@ -37,7 +37,7 @@ public class ModalController {
         PropertyPageDto propertyPageDto = getInvoicePropertyPage(invoiceDto);
 
         model.addAttribute("propertyPage", propertyPageDto);
-        model.addAttribute("ecmObject", invoiceDto);
+        model.addAttribute("object", invoiceDto);
 
         Modal modal = Modal.builder()
                 .id("invoice-add-modal")
@@ -57,7 +57,7 @@ public class ModalController {
         PropertyPageDto propertyPageDto = getInvoicePropertyPage(invoiceDto);
 
         model.addAttribute("propertyPage", propertyPageDto);
-        model.addAttribute("ecmObject", invoiceDto);
+        model.addAttribute("object", invoiceDto);
 
         Modal modal = Modal.builder()
                 .id("invoice-update-modal")
