@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <body>
-        <!-- Modal -->
+        <!-- Confirmation Modal -->
         <div th:fragment="modal(id, title, body)" class="modal fade" th:id="${id}" tabindex="-1" role="dialog" aria-labelledby="modalTitle"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -18,6 +18,27 @@
                         <button id="modal-accept-button" type="submit" data-bs-dismiss="modal" class="btn btn-primary">Accept</button>
                         <input type="hidden" id="modal-hidden"/>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- Upsert Modal -->
+        <div th:fragment="upsertModal(modal)" class="modal fade" th:id="${modal.id}" tabindex="-1" role="dialog" aria-labelledby="modalTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <form class="modal-form" th:action="${modal.action}">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTitle" th:text="${modal.title}"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" th:insert="fragments/property-page :: property-page">
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary modal-accept-button" type="submit" th:text="${modal.insert} ? 'Add' : 'Edit'"></button>
+                            <button th:if="${modal.insert}" class="btn btn-secondary" type="reset">Reset</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Reject</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

@@ -1,6 +1,5 @@
 package com.avispa.microf.model.property.mapper;
 
-import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.propertypage.controls.PropertyControl;
 import com.avispa.microf.model.property.PropertyControlDto;
 import org.mapstruct.Context;
@@ -15,5 +14,5 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         config = ControlMapper.class)
 public interface PropertyControlMapper extends BaseControlMapper{
     @Mapping(target = "name", source = "control.name")
-    PropertyControlDto toPropertyControlDto(PropertyControl control, @Context EcmObject object);
+    PropertyControlDto toPropertyControlDto(PropertyControl control, @Context Object object);
 }

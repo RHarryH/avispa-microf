@@ -66,7 +66,7 @@ class PropertyPageMapperIntegrationTest {
 
         Document document = createDocument();
 
-        PropertyPageDto propertyPageDto = mapper.convertToDto(propertyPage, document);
+        PropertyPageDto propertyPageDto = mapper.convertToDto(propertyPage, document, false);
 
         assertEquals(propertyPage.getControls().size(), propertyPageDto.getControls().size());
 
