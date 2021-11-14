@@ -46,7 +46,8 @@ public class InvoiceController {
     }
 
     @PostMapping(value = "/update/{id}")
-    public String update(@PathVariable UUID id, @ModelAttribute("invoice") InvoiceDto invoiceDto, BindingResult result) {
+    @ResponseBody
+    public void update(@PathVariable UUID id, @ModelAttribute("invoice") InvoiceDto invoiceDto, BindingResult result) {
         // TODO: understand
         /*if (result.hasErrors()) {
             invoiceDto.setId(id);
@@ -54,11 +55,10 @@ public class InvoiceController {
         }*/
 
         invoiceService.updateInvoice(invoiceDto);
-        return "invoice/update-summary";
     }
 
     @DeleteMapping("/delete/{id}")
-    @ResponseBody // it will just return status 200
+    @ResponseBody
     public void delete(@PathVariable("id") UUID id) {
         invoiceService.deleteInvoice(id);
     }
