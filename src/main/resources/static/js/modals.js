@@ -4,110 +4,84 @@ $(document).ready(function () {
 
 function createInvoiceAddModal() {
     $(".invoice-add-button").click(function () {
-        const modals = $("#modals");
-
-        $.ajax({
-            "method": "get",
-            "url": "/ui/invoice-add/"
-        }).done(function (fragment) { // get from controller
-            modals.prepend(fragment);
-
-            const invoiceModal = $("#invoice-add-modal");
-            if (invoiceModal.length) {
-                let modal = bootstrap.Modal.getOrCreateInstance(invoiceModal);
-                modal.show();
-
-                $("#invoice-add-modal :input").inputmask(); // https://api.jquery.com/input-selector/
-
-                invoiceModal.on("hidden.bs.modal", function () {
-                    invoiceModal.remove();
-                });
-
-                const invoiceForm = $("#invoice-add-modal .modal-form");
-                if (invoiceForm.length) {
-                    invoiceForm.submit(function (event) {
-                        event.preventDefault();
-
-                        const form = $(this);
-                        const url = form.attr('action');
-
-                        $.ajax({
-                            "method": "post",
-                            "url": url,
-                            "data": form.serialize()
-                        }).done(function () {
-                            invoiceForm.trigger("widget:reload", {
-                                "widgetName": "invoice-list-widget"
-                            });
-                            invoiceForm.trigger("widget:reload", {
-                                "widgetName": "repository-widget"
-                            });
-                            successNotification("Invoice added successfully!");
-                        }).fail(function () {
-                            errorNotification("Invoice adding failed!");
-                        }).always(function () {
-                            modal.hide();
-                        });
-                    });
-                }
-            }
-        }).fail(function () {
-            errorNotification("Can't load modal. Please try again.");
-        });
+        createModal(
+            "#invoice-add-modal",
+            "/ui/invoice-add/",
+            ["invoice-list-widget", "repository-widget"],
+            "Invoice added successfully!",
+            "Invoice adding failed!");
     });
 }
 
 function createInvoiceUpdateModal() {
     $(".invoice-update-button").click(function () {
-        const modals = $("#modals");
-
-        $.ajax({
-            "method": "get",
-            "url": "/ui/invoice-update/" + $(this).attr("value")
-        }).done(function (fragment) { // get from controller
-            modals.prepend(fragment);
-
-            const invoiceModal = $("#invoice-update-modal");
-            if (invoiceModal.length) {
-                let modal = bootstrap.Modal.getOrCreateInstance(invoiceModal);
-                modal.show();
-
-                $("#invoice-update-modal :input").inputmask(); // https://api.jquery.com/input-selector/
-
-                invoiceModal.on("hidden.bs.modal", function () {
-                    invoiceModal.remove();
-                });
-
-                const invoiceForm = $("#invoice-update-modal .modal-form");
-                if (invoiceForm.length) {
-                    invoiceForm.submit(function (event) {
-                        event.preventDefault();
-
-                        const form = $(this);
-                        const url = form.attr('action');
-
-                        $.ajax({
-                            "method": "post",
-                            "url": url,
-                            "data": form.serialize()
-                        }).done(function () {
-                            invoiceForm.trigger("widget:reload", {
-                                "widgetName": "invoice-list-widget"
-                            });
-                            invoiceForm.trigger("widget:reload", {
-                                "widgetName": "repository-widget"
-                            });
-                            successNotification("Invoice update successfully!");
-                        }).fail(function () {
-                            errorNotification("Invoice update failed!");
-                        }).always(function () {
-                            modal.hide();
-                        });
-                    });
-                }
-            }
-        }).fail(function () {
-            errorNotification("Can't load modal. Please try again.");
-        });
+        createModal(
+            "#invoice-update-modal",
+            "/ui/invoice-update/" + $(this).attr("value"),
+            ["invoice-list-widget", "repository-widget"],
+            "Invoice updated successfully!",
+            "Invoice update failed!");
     });
+}
+
+function createModal(
+    modalId,
+    modalGetUrl,
+    widgetsToReload,
+    successMessage,
+    failMessage
+) {
+    const modals = $("#modals");
+
+    $.ajax({
+        "method": "get",
+        "url": modalGetUrl
+    }).done(function (fragment) { // get from controller
+        modals.prepend(fragment);
+
+        const modal = $(modalId);
+        if (modal.length) {
+            let bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
+            bootstrapModal.show();
+
+            $(modalId + " :input").inputmask(); // https://api.jquery.com/input-selector/
+
+            // remove modal when hidden
+            modal.on("hidden.bs.modal", function () {
+                modal.remove();
+            });
+
+            const form = $(modalId + " .modal-form");
+            if (form.length) {
+                form.submit(function (event) {
+                    event.preventDefault();
+
+                    const url = form.attr('action');
+
+                    $.ajax({
+                        "method": "post",
+                        "url": url,
+                        "data": form.serialize()
+                    }).done(function () {
+                        reloadWidgets(form, widgetsToReload);
+                        successNotification(successMessage);
+                    }).fail(function () {
+                        errorNotification(failMessage);
+                    }).always(function () {
+                        bootstrapModal.hide();
+                    });
+                });
+            }
+        }
+    }).fail(function () {
+        errorNotification("Can't load modal. Please try again.");
+    });
+}
+
+function reloadWidgets(form, widgetsNames) {
+    for(const widgetName of widgetsNames) {
+        form.trigger("widget:reload", {
+            "widgetName": widgetName
+        });
+    }
 }
