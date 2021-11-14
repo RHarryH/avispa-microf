@@ -1,4 +1,4 @@
-package com.avispa.microf.model.widget;
+package com.avispa.microf.model.ui;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
@@ -47,7 +47,7 @@ public class WidgetController {
     public String getPropertiesWidget(@PathVariable Optional<UUID> id, Model model) {
         id.flatMap(ecmObjectRepository::findById).ifPresentOrElse(ecmObject -> {
             PropertyPageDto propertyPageDto = contextService.getConfiguration(ecmObject, PropertyPage.class)
-                    .map(propertyPage -> propertyPageMapper.convertToDto(propertyPage, ecmObject)) // convert to dto
+                    .map(propertyPage -> propertyPageMapper.convertToDto(propertyPage, ecmObject, true)) // convert to dto
                     .orElse(null); // return null otherwise
 
             model.addAttribute("propertyPage", propertyPageDto);
