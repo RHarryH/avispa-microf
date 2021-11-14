@@ -29,14 +29,11 @@
                     <td><span th:text="${invoice.netValue} + 'PLN'"> Net Value </span></td>
                     <td><span th:text="${invoice.comments}"> Comments </span></td>
                     <td>
-                        <form th:action="@{/invoice/update/{id}(id = ${invoice.id})}" method="get">
-                            <button class="btn bi bi-pencil-fill" type="submit" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit invoice"></button>
-                        </form>
+                        <button th:value="${invoice.id}" class="btn bi bi-pencil-fill invoice-update-button" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit invoice"></button>
                     </td>
                     <td>
                         <span data-bs-toggle="modal" data-bs-target="#invoice-delete-modal">
-                            <button class="btn bi bi-trash-fill delete-button" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete invoice"></button>
-                            <input type="hidden" id="invoice-id" th:value="${invoice.id}">
+                            <button th:value="${invoice.id}" class="btn bi bi-trash-fill invoice-delete-button" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete invoice"></button>
                         </span>
                     </td>
                     <td>
