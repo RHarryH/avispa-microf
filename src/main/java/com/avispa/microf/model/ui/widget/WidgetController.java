@@ -4,9 +4,9 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.context.ContextService;
+import com.avispa.microf.model.invoice.service.InvoiceService;
 import com.avispa.microf.model.property.PropertyPageDto;
 import com.avispa.microf.model.property.mapper.PropertyPageMapper;
-import com.avispa.microf.service.invoice.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -45,16 +45,22 @@ public class WidgetController {
 
     @GetMapping(value={"/properties-widget", "/properties-widget/{id}"})
     public String getPropertiesWidget(@PathVariable Optional<UUID> id, Model model) {
-        id.flatMap(ecmObjectRepository::findById).ifPresentOrElse(ecmObject -> {
-            PropertyPageDto propertyPageDto = contextService.getConfiguration(ecmObject, PropertyPage.class)
-                    .map(propertyPage -> propertyPageMapper.convertToDto(propertyPage, ecmObject, true)) // convert to dto
-                    .orElse(null); // return null otherwise
+        try {
+            id.flatMap(ecmObjectRepository::findById).ifPresentOrElse(ecmObject -> {
+                PropertyPageDto propertyPageDto = contextService.getConfiguration(ecmObject, PropertyPage.class)
+                        .map(propertyPage -> propertyPageMapper.convertToDto(propertyPage, ecmObject, true)) // convert to dto
+                        .orElse(null); // return null otherwise
 
-            model.addAttribute("propertyPage", propertyPageDto);
-            model.addAttribute("ecmObject", ecmObject);
-        },
-        () -> model.addAttribute("nothingSelected", true)
-        );
-        return "fragments/widgets/properties-widget :: properties-widget";
+                model.addAttribute("propertyPage", propertyPageDto);
+                model.addAttribute("object", ecmObject);
+            },
+            () -> model.addAttribute("nothingSelected", true)
+            );
+            return "fragments/widgets/properties-widget :: properties-widget";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("widgetId", "properties-widget");
+            return "error/widgetError :: widgetError";
+        }
     }
 }

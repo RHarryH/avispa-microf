@@ -2,9 +2,9 @@ package com.avispa.microf;
 
 import com.avispa.ecm.EcmConfiguration;
 import com.avispa.microf.model.invoice.InvoiceRepository;
-import com.avispa.microf.service.invoice.counter.CounterStrategy;
-import com.avispa.microf.service.invoice.counter.impl.ContinuousCounterStrategy;
-import com.avispa.microf.service.invoice.counter.impl.MonthCounterStrategy;
+import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
+import com.avispa.microf.model.invoice.service.counter.impl.ContinuousCounterStrategy;
+import com.avispa.microf.model.invoice.service.counter.impl.MonthCounterStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -27,18 +27,11 @@ import java.util.Locale;
 @PropertySource("file:./microf.properties")
 @Import({EcmConfiguration.class})
 public class MicroFApplication {
-	/*@Bean
-	@Description("Spring Message Resolver")
-	public ResourceBundleMessageSource messageSource() {
-		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-		messageSource.setBasename("application");
-		return messageSource;
-	}*/
 
 	@Value("${microf.invoice.counterStrategy}")
 	private String counterStrategyName;
 
-	// Optioanlly can be realized with Spring interface Condition and @Conditional annotation
+	// Optionally can be realized with Spring interface Condition and @Conditional annotation
 	@Bean
 	public CounterStrategy counterStrategy(@Autowired InvoiceRepository invoiceRepository) {
 		if(counterStrategyName.equals("continuousCounterStrategy")) {

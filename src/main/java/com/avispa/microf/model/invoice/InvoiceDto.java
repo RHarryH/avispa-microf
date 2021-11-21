@@ -1,5 +1,6 @@
 package com.avispa.microf.model.invoice;
 
+import com.avispa.microf.model.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class InvoiceDto implements Serializable {
+public class InvoiceDto implements Serializable, Dto {
     private UUID id;
     private String invoiceDate;
     private String serviceDate;
