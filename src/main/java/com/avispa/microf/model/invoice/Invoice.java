@@ -1,6 +1,7 @@
 package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.document.Document;
+import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Digits;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,8 +37,13 @@ public class Invoice extends Document {
     @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
     private BigDecimal netValue;
 
-    @Column(name = "comments")
     private String comments;
+
+    @ManyToOne(optional = false)
+    private Customer seller;
+
+    @ManyToOne(optional = false)
+    private Customer buyer;
 
     // TODO: private List<Position> positions;
     // TODO: list of vat taxes summarized

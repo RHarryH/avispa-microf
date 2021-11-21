@@ -1,5 +1,6 @@
 package com.avispa.microf.model.property;
 
+import com.avispa.microf.model.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ControlDto {
+public class ControlDto implements Dto {
     private String label;
 
     private String type;
