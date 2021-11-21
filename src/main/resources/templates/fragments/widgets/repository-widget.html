@@ -3,10 +3,10 @@
     <body>
         <div id="repository-widget" class="py-3" th:fragment="repository-widget">
             <div class="row row-cols-1">
-                <div class="col mb-2  d-grid gap-2 d-md-block">
-                    <button id="export-button" class="btn btn-sm btn-primary bi bi-box-arrow-down d-none" type="submit">Export</button>
+                <div class="d-grid gap-2 d-md-block">
+                    <button id="export-button" class="btn btn-sm btn-primary bi bi-box-arrow-down mb-2 d-none" type="submit"> Export</button>
 
-                    <button id="refresh-button" class="btn btn-sm btn-primary bi bi-arrow-repeat" type="submit">Refresh</button>
+                    <button id="refresh-button" class="btn btn-sm btn-primary bi bi-arrow-repeat mb-2" type="submit"> Refresh</button>
                 </div>
                 <div class="col mb-2">
                     <div id="directory-tree" class="overflow-auto d-none"></div>

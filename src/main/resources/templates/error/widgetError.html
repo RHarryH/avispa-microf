@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <main role="main" th:id="${widgetId}" class="container jumbotron text-center" th:fragment="widgetError">
+            <h3>Widget failed during loading!</h3>
+            <h4 th:text="${errorMessage}"></h4>
+            <a class="btn btn-sm btn-primary bi bi-arrow-repeat"
+               th:attr="onclick='reloadWidgets(null, [\'' + ${widgetId}+'\'])'"> Reload widget</a>
+        </main>
+    </body>
+</html>
