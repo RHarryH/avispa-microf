@@ -18,7 +18,9 @@ import java.util.Map;
 
 /**
  * @author Rafał Hiszpański
+ * @deprecated DOCX will not be supported because it is not open-source solution
  */
+@Deprecated(since="2.0.0")
 public class DocxReplacer extends AbstractReplacer{
     private XWPFDocument document;
 
