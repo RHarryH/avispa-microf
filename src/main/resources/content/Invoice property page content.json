@@ -1,0 +1,44 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "label",
+        "expression": "'Properties of ' + $value('objectName') + ' invoice'"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "type": "date",
+        "label": "Invoice date",
+        "property": "invoiceDate"
+      },
+      {
+        "type": "date",
+        "label": "Service date",
+        "property": "serviceDate"
+      },
+      {
+        "type": "money",
+        "currency": "PLN",
+        "label": "Net value",
+        "property": "netValue"
+      },
+      {
+        "type": "textarea",
+        "label": "Comments",
+        "property": "comments"
+      },
+      {
+        "type": "text",
+        "label": "Creation date",
+        "property": "creationDate"
+      },
+      {
+        "type": "text",
+        "label": "Modification date",
+        "property": "modificationDate"
+      }
+    ]
+  }
+}
