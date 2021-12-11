@@ -1,0 +1,49 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "columns",
+        "controls": [
+          {
+            "type": "combo",
+            "label": "Seller",
+            "property": "seller",
+            "objectType": "Customer",
+            "required": true
+          },
+          {
+            "type": "combo",
+            "label": "Buyer",
+            "property": "buyer",
+            "objectType": "Customer",
+            "required": true
+          }
+        ]
+      },
+      {
+        "type": "date",
+        "label": "Invoice date",
+        "property": "invoiceDate",
+        "required": true
+      },
+      {
+        "type": "date",
+        "label": "Service date",
+        "property": "serviceDate",
+        "required": true
+      },
+      {
+        "type": "money",
+        "currency": "PLN",
+        "label": "Net value",
+        "property": "netValue",
+        "required": true
+      },
+      {
+        "type": "textarea",
+        "label": "Comments",
+        "property": "comments"
+      }
+    ]
+  }
+}

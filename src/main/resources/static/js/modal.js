@@ -1,6 +1,7 @@
 $(document).ready(function () {
     createInvoiceAddModal();
-    createCustomerAddModal();
+    createRetailCustomerAddModal();
+    createCorporateCustomerAddModal();
 });
 
 function createInvoiceAddModal() {
@@ -25,14 +26,25 @@ function createInvoiceUpdateModal() {
     });
 }
 
-function createCustomerAddModal() {
-    $(".customer-add-button").click(function () {
+function createRetailCustomerAddModal() {
+    $(".retail-customer-add-button").click(function () {
         createModal(
-            "#customer-add-modal",
-            "/customer/add/",
+            "#retail-customer-add-modal",
+            "/customer/retail/add/",
             [],
-            "Customer added successfully!",
-            "Customer adding failed!");
+            "Retail customer added successfully!",
+            "Retail customer adding failed!");
+    });
+}
+
+function createCorporateCustomerAddModal() {
+    $(".corporate-customer-add-button").click(function () {
+        createModal(
+            "#corporate-customer-add-modal",
+            "/customer/corporate/add/",
+            [],
+            "Corporate customer added successfully!",
+            "Corporate customer adding failed!");
     });
 }
 

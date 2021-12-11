@@ -18,22 +18,26 @@
             <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" aria-label="Navigation bar">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="/">μF</a>
-                    <div class="collapse navbar-collapse" id="navbarScroll">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarInvoiceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Invoice
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                <ul class="dropdown-menu" aria-labelledby="navbarInvoiceDropdown">
                                     <li><a class="dropdown-item invoice-add-button" href="#">Add new</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarCustomerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Customer
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                                    <li><a class="dropdown-item customer-add-button" href="#">Add new</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="navbarCustomerDropdown">
+                                    <li><a class="dropdown-item retail-customer-add-button" href="#">Add new retail</a></li>
+                                    <li><a class="dropdown-item corporate-customer-add-button" href="#">Add new corporate</a></li>
                                 </ul>
                             </li>
                         </ul>

@@ -2,9 +2,11 @@ package com.avispa.microf.model.invoice.service.file;
 
 import com.avispa.microf.constants.VatTaxRate;
 import com.avispa.microf.model.customer.Customer;
+import com.avispa.microf.model.customer.type.corporate.CorporateCustomer;
 import com.avispa.microf.model.customer.formatter.CorporateCustomerFormatter;
 import com.avispa.microf.model.customer.formatter.CustomerFormatter;
 import com.avispa.microf.model.customer.formatter.RetailCustomerFormatter;
+import com.avispa.microf.model.customer.type.retail.RetailCustomer;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.service.replacer.ITemplateReplacer;
 import com.avispa.microf.numeral.NumeralToStringConverter;
@@ -57,7 +59,17 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
     }
 
     private String formatCustomer(Customer customer) {
-        CustomerFormatter customerFormatter = customer.isRetail() ? new RetailCustomerFormatter() : new CorporateCustomerFormatter();
+        CustomerFormatter<Customer> customerFormatter = getCustomerFormatter(customer);
         return customerFormatter.format(customer);
+    }
+
+    private CustomerFormatter getCustomerFormatter(Customer customer) {
+        if(customer instanceof RetailCustomer) {
+            return new RetailCustomerFormatter();
+        } else if(customer instanceof CorporateCustomer) {
+            return new CorporateCustomerFormatter();
+        } else {
+            throw new IllegalStateException("There is no known formatter for this type of customer");
+        }
     }
 }
