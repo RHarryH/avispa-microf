@@ -15,6 +15,7 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
+@Deprecated(since="2.0.0")
 public class OfficeInvoiceFile extends AbstractInvoiceFile{
     private static final Logger log = LoggerFactory.getLogger(OfficeInvoiceFile.class);
 

@@ -1,10 +1,12 @@
 package com.avispa.microf;
 
 import com.avispa.ecm.EcmConfiguration;
+import com.avispa.ecm.model.configuration.propertypage.PropertyPageService;
 import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.ContinuousCounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.MonthCounterStrategy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -13,6 +15,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
@@ -26,7 +30,9 @@ import java.util.Locale;
 @PropertySource("classpath:application.properties")
 @PropertySource("file:./microf.properties")
 @Import({EcmConfiguration.class})
+@RequiredArgsConstructor
 public class MicroFApplication {
+	private final PropertyPageService propertyPageService;
 
 	@Value("${microf.invoice.counterStrategy}")
 	private String counterStrategyName;
@@ -55,6 +61,15 @@ public class MicroFApplication {
 		LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
 		lci.setParamName("lang");
 		return lci;
+	}
+
+	//@EventListener(ApplicationReadyEvent.class)
+	@EventListener(ContextRefreshedEvent.class) // after bean creation but before the server starts
+	public void doSomethingAfterStartup() {
+		propertyPageService.loadContentTo("Invoice property page", "classpath:/content/Invoice property page content.json");
+		propertyPageService.loadContentTo("Invoice upsert property page", "classpath:/content/Invoice upsert property page content.json");
+		propertyPageService.loadContentTo("Retail customer upsert property page", "classpath:/content/customer/Retail customer upsert property page content.json");
+		propertyPageService.loadContentTo("Corporate customer upsert property page", "classpath:/content/customer/Corporate customer upsert property page content.json");
 	}
 
 	public static void main(String[] args) {

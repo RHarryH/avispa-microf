@@ -79,7 +79,7 @@ public class InvoiceService {
         invoiceMapper.updateInvoiceFromDto(invoiceDto, invoice);
 
         // delete old content and create new one
-        contentService.deleteByDocument(invoice);
+        contentService.deleteByRelatedObject(invoice);
         generateInvoiceContent(invoice);
     }
 

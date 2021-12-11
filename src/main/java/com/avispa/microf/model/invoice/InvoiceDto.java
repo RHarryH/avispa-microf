@@ -14,6 +14,8 @@ import java.util.UUID;
 @Setter
 public class InvoiceDto implements Serializable, Dto {
     private UUID id;
+    private UUID seller;
+    private UUID buyer;
     private String invoiceDate;
     private String serviceDate;
     private String netValue;
