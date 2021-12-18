@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 public abstract class CustomerDto implements Dto {
     private String phoneNumber;
+    private String email;
 
     // address
     private String street;
