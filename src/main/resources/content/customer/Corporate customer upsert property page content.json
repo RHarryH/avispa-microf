@@ -21,6 +21,11 @@
         "pattern": "\\+48 \\d{9}"
       },
       {
+        "type": "email",
+        "label": "Email",
+        "property": "email"
+      },
+      {
         "type": "label",
         "expression": "'Customer address'"
       },
