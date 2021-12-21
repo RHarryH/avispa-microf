@@ -1,11 +1,13 @@
 $(document).ready(function () {
     registerInvoicesWidget();
+    registerCustomersWidget();
     registerRepositoryWidget();
 
     registerWidgetReloadEvent();
 
     // load widgets
     $(document).trigger("widget:load", ["invoice-list-widget", "#nav-invoices"]);
+    $(document).trigger("widget:load", ["customer-list-widget", "#nav-customers"]);
     $(document).trigger("widget:load", ["repository-widget", "#nav-repository"]);
     $(document).trigger("widget:load", ["properties-widget", "#nav-properties"]);
 });
@@ -30,6 +32,29 @@ function registerInvoicesWidget() {
     }).on("click", ".invoice-delete-button", function () { // modal is created once but invoice id varies in each row and has to be added dynamically
         const id = $(this).attr("value");
         $("#invoice-delete-modal .modal-accept-button").attr("value", id);
+    });
+}
+
+function registerCustomersWidget() {
+    $('#nav-customers').on("click", ".modal-accept-button", function (e) { // when modal form will be clicked
+        e.preventDefault(); // disable default behavior
+
+        const id = $("#customer-delete-modal .modal-accept-button").attr("value");
+
+        // call deletion event
+        $.ajax({
+            "method": "delete",
+            "url": "/customer/delete/" + id
+        }).done(function () {
+            // trigger reloads of widgets
+            reloadWidgets(null, ["customer-list-widget"])
+            successNotification("Customer deleted successfully!");
+        }).fail(function(e) {
+            errorNotification("Error when deleting customer!");
+        });
+    }).on("click", ".customer-delete-button", function () { // modal is created once but customer id varies in each row and has to be added dynamically
+        const id = $(this).attr("value");
+        $("#customer-delete-modal .modal-accept-button").attr("value", id);
     });
 }
 
@@ -97,7 +122,7 @@ function registerWidgetReloadEvent() {
 
 function initializeWidgets(widgetName) {
     switch (widgetName) {
-        case "invoice-list-widget":
+        case "invoice-list-widget": {
             createInvoiceUpdateModal();
 
             let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -106,6 +131,17 @@ function initializeWidgets(widgetName) {
             })
 
             break;
+        }
+        case "customer-list-widget": {
+            createRetailCustomerUpdateModal()
+            createCorporateCustomerUpdateModal();
+
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+            break;
+        }
         case "repository-widget":
             createDirectoryTree();
             break;
