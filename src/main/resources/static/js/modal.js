@@ -31,9 +31,20 @@ function createRetailCustomerAddModal() {
         createModal(
             "#retail-customer-add-modal",
             "/customer/retail/add/",
-            [],
+            ["customer-list-widget"],
             "Retail customer added successfully!",
             "Retail customer adding failed!");
+    });
+}
+
+function createRetailCustomerUpdateModal() {
+    $(".retail-customer-update-button").click(function () {
+        createModal(
+            "#retail-customer-update-modal",
+            "/customer/retail/update/" + $(this).attr("value"),
+            ["customer-list-widget"],
+            "Retail customer updated successfully!",
+            "Retail customer update failed!");
     });
 }
 
@@ -42,9 +53,20 @@ function createCorporateCustomerAddModal() {
         createModal(
             "#corporate-customer-add-modal",
             "/customer/corporate/add/",
-            [],
+            ["customer-list-widget"],
             "Corporate customer added successfully!",
             "Corporate customer adding failed!");
+    });
+}
+
+function createCorporateCustomerUpdateModal() {
+    $(".corporate-customer-update-button").click(function () {
+        createModal(
+            "#corporate-customer-update-modal",
+            "/customer/corporate/update/" + $(this).attr("value"),
+            ["customer-list-widget"],
+            "Corporate customer updated successfully!",
+            "Corporate customer update failed!");
     });
 }
 

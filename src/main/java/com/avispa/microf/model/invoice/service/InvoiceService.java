@@ -49,17 +49,27 @@ public class InvoiceService {
     private final ContextService contextService;
 
     @Transactional
-    public void addInvoice(Invoice invoice) {
+    public void add(Invoice invoice) {
         invoiceRepository.save(invoice);
 
         invoice.setSerialNumber(counterStrategy.getNextSerialNumber(invoice));
 
         contextService.applyMatchingConfigurations(invoice, Autoname.class, Autolink.class);
 
-        generateInvoiceContent(invoice);
+        generateContent(invoice);
     }
 
-    private void generateInvoiceContent(Invoice invoice) {
+    @Transactional
+    public void update(InvoiceDto invoiceDto) {
+        Invoice invoice = findById(invoiceDto.getId());
+        invoiceMapper.updateInvoiceFromDto(invoiceDto, invoice);
+
+        // delete old content and create new one
+        contentService.deleteByRelatedObject(invoice);
+        generateContent(invoice);
+    }
+
+    private void generateContent(Invoice invoice) {
         try (IInvoiceFile invoiceFile = new ODFInvoiceFile(invoice)) {
             invoiceFile.generate();
             Path fileStorePath = invoiceFile.save(fileStore.getRootPath());
@@ -73,17 +83,7 @@ public class InvoiceService {
         }
     }
 
-    @Transactional
-    public void updateInvoice(InvoiceDto invoiceDto) {
-        Invoice invoice = findById(invoiceDto.getId());
-        invoiceMapper.updateInvoiceFromDto(invoiceDto, invoice);
-
-        // delete old content and create new one
-        contentService.deleteByRelatedObject(invoice);
-        generateInvoiceContent(invoice);
-    }
-
-    public void deleteInvoice(UUID id) {
+    public void delete(UUID id) {
         invoiceRepository.delete(findById(id));
     }
 

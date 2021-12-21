@@ -7,14 +7,17 @@ import lombok.Setter;
 import java.util.UUID;
 
 /**
+ * Dto used to display customers in Customer List widget
  * @author Rafał Hiszpański
  */
 @Getter
 @Setter
-public abstract class CustomerDto implements Dto {
+public class CustomerListDto implements Dto {
     private UUID id;
+    private String customerName;
+    private boolean corporate;
+    private String vatIdentificationNumber;
     private String phoneNumber;
     private String email;
-
-    private AddressDto address;
+    private String address;
 }

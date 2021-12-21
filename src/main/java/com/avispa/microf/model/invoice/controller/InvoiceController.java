@@ -56,9 +56,9 @@ public class InvoiceController {
 
     @PostMapping(value = "/add")
     @ResponseBody // it will just return status 200
-    public void addInvoice(@ModelAttribute("ecmObject") InvoiceDto invoiceDto) {
+    public void add(@ModelAttribute("ecmObject") InvoiceDto invoiceDto) {
         Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
-        invoiceService.addInvoice(invoice);
+        invoiceService.add(invoice);
     }
 
     @GetMapping("/update/{id}")
@@ -85,13 +85,13 @@ public class InvoiceController {
             return "invoice/result";
         }*/
 
-        invoiceService.updateInvoice(invoiceDto);
+        invoiceService.update(invoiceDto);
     }
 
     @DeleteMapping("/delete/{id}")
     @ResponseBody
     public void delete(@PathVariable("id") UUID id) {
-        invoiceService.deleteInvoice(id);
+        invoiceService.delete(id);
     }
 
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
