@@ -46,7 +46,7 @@
                     <hr/>
                 </th:block>
                 <th:block th:case="money">
-                    <label th:for="${control.property}" th:text="${control.label + (control.required ? '*' : '')}" class="col-sm-2 col-form-label">Property name</label>
+                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
                     <div class="col" th:with="controlName=${control.property}">
                         <div class="input-group">
                             <input type="text" class="form-control"
@@ -58,7 +58,7 @@
                     </div>
                 </th:block>
                 <th:block th:case="number">
-                    <label th:for="${control.property}" th:text="${control.label + (control.required ? '*' : '')}" class="col-sm-2 col-form-label">Property name</label>
+                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
                     <div class="col" th:with="controlName=${control.property}">
                         <input type="number" class="form-control"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
@@ -66,7 +66,7 @@
                     </div>
                 </th:block>
                 <th:block th:case="text">
-                    <label th:for="${control.property}" th:text="${control.label + (control.required ? '*' : '')}" class="col-sm-2 col-form-label">Property name</label>
+                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
                     <div class="col" th:with="controlName=${control.property}">
                         <input type="text" class="form-control"
                                th:data-inputmask-regex="${control.pattern}"
@@ -75,7 +75,7 @@
                     </div>
                 </th:block>
                 <th:block th:case="textarea">
-                    <label th:for="${control.property}" th:text="${control.label + (control.required ? '*' : '')}" class="col-sm-2 col-form-label">Property name</label>
+                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
                     <div class="col" th:with="controlName=${control.property}">
                         <textarea class="form-control"
                                th:rows="${control.rows}" th:cols="${control.cols}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
@@ -83,7 +83,7 @@
                     </div>
                 </th:block>
                 <th:block th:case="combo">
-                    <label th:for="${control.property}" th:text="${control.label + (control.required ? '*' : '')}" class="col-sm-2 col-form-label">Property name</label>
+                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
                     <div class="col" th:with="controlName=${control.property}">
                         <select class="form-select"
                                th:field="*{__${controlName}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}">
@@ -101,7 +101,7 @@
                     </div>
                 </th:block>
                 <th:block th:case="*">
-                    <label th:for="${control.property}" th:text="${control.label + (control.required ? '*' : '')}" class="col-sm-2 col-form-label">Property name</label>
+                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
                     <div class="col" th:with="controlName=${control.property}">
                         <input th:type="${control.type}" class="form-control"
                                th:field="*{__${controlName}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
@@ -109,5 +109,7 @@
                 </th:block>
             </th:block>
         </th:block>
+
+        <label th:fragment="propertyLabel" th:for="${control.property}" th:text="${control.label + (control.required ? '*' : '')}" class="col-sm-2 col-form-label">Property name</label>
     </body>
 </html>
