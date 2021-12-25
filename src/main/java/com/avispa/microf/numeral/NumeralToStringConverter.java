@@ -131,15 +131,17 @@ public final class NumeralToStringConverter {
 
         int length = triplet.length();
         int begin = 3 - length;
-        for(int j = begin;j < 3; j++) {
+        for(int j = begin; j < 3; j++) {
             int index = j - begin;
             int digit = Character.getNumericValue(triplet.charAt(index));
-            if (digit == 0) {
+            /*if (digit == 0) {
                 continue;
-            }
+            }*/
             switch (j) {
                 case 0:
-                    sb.append(HUNDREDS[digit]).append(" ");
+                    if(digit != 0) {
+                        sb.append(HUNDREDS[digit]).append(" ");
+                    }
                     break;
                 case 1:
                     if (digit == 1) {
@@ -148,13 +150,16 @@ public final class NumeralToStringConverter {
                         digit = Character.getNumericValue(triplet.charAt(index));
                         sb.append(TEENS[digit]).append(" ");
                         appendPower(sb, tripletNumber, digit, true);
-                    } else {
+                        break; // do not process units
+                    } else if(digit != 0) {
                         sb.append(TENS[digit]).append(" ");
                     }
                     break;
                 case 2:
-                    sb.append(UNITS[digit]).append(" ");
-                    appendPower(sb, tripletNumber, digit, triplet.length() > 1);
+                    if(digit != 0) {
+                        sb.append(UNITS[digit]).append(" ");
+                    }
+                    appendPower(sb, tripletNumber, digit, false);
                     break;
                 default:
                     log.error("Unknown digit position");
@@ -195,7 +200,7 @@ public final class NumeralToStringConverter {
             } else {
                 if (digit == 1) {
                     sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
-                } else if (digit > 3) {
+                } else if (digit > 3 || digit == 0) {
                     sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
                 } else {
                     sb.append(POWERS[tripletNumber][NOMINATIVE_PLURAL]);
