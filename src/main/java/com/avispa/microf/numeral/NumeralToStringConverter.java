@@ -135,30 +135,31 @@ public final class NumeralToStringConverter {
             int index = j - begin;
             int digit = Character.getNumericValue(triplet.charAt(index));
 
-            switch (j) {
-                case 0:
-                    if(digit != 0) {
+            if(digit != 0) {
+                switch (j) {
+                    case 0:
                         sb.append(HUNDREDS[digit]).append(" ");
-                    }
-                    break;
-                case 1:
-                    if(!hasTeens && digit != 0) {
-                        sb.append(TENS[digit]).append(" ");
-                    }
-                    break;
-                case 2:
-                    if(digit != 0) {
-                        if(hasTeens) {
+                        break;
+                    case 1:
+                        if (!hasTeens) {
+                            sb.append(TENS[digit]).append(" ");
+                        }
+                        break;
+                    case 2:
+                        if (hasTeens) {
                             sb.append(TEENS[digit]);
                         } else {
                             sb.append(UNITS[digit]);
                         }
                         sb.append(" ");
-                    }
-                    appendPower(sb, tripletNumber, digit, hasTeens);
-                    break;
-                default:
-                    log.error("Unknown digit position");
+                        break;
+                    default:
+                        log.error("Unknown digit position");
+                }
+            }
+
+            if(j == 2) {
+                appendPower(sb, tripletNumber, digit, hasTeens);
             }
         }
     }
