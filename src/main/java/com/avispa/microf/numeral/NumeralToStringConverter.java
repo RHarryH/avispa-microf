@@ -164,16 +164,15 @@ public final class NumeralToStringConverter {
 
     private static void appendCurrency(StringBuilder sb, String number) {
         int lastDigit = Character.getNumericValue(number.charAt(number.length() - 1));
-        boolean isTeen = false;
-        if(number.length() > 1 && Character.getNumericValue(number.charAt(number.length() - 2)) == 1) {
-            isTeen = true;
-        }
+        boolean isTeen = number.length() > 1 && Character.getNumericValue(number.charAt(number.length() - 2)) == 1;
 
         if(number.length() == 1) {
             if(lastDigit == 1) {
                 sb.append(CURRENCY[NOMINATIVE_SINGULAR]);
             } else if (lastDigit > 4 || lastDigit == 0) {
                 sb.append(CURRENCY[GENITIVE_PLURAL]);
+            } else {
+                sb.append(CURRENCY[NOMINATIVE_PLURAL]);
             }
         } else if(isTeen) {
             sb.append(CURRENCY[GENITIVE_PLURAL]);
