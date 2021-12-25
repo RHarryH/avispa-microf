@@ -99,8 +99,6 @@ public final class NumeralToStringConverter {
             }
 
             appendCurrency(sb, integer);
-
-            //sb.setLength(sb.length() - 1);
         }
 
         if(!StringUtils.isEmpty(decimal)) {
@@ -129,14 +127,14 @@ public final class NumeralToStringConverter {
             return;
         }
 
+        boolean hasTeens = triplet.length() > 1 && Character.getNumericValue(triplet.charAt(triplet.length() - 2)) == 1;
+
         int length = triplet.length();
         int begin = 3 - length;
         for(int j = begin; j < 3; j++) {
             int index = j - begin;
             int digit = Character.getNumericValue(triplet.charAt(index));
-            /*if (digit == 0) {
-                continue;
-            }*/
+
             switch (j) {
                 case 0:
                     if(digit != 0) {
@@ -144,22 +142,20 @@ public final class NumeralToStringConverter {
                     }
                     break;
                 case 1:
-                    if (digit == 1) {
-                        j++;
-                        index++;
-                        digit = Character.getNumericValue(triplet.charAt(index));
-                        sb.append(TEENS[digit]).append(" ");
-                        appendPower(sb, tripletNumber, digit, true);
-                        break; // do not process units
-                    } else if(digit != 0) {
+                    if(!hasTeens && digit != 0) {
                         sb.append(TENS[digit]).append(" ");
                     }
                     break;
                 case 2:
                     if(digit != 0) {
-                        sb.append(UNITS[digit]).append(" ");
+                        if(hasTeens) {
+                            sb.append(TEENS[digit]);
+                        } else {
+                            sb.append(UNITS[digit]);
+                        }
+                        sb.append(" ");
                     }
-                    appendPower(sb, tripletNumber, digit, false);
+                    appendPower(sb, tripletNumber, digit, hasTeens);
                     break;
                 default:
                     log.error("Unknown digit position");
@@ -192,11 +188,6 @@ public final class NumeralToStringConverter {
         if (tripletNumber != 0) {
             if(teens) {
                 sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
-                /*if (digit > 1 && digit < 5) {
-                    sb.append(POWERS[tripletNumber][NOMINATIVE_PLURAL]);
-                } else {
-                    sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
-                }*/
             } else {
                 if (digit == 1) {
                     sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
@@ -250,11 +241,6 @@ public final class NumeralToStringConverter {
                     }
                     arrayDeque.add(UNITS[lastDigit]);
                 } else { // == 1
-                    /*if (lastDigit > 1 && lastDigit < 5) {
-                        arrayDeque.add(POWERS[power][NOMINATIVE_PLURAL]);
-                    } else {
-                        arrayDeque.add(POWERS[power][GENITIVE_PLURAL]);
-                    }*/
                     arrayDeque.add(POWERS[power][GENITIVE_PLURAL]); // always add plural version of genitive
                     arrayDeque.add(" ");
                     arrayDeque.add(TEENS[lastDigit]);
@@ -280,7 +266,7 @@ public final class NumeralToStringConverter {
             j++;
         }
 
-        for(Iterator dItr = arrayDeque.descendingIterator(); dItr.hasNext();) {
+        for(Iterator<String> dItr = arrayDeque.descendingIterator(); dItr.hasNext();) {
             sb.append(dItr.next());
         }
 
