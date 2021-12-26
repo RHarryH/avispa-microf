@@ -1,5 +1,6 @@
 package com.avispa.microf.numeral;
 
+import joptsimple.internal.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,7 +160,7 @@ public final class NumeralToStringConverter {
             }
 
             if(j == 2) {
-                appendPower(sb, tripletNumber, digit, hasTeens);
+                appendPower(sb, tripletNumber, length, digit, hasTeens);
             }
         }
     }
@@ -185,13 +186,17 @@ public final class NumeralToStringConverter {
         }
     }
 
-    private static void appendPower(StringBuilder sb, int tripletNumber, int digit, boolean teens) {
+    private static void appendPower(StringBuilder sb, int tripletNumber, int tripletLength, int digit, boolean teens) {
         if (tripletNumber != 0) {
             if(teens) {
                 sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
             } else {
                 if (digit == 1) {
-                    sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
+                    if(tripletLength == 1) {
+                        sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
+                    } else {
+                        sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
+                    }
                 } else if (digit > 3 || digit == 0) {
                     sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
                 } else {
@@ -208,7 +213,6 @@ public final class NumeralToStringConverter {
      * @return
      */
     public static String convert(int number) {
-        StringBuilder sb = new StringBuilder();
         int lastDigit;
         int power = 0;
         int j = 0;
@@ -217,65 +221,45 @@ public final class NumeralToStringConverter {
             return "zero";
         }
 
-        Deque<String> arrayDeque = new ArrayDeque<>();
+        List<String> result = new ArrayList<>();
 
         while (number > 0) {
             lastDigit = (number % 10);
             number /= 10;
             if(j == 0) {
-                if ((number % 100 != 0 || lastDigit != 0) && power != 0) {
-                    arrayDeque.add(" ");
-
-                    if (number % 10 != 1) { // add only when we don't deal with teens
-                        if (number != 0 || lastDigit > 3) {
-                            arrayDeque.add(POWERS[power][GENITIVE_PLURAL]);
-                        } else if (lastDigit == 1) {
-                            arrayDeque.add(POWERS[power][NOMINATIVE_SINGULAR]);
-                        } else {
-                            arrayDeque.add(POWERS[power][NOMINATIVE_PLURAL]);
-                        }
+                if (number % 100 != 0 || lastDigit != 0) {
+                    if (number != 0 || lastDigit > 3) {
+                        result.add(POWERS[power][GENITIVE_PLURAL]);
+                    } else if (lastDigit == 1) {
+                        result.add(POWERS[power][NOMINATIVE_SINGULAR]);
+                    } else {
+                        result.add(POWERS[power][NOMINATIVE_PLURAL]);
                     }
                 }
                 if (number % 10 != 1) {
-                    if(lastDigit != 0) {
-                        arrayDeque.add(" ");
-                    }
-                    arrayDeque.add(UNITS[lastDigit]);
+                    result.add(UNITS[lastDigit]);
                 } else { // == 1
-                    arrayDeque.add(POWERS[power][GENITIVE_PLURAL]); // always add plural version of genitive
-                    arrayDeque.add(" ");
-                    arrayDeque.add(TEENS[lastDigit]);
+                    result.add(TEENS[lastDigit]);
                     number /= 10;
                     j += 2;
                     continue;
                 }
             }
             if (j == 1) {
-                if(lastDigit != 0) {
-                    arrayDeque.add(" ");
-                }
-                arrayDeque.add(TENS[lastDigit]);
+                result.add(TENS[lastDigit]);
             }
             if (j == 2) {
-                if(lastDigit != 0) {
-                    arrayDeque.add(" ");
-                }
-                arrayDeque.add(HUNDREDS[lastDigit]);
+                result.add(HUNDREDS[lastDigit]);
                 j = -1;
                 power++;
             }
             j++;
         }
 
-        for(Iterator<String> dItr = arrayDeque.descendingIterator(); dItr.hasNext();) {
-            sb.append(dItr.next());
-        }
+        result.removeIf(String::isEmpty);
+        Collections.reverse(result); // results must be reversed
 
-        if(sb.length() > 0) {
-            sb.setLength(sb.length() - 1);
-        }
-
-        return sb.toString();
+        return Strings.join(result, " ");
     }
 
     public static String convert(BigDecimal number) {
