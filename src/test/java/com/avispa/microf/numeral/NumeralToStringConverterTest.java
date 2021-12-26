@@ -120,7 +120,7 @@ class NumeralToStringConverterTest {
     @Test
     void mixedThousandTest8() {
         assertEquals("pięćset trzydzieści dwa tysiące trzydzieści osiem złotych", convert("532038"));
-        assertEquals("pięćset trzydzieści dwa tysiące trzydzieści osiem złotych", convert(532038));
+        assertEquals("pięćset trzydzieści dwa tysiące trzydzieści osiem", convert(532038));
     }
 
     @Test
