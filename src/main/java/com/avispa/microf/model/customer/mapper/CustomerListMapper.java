@@ -8,6 +8,7 @@ import com.avispa.microf.model.customer.type.retail.RetailCustomer;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -15,7 +16,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public abstract class CustomerListMapper {
     @Mapping(target = "customerName", source="objectName")
     @Mapping(target = "corporate", constant = "false")
-    @Mapping(target = "vatIdentificationNumber")
+    //@Mapping(target = "vatIdentificationNumber")
     @Mapping(target = "address", source="address", qualifiedByName = "convertAddressToString")
     protected abstract CustomerListDto toCustomerListDto(RetailCustomer customer);
 
@@ -35,6 +36,7 @@ public abstract class CustomerListMapper {
         }
     }
 
+    @Named("convertAddressToString")
     protected String convertAddressToString(Address address) {
         return address.getStreet() + ", " + address.getPlace() + " " + address.getZipCode();
     }
