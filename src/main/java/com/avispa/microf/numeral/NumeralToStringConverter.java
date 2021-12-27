@@ -7,11 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -188,20 +185,16 @@ public final class NumeralToStringConverter {
 
     private static void appendPower(StringBuilder sb, int tripletNumber, int tripletLength, int digit, boolean teens) {
         if (tripletNumber != 0) {
-            if(teens) {
+            if (digit > 3 || digit == 0 || teens) {
                 sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
-            } else {
-                if (digit == 1) {
-                    if(tripletLength == 1) {
-                        sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
-                    } else {
-                        sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
-                    }
-                } else if (digit > 3 || digit == 0) {
-                    sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
+            } else if (digit == 1) {
+                if(tripletLength == 1) {
+                    sb.append(POWERS[tripletNumber][NOMINATIVE_SINGULAR]);
                 } else {
-                    sb.append(POWERS[tripletNumber][NOMINATIVE_PLURAL]);
+                    sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
                 }
+            } else {
+                sb.append(POWERS[tripletNumber][NOMINATIVE_PLURAL]);
             }
             sb.append(" ");
         }
@@ -228,10 +221,14 @@ public final class NumeralToStringConverter {
             number /= 10;
             if(j == 0) {
                 if (number % 100 != 0 || lastDigit != 0) {
-                    if (number != 0 || lastDigit > 3) {
+                    if (lastDigit == 0 || lastDigit > 3 || number % 10 == 1) {
                         result.add(POWERS[power][GENITIVE_PLURAL]);
                     } else if (lastDigit == 1) {
-                        result.add(POWERS[power][NOMINATIVE_SINGULAR]);
+                        if(number == 0) { // there is no next digit
+                            result.add(POWERS[power][NOMINATIVE_SINGULAR]);
+                        } else {
+                            result.add(POWERS[power][GENITIVE_PLURAL]);
+                        }
                     } else {
                         result.add(POWERS[power][NOMINATIVE_PLURAL]);
                     }

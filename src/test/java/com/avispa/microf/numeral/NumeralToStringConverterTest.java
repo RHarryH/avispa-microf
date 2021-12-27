@@ -16,27 +16,39 @@ class NumeralToStringConverterTest {
     }
 
     @Test
-    void unitTest() {
+    void unitSingularTest() {
+        assertEquals("jeden złoty", convert("1"));
+        assertEquals("jeden", convert(1));
+    }
+
+    @Test
+    void unitPluralTest() {
         assertEquals("dwa złote", convert("2"));
         assertEquals("dwa", convert(2));
     }
 
     @Test
-    void unitTest2() {
+    void unitPluralGenitiveTest() {
         assertEquals("siedem złotych", convert("7"));
         assertEquals("siedem", convert(7));
     }
 
     @Test
-    void tenTest() {
+    void wholeTenTest() {
+        assertEquals("pięćdziesiąt złotych", convert("50"));
+        assertEquals("pięćdziesiąt", convert(50));
+    }
+
+    @Test
+    void tenPluralTest() {
         assertEquals("pięćdziesiąt trzy złote", convert("53"));
         assertEquals("pięćdziesiąt trzy", convert(53));
     }
 
     @Test
-    void roundTenTest() {
-        assertEquals("pięćdziesiąt złotych", convert("50"));
-        assertEquals("pięćdziesiąt", convert(50));
+    void tenPluralGenitiveTest() {
+        assertEquals("pięćdziesiąt pięć złotych", convert("55"));
+        assertEquals("pięćdziesiąt pięć", convert(55));
     }
 
     @Test
@@ -46,15 +58,45 @@ class NumeralToStringConverterTest {
     }
 
     @Test
-    void hundredTest() {
+    void teenTest2() {
+        assertEquals("siedemnaście złotych", convert("17"));
+        assertEquals("siedemnaście", convert(17));
+    }
+
+    @Test
+    void wholeHundredTest() {
         assertEquals("sto złotych", convert("100"));
         assertEquals("sto", convert(100));
+    }
+
+    @Test
+    void hundredSingularTest() {
+        assertEquals("sto jeden złotych", convert("101"));
+        assertEquals("sto jeden", convert(101));
+    }
+
+    @Test
+    void hundredPluralTest() {
+        assertEquals("sto dwa złote", convert("102"));
+        assertEquals("sto dwa", convert(102));
+    }
+
+    @Test
+    void hundredGenitiveTest() {
+        assertEquals("sto pięć złotych", convert("105"));
+        assertEquals("sto pięć", convert(105));
     }
 
     @Test
     void hundredTeenTest() {
         assertEquals("sto dwanaście złotych", convert("112"));
         assertEquals("sto dwanaście", convert(112));
+    }
+
+    @Test
+    void hundredTenTest() {
+        assertEquals("sto pięćdziesiąt trzy złote", convert("153"));
+        assertEquals("sto pięćdziesiąt trzy", convert(153));
     }
 
     @Test
@@ -121,6 +163,12 @@ class NumeralToStringConverterTest {
     void mixedThousandTest8() {
         assertEquals("pięćset trzydzieści dwa tysiące trzydzieści osiem złotych", convert("532038"));
         assertEquals("pięćset trzydzieści dwa tysiące trzydzieści osiem", convert(532038));
+    }
+
+    @Test
+    void mixedThousandTest9() {
+        assertEquals("sto jeden tysięcy złotych", convert("101000"));
+        assertEquals("sto jeden tysięcy", convert(101000));
     }
 
     @Test
