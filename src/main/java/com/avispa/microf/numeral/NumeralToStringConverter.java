@@ -221,17 +221,7 @@ public final class NumeralToStringConverter {
             number /= 10;
             if(j == 0) {
                 if (number % 100 != 0 || lastDigit != 0) {
-                    if (lastDigit == 0 || lastDigit > 3 || number % 10 == 1) {
-                        result.add(POWERS[power][GENITIVE_PLURAL]);
-                    } else if (lastDigit == 1) {
-                        if(number == 0) { // there is no next digit
-                            result.add(POWERS[power][NOMINATIVE_SINGULAR]);
-                        } else {
-                            result.add(POWERS[power][GENITIVE_PLURAL]);
-                        }
-                    } else {
-                        result.add(POWERS[power][NOMINATIVE_PLURAL]);
-                    }
+                    addPower(number, lastDigit, power, result);
                 }
                 if (number % 10 != 1) {
                     result.add(UNITS[lastDigit]);
@@ -257,6 +247,20 @@ public final class NumeralToStringConverter {
         Collections.reverse(result); // results must be reversed
 
         return Strings.join(result, " ");
+    }
+
+    private static void addPower(int number, int lastDigit, int power, List<String> result) {
+        if (lastDigit == 0 || lastDigit > 3 || number % 10 == 1) {
+            result.add(POWERS[power][GENITIVE_PLURAL]);
+        } else if (lastDigit == 1) {
+            if(number == 0) { // there is no next digit
+                result.add(POWERS[power][NOMINATIVE_SINGULAR]);
+            } else {
+                result.add(POWERS[power][GENITIVE_PLURAL]);
+            }
+        } else {
+            result.add(POWERS[power][NOMINATIVE_PLURAL]);
+        }
     }
 
     public static String convert(BigDecimal number) {
