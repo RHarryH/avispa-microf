@@ -1,6 +1,5 @@
 package com.avispa.microf.model.invoice.service.file;
 
-import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.service.replacer.OdtReplacer;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.slf4j.Logger;
@@ -19,9 +18,7 @@ public class ODFInvoiceFile extends AbstractInvoiceFile {
 
     private OdfTextDocument invoice;
 
-    public ODFInvoiceFile(Invoice invoice) {
-        super(invoice);
-
+    public ODFInvoiceFile() {
         try {
             this.invoice = OdfTextDocument.loadDocument(ClassLoader.getSystemClassLoader().getResourceAsStream("vat_invoice_variables_template.odt"));
             this.replacer = new OdtReplacer(this.invoice);

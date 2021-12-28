@@ -1,6 +1,5 @@
 package com.avispa.microf.model.invoice.service.file;
 
-import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.service.replacer.DocxReplacer;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
@@ -21,9 +20,7 @@ public class OfficeInvoiceFile extends AbstractInvoiceFile{
 
     private XWPFDocument invoice;
 
-    public OfficeInvoiceFile(Invoice invoice) {
-        super(invoice);
-
+    public OfficeInvoiceFile() {
         try {
             this.invoice = new XWPFDocument(ClassLoader.getSystemClassLoader().getResourceAsStream("vat_invoice_variables_template.docx"));
             this.replacer = new DocxReplacer(this.invoice);

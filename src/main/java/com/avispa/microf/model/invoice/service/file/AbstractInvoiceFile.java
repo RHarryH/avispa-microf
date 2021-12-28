@@ -1,21 +1,15 @@
 package com.avispa.microf.model.invoice.service.file;
 
-import com.avispa.microf.constants.VatTaxRate;
-import com.avispa.microf.model.customer.Customer;
-import com.avispa.microf.model.customer.type.corporate.CorporateCustomer;
-import com.avispa.microf.model.customer.formatter.CorporateCustomerFormatter;
-import com.avispa.microf.model.customer.formatter.CustomerFormatter;
-import com.avispa.microf.model.customer.formatter.RetailCustomerFormatter;
-import com.avispa.microf.model.customer.type.retail.RetailCustomer;
+import com.avispa.microf.constants.VatRate;
 import com.avispa.microf.model.invoice.Invoice;
+import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
+import com.avispa.microf.model.invoice.service.file.data.PositionData;
+import com.avispa.microf.model.invoice.service.file.data.VatRowData;
 import com.avispa.microf.model.invoice.service.replacer.ITemplateReplacer;
-import com.avispa.microf.numeral.NumeralToStringConverter;
 import com.avispa.microf.util.FormatUtils;
 import com.avispa.microf.util.SpringContext;
 import com.avispa.microf.util.Version;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,53 +17,48 @@ import java.util.Map;
  * @author Rafał Hiszpański
  */
 public abstract class AbstractInvoiceFile implements IInvoiceFile {
-
-    private final Invoice invoice;
     protected ITemplateReplacer replacer;
 
-    protected AbstractInvoiceFile(Invoice invoice) {
-        this.invoice = invoice;
-    }
-
     @Override
-    public void generate() {
-        LocalDate paymentDate = invoice.getInvoiceDate().plusDays(14);
-        BigDecimal vat = VatTaxRate.VAT_23.multiply(invoice.getNetValue());
-        BigDecimal grossValue = invoice.getNetValue().add(vat);
-        String grossValueInWords = NumeralToStringConverter.convert(grossValue);
+    public void generate(Invoice invoice) {
+        InvoiceData invoiceData = new InvoiceData(invoice);
 
         Map<String, String> variables = new HashMap<>();
-        variables.put("invoice_number", invoice.getObjectName());
-        variables.put("seller", formatCustomer(invoice.getSeller()));
-        variables.put("buyer", formatCustomer(invoice.getBuyer()));
-        variables.put("invoice_date", invoice.getInvoiceDateAsString());
-        variables.put("service_date", invoice.getServiceDateAsString());
-        variables.put("quantity", "1");
-        variables.put("price_no_discount", invoice.getNetValueAsString());
-        variables.put("price", invoice.getNetValueAsString());
-        variables.put("net_value", invoice.getNetValueAsString());
-        variables.put("vat", FormatUtils.format(vat));
-        variables.put("gross_value", FormatUtils.format(grossValue));
-        variables.put("gross_value_in_words", grossValueInWords);
-        variables.put("payment_date", FormatUtils.format(paymentDate));
-        variables.put("comments", invoice.getComments());
+        variables.put("invoice_number", invoiceData.getInvoiceName());
+        variables.put("seller", invoiceData.getSeller());
+        variables.put("buyer", invoiceData.getBuyer());
+        variables.put("invoice_date", FormatUtils.format(invoiceData.getInvoiceDate()));
+        variables.put("service_date", FormatUtils.format(invoiceData.getServiceDate()));
+
+        for(PositionData position : invoiceData.getPositions()) {
+            variables.put("position_order", position.getPositionOrder());
+            variables.put("position_name", position.getPositionName());
+            variables.put("amount", FormatUtils.format(position.getAmount()));
+            variables.put("unit", position.getUnit());
+            variables.put("unit_price", FormatUtils.format(position.getUnitPrice()));
+            variables.put("discount", FormatUtils.format(position.getDiscount()));
+            variables.put("price", FormatUtils.format(position.getPrice()));
+            variables.put("net_value", FormatUtils.format(position.getNetValue()));
+            variables.put("vat_rate", position.getVatRate().getText());
+        }
+
+        for(Map.Entry<VatRate, VatRowData> vatEntry : invoiceData.getVatMatrix().entrySet()) {
+            variables.put("matrix_vat_rate", vatEntry.getKey().getText() + "%");
+            VatRowData vatRow = vatEntry.getValue();
+            variables.put("matrix_net_value", FormatUtils.format(vatRow.getNetValue()));
+            variables.put("matrix_vat", FormatUtils.format(vatRow.getVat()));
+            variables.put("matrix_gross_value", FormatUtils.format(vatRow.getGrossValue()));
+        }
+
+        variables.put("net_value_sum", FormatUtils.format(invoiceData.getVatSum().getNetValue()));
+        variables.put("vat_sum", FormatUtils.format(invoiceData.getVatSum().getVat()));
+        variables.put("gross_value_sum", FormatUtils.format(invoiceData.getVatSum().getGrossValue()));
+
+        variables.put("gross_value_in_words", invoiceData.getGrossValueInWords());
+        variables.put("payment_date", FormatUtils.format(invoiceData.getPaymentDate()));
+        variables.put("comments", invoiceData.getComments());
         variables.put("version", SpringContext.getBean(Version.class).getReleaseNumber());
 
         replacer.replaceVariables(variables);
-    }
-
-    private String formatCustomer(Customer customer) {
-        CustomerFormatter<Customer> customerFormatter = getCustomerFormatter(customer);
-        return customerFormatter.format(customer);
-    }
-
-    private CustomerFormatter getCustomerFormatter(Customer customer) {
-        if(customer instanceof RetailCustomer) {
-            return new RetailCustomerFormatter();
-        } else if(customer instanceof CorporateCustomer) {
-            return new CorporateCustomerFormatter();
-        } else {
-            throw new IllegalStateException("There is no known formatter for this type of customer");
-        }
     }
 }

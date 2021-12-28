@@ -1,5 +1,7 @@
 package com.avispa.microf.model.invoice.service.file;
 
+import com.avispa.microf.model.invoice.Invoice;
+
 import java.io.Closeable;
 import java.nio.file.Path;
 
@@ -8,7 +10,7 @@ import java.nio.file.Path;
  */
 public interface IInvoiceFile extends Closeable {
 
-    void generate();
+    void generate(Invoice invoice);
 
     Path save(String path);
 
