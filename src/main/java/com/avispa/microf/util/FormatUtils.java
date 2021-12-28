@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class FormatUtils {
     public static final MathContext mathContext = new MathContext(2, RoundingMode.HALF_UP);
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String DEFAULT_DECIMAL_FORMAT = "#,##0.00";
     private static final DecimalFormat decimalFormat;
 
@@ -39,4 +39,8 @@ public class FormatUtils {
     }
 
     public static char getDecimalSeparator() { return decimalFormat.getDecimalFormatSymbols().getDecimalSeparator(); }
+
+    public static String getNewLine() {
+        return System.getProperty("line.separator");
+    }
 }

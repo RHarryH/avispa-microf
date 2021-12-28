@@ -2,17 +2,18 @@ package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.document.Document;
 import com.avispa.microf.model.customer.Customer;
-import com.avispa.microf.util.FormatUtils;
+import com.avispa.microf.model.invoice.position.Position;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.NumberFormat;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Digits;
-import java.math.BigDecimal;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author Rafał Hiszpański
@@ -26,41 +27,21 @@ public class Invoice extends Document {
     @Column(name = "serial_number")
     private Integer serialNumber;
 
-    @Column(name = "invoice_date", columnDefinition = "DATE")
-    private LocalDate invoiceDate;
-
-    @Column(name = "service_date", columnDefinition = "DATE")
-    private LocalDate serviceDate;
-
-    @Column(name = "net_value", precision=9, scale=2)
-    @Digits(integer=7, fraction=2)
-    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
-    private BigDecimal netValue;
-
-    private String comments;
-
     @ManyToOne(optional = false)
     private Customer seller;
 
     @ManyToOne(optional = false)
     private Customer buyer;
 
-    // TODO: private List<Position> positions;
-    // TODO: list of vat taxes summarized
+    @Column(name = "invoice_date", columnDefinition = "DATE")
+    private LocalDate invoiceDate;
 
-    public Invoice() {
-        super();
-    }
+    @Column(name = "service_date", columnDefinition = "DATE")
+    private LocalDate serviceDate;
 
-    public String getInvoiceDateAsString() {
-        return FormatUtils.format(invoiceDate);
-    }
+    @OrderColumn
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Position> positions;
 
-    public String getServiceDateAsString() {
-        return FormatUtils.format(serviceDate);
-    }
-
-    public String getNetValueAsString() {
-        return FormatUtils.format(netValue);
-    }
+    private String comments;
 }

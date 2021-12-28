@@ -14,11 +14,13 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @Setter
-public class Customer extends EcmObject {
+public abstract class Customer extends EcmObject {
     private String phoneNumber; // kept as string because there is no use case to process it as number
 
     private String email;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Address address;
+
+    public abstract String format();
 }

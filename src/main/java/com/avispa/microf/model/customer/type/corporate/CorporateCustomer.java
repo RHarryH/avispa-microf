@@ -1,6 +1,7 @@
 package com.avispa.microf.model.customer.type.corporate;
 
 import com.avispa.microf.model.customer.Customer;
+import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,14 @@ import javax.persistence.Entity;
 public class CorporateCustomer extends Customer {
     private String companyName;
     private String vatIdentificationNumber; // in Poland Numer Identyfikacji Podatkowej (NIP)
+
+    @Override
+    public String format() {
+        return companyName +
+                FormatUtils.getNewLine() +
+                FormatUtils.getNewLine() +
+                getAddress().format() +
+                FormatUtils.getNewLine() +
+                "NIP: " + vatIdentificationNumber;
+    }
 }
