@@ -70,8 +70,8 @@ public class InvoiceService {
     }
 
     private void generateContent(Invoice invoice) {
-        try (IInvoiceFile invoiceFile = new ODFInvoiceFile(invoice)) {
-            invoiceFile.generate();
+        try (IInvoiceFile invoiceFile = new ODFInvoiceFile()) {
+            invoiceFile.generate(invoice);
             Path fileStorePath = invoiceFile.save(fileStore.getRootPath());
             Content content = contentService.createNewContent(invoiceFile.getExtension(), invoice, fileStorePath);
 

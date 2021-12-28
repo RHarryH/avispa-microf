@@ -10,7 +10,6 @@
                     <th scope="col">Invoice Name</th>
                     <th scope="col">Invoice Date</th>
                     <th scope="col">Service Date</th>
-                    <th scope="col">Net Value</th>
                     <th scope="col">Comments</th>
                     <th scope="col">Edit</th>
                     <th scope="col">Delete</th>
@@ -19,14 +18,13 @@
                 </thead>
                 <tbody>
                 <tr scope="col" th:if="${invoices.empty}">
-                    <td colspan="9"> No Invoices Available </td>
+                    <td colspan="8"> No Invoices Available </td>
                 </tr>
                 <tr scope="col" th:each="invoice : ${invoices}">
                     <td><span th:text="${invoice.serialNumber}"> Serial Number </span></td>
                     <td><span th:text="${invoice.objectName}"> Invoice Name </span></td>
                     <td><span th:text="${invoice.invoiceDate}"> Invoice Date </span></td>
                     <td><span th:text="${invoice.serviceDate}"> Service Date </span></td>
-                    <td><span th:text="${invoice.netValue} + 'PLN'"> Net Value </span></td>
                     <td><span th:text="${invoice.comments}"> Comments </span></td>
                     <td>
                         <button th:value="${invoice.id}" class="btn bi bi-pencil-fill invoice-update-button" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit invoice"></button>

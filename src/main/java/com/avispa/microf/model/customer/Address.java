@@ -23,4 +23,10 @@ public class Address extends EcmObject {
 
     @Column(nullable = false)
     private String zipCode;
+
+    public String format() {
+        return street +
+                System.getProperty("line.separator") +
+                zipCode + " " + place;
+    }
 }

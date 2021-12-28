@@ -1,14 +1,12 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.microf.util.FormatUtils;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Rafał Hiszpański
@@ -24,16 +22,6 @@ class InvoiceMapperIntegrationTest {
         InvoiceDto invoiceDto = mapper.convertToDto(invoice);
 
         assertEquals(invoice.getComments(), invoiceDto.getComments());
-    }
-
-    @Test
-    void givenBigDecimalToString_whenMaps_thenCorrect() {
-        Invoice invoice = new Invoice();
-        invoice.setNetValue(new BigDecimal("1000.24"));
-
-        InvoiceDto invoiceDto = mapper.convertToDto(invoice);
-
-        assertEquals(FormatUtils.format(invoice.getNetValue()), invoiceDto.getNetValue());
     }
 
     @Test
@@ -56,16 +44,6 @@ class InvoiceMapperIntegrationTest {
         Invoice invoice = mapper.convertToEntity(invoiceDto);
 
         assertEquals(invoiceDto.getComments(), invoice.getComments());
-    }
-
-    @Test
-    void givenStringToBigDecimal_whenMaps_thenCorrect() {
-        InvoiceDto invoiceDto = new InvoiceDto();
-        invoiceDto.setNetValue("1 000,24");
-
-        Invoice invoice = mapper.convertToEntity(invoiceDto);
-
-        assertEquals(invoiceDto.getNetValue(), FormatUtils.format(invoice.getNetValue()));
     }
 
     @Test
