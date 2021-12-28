@@ -42,7 +42,7 @@ public class PositionData {
     private final VatRate vatRate;
 
     public PositionData(Position position, int i) {
-        this.positionOrder = String.valueOf(i);
+        this.positionOrder = String.valueOf(i + 1);
         this.positionName = position.getPositionName();
 
         this.amount = position.getAmount();
