@@ -46,7 +46,7 @@ public class PositionData {
         this.positionName = position.getPositionName();
 
         this.amount = position.getAmount();
-        this.unit = position.getUnit().getText();
+        this.unit = position.getUnit().getDisplayValue();
 
         this.unitPrice = position.getUnitPrice();
         this.discount = position.getDiscount();
