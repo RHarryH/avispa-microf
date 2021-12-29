@@ -1,5 +1,6 @@
 package com.avispa.microf.constants;
 
+import com.avispa.ecm.util.Displayable;
 import lombok.Getter;
 
 /**
@@ -16,13 +17,13 @@ import lombok.Getter;
  * @author Rafał Hiszpański
  */
 @Getter
-public enum Unit {
+public enum Unit implements Displayable {
     PIECE("szt"),
     HOUR("godz");
 
-    private String text;
+    private String displayValue;
 
-    Unit(String text) {
-        this.text = text;
+    Unit(String displayValue) {
+        this.displayValue = displayValue;
     }
 }

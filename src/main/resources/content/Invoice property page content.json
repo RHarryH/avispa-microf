@@ -19,10 +19,66 @@
         "property": "serviceDate"
       },
       {
-        "type": "money",
-        "currency": "PLN",
-        "label": "Net value",
-        "property": "netValue"
+        "type": "columns",
+        "controls": [
+          {
+            "type": "combo",
+            "label": "Seller",
+            "property": "seller"
+          },
+          {
+            "type": "combo",
+            "label": "Buyer",
+            "property": "buyer"
+          }
+        ]
+      },
+      {
+        "type": "tabs",
+        "label": "Positions",
+        "tabs": [
+          {
+            "name": "Position",
+            "controls": [
+              {
+                "type": "text",
+                "label": "Name",
+                "property": "positions[0].objectName"
+              },
+              {
+                "type": "columns",
+                "controls": [
+                  {
+                    "type": "text",
+                    "label": "Amount",
+                    "property": "positions[0].amount"
+                  },
+                  {
+                    "type": "combo",
+                    "label": "Unit",
+                    "property": "positions[0].unit"
+                  }
+                ]
+              },
+              {
+                "type": "money",
+                "currency": "PLN",
+                "label": "Unit price",
+                "property": "positions[0].unitPrice"
+              },
+              {
+                "type": "text",
+                "label": "Discount",
+                "property": "positions[0].discount"
+              },
+              {
+                "type": "radio",
+                "label": "VAT Rate",
+                "property": "positions[0].vatRate"
+              }
+            ]
+          }
+        ]
       },
       {
         "type": "textarea",

@@ -39,11 +39,12 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
             variables.put("discount", FormatUtils.format(position.getDiscount()));
             variables.put("price", FormatUtils.format(position.getPrice()));
             variables.put("net_value", FormatUtils.format(position.getNetValue()));
-            variables.put("vat_rate", position.getVatRate().getText());
+            String vatRate = position.getVatRate().getDisplayValue();
+            variables.put("vat_rate", vatRate.substring(0, vatRate.length() - 1)); // remove percent sign
         }
 
         for(Map.Entry<VatRate, VatRowData> vatEntry : invoiceData.getVatMatrix().entrySet()) {
-            variables.put("matrix_vat_rate", vatEntry.getKey().getText() + "%");
+            variables.put("matrix_vat_rate", vatEntry.getKey().getDisplayValue());
             VatRowData vatRow = vatEntry.getValue();
             variables.put("matrix_net_value", FormatUtils.format(vatRow.getNetValue()));
             variables.put("matrix_vat", FormatUtils.format(vatRow.getVat()));
