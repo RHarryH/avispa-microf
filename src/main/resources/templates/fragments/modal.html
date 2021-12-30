@@ -23,7 +23,10 @@
         <!-- Upsert Modal -->
         <div th:fragment="upsertModal(modal)" class="modal fade" th:id="${modal.id}" tabindex="-1" role="dialog" aria-labelledby="modalTitle"
              aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered" th:with="size=${propertyPage?.size}"
+                 th:classappend="|${(size != null and size == 'small') ? 'modal-sm' : ''}
+                        ${(size != null and size == 'large') ? 'modal-lg' : ''}
+                        ${(size != null and size == 'extra-large') ? 'modal-xl' : ''}|">
                 <div class="modal-content">
                     <form class="modal-form" th:action="${modal.action}">
                         <div class="modal-header">
