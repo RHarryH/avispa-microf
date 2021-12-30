@@ -1,5 +1,6 @@
 {
   "propertyPage": {
+    "size": "large",
     "controls": [
       {
         "type": "columns",
