@@ -15,6 +15,6 @@ public class MonthCounterStrategy implements CounterStrategy {
 
     @Override
     public int getNextSerialNumber(Invoice invoice) {
-        return invoiceRepository.findMaxSerialNumberByMonth(invoice.getInvoiceDate().getMonthValue()) + 1;
+        return invoiceRepository.findMaxSerialNumberByMonth(invoice.getIssueDate().getMonthValue()) + 1;
     }
 }

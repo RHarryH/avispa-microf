@@ -33,8 +33,8 @@ public class Invoice extends Document {
     @ManyToOne(optional = false)
     private Customer buyer;
 
-    @Column(name = "invoice_date", columnDefinition = "DATE")
-    private LocalDate invoiceDate;
+    @Column(name = "issue_date", columnDefinition = "DATE")
+    private LocalDate issueDate;
 
     @Column(name = "service_date", columnDefinition = "DATE")
     private LocalDate serviceDate;

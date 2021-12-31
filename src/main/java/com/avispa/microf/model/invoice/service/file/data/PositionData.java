@@ -16,27 +16,27 @@ public class PositionData {
     private final String positionOrder;
     private final String positionName;
 
-    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
+    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private final BigDecimal amount;
 
     private final String unit;
 
-    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
+    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private final BigDecimal unitPrice;
 
-    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
+    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private final BigDecimal discount;
 
-    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
+    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private BigDecimal price;
 
-    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
+    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private BigDecimal netValue;
 
-    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
+    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private BigDecimal vat;
 
-    @NumberFormat(pattern = FormatUtils.DEFAULT_DECIMAL_FORMAT)
+    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private BigDecimal grossValue;
 
     private final VatRate vatRate;

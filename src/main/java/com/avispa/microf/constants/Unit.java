@@ -18,8 +18,8 @@ import lombok.Getter;
  */
 @Getter
 public enum Unit implements Displayable {
-    PIECE("szt"),
-    HOUR("godz");
+    PIECE("szt."),
+    HOUR("godz.");
 
     private String displayValue;
 

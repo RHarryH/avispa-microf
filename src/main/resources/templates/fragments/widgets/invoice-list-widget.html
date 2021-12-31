@@ -23,7 +23,7 @@
                 <tr scope="col" th:each="invoice : ${invoices}">
                     <td><span th:text="${invoice.serialNumber}"> Serial Number </span></td>
                     <td><span th:text="${invoice.objectName}"> Invoice Name </span></td>
-                    <td><span th:text="${invoice.invoiceDate}"> Invoice Date </span></td>
+                    <td><span th:text="${invoice.issueDate}"> Issue Date </span></td>
                     <td><span th:text="${invoice.serviceDate}"> Service Date </span></td>
                     <td><span th:text="${invoice.comments}"> Comments </span></td>
                     <td>
