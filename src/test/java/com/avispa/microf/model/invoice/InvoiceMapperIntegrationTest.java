@@ -27,12 +27,12 @@ class InvoiceMapperIntegrationTest {
     @Test
     void givenLocalDateToStringDate_whenMaps_thenCorrect() {
         Invoice invoice = new Invoice();
-        invoice.setInvoiceDate(LocalDate.of(2011, 11, 10));
+        invoice.setIssueDate(LocalDate.of(2011, 11, 10));
         invoice.setServiceDate(LocalDate.of(2011, 11, 10));
 
         InvoiceDto invoiceDto = mapper.convertToDto(invoice);
 
-        assertEquals(invoice.getInvoiceDate().format(DateTimeFormatter.ISO_LOCAL_DATE), invoiceDto.getInvoiceDate());
+        assertEquals(invoice.getIssueDate().format(DateTimeFormatter.ISO_LOCAL_DATE), invoiceDto.getIssueDate());
         assertEquals(invoice.getServiceDate().format(DateTimeFormatter.ISO_LOCAL_DATE), invoiceDto.getServiceDate());
     }
 
@@ -49,12 +49,12 @@ class InvoiceMapperIntegrationTest {
     @Test
     void givenStringDateToLocalDate_whenMaps_thenCorrect() {
         InvoiceDto invoiceDto = new InvoiceDto();
-        invoiceDto.setInvoiceDate("2011-11-10");
+        invoiceDto.setIssueDate("2011-11-10");
         invoiceDto.setServiceDate("2011-11-10");
 
         Invoice invoice = mapper.convertToEntity(invoiceDto);
 
-        assertEquals(invoiceDto.getInvoiceDate(), invoice.getInvoiceDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        assertEquals(invoiceDto.getIssueDate(), invoice.getIssueDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
         assertEquals(invoiceDto.getServiceDate(), invoice.getServiceDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
     }
 }

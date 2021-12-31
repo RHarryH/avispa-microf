@@ -19,7 +19,7 @@ public class InvoiceData {
     private final String seller;
     private final String buyer;
 
-    private final LocalDate invoiceDate;
+    private final LocalDate issueDate;
     private final LocalDate serviceDate;
 
     private final PositionData[] positions;
@@ -37,7 +37,7 @@ public class InvoiceData {
         this.seller = invoice.getSeller().format();
         this.buyer = invoice.getBuyer().format();
 
-        this.invoiceDate = invoice.getInvoiceDate();
+        this.issueDate = invoice.getIssueDate();
         this.serviceDate = invoice.getServiceDate();
 
         positions = new PositionData[invoice.getPositions().size()];
@@ -93,6 +93,6 @@ public class InvoiceData {
     }
 
     public void setPaymentDate() {
-        this.paymentDate = this.invoiceDate.plusDays(14);
+        this.paymentDate = this.issueDate.plusDays(14);
     }
 }

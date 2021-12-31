@@ -12,6 +12,6 @@ public interface InvoiceRepository extends EcmEntityRepository<Invoice> {
     @Query("select coalesce(max(i.serialNumber), 0) from Invoice i")
     int findMaxSerialNumber();
 
-    @Query("select coalesce(max(i.serialNumber), 0) from Invoice i where month(i.invoiceDate) = ?1")
+    @Query("select coalesce(max(i.serialNumber), 0) from Invoice i where month(i.issueDate) = ?1")
     int findMaxSerialNumberByMonth(int month);
 }

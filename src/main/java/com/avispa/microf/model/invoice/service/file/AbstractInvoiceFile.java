@@ -27,16 +27,16 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
         variables.put("invoice_number", invoiceData.getInvoiceName());
         variables.put("seller", invoiceData.getSeller());
         variables.put("buyer", invoiceData.getBuyer());
-        variables.put("invoice_date", FormatUtils.format(invoiceData.getInvoiceDate()));
+        variables.put("issue_date", FormatUtils.format(invoiceData.getIssueDate()));
         variables.put("service_date", FormatUtils.format(invoiceData.getServiceDate()));
 
         for(PositionData position : invoiceData.getPositions()) {
             variables.put("position_order", position.getPositionOrder());
             variables.put("position_name", position.getPositionName());
-            variables.put("amount", FormatUtils.format(position.getAmount()));
+            variables.put("amount", FormatUtils.format(FormatUtils.AMOUNT_DECIMAL_FORMAT, position.getAmount()));
             variables.put("unit", position.getUnit());
             variables.put("unit_price", FormatUtils.format(position.getUnitPrice()));
-            variables.put("discount", FormatUtils.format(position.getDiscount()));
+            variables.put("discount", FormatUtils.format(FormatUtils.PERCENT_DECIMAL_FORMAT, position.getDiscount()));
             variables.put("price", FormatUtils.format(position.getPrice()));
             variables.put("net_value", FormatUtils.format(position.getNetValue()));
             String vatRate = position.getVatRate().getDisplayValue();
