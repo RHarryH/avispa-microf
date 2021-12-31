@@ -48,7 +48,7 @@ class InvoiceDataTest {
         invoice.setObjectName("123");
         invoice.setBuyer(customer);
         invoice.setSeller(customer);
-        invoice.setInvoiceDate(LocalDate.now());
+        invoice.setIssueDate(LocalDate.now());
         invoice.setServiceDate(LocalDate.now());
         invoice.setComments("Comment");
         invoice.setPositions(List.of(position));

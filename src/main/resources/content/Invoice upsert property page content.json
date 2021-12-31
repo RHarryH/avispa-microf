@@ -23,8 +23,8 @@
       },
       {
         "type": "date",
-        "label": "Invoice date",
-        "property": "invoiceDate",
+        "label": "Issue date",
+        "property": "issueDate",
         "required": true
       },
       {
@@ -63,8 +63,8 @@
                     "label": "Unit",
                     "property": "positions[0].unit",
                     "values": {
-                      "PIECE": "szt",
-                      "HOUR": "godz"
+                      "PIECE": "szt.",
+                      "HOUR": "godz."
                     },
                     "required": true
                   }

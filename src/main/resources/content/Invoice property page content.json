@@ -10,8 +10,8 @@
       },
       {
         "type": "date",
-        "label": "Invoice date",
-        "property": "invoiceDate"
+        "label": "Issue date",
+        "property": "issueDate"
       },
       {
         "type": "date",

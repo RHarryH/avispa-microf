@@ -16,7 +16,7 @@ public class InvoiceDto implements Dto {
     private UUID id;
     private UUID seller;
     private UUID buyer;
-    private String invoiceDate;
+    private String issueDate;
     private String serviceDate;
     private PositionDto[] positions;
     private String comments;
