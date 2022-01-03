@@ -112,6 +112,12 @@ class NumeralToStringConverterTest {
     }
 
     @Test
+    void thousandUnitTest2() {
+        assertEquals("cztery tysiące dwieście złotych", convert("4200"));
+        assertEquals("cztery tysiące dwieście", convert(4200));
+    }
+
+    @Test
     void teenThousandTest() {
         assertEquals("szesnaście tysięcy złotych", convert("16000"));
         assertEquals("szesnaście tysięcy", convert(16000));
