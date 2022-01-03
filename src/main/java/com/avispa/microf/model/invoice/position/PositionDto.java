@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class PositionDto implements Dto {
     private String objectName;
-    private String amount = "1";
+    private String quantity = "1";
     private String unit;
     private String unitPrice;
     private String discount = "0.00";

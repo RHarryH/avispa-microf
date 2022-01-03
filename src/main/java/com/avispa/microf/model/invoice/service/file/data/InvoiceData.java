@@ -8,7 +8,10 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Rafał Hiszpański
@@ -22,9 +25,8 @@ public class InvoiceData {
     private final LocalDate issueDate;
     private final LocalDate serviceDate;
 
-    private final PositionData[] positions;
-    private Map<VatRate, VatRowData> vatMatrix;
-    private VatRowData vatSum;
+    private final List<PositionData> positions;
+    private final List<VatRowData> vatMatrix;
 
     private String grossValueInWords;
     private LocalDate paymentDate;
@@ -40,30 +42,36 @@ public class InvoiceData {
         this.issueDate = invoice.getIssueDate();
         this.serviceDate = invoice.getServiceDate();
 
-        positions = new PositionData[invoice.getPositions().size()];
-        for(int i = 0; i < positions.length; i++) {
-            positions[i] = new PositionData(invoice.getPositions().get(i), i);
-        }
+        this.positions = invoice.getPositions().stream().map(PositionData::new).collect(Collectors.toList());
 
-        setVatMatrix();
-        setVatSum();
-        setGrossValueInWords(this.vatSum.getGrossValue());
+        this.vatMatrix = generateVatMatrix();
+        setGrossValueInWords(getVatSum().getGrossValue());
 
         this.comments = invoice.getComments();
 
         setPaymentDate();
     }
 
-    private void setVatMatrix() {
-        this.vatMatrix = new EnumMap<>(VatRate.class);
+    private List<VatRowData> generateVatMatrix() {
+        Map<VatRate, VatRowData> vatMatrixMap = new EnumMap<>(VatRate.class);
         for(PositionData position : this.positions) {
             VatRate vatRate = position.getVatRate();
-            VatRowData vatRowData = getVatRow(this.vatMatrix, vatRate);
+            VatRowData vatRowData = getVatRow(vatMatrixMap, vatRate);
 
+            vatRowData.setVatRate(vatRate);
             vatRowData.setNetValue(vatRowData.getNetValue().add(position.getNetValue()));
             vatRowData.setVat(vatRowData.getVat().add(position.getVat()));
             vatRowData.setGrossValue(vatRowData.getGrossValue().add(position.getGrossValue()));
         }
+
+        VatRowData vatSum = getVatSum(vatMatrixMap);
+
+        return Stream.concat(
+                vatMatrixMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue),
+                        Stream.of(vatSum))
+                .collect(Collectors.toList());
     }
 
     private VatRowData getVatRow(Map<VatRate, VatRowData> vatMatrix, VatRate vatRate) {
@@ -78,14 +86,21 @@ public class InvoiceData {
         return vatRowData;
     }
 
-    private void setVatSum() {
-        this.vatSum = new VatRowData();
+    private VatRowData getVatSum(Map<VatRate, VatRowData> vatMatrixMap) {
+        VatRowData vatSum = new VatRowData();
 
-        for(VatRowData vatRowData : this.vatMatrix.values()) {
-            this.vatSum.setNetValue(this.vatSum.getNetValue().add(vatRowData.getNetValue()));
-            this.vatSum.setVat(this.vatSum.getVat().add(vatRowData.getVat()));
-            this.vatSum.setGrossValue(this.vatSum.getGrossValue().add(vatRowData.getGrossValue()));
+        for(VatRowData vatRowData : vatMatrixMap.values()) {
+            vatSum.accumulate(
+                    vatRowData.getNetValue(),
+                    vatRowData.getVat(),
+                    vatRowData.getGrossValue());
         }
+
+        return vatSum;
+    }
+
+    public VatRowData getVatSum() {
+        return vatMatrix.get(vatMatrix.size() - 1);
     }
 
     private void setGrossValueInWords(BigDecimal grossValueSum) {

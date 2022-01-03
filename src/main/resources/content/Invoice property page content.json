@@ -50,8 +50,8 @@
                 "controls": [
                   {
                     "type": "text",
-                    "label": "Amount",
-                    "property": "positions[0].amount"
+                    "label": "Quantity",
+                    "property": "positions[0].quantity"
                   },
                   {
                     "type": "combo",

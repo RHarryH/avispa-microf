@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Rafał Hiszpański
@@ -23,35 +23,35 @@ class FormatUtilsTest {
     }
 
     @Test
-    void decimalToStringAmount() {
+    void decimalToStringQuantity() {
         // non-breaking space used
-        assertEquals("12,123", FormatUtils.format(FormatUtils.AMOUNT_DECIMAL_FORMAT, new BigDecimal("12.123")));
+        assertEquals("12,123", FormatUtils.format(FormatUtils.QUANTITY_DECIMAL_FORMAT, new BigDecimal("12.123")));
     }
 
     @Test
-    void stringToDecimalAmount() {
-        assertEquals(new BigDecimal("12.123"), FormatUtils.parse(FormatUtils.AMOUNT_DECIMAL_FORMAT, "12,123"));
+    void stringToDecimalQuantity() {
+        assertEquals(new BigDecimal("12.123"), FormatUtils.parse(FormatUtils.QUANTITY_DECIMAL_FORMAT, "12,123"));
     }
 
     @Test
-    void decimalToStringWholeAmount() {
+    void decimalToStringWholeQuantity() {
         // non-breaking space used
-        assertEquals("12", FormatUtils.format(FormatUtils.AMOUNT_DECIMAL_FORMAT, new BigDecimal("12.00")));
+        assertEquals("12", FormatUtils.format(FormatUtils.QUANTITY_DECIMAL_FORMAT, new BigDecimal("12.00")));
     }
 
     @Test
-    void stringToDecimalWholeAmount() {
-        assertEquals(new BigDecimal("12.00"), FormatUtils.parse(FormatUtils.AMOUNT_DECIMAL_FORMAT, "12,00"));
+    void stringToDecimalWholeQuantity() {
+        assertEquals(new BigDecimal("12.00"), FormatUtils.parse(FormatUtils.QUANTITY_DECIMAL_FORMAT, "12,00"));
     }
 
     @Test
     void decimalToStringDiscount() {
         // non-breaking space used
-        assertEquals("2,12", FormatUtils.format(FormatUtils.AMOUNT_DECIMAL_FORMAT, new BigDecimal("2.12")));
+        assertEquals("2,12", FormatUtils.format(FormatUtils.QUANTITY_DECIMAL_FORMAT, new BigDecimal("2.12")));
     }
 
     @Test
     void stringToDecimalDiscount() {
-        assertEquals(new BigDecimal("2.12"), FormatUtils.parse(FormatUtils.AMOUNT_DECIMAL_FORMAT, "2,12"));
+        assertEquals(new BigDecimal("2.12"), FormatUtils.parse(FormatUtils.QUANTITY_DECIMAL_FORMAT, "2,12"));
     }
 }

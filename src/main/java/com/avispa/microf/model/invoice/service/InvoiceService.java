@@ -16,7 +16,7 @@ import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.exception.InvoiceNotFoundException;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
-import com.avispa.microf.model.invoice.service.file.ODFInvoiceFile;
+import com.avispa.microf.model.invoice.service.file.OdfInvoiceFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -70,7 +70,7 @@ public class InvoiceService {
     }
 
     private void generateContent(Invoice invoice) {
-        try (IInvoiceFile invoiceFile = new ODFInvoiceFile()) {
+        try (IInvoiceFile invoiceFile = new OdfInvoiceFile()) {
             invoiceFile.generate(invoice);
             Path fileStorePath = invoiceFile.save(fileStore.getRootPath());
             Content content = contentService.createNewContent(invoiceFile.getExtension(), invoice, fileStorePath);

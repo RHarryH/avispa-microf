@@ -38,7 +38,7 @@ class InvoiceDataTest {
 
         Position position = new Position();
         position.setPositionName("Position");
-        position.setAmount(BigDecimal.ONE);
+        position.setQuantity(BigDecimal.ONE);
         position.setUnit(Unit.HOUR);
         position.setVatRate(VatRate.VAT_05);
         position.setUnitPrice(BigDecimal.TEN);

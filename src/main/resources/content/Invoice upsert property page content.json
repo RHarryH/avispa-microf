@@ -51,8 +51,8 @@
                 "controls": [
                   {
                     "type": "number",
-                    "label": "Amount",
-                    "property": "positions[0].amount",
+                    "label": "Quantity",
+                    "property": "positions[0].quantity",
                     "min": 0,
                     "max": 10000,
                     "step": 0.001,
