@@ -1,6 +1,6 @@
 package com.avispa.microf.model.invoice.service.file;
 
-import com.avispa.microf.model.invoice.service.replacer.OdtReplacer;
+import com.avispa.microf.model.invoice.service.replacer.InvoiceOdtReplacer;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +13,15 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
-public class ODFInvoiceFile extends AbstractInvoiceFile {
-    private static final Logger log = LoggerFactory.getLogger(ODFInvoiceFile.class);
+public class OdfInvoiceFile extends AbstractInvoiceFile {
+    private static final Logger log = LoggerFactory.getLogger(OdfInvoiceFile.class);
 
     private OdfTextDocument invoice;
 
-    public ODFInvoiceFile() {
+    public OdfInvoiceFile() {
         try {
             this.invoice = OdfTextDocument.loadDocument(ClassLoader.getSystemClassLoader().getResourceAsStream("vat_invoice_variables_template.odt"));
-            this.replacer = new OdtReplacer(this.invoice);
+            this.replacer = new InvoiceOdtReplacer(this.invoice);
         } catch (Exception e) {
             log.error("Unable to load document", e);
         }

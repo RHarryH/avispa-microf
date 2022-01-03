@@ -24,8 +24,8 @@ import java.math.BigDecimal;
 public class Position extends EcmObject {
     @Column(precision=8, scale=3)
     @Digits(integer=5, fraction=3)
-    @NumberFormat(pattern = FormatUtils.AMOUNT_DECIMAL_FORMAT)
-    private BigDecimal amount;
+    @NumberFormat(pattern = FormatUtils.QUANTITY_DECIMAL_FORMAT)
+    private BigDecimal quantity;
 
     private Unit unit;
 

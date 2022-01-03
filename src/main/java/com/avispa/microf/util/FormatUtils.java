@@ -20,7 +20,7 @@ public class FormatUtils {
     public static final MathContext mathContext = new MathContext(2, RoundingMode.HALF_UP);
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
-    public static final String AMOUNT_DECIMAL_FORMAT = "#0.###";
+    public static final String QUANTITY_DECIMAL_FORMAT = "#0.###";
     public static final String PERCENT_DECIMAL_FORMAT = "#0.00";
 
     private FormatUtils() {

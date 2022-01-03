@@ -13,18 +13,17 @@ import java.math.BigDecimal;
  */
 @Getter
 public class PositionData {
-    private final String positionOrder;
     private final String positionName;
 
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
-    private final BigDecimal amount;
+    @NumberFormat(pattern = FormatUtils.QUANTITY_DECIMAL_FORMAT)
+    private final BigDecimal quantity;
 
     private final String unit;
 
     @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private final BigDecimal unitPrice;
 
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @NumberFormat(pattern = FormatUtils.PERCENT_DECIMAL_FORMAT)
     private final BigDecimal discount;
 
     @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
@@ -41,11 +40,10 @@ public class PositionData {
 
     private final VatRate vatRate;
 
-    public PositionData(Position position, int i) {
-        this.positionOrder = String.valueOf(i + 1);
+    public PositionData(Position position) {
         this.positionName = position.getPositionName();
 
-        this.amount = position.getAmount();
+        this.quantity = position.getQuantity();
         this.unit = position.getUnit().getDisplayValue();
 
         this.unitPrice = position.getUnitPrice();
@@ -72,7 +70,7 @@ public class PositionData {
     }
 
     private void setNetValue() {
-        this.netValue = this.price.multiply(this.amount);
+        this.netValue = this.price.multiply(this.quantity);
     }
 
     private void setVat() {
