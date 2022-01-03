@@ -23,20 +23,14 @@ import java.math.BigDecimal;
 @Setter
 public class Position extends EcmObject {
     @Column(precision=8, scale=3)
-    @Digits(integer=5, fraction=3)
-    @NumberFormat(pattern = FormatUtils.QUANTITY_DECIMAL_FORMAT)
     private BigDecimal quantity;
 
     private Unit unit;
 
     @Column(precision=9, scale=2)
-    @Digits(integer=7, fraction=2)
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private BigDecimal unitPrice;
 
     @Column(precision=9, scale=2)
-    @Digits(integer=7, fraction=2)
-    @NumberFormat(pattern = FormatUtils.PERCENT_DECIMAL_FORMAT)
     private BigDecimal discount;
 
     private VatRate vatRate;

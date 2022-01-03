@@ -50,7 +50,7 @@
                     <div class="col" th:with="property=${control.property}">
                         <div class="input-group">
                             <input type="text" class="form-control"
-                                   data-inputmask="'alias': 'numeric', 'groupSeparator': ' ', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
+                                   data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
                                    th:readonly="${propertyPage.readonly}" th:required="${control.required}"
                                    th:field="*{__${property}__}" autocomplete="off"/>
                             <span class="input-group-text" th:text="${control.currency}"></span>
