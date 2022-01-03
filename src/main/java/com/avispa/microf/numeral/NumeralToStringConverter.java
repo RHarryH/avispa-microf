@@ -185,7 +185,7 @@ public final class NumeralToStringConverter {
 
     private static void appendPower(StringBuilder sb, int tripletNumber, int tripletLength, int digit, boolean teens) {
         if (tripletNumber != 0) {
-            if (digit > 3 || digit == 0 || teens) {
+            if (digit > 4 || digit == 0 || teens) {
                 sb.append(POWERS[tripletNumber][GENITIVE_PLURAL]);
             } else if (digit == 1) {
                 if(tripletLength == 1) {
@@ -250,7 +250,7 @@ public final class NumeralToStringConverter {
     }
 
     private static void addPower(int number, int lastDigit, int power, List<String> result) {
-        if (lastDigit == 0 || lastDigit > 3 || number % 10 == 1) {
+        if (lastDigit == 0 || lastDigit > 4 || number % 10 == 1) {
             result.add(POWERS[power][GENITIVE_PLURAL]);
         } else if (lastDigit == 1) {
             if(number == 0) { // there is no next digit
