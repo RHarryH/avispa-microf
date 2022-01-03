@@ -57,14 +57,6 @@ public class FormatUtils {
         return decimalFormat;
     }
 
-    public static String transformDecimal(String input) {
-        return input
-                .replace(".", ",")
-                //.replace(",", ".") // set default locale decimal separator
-                .replace(" ", "") // remove grouping separator (space from DTO)
-                .replace("\u00A0", ""); // remove grouping separator (important - non-breaking space used)
-    }
-
     public static String getNewLine() {
         return System.getProperty("line.separator");
     }
