@@ -24,59 +24,54 @@
           {
             "type": "combo",
             "label": "Seller",
-            "property": "seller"
+            "property": "seller",
+            "objectType": "Customer"
           },
           {
             "type": "combo",
             "label": "Buyer",
-            "property": "buyer"
+            "property": "buyer",
+            "objectType": "Customer"
           }
         ]
       },
       {
-        "type": "tabs",
+        "type": "table",
         "label": "Positions",
-        "tabs": [
+        "property": "positions",
+        "controls": [
           {
-            "name": "Position",
-            "controls": [
-              {
-                "type": "text",
-                "label": "Name",
-                "property": "positions[0].objectName"
-              },
-              {
-                "type": "columns",
-                "controls": [
-                  {
-                    "type": "text",
-                    "label": "Quantity",
-                    "property": "positions[0].quantity"
-                  },
-                  {
-                    "type": "combo",
-                    "label": "Unit",
-                    "property": "positions[0].unit"
-                  }
-                ]
-              },
-              {
-                "type": "money",
-                "currency": "PLN",
-                "label": "Unit price",
-                "property": "positions[0].unitPrice"
-              },
-              {
-                "type": "text",
-                "label": "Discount",
-                "property": "positions[0].discount"
-              },
-              {
-                "type": "radio",
-                "label": "VAT Rate",
-                "property": "positions[0].vatRate"
-              }
-            ]
+            "type": "text",
+            "label": "Name",
+            "property": "objectName"
+          },
+          {
+            "type": "text",
+            "label": "Quantity",
+            "property": "quantity"
+          },
+          {
+            "type": "combo",
+            "label": "Unit",
+            "property": "unit",
+            "dictionary": "Unit"
+          },
+          {
+            "type": "money",
+            "currency": "PLN",
+            "label": "Unit price",
+            "property": "unitPrice"
+          },
+          {
+            "type": "text",
+            "label": "Discount",
+            "property": "discount"
+          },
+          {
+            "type": "combo",
+            "label": "VAT Rate",
+            "property": "vatRate",
+            "dictionary": "VatRate"
           }
         ]
       },

@@ -79,6 +79,30 @@ function createModal(
 ) {
     const modals = $("#modals");
 
+    function formSubmit(bootstrapModal) {
+        const form = $(modalId + " .modal-form");
+        if (form.length) {
+            form.submit(function (event) {
+                event.preventDefault();
+
+                const url = form.attr('action');
+
+                $.ajax({
+                    "method": "post",
+                    "url": url,
+                    "data": form.serialize()
+                }).done(function () {
+                    reloadWidgets(form, widgetsToReload);
+                    successNotification(successMessage);
+                }).fail(function () {
+                    errorNotification(failMessage);
+                }).always(function () {
+                    bootstrapModal.hide();
+                });
+            });
+        }
+    }
+
     $.ajax({
         "method": "get",
         "url": modalGetUrl
@@ -90,34 +114,18 @@ function createModal(
             let bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
             bootstrapModal.show();
 
-            $(modalId + " :input").inputmask(); // https://api.jquery.com/input-selector/
-
             // remove modal when hidden
             modal.on("hidden.bs.modal", function () {
                 modal.remove();
             });
 
-            const form = $(modalId + " .modal-form");
-            if (form.length) {
-                form.submit(function (event) {
-                    event.preventDefault();
+            handleAddingTableRow(modalId);
+            handleTableDeletion(modalId); // this actually initializes it for the first time
 
-                    const url = form.attr('action');
+            $(modalId + " :input").inputmask();
 
-                    $.ajax({
-                        "method": "post",
-                        "url": url,
-                        "data": form.serialize()
-                    }).done(function () {
-                        reloadWidgets(form, widgetsToReload);
-                        successNotification(successMessage);
-                    }).fail(function () {
-                        errorNotification(failMessage);
-                    }).always(function () {
-                        bootstrapModal.hide();
-                    });
-                });
-            }
+            // submit form
+            formSubmit(bootstrapModal);
         }
     }).fail(function () {
         errorNotification("Can't load modal. Please try again.");

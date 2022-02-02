@@ -4,7 +4,6 @@ import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerDto;
 import com.avispa.microf.model.customer.mapper.CustomerMapper;
 import com.avispa.microf.model.customer.service.CustomerService;
-import com.avispa.microf.model.customer.type.corporate.CorporateCustomer;
 import com.avispa.microf.model.customer.type.corporate.CorporateCustomerDto;
 import com.avispa.microf.model.ui.modal.ModalConfiguration;
 import com.avispa.microf.model.ui.modal.ModalService;
@@ -43,7 +42,7 @@ public class CorporateCustomerController {
                 .insert(true)
                 .build();
 
-        return modalService.constructModal(model, CorporateCustomer.class, CorporateCustomerDto.class, modal);
+        return modalService.constructModal(model, CorporateCustomerDto.class, modal);
     }
 
     @PostMapping(value = "/add")
@@ -56,7 +55,7 @@ public class CorporateCustomerController {
     @GetMapping("/update/{id}")
     public String getCustomerUpdateModal(@PathVariable UUID id, Model model) {
         Customer customer = customerService.findById(id);
-        CustomerDto customerDto = customerMapper.convertToDto(customer);
+        CustomerDto<?> customerDto = customerMapper.convertToDto(customer);
 
         ModalConfiguration modal = ModalConfiguration.builder()
                 .id("corporate-customer-update-modal")
@@ -65,7 +64,7 @@ public class CorporateCustomerController {
                 .insert(false)
                 .build();
 
-        return modalService.constructModal(model, CorporateCustomer.class, customerDto, modal);
+        return modalService.constructModal(model, customerDto, modal);
     }
 
     @PostMapping(value = "/update/{id}")

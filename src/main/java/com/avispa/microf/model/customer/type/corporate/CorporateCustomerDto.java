@@ -9,7 +9,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CorporateCustomerDto extends CustomerDto {
+public class CorporateCustomerDto extends CustomerDto<CorporateCustomer> {
     private String companyName;
     private String vatIdentificationNumber;
+
+    @Override
+    public Class<CorporateCustomer> getEntityClass() {
+        return CorporateCustomer.class;
+    }
 }

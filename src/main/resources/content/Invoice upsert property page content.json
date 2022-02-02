@@ -34,70 +34,47 @@
         "required": true
       },
       {
-        "type": "tabs",
+        "type": "table",
         "label": "Positions",
-        "tabs": [
+        "property": "positions",
+        "controls": [
           {
-            "name": "Position",
-            "controls": [
-              {
-                "type": "text",
-                "label": "Name",
-                "property": "positions[0].objectName",
-                "required": true
-              },
-              {
-                "type": "columns",
-                "controls": [
-                  {
-                    "type": "number",
-                    "label": "Quantity",
-                    "property": "positions[0].quantity",
-                    "min": 0,
-                    "max": 10000,
-                    "step": 0.001,
-                    "required": true
-                  },
-                  {
-                    "type": "combo",
-                    "label": "Unit",
-                    "property": "positions[0].unit",
-                    "values": {
-                      "PIECE": "szt.",
-                      "HOUR": "godz."
-                    },
-                    "required": true
-                  }
-                ]
-              },
-              {
-                "type": "money",
-                "currency": "PLN",
-                "label": "Unit price",
-                "property": "positions[0].unitPrice",
-                "required": true
-              },
-              {
-                "type": "number",
-                "label": "Discount",
-                "property": "positions[0].discount",
-                "min": 0,
-                "step": 0.01,
-                "required": true
-              },
-              {
-                "type": "combo",
-                "label": "VAT Rate",
-                "property": "positions[0].vatRate",
-                "values": {
-                  "VAT_23": "23%",
-                  "VAT_08": "8%",
-                  "VAT_05": "5%",
-                  "VAT_00": "0%"
-                },
-                "required": true
-              }
-            ]
+            "type": "text",
+            "label": "Name",
+            "property": "objectName"
+          },
+          {
+            "type": "number",
+            "label": "Quantity",
+            "property": "quantity",
+            "min": 0,
+            "max": 10000,
+            "step": 0.001
+          },
+          {
+            "type": "combo",
+            "label": "Unit",
+            "property": "unit",
+            "dictionary": "Unit"
+          },
+          {
+            "type": "money",
+            "currency": "PLN",
+            "label": "Unit price",
+            "property": "unitPrice"
+          },
+          {
+            "type": "number",
+            "label": "Discount",
+            "property": "discount",
+            "min": 0,
+            "step": 0.01
+          },
+          {
+            "type": "combo",
+            "label": "VAT Rate",
+            "property": "vatRate",
+            "dictionary": "VatRate"
           }
         ]
       },

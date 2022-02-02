@@ -2,29 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
     <body>
         <th:block th:fragment="property-page" th:object="${object}">
-            <th:block th:insert="fragments/property-page :: property-page-controls(${propertyPage?.controls})"/>
+            <th:block th:insert="this :: property-page-controls(${propertyPage?.controls}, '')"/>
             <th:block th:if="${propertyPage == null}">
                 <span th:if="${nothingSelected}">Nothing is selected</span>
                 <span th:unless="${nothingSelected}">Property Page for selected object is not defined</span>
             </th:block>
         </th:block>
 
-        <th:block th:fragment="property-page-controls(controls)">
+        <th:block th:fragment="property-page-controls(controls, propPrefix)">
             <th:block th:each="control : ${controls}">
                 <fieldset class="row mb-3" th:if="${#strings.equals(control.type, 'radio')}">
-                    <th:block th:insert="fragments/property-page :: property-page-control(${control})"/>
+                    <th:block th:insert="this :: property-page-control(${control}, ${propPrefix})"/>
                 </fieldset>
                 <div th:class="${(#strings.equals(control.type, 'tabs') ? '' : 'row') + (controlStat.last ? '' : ' mb-3')}" th:unless="${#strings.equals(control.type, 'radio')}">
-                    <th:block th:insert="fragments/property-page :: property-page-control(${control})"/>
+                    <th:block th:insert="this :: property-page-control(${control}, ${propPrefix})"/>
                 </div>
             </th:block>
         </th:block>
 
-        <th:block th:fragment="property-page-control(control)">
+        <th:block th:fragment="property-page-control(control, propPrefix)">
             <th:block th:switch="${control.type}">
                 <th:block th:case="columns">
-                    <th:block th:each="innerControl : ${control?.controls}">
-                        <th:block th:insert="fragments/property-page :: property-page-control(${innerControl})"/>
+                    <th:block th:each="columnControl : ${control?.controls}">
+                        <th:block th:insert="this :: property-page-control(${columnControl}, ${propPrefix})"/>
                     </th:block>
                 </th:block>
                 <th:block th:case="tabs">
@@ -35,7 +35,7 @@
                     </ul>
                     <div class="tab-content rounded-bottom border-bottom border-start border-end p-3" th:id="${control.label + '-content'}">
                         <div class="tab-pane fade" th:classappend="${tabStat.index == 0 ? ' show active' : ''}" th:id="${tab.name}" role="tabpanel" th:aria-labelledby="${tab.name + '-tab'}" th:each="tab : ${control?.tabs}">
-                            <th:block th:insert="fragments/property-page :: property-page-controls(${tab?.controls})"/>
+                            <th:block th:insert="this :: property-page-controls(${tab?.controls}, '')"/>
                         </div>
                     </div>
                 </th:block>
@@ -46,8 +46,8 @@
                     <hr/>
                 </th:block>
                 <th:block th:case="money">
-                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
-                    <div class="col" th:with="property=${control.property}">
+                    <th:block th:replace="this :: propertyLabel">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <div class="input-group">
                             <input type="text" class="form-control"
                                    data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
@@ -58,16 +58,32 @@
                     </div>
                 </th:block>
                 <th:block th:case="number">
-                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
-                    <div class="col" th:with="property=${control.property}">
+                    <th:block th:replace="this :: propertyLabel">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <input type="number" class="form-control"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
                 </th:block>
+                <th:block th:case="date">
+                    <th:block th:replace="this :: propertyLabel">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
+                        <input type="date" class="form-control"
+                               th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
+                               th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
+                    </div>
+                </th:block>
+                <th:block th:case="datetime">
+                    <th:block th:replace="this :: propertyLabel">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
+                        <input type="datetime-local" class="form-control"
+                               th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
+                               th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
+                    </div>
+                </th:block>
                 <th:block th:case="text">
-                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
-                    <div class="col" th:with="property=${control.property}">
+                    <th:block th:replace="this :: propertyLabel">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <input type="text" class="form-control"
                                th:data-inputmask-regex="${control.pattern}"
                                th:pattern="${control.pattern}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
@@ -75,49 +91,145 @@
                     </div>
                 </th:block>
                 <th:block th:case="textarea">
-                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
-                    <div class="col" th:with="property=${control.property}">
+                    <th:block th:replace="this :: propertyLabel">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <textarea class="form-control"
                                th:rows="${control.rows}" th:cols="${control.cols}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"></textarea>
                     </div>
                 </th:block>
                 <th:block th:case="combo">
-                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
-                    <div class="col" th:with="property=${control.property}">
-                        <select class="form-select" th:if="${propertyPage.readonly == false}"
+                    <th:block th:replace="this :: propertyLabel">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
+                        <select class="form-select" th:unless="${propertyPage.readonly}"
                                th:field="*{__${property}__}" th:disabled="${propertyPage.readonly}" th:required="${control.required}">
                             <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}"></option>
                         </select>
-                        <div th:if="${propertyPage.readonly == true}">
-                            <input type="text" class="form-control" th:value="*{__${property}__.getDisplayValue()}" readonly/>
-                        </div>
+                        <th:block th:if="${propertyPage.readonly}" th:each="value : ${control.values}">
+                            <input type="text" class="form-control" th:if="${value.key == object.__${property}__.id}" th:value="${value.value}" readonly/>
+                        </th:block>
                     </div>
                 </th:block>
                 <th:block th:case="radio">
-                    <th:block th:if="${propertyPage.readonly == false}">
+                    <th:block th:unless="${propertyPage.readonly}">
                         <legend th:text="${control.label + (control.required ? '*' : '')}" class="col-sm-2 col-form-label pt-0">Property name</legend>
-                        <div class="col" th:with="property=${control.property}" >
-                            <div class="form-check form-check-inline"  th:each="value : ${control.values}">
+                        <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}" >
+                            <div class="form-check form-check-inline" th:each="value : ${control.values}">
                                 <input class="form-check-input" type="radio" th:required="${control.required}"
                                     th:field="*{__${property}__}" th:value="${value.key}">
                                 <label class="form-check-label" th:for="${control.property + valueStat.count}" th:text="${value.value}"></label>
                             </div>
                         </div>
                     </th:block>
-                    <th:block th:if="${propertyPage.readonly == true}">
-                        <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
-                        <div class="col" th:with="property=${control.property}">
-                            <input type="text" class="form-control" th:value="*{__${property}__.getDisplayValue()}" readonly/>
+                    <th:block th:if="${propertyPage.readonly}" th:with="property=${#strings.concat(propPrefix, control.property)}">
+                        <th:block th:replace="this :: propertyLabel">Label</th:block>
+                        <div class="col">
+                            <input type="text" class="form-control" th:each="value : ${control.values}"
+                                   th:if="${value.key == object.__${property}__.id}"
+                                   th:value="${value.value}" readonly/>
                         </div>
                     </th:block>
                 </th:block>
-                <th:block th:case="*">
-                    <th:block th:replace="fragments/property-page :: propertyLabel">Label</th:block>
-                    <div class="col" th:with="property=${control.property}">
-                        <input th:type="${control.type}" class="form-control"
-                               th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
+                <th:block th:case="table">
+                    <div class="col">
+                        <th:block th:insert="this :: table(${control}, ${propertyPage.readonly})"></th:block>
+
+                        <template th:id="|__${control.property}__-row-template|"></template>
+                        <button type="button" class="btn bi bi-plus-lg btn-outline-primary btn-sm"
+                            th:unless="${propertyPage.readonly}" th:id="|__${control.property}__-table-add-button|"> Add new</button>
                     </div>
+                </th:block>
+                <th:block th:case="*">
+                    <span th:text="|Unsupported control of type '${control.type}'|"></span>
+                </th:block>
+            </th:block>
+        </th:block>
+
+        <table th:fragment="table(control, readonly)" th:object="${object}"
+               th:id="|__${control.property}__-table|" class="table table-sm caption-top">
+            <caption class="text-black" th:text="${control.label + (control.required ? '*' : '')}"></caption>
+            <thead class="table-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col" th:each="tableControl : ${control?.controls}" th:text="${tableControl.label}"></th>
+                <th scope="col" th:text="Delete" th:unless="${readonly}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row : *{__${control.property}__}"> <!--/* for each array element */-->
+                <th:block th:insert="this :: table-row(${control}, ${rowStat.index}, ${readonly})"></th:block>
+            </tr>
+            </tbody>
+        </table>
+
+        <th:block th:fragment="table-row(control, index, readonly)">
+            <th class="row-count align-middle" scope="row" th:text="${index + 1}"></th>
+            <td class="d-none"><input type="hidden" th:field="*{__${control.property}__[__${index}__].id}" th:readonly="${readonly}"></td>
+            <th:block th:each="tableControl : ${control?.controls}">
+                <td th:insert="this :: table-control(${tableControl}, |__${control.property}__[__${index}__].|, ${readonly})"/>
+            </th:block>
+            <td th:unless="${readonly}">
+                <button th:if="${index > 0}" type="button" class="btn bi bi-trash-fill align-middle"
+                        th:classappend="|__${control.property}__-table-delete-button|" th:value="${index}"></button>
+            </td>
+        </th:block>
+
+        <!--/* Slightly simplified row handling for template purposes */-->
+        <tr th:fragment="table-template-row(control, readonly)" th:object="${object}">
+            <th class="row-count align-middle" scope="row"></th>
+            <td class="d-none"><input type="hidden" th:field="*{id}" th:readonly="${readonly}"></td>
+            <th:block th:each="tableControl : ${control?.controls}">
+                <td th:insert="this :: table-control(${tableControl}, '', ${readonly})"/>
+            </th:block>
+            <td th:unless="${readonly}">
+                <button type="button" class="btn bi bi-trash-fill align-middle"
+                        th:classappend="|__${control.property}__-table-delete-button|"></button>
+            </td>
+        </tr>
+
+        <th:block th:fragment="table-control(control, propPrefix, readonly)" th:with="property=${#strings.concat(propPrefix, control.property)}">
+            <th:block th:switch="${control.type}">
+                <th:block th:case="money">
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
+                               th:readonly="${readonly}" required
+                               th:field="*{__${property}__}" autocomplete="off"/>
+                        <span class="input-group-text" th:text="${control.currency}"></span>
+                    </div>
+                </th:block>
+                <th:block th:case="number">
+                    <input type="number" class="form-control"
+                           th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
+                           th:field="*{__${property}__}" th:readonly="${readonly}" required/>
+                </th:block>
+                <th:block th:case="date">
+                    <input type="date" class="form-control"
+                           th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
+                           th:field="*{__${property}__}" th:readonly="${readonly}" required/>
+                </th:block>
+                <th:block th:case="datetime">
+                    <input type="datetime-local" class="form-control"
+                           th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
+                           th:field="*{__${property}__}" th:readonly="${readonly}" required/>
+                </th:block>
+                <th:block th:case="text">
+                    <input type="text" class="form-control"
+                           th:data-inputmask-regex="${control.pattern}"
+                           th:pattern="${control.pattern}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
+                           th:field="*{__${property}__}" th:readonly="${readonly}" required/>
+                </th:block>
+                <th:block th:case="combo">
+                    <select class="form-select" th:unless="${readonly}"
+                            th:field="*{__${property}__}" th:disabled="${readonly}" required>
+                        <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}"></option>
+                    </select>
+                    <th:block th:if="${readonly}" th:each="value : ${control.values}">
+                        <input type="text" class="form-control" th:if="${value.key == object.__${property}__.id}" th:value="${value.value}" readonly/>
+                    </th:block>
+                </th:block>
+                <th:block th:case="*">
+                    <span th:text="|Unsupported control of type '${control.type}'|"></span>
                 </th:block>
             </th:block>
         </th:block>
