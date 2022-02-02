@@ -16,7 +16,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public abstract class CustomerListMapper {
     @Mapping(target = "customerName", source="objectName")
     @Mapping(target = "corporate", constant = "false")
-    //@Mapping(target = "vatIdentificationNumber")
     @Mapping(target = "address", source="address", qualifiedByName = "convertAddressToString")
     protected abstract CustomerListDto toCustomerListDto(RetailCustomer customer);
 

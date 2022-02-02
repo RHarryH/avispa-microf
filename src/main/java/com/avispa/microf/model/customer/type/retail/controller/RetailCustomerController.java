@@ -4,7 +4,6 @@ import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerDto;
 import com.avispa.microf.model.customer.mapper.CustomerMapper;
 import com.avispa.microf.model.customer.service.CustomerService;
-import com.avispa.microf.model.customer.type.retail.RetailCustomer;
 import com.avispa.microf.model.customer.type.retail.RetailCustomerDto;
 import com.avispa.microf.model.ui.modal.ModalConfiguration;
 import com.avispa.microf.model.ui.modal.ModalService;
@@ -50,7 +49,7 @@ public class RetailCustomerController {
                 .insert(true)
                 .build();
 
-        return modalService.constructModal(model, RetailCustomer.class, RetailCustomerDto.class, modal);
+        return modalService.constructModal(model, RetailCustomerDto.class, modal);
     }
 
     @GetMapping("/update/{id}")
@@ -65,7 +64,7 @@ public class RetailCustomerController {
                 .insert(false)
                 .build();
 
-        return modalService.constructModal(model, RetailCustomer.class, customerDto, modal);
+        return modalService.constructModal(model, customerDto, modal);
     }
 
     @PostMapping(value = "/update/{id}")

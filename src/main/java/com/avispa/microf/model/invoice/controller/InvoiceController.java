@@ -4,6 +4,7 @@ import com.avispa.microf.model.content.ContentDto;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.InvoiceMapper;
+import com.avispa.microf.model.invoice.position.PositionDto;
 import com.avispa.microf.model.invoice.service.InvoiceService;
 import com.avispa.microf.model.ui.modal.ModalConfiguration;
 import com.avispa.microf.model.ui.modal.ModalService;
@@ -51,7 +52,7 @@ public class InvoiceController {
                 .insert(true)
                 .build();
 
-        return modalService.constructModal(model, Invoice.class, InvoiceDto.class, modal);
+        return modalService.constructModal(model, InvoiceDto.class, modal);
     }
 
     @PostMapping(value = "/add")
@@ -59,6 +60,11 @@ public class InvoiceController {
     public void add(@ModelAttribute("ecmObject") InvoiceDto invoiceDto) {
         Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
         invoiceService.add(invoice);
+    }
+
+    @PostMapping(value = "/row/{tableName}")
+    public String row(@PathVariable("tableName") String tableName, Model model) {
+        return modalService.getTemplateRow(model, tableName, InvoiceDto.class, PositionDto.class);
     }
 
     @GetMapping("/update/{id}")
@@ -73,7 +79,7 @@ public class InvoiceController {
                 .insert(false)
                 .build();
 
-        return modalService.constructModal(model, Invoice.class, invoiceDto, modal);
+        return modalService.constructModal(model, invoiceDto, modal);
     }
 
     @PostMapping(value = "/update/{id}")

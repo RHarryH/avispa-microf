@@ -1,6 +1,5 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
-import com.avispa.microf.constants.VatRate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class VatRowData {
-    private VatRate vatRate;
+    private String vatRate;
     private BigDecimal netValue = BigDecimal.ZERO;
     private BigDecimal vat = BigDecimal.ZERO;
     private BigDecimal grossValue = BigDecimal.ZERO;

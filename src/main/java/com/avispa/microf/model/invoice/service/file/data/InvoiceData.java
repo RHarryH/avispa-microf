@@ -1,15 +1,14 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
-import com.avispa.microf.constants.VatRate;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.numeral.NumeralToStringConverter;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,12 +52,12 @@ public class InvoiceData {
     }
 
     private List<VatRowData> generateVatMatrix() {
-        Map<VatRate, VatRowData> vatMatrixMap = new EnumMap<>(VatRate.class);
+        Map<String, VatRowData> vatMatrixMap = new TreeMap<>();
         for(PositionData position : this.positions) {
-            VatRate vatRate = position.getVatRate();
-            VatRowData vatRowData = getVatRow(vatMatrixMap, vatRate);
+            String vatRateLabel = position.getVatRateLabel();
+            VatRowData vatRowData = getVatRow(vatMatrixMap, vatRateLabel);
 
-            vatRowData.setVatRate(vatRate);
+            vatRowData.setVatRate(vatRateLabel);
             vatRowData.setNetValue(vatRowData.getNetValue().add(position.getNetValue()));
             vatRowData.setVat(vatRowData.getVat().add(position.getVat()));
             vatRowData.setGrossValue(vatRowData.getGrossValue().add(position.getGrossValue()));
@@ -74,19 +73,19 @@ public class InvoiceData {
                 .collect(Collectors.toList());
     }
 
-    private VatRowData getVatRow(Map<VatRate, VatRowData> vatMatrix, VatRate vatRate) {
+    private VatRowData getVatRow(Map<String, VatRowData> vatMatrix, String vatRateLabel) {
         VatRowData vatRowData;
 
-        if(vatMatrix.containsKey(vatRate)) {
-            vatRowData = vatMatrix.get(vatRate);
+        if(vatMatrix.containsKey(vatRateLabel)) {
+            vatRowData = vatMatrix.get(vatRateLabel);
         } else {
             vatRowData = new VatRowData();
-            vatMatrix.put(vatRate, vatRowData);
+            vatMatrix.put(vatRateLabel, vatRowData);
         }
         return vatRowData;
     }
 
-    private VatRowData getVatSum(Map<VatRate, VatRowData> vatMatrixMap) {
+    private VatRowData getVatSum(Map<String, VatRowData> vatMatrixMap) {
         VatRowData vatSum = new VatRowData();
 
         for(VatRowData vatRowData : vatMatrixMap.values()) {

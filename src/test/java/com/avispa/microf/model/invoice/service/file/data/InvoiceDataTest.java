@@ -1,7 +1,5 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
-import com.avispa.microf.constants.Unit;
-import com.avispa.microf.constants.VatRate;
 import com.avispa.microf.model.customer.Address;
 import com.avispa.microf.model.customer.type.retail.RetailCustomer;
 import com.avispa.microf.model.invoice.Invoice;
@@ -39,8 +37,8 @@ class InvoiceDataTest {
         Position position = new Position();
         position.setPositionName("Position");
         position.setQuantity(BigDecimal.ONE);
-        position.setUnit(Unit.HOUR);
-        position.setVatRate(VatRate.VAT_05);
+        //position.setUnit("HOUR");
+        //position.setVatRate("VAT_05");
         position.setUnitPrice(BigDecimal.TEN);
         position.setDiscount(BigDecimal.ZERO);
 
