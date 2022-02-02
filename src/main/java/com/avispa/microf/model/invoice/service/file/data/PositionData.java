@@ -1,6 +1,5 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
-import com.avispa.microf.constants.VatRate;
 import com.avispa.microf.model.invoice.position.Position;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
@@ -38,18 +37,22 @@ public class PositionData {
     @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     private BigDecimal grossValue;
 
-    private final VatRate vatRate;
+    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    private final BigDecimal vatRate;
+
+    private final String vatRateLabel;
 
     public PositionData(Position position) {
         this.positionName = position.getPositionName();
 
         this.quantity = position.getQuantity();
-        this.unit = position.getUnit().getDisplayValue();
+        this.unit = position.getUnit().getLabel();
 
         this.unitPrice = position.getUnitPrice();
         this.discount = position.getDiscount();
 
-        this.vatRate = position.getVatRate();
+        this.vatRate = new BigDecimal(position.getVatRate().getDictionary().getColumnValue(position.getVatRate().getKey(), "rate"));
+        this.vatRateLabel = position.getVatRate().getLabel();
 
         setPrice();
         setNetValue();
@@ -74,7 +77,7 @@ public class PositionData {
     }
 
     private void setVat() {
-        this.vat = this.netValue.multiply(this.vatRate.getValue());
+        this.vat = this.netValue.multiply(this.vatRate);
     }
 
     private void setGrossValue() {

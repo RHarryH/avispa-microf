@@ -1,6 +1,7 @@
 package com.avispa.microf.model.customer;
 
-import com.avispa.microf.model.Dto;
+import com.avispa.ecm.model.EcmObject;
+import com.avispa.microf.model.TypedDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public abstract class CustomerDto implements Dto {
+public abstract class CustomerDto<T extends EcmObject> implements TypedDto<T> {
     private UUID id;
     private String phoneNumber;
     private String email;
