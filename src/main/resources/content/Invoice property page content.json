@@ -54,7 +54,8 @@
             "type": "combo",
             "label": "Unit",
             "property": "unit",
-            "dictionary": "Unit"
+            "dictionary": "Unit",
+            "sortByLabel": true
           },
           {
             "type": "money",
