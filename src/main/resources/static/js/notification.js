@@ -104,3 +104,11 @@ function verifyMax(notifications) {
         bootstrap.Toast.getInstance(notifications.children().first()).hide();
     }
 }
+
+function composeErrorMessage(errorMessage, e) {
+    let response = JSON.parse(e.responseText);
+    if (typeof response.message !== 'undefined') {
+        errorMessage += " Reason: " + response.message;
+    }
+    return errorMessage;
+}
