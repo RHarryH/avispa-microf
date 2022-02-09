@@ -27,7 +27,8 @@ function registerInvoicesWidget() {
             reloadWidgets(null, ["invoice-list-widget", "repository-widget"])
             successNotification("Invoice deleted successfully!");
         }).fail(function(e) {
-            errorNotification("Error when deleting invoice!");
+            let errorMessage = composeErrorMessage("Error when deleting invoice!", e);
+            errorNotification(errorMessage);
         });
     }).on("click", ".invoice-delete-button", function () { // modal is created once but invoice id varies in each row and has to be added dynamically
         const id = $(this).attr("value");
@@ -50,7 +51,8 @@ function registerCustomersWidget() {
             reloadWidgets(null, ["customer-list-widget"])
             successNotification("Customer deleted successfully!");
         }).fail(function(e) {
-            errorNotification("Error when deleting customer!");
+            let errorMessage = composeErrorMessage("Error when deleting customer!", e);
+            errorNotification(errorMessage);
         });
     }).on("click", ".customer-delete-button", function () { // modal is created once but customer id varies in each row and has to be added dynamically
         const id = $(this).attr("value");
