@@ -85,20 +85,36 @@ function createModal(
             form.submit(function (event) {
                 event.preventDefault();
 
-                const url = form.attr('action');
-
-                $.ajax({
-                    "method": "post",
-                    "url": url,
-                    "data": form.serialize()
-                }).done(function () {
-                    reloadWidgets(form, widgetsToReload);
-                    successNotification(successMessage);
-                }).fail(function () {
-                    errorNotification(failMessage);
-                }).always(function () {
-                    bootstrapModal.hide();
+                // custom validation
+                let valid = true;
+                form.find(":input[data-custom-validation]").each(function() {
+                    if(executeFunctionByName(this.getAttribute("data-custom-validation"), window, this.value)) {
+                        this.setCustomValidity("");
+                    } else {
+                        this.setCustomValidity("Custom validation failed!");
+                        valid = false;
+                    }
                 });
+
+                if(valid) {
+                    const url = form.attr('action');
+
+                    $.ajax({
+                        "method": "post",
+                        "url": url,
+                        "data": form.serialize()
+                    }).done(function () {
+                        reloadWidgets(form, widgetsToReload);
+                        successNotification(successMessage);
+                    }).fail(function (e) {
+                        let errorMessage = composeErrorMessage(failMessage, e);
+                        errorNotification(errorMessage);
+                    }).always(function () {
+                        bootstrapModal.hide();
+                    });
+                } else {
+                    this.reportValidity();
+                }
             });
         }
     }

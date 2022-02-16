@@ -4,9 +4,12 @@ import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerDto;
 import com.avispa.microf.model.customer.mapper.CustomerMapper;
 import com.avispa.microf.model.customer.service.CustomerService;
+import com.avispa.microf.model.customer.type.corporate.CorporateCustomer;
 import com.avispa.microf.model.customer.type.corporate.CorporateCustomerDto;
 import com.avispa.microf.model.ui.modal.ModalConfiguration;
 import com.avispa.microf.model.ui.modal.ModalService;
+import com.avispa.microf.util.validation.ValidationService;
+import com.avispa.microf.util.validation.exception.InvalidNipException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -32,6 +35,7 @@ public class CorporateCustomerController {
     private final ModalService modalService;
     private final CustomerMapper customerMapper;
     private final CustomerService customerService;
+    private final ValidationService validationService;
 
     @GetMapping("/add")
     public String getCustomerAddModal(Model model) {
@@ -48,7 +52,10 @@ public class CorporateCustomerController {
     @PostMapping(value = "/add")
     @ResponseBody // it will just return status 200
     public void add(@ModelAttribute("ecmObject") CorporateCustomerDto customerDto) {
-        Customer customer = customerMapper.convertToEntity(customerDto);
+        CorporateCustomer customer = customerMapper.convertToEntity(customerDto);
+        if(!validationService.isValidVatIdentificationNumber(customer.getVatIdentificationNumber())) {
+            throw new InvalidNipException();
+        }
         customerService.add(customer);
     }
 
