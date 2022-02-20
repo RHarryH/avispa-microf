@@ -51,7 +51,8 @@
                         <div class="input-group">
                             <input type="text" class="form-control"
                                    data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
-                                   th:data-custom-validation="${control.customValidationFunction}"
+                                   th:data-custom-validation-function="${control.customValidation?.function}"
+                                   th:data-custom-validation-message="${control.customValidation?.message}"
                                    th:readonly="${propertyPage.readonly}" th:required="${control.required}"
                                    th:field="*{__${property}__}" autocomplete="off"/>
                             <span class="input-group-text" th:text="${control.currency}"></span>
@@ -62,7 +63,8 @@
                     <th:block th:replace="this :: propertyLabel">Label</th:block>
                     <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <input type="number" class="form-control"
-                               th:data-custom-validation="${control.customValidationFunction}"
+                               th:data-custom-validation-function="${control.customValidation?.function}"
+                               th:data-custom-validation-message="${control.customValidation?.message}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
@@ -71,7 +73,8 @@
                     <th:block th:replace="this :: propertyLabel">Label</th:block>
                     <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <input type="date" class="form-control"
-                               th:data-custom-validation="${control.customValidationFunction}"
+                               th:data-custom-validation-function="${control.customValidation?.function}"
+                               th:data-custom-validation-message="${control.customValidation?.message}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
@@ -80,7 +83,8 @@
                     <th:block th:replace="this :: propertyLabel">Label</th:block>
                     <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <input type="datetime-local" class="form-control"
-                               th:data-custom-validation="${control.customValidationFunction}"
+                               th:data-custom-validation-function="${control.customValidation?.function}"
+                               th:data-custom-validation-message="${control.customValidation?.message}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
@@ -95,7 +99,8 @@
                     <th:block th:replace="this :: propertyLabel">Label</th:block>
                     <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <textarea class="form-control"
-                                  th:data-custom-validation="${control.customValidationFunction}"
+                                  th:data-custom-validation-function="${control.customValidation?.function}"
+                                  th:data-custom-validation-message="${control.customValidation?.message}"
                                   th:rows="${control.rows}" th:cols="${control.cols}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
                                   th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"></textarea>
                     </div>
@@ -104,7 +109,6 @@
                     <th:block th:replace="this :: propertyLabel">Label</th:block>
                     <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                         <select class="form-select" th:unless="${propertyPage.readonly}"
-                                th:data-custom-validation="${control.customValidationFunction}"
                                 th:field="*{__${property}__}" th:disabled="${propertyPage.readonly}" th:required="${control.required}">
                             <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}"></option>
                         </select>
@@ -152,7 +156,8 @@
             <th:block th:replace="this :: propertyLabel">Label</th:block>
             <div class="col" th:with="property=${#strings.concat(propPrefix, control.property)}">
                 <input th:type="${textType}" class="form-control"
-                       th:data-custom-validation="${control.customValidationFunction}"
+                       th:data-custom-validation-function="${control.customValidation?.function}"
+                       th:data-custom-validation-message="${control.customValidation?.message}"
                        th:data-inputmask-regex="${control.pattern}"
                        th:pattern="${control.pattern}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
                        th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
