@@ -85,36 +85,21 @@ function createModal(
             form.submit(function (event) {
                 event.preventDefault();
 
-                // custom validation
-                let valid = true;
-                form.find(":input[data-custom-validation]").each(function() {
-                    if(executeFunctionByName(this.getAttribute("data-custom-validation"), window, this.value)) {
-                        this.setCustomValidity("");
-                    } else {
-                        this.setCustomValidity("Custom validation failed!");
-                        valid = false;
-                    }
+                const url = form.attr('action');
+
+                $.ajax({
+                    "method": "post",
+                    "url": url,
+                    "data": form.serialize()
+                }).done(function () {
+                    reloadWidgets(form, widgetsToReload);
+                    successNotification(successMessage);
+                }).fail(function (e) {
+                    let errorMessage = composeErrorMessage(failMessage, e);
+                    errorNotification(errorMessage);
+                }).always(function () {
+                    bootstrapModal.hide();
                 });
-
-                if(valid) {
-                    const url = form.attr('action');
-
-                    $.ajax({
-                        "method": "post",
-                        "url": url,
-                        "data": form.serialize()
-                    }).done(function () {
-                        reloadWidgets(form, widgetsToReload);
-                        successNotification(successMessage);
-                    }).fail(function (e) {
-                        let errorMessage = composeErrorMessage(failMessage, e);
-                        errorNotification(errorMessage);
-                    }).always(function () {
-                        bootstrapModal.hide();
-                    });
-                } else {
-                    this.reportValidity();
-                }
             });
         }
     }
@@ -138,7 +123,7 @@ function createModal(
             handleAddingTableRow(modalId);
             handleTableDeletion(modalId); // this actually initializes it for the first time
 
-            $(modalId + " :input").inputmask();
+            $(modalId + " :input").on("input", runCustomValidation).inputmask();
 
             // submit form
             formSubmit(bootstrapModal);
@@ -146,4 +131,27 @@ function createModal(
     }).fail(function () {
         errorNotification("Can't load modal. Please try again.");
     });
+}
+
+
+function runCustomValidation() {
+    this.setCustomValidity("");
+
+    if (this.validity.valid) {
+        const customValidation = this.getAttribute("data-custom-validation-function");
+        if (customValidation) {
+            if (!executeFunctionByName(customValidation, window, this.value)) {
+                setValidationMessage.call(this);
+            }
+        }
+    }
+}
+
+function setValidationMessage() {
+    const validationMessage = this.getAttribute('data-custom-validation-message');
+    if (validationMessage) {
+        this.setCustomValidity(validationMessage);
+    } else {
+        this.setCustomValidity("Custom validation failed");
+    }
 }
