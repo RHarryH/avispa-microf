@@ -247,6 +247,7 @@
                     <th:block th:replace="this :: table-text(${control}, ${propPrefix}, ${property}, ${readonly}, 'text')">Text</th:block>
                 </th:block>
                 <th:block th:case="combo">
+                    <select class="form-select" th:unless="${readonly}"
                             th:field="*{__${property}__}" th:disabled="${readonly}" required>
                         <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}"></option>
                     </select>
