@@ -5,6 +5,7 @@ import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 /**
@@ -15,6 +16,8 @@ import javax.persistence.Entity;
 @Setter
 public class CorporateCustomer extends Customer {
     private String companyName;
+
+    @Column(length = 10)
     private String vatIdentificationNumber; // in Poland Numer Identyfikacji Podatkowej (NIP)
 
     @Override
