@@ -1,17 +1,11 @@
 package com.avispa.microf.util.validation;
 
-import org.springframework.stereotype.Service;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
-/**
- * @author Rafał Hiszpański
- */
-@Service
-public class ValidationService {
-
-    private ValidationService() {
-    }
-
-    public boolean isValidVatIdentificationNumber(String nip) {
+public class VatIdentificationNumberValidator implements ConstraintValidator<VatIdentificationNumberConstraint, String> {
+    @Override
+    public boolean isValid(String nip, ConstraintValidatorContext cxt) {
         if (nip.length() == 13) {
             nip = nip.replace("-", "");
         }
@@ -29,4 +23,5 @@ public class ValidationService {
             return false;
         }
     }
+
 }

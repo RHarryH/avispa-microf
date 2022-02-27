@@ -33,7 +33,7 @@ public class Position extends EcmObject {
     private BigDecimal unitPrice;
 
     @NumberFormat(style = NumberFormat.Style.PERCENT)
-    @Column(precision=9, scale=2)
+    @Column(precision=5, scale=2)
     private BigDecimal discount;
 
     @OneToOne
