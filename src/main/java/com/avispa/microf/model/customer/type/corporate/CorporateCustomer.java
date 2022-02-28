@@ -17,7 +17,7 @@ import javax.persistence.Entity;
 public class CorporateCustomer extends Customer {
     private String companyName;
 
-    @Column(length = 10)
+    @Column(length = 13)
     private String vatIdentificationNumber; // in Poland Numer Identyfikacji Podatkowej (NIP)
 
     @Override
