@@ -142,7 +142,7 @@
                         <th:block th:insert="this :: table(${control}, ${propertyPage.readonly})"></th:block>
 
                         <template th:id="|__${control.property}__-row-template|"></template>
-                        <button type="button" class="btn bi bi-plus-lg btn-outline-primary btn-sm"
+                        <button type="button" class="btn btn-sm btn-outline-dark bi bi-plus-lg "
                             th:unless="${propertyPage.readonly}" th:id="|__${control.property}__-table-add-button|"> Add new</button>
                     </div>
                 </th:block>

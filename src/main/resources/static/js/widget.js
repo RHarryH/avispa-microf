@@ -33,6 +33,8 @@ function registerInvoicesWidget() {
     }).on("click", ".invoice-delete-button", function () { // modal is created once but invoice id varies in each row and has to be added dynamically
         const id = $(this).attr("value");
         $("#invoice-delete-modal .modal-accept-button").attr("value", id);
+    }).on("click", "#invoice-list-refresh-button", function () {
+        reloadWidgets(null,["invoice-list-widget"])
     });
 }
 
@@ -57,6 +59,8 @@ function registerCustomersWidget() {
     }).on("click", ".customer-delete-button", function () { // modal is created once but customer id varies in each row and has to be added dynamically
         const id = $(this).attr("value");
         $("#customer-delete-modal .modal-accept-button").attr("value", id);
+    }).on("click", "#customer-list-refresh-button", function () {
+        reloadWidgets(null,["customer-list-widget"])
     });
 }
 
