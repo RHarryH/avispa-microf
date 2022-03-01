@@ -5,6 +5,8 @@ import com.avispa.microf.model.customer.CustomerDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+
 import static com.avispa.microf.util.TestValidationUtils.validate;
 
 /**
@@ -63,6 +65,12 @@ class RetailCustomerDtoValidationTest {
     void givenIncorrectPhoneNumber_whenValidate_thenFail() {
         customerDto.setPhoneNumber("123c");
         validate(customerDto, CustomerDto.VM_PHONE_PATTERN_NOT_MATCH);
+    }
+
+    @Test
+    void givenEmptyPhoneNumber_whenValidate_thenDontFail() {
+        customerDto.setPhoneNumber(""); // TODO:
+        validate(customerDto, 0, Collections.emptySet());
     }
 
     @Test

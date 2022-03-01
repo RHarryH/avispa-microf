@@ -1,6 +1,7 @@
 package com.avispa.microf.model.invoice.controller;
 
 import com.avispa.microf.model.content.ContentDto;
+import com.avispa.microf.model.error.ErrorUtil;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.InvoiceMapper;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,8 +59,12 @@ public class InvoiceController {
     }
 
     @PostMapping(value = "/add")
-    @ResponseBody // it will just return status 200
-    public void add(@ModelAttribute("ecmObject") InvoiceDto invoiceDto) {
+    @ResponseBody // it will just return status 200 when everything will go fine
+    public void add(@Valid @ModelAttribute("ecmObject") InvoiceDto invoiceDto, BindingResult result) {
+        if(result.hasErrors()) {
+            ErrorUtil.processErrors(HttpStatus.BAD_REQUEST, result);
+        }
+
         Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
         invoiceService.add(invoice);
     }
@@ -84,12 +91,10 @@ public class InvoiceController {
 
     @PostMapping(value = "/update/{id}")
     @ResponseBody
-    public void update(@PathVariable UUID id, @ModelAttribute("invoice") InvoiceDto invoiceDto, BindingResult result) {
-        // TODO: understand
-        /*if (result.hasErrors()) {
-            invoiceDto.setId(id);
-            return "invoice/result";
-        }*/
+    public void update(@Valid @ModelAttribute("invoice") InvoiceDto invoiceDto, BindingResult result) {
+        if(result.hasErrors()) {
+            ErrorUtil.processErrors(HttpStatus.BAD_REQUEST, result);
+        }
 
         invoiceService.update(invoiceDto);
     }
