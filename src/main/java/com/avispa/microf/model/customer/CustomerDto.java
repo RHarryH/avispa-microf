@@ -22,13 +22,12 @@ public abstract class CustomerDto<T extends EcmObject> implements TypedDto<T> {
 
     private UUID id;
 
-    @Pattern(regexp = "\\+48 \\d{9}", message = VM_PHONE_PATTERN_NOT_MATCH)
+    @Pattern(regexp = EMPTY_STRING_REGEX + "(\\+48 \\d{9})", message = VM_PHONE_PATTERN_NOT_MATCH)
     private String phoneNumber;
 
     @Email(message = VM_EMAIL_INVALID)
     private String email;
 
-    //@Valid
     @NotNull(message = VM_ADDRESS_NOT_NULL)
     private AddressDto address;
 }
