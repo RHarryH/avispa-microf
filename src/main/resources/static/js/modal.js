@@ -1,5 +1,6 @@
 $(document).ready(function () {
     createInvoiceAddModal();
+    createInvoiceCloneModal();
     createRetailCustomerAddModal();
     createCorporateCustomerAddModal();
 });
@@ -12,6 +13,17 @@ function createInvoiceAddModal() {
             ["invoice-list-widget", "repository-widget"],
             "Invoice added successfully!",
             "Invoice adding failed!");
+    });
+}
+
+function createInvoiceCloneModal() {
+    $(".invoice-clone-button").click(function () {
+        createModal(
+            "#invoice-clone-modal",
+            "/invoice/clone/",
+            ["invoice-list-widget", "repository-widget"],
+            "Invoice cloned successfully!",
+            "Invoice cloning failed!");
     });
 }
 

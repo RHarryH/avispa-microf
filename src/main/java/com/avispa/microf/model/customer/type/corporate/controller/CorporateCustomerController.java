@@ -8,6 +8,7 @@ import com.avispa.microf.model.customer.type.corporate.CorporateCustomer;
 import com.avispa.microf.model.customer.type.corporate.CorporateCustomerDto;
 import com.avispa.microf.model.error.ErrorUtil;
 import com.avispa.microf.model.ui.modal.ModalConfiguration;
+import com.avispa.microf.model.ui.modal.ModalMode;
 import com.avispa.microf.model.ui.modal.ModalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +40,10 @@ public class CorporateCustomerController {
 
     @GetMapping("/add")
     public String getCustomerAddModal(Model model) {
-        ModalConfiguration modal = ModalConfiguration.builder()
+        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.INSERT)
                 .id("corporate-customer-add-modal")
                 .title("Add new corporate customer")
                 .action("/customer/corporate/add")
-                .insert(true)
                 .build();
 
         return modalService.constructModal(model, CorporateCustomerDto.class, modal);
@@ -65,11 +65,10 @@ public class CorporateCustomerController {
         Customer customer = customerService.findById(id);
         CustomerDto<?> customerDto = customerMapper.convertToDto(customer);
 
-        ModalConfiguration modal = ModalConfiguration.builder()
+        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
                 .id("corporate-customer-update-modal")
                 .title("Update corporate customer")
                 .action("/customer/corporate/update/" + id)
-                .insert(false)
                 .build();
 
         return modalService.constructModal(model, customerDto, modal);

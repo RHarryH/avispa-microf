@@ -12,5 +12,9 @@ public class ModalConfiguration {
     private String id;
     private String title;
     private String action;
-    private boolean insert;
+    private ModalMode mode;
+
+    public static ModalConfigurationBuilder builder(ModalMode mode) {
+        return new ModalConfigurationBuilder().mode(mode);
+    }
 }
