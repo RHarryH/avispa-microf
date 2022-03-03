@@ -7,6 +7,7 @@ import com.avispa.microf.model.customer.service.CustomerService;
 import com.avispa.microf.model.customer.type.retail.RetailCustomerDto;
 import com.avispa.microf.model.error.ErrorUtil;
 import com.avispa.microf.model.ui.modal.ModalConfiguration;
+import com.avispa.microf.model.ui.modal.ModalMode;
 import com.avispa.microf.model.ui.modal.ModalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +39,10 @@ public class RetailCustomerController {
 
     @GetMapping("/add")
     public String getCustomerAddModal(Model model) {
-        ModalConfiguration modal = ModalConfiguration.builder()
+        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.INSERT)
                 .id("retail-customer-add-modal")
                 .title("Add new retail customer")
                 .action("/customer/retail/add")
-                .insert(true)
                 .build();
 
         return modalService.constructModal(model, RetailCustomerDto.class, modal);
@@ -64,11 +64,10 @@ public class RetailCustomerController {
         Customer customer = customerService.findById(id);
         CustomerDto<?> customerDto = customerMapper.convertToDto(customer);
 
-        ModalConfiguration modal = ModalConfiguration.builder()
+        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
                 .id("retail-customer-update-modal")
                 .title("Update retail customer")
                 .action("/customer/retail/update/" + id)
-                .insert(false)
                 .build();
 
         return modalService.constructModal(model, customerDto, modal);

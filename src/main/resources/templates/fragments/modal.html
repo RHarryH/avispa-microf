@@ -28,19 +28,44 @@
                         ${(size != null and size == 'large') ? 'modal-lg' : ''}
                         ${(size != null and size == 'extra-large') ? 'modal-xl' : ''}|">
                 <div class="modal-content">
-                    <form class="modal-form" th:action="${modal.action}">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalTitle" th:text="${modal.title}"></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle" th:text="${modal.title}"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-auto p-0 border-end" th:if="${modal.mode.name() == 'CLONE'}">
+                                <ul class="list-group list-group-flush" role="tablist">
+                                    <li class="list-group-item active" aria-current="true">Select source</li>
+                                    <li class="list-group-item">Properties</li>
+                                </ul>
+                            </div>
+                            <div class="col p-0">
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="source" role="tabpanel" th:if="${modal.mode.name() == 'CLONE'}">
+                                        <div class="modal-body">
+                                            This is just temporal body
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary">Next</button>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="properties" role="tabpanel" th:classappend="${modal.mode.name() != 'CLONE' ? 'active' : ''}">
+                                        <form class="modal-form" th:action="${modal.action}">
+                                            <div class="modal-body" th:insert="fragments/property-page :: property-page">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-primary modal-accept-button" type="submit" th:if="${modal.mode.name() == 'INSERT'}">Add</button>
+                                                <button class="btn btn-primary modal-accept-button" type="submit" th:if="${modal.mode.name() == 'UPDATE'}">Edit</button>
+                                                <button th:if="${modal.mode.name() == 'INSERT'}" class="btn btn-secondary" type="reset">Reset</button>
+                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Reject</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-body" th:insert="fragments/property-page :: property-page">
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary modal-accept-button" type="submit" th:text="${modal.insert} ? 'Add' : 'Edit'"></button>
-                            <button th:if="${modal.insert}" class="btn btn-secondary" type="reset">Reset</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Reject</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

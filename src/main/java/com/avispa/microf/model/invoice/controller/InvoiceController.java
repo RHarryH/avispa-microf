@@ -8,6 +8,7 @@ import com.avispa.microf.model.invoice.InvoiceMapper;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import com.avispa.microf.model.invoice.service.InvoiceService;
 import com.avispa.microf.model.ui.modal.ModalConfiguration;
+import com.avispa.microf.model.ui.modal.ModalMode;
 import com.avispa.microf.model.ui.modal.ModalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,11 +49,10 @@ public class InvoiceController {
 
     @GetMapping("/add")
     public String getInvoiceAddModal(Model model) {
-        ModalConfiguration modal = ModalConfiguration.builder()
+        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.INSERT)
                 .id("invoice-add-modal")
                 .title("Add new invoice")
                 .action("/invoice/add")
-                .insert(true)
                 .build();
 
         return modalService.constructModal(model, InvoiceDto.class, modal);
@@ -69,9 +69,15 @@ public class InvoiceController {
         invoiceService.add(invoice);
     }
 
-    @PostMapping(value = "/row/{tableName}")
-    public String row(@PathVariable("tableName") String tableName, Model model) {
-        return modalService.getTemplateRow(model, tableName, InvoiceDto.class, PositionDto.class);
+    @GetMapping("/clone")
+    public String getInvoiceCloneModal(Model model) {
+        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.CLONE)
+                .id("invoice-clone-modal")
+                .title("Clone existing invoice")
+                .action("/invoice/clone")
+                .build();
+
+        return modalService.constructModal(model, InvoiceDto.class, modal);
     }
 
     @GetMapping("/update/{id}")
@@ -79,11 +85,10 @@ public class InvoiceController {
         Invoice invoice = invoiceService.findById(id);
         InvoiceDto invoiceDto = invoiceMapper.convertToDto(invoice);
 
-        ModalConfiguration modal = ModalConfiguration.builder()
+        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
                 .id("invoice-update-modal")
                 .title("Update invoice")
                 .action("/invoice/update/" + id)
-                .insert(false)
                 .build();
 
         return modalService.constructModal(model, invoiceDto, modal);
@@ -117,5 +122,10 @@ public class InvoiceController {
                 .contentLength(contentDto.getSize())
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
+    }
+
+    @PostMapping(value = "/row/{tableName}")
+    public String row(@PathVariable("tableName") String tableName, Model model) {
+        return modalService.getTemplateRow(model, tableName, InvoiceDto.class, PositionDto.class);
     }
 }
