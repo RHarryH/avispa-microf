@@ -1,5 +1,6 @@
 package com.avispa.microf.model.invoice;
 
+import com.avispa.microf.model.base.IEntityDtoMapper;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
 import com.avispa.microf.model.invoice.position.Position;
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = PositionMapper.class)
-public abstract class InvoiceMapper {
+public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, InvoiceDto> {
     // not required when componentModel = "spring", can be autowired
     //InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
 
@@ -28,19 +29,13 @@ public abstract class InvoiceMapper {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public abstract InvoiceDto convertToDto(Invoice invoice);
-
     protected UUID customerToId(Customer customer) {
         return customer.getId();
     }
 
-    public abstract Invoice convertToEntity(InvoiceDto dto);
-
     protected Customer idToCustomer(UUID customerId) {
         return Hibernate.unproxy(customerRepository.getOne(customerId), Customer.class);
     }
-
-    public abstract void updateInvoiceFromDto(InvoiceDto invoiceDto, @MappingTarget Invoice invoice);
 
     protected void updatePositionsFromPositionsDto(List<PositionDto> positionDtos, @MappingTarget List<Position> positions) {
         if ( positionDtos == null ) {

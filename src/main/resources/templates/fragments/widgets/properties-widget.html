@@ -2,7 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
     <body>
         <div id="properties-widget" class="py-3" th:fragment="properties-widget">
-            <th:block th:replace="fragments/property-page :: property-page">Property page</th:block>
+            <span th:if="${nothingSelected}">Nothing is selected</span>
+            <th:block th:unless="${nothingSelected}">
+                <th:block th:replace="fragments/property-page :: property-page(${propertyPage})"/>
+            </th:block>
         </div>
     </body>
 </html>

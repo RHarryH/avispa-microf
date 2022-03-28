@@ -1,6 +1,5 @@
-package com.avispa.microf.model;
+package com.avispa.microf.model.base.dto;
 
-import com.avispa.ecm.model.EcmObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class DtoService {
      * @param <D>
      * @return
      */
-    public <D extends TypedDto<? extends EcmObject>> D createNew(Class<D> contextClass) {
+    public <D extends Dto> D createNew(Class<D> contextClass) {
         D contextDto = null;
         try {
             contextDto = contextClass.getDeclaredConstructor().newInstance();

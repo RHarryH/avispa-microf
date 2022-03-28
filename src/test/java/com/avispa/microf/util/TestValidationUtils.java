@@ -1,6 +1,6 @@
 package com.avispa.microf.util;
 
-import com.avispa.microf.model.Dto;
+import com.avispa.microf.model.base.dto.Dto;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;

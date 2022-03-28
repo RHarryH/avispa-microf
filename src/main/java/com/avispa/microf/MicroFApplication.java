@@ -70,6 +70,8 @@ public class MicroFApplication {
 		propertyPageService.loadContentTo("Invoice upsert property page", "classpath:/content/Invoice upsert property page content.json");
 		propertyPageService.loadContentTo("Retail customer upsert property page", "classpath:/content/customer/Retail customer upsert property page content.json");
 		propertyPageService.loadContentTo("Corporate customer upsert property page", "classpath:/content/customer/Corporate customer upsert property page content.json");
+
+		propertyPageService.loadContentTo("Select source property page", "classpath:/content/Select source property page content.json");
 	}
 
 	public static void main(String[] args) {

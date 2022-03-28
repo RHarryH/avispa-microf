@@ -1,6 +1,5 @@
 {
   "propertyPage": {
-    "size": "extra-large",
     "controls": [
       {
         "type": "columns",
@@ -9,14 +8,14 @@
             "type": "combo",
             "label": "Seller",
             "property": "seller",
-            "objectType": "Customer",
+            "typeName": "Customer",
             "required": true
           },
           {
             "type": "combo",
             "label": "Buyer",
             "property": "buyer",
-            "objectType": "Customer",
+            "typeName": "Customer",
             "required": true
           }
         ]
