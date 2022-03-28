@@ -1,0 +1,13 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "combo",
+        "label": "Object to clone",
+        "property": "sourceId",
+        "typeName": "$value('typeName')",
+        "required": true
+      }
+    ]
+  }
+}

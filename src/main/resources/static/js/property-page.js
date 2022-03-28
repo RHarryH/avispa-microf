@@ -1,8 +1,9 @@
-function handleAddingTableRow(modalId) {
-    $(modalId + " button[id$=-table-add-button]").click(function (e) {
+function handleAddingTableRow(root, resourcePath) {
+    $(root + " button[id$=-table-add-button]").click(function (e) {
         e.preventDefault();
 
         const id = $(this).attr("id");
+        const prefix = $(this).val();
         const tablePropertyName = id.substring(0, id.indexOf("-table-add-button"));
         const tableId = "#" + tablePropertyName + "-table";
 
@@ -11,10 +12,9 @@ function handleAddingTableRow(modalId) {
         if(!rowTemplate.innerHTML.length) {
             $.ajax({
                 "method": "post",
-                "url": "invoice/row/" + tablePropertyName
-            }).done(function (f) {
-                rowTemplate.innerHTML = f;
-
+                "url": resourcePath + "/modal/row/" + tablePropertyName
+            }).done(function (fragment) {
+                rowTemplate.innerHTML = fragment;
                 addRow();
             }).fail(function () {
                 errorNotification("Can't add new row for the table!");
@@ -26,15 +26,15 @@ function handleAddingTableRow(modalId) {
         function addRow() {
             const row = document.importNode(rowTemplate.content, true);
 
-            const existingRowsNum = document.querySelector(tableId + " tbody").childElementCount;
+            const existingRowsNum = document.querySelector(root + " " + tableId + " tbody").childElementCount;
 
             // set row count
             row.querySelector(".row-count").textContent = "" + (existingRowsNum + 1);
 
             // append prefixes
             row.querySelectorAll("td [id][name]").forEach(function (element) {
-                element.setAttribute("id", tablePropertyName + existingRowsNum + "." + element.getAttribute("id"));
-                element.setAttribute("name", tablePropertyName + "[" + existingRowsNum + "]." + element.getAttribute("name"));
+                element.setAttribute("id", prefix + tablePropertyName + existingRowsNum + "." + element.getAttribute("id"));
+                element.setAttribute("name", prefix + tablePropertyName + "[" + existingRowsNum + "]." + element.getAttribute("name"));
             });
 
             Inputmask().mask(row.querySelectorAll("input"));
@@ -45,8 +45,14 @@ function handleAddingTableRow(modalId) {
             handleTableRowDelete(deleteButton);
 
             // actual node insertion
-            document.querySelector(tableId + " tbody").appendChild(row);
+            document.querySelector(root + " " + tableId + " tbody").appendChild(row);
         }
+    });
+}
+
+function handleTableDeletion(root) {
+    document.querySelectorAll(root + " tr button").forEach(function (e) {
+        handleTableRowDelete(e); // add handling for delete button
     });
 }
 
@@ -77,11 +83,5 @@ function handleTableRowDelete(deleteButton) {
         });
 
         row.remove(); // remove row
-    });
-}
-
-function handleTableDeletion(modalId) {
-    document.querySelectorAll(modalId + " tr button").forEach(function (e) {
-        handleTableRowDelete(e); // add handling for delete button
     });
 }

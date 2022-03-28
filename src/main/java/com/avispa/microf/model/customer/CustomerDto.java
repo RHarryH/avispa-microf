@@ -1,7 +1,6 @@
 package com.avispa.microf.model.customer;
 
-import com.avispa.ecm.model.EcmObject;
-import com.avispa.microf.model.TypedDto;
+import com.avispa.microf.model.base.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +14,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public abstract class CustomerDto<T extends EcmObject> implements TypedDto<T> {
+public abstract class CustomerDto implements Dto {
     public static final String VM_PHONE_PATTERN_NOT_MATCH = "Phone does not match specified pattern";
     public static final String VM_EMAIL_INVALID = "Email address is invalid";
     public static final String VM_ADDRESS_NOT_NULL = "Address cannot be null";

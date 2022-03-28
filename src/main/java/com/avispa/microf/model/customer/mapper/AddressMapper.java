@@ -7,10 +7,10 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-interface AddressMapper {
-    Address convertAddressToDto(AddressDto dto);
+public interface AddressMapper {
+    Address convertToDto(AddressDto dto);
 
-    AddressDto convertDtoToAddress(Address address);
+    AddressDto convertDtoToEntity(Address address);
 
-    void updateAddressFromDto(AddressDto addressDto, @MappingTarget Address address);
+    void updateEntityFromDto(AddressDto addressDto, @MappingTarget Address address);
 }

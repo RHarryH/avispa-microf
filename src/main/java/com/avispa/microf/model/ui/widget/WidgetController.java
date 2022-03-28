@@ -6,7 +6,7 @@ import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
 import com.avispa.ecm.model.context.ContextService;
-import com.avispa.microf.model.customer.service.CustomerService;
+import com.avispa.microf.model.customer.CustomerService;
 import com.avispa.microf.model.invoice.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,7 +72,7 @@ public class WidgetController {
                     .orElse(null); // return null otherwise
 
             model.addAttribute("propertyPage", propertyPageContent);
-            model.addAttribute("object", ecmObject);
+            model.addAttribute("context", ecmObject);
         },
         () -> model.addAttribute("nothingSelected", true)
         );

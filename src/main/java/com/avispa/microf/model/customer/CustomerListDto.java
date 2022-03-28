@@ -1,6 +1,6 @@
 package com.avispa.microf.model.customer;
 
-import com.avispa.microf.model.Dto;
+import com.avispa.microf.model.base.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
