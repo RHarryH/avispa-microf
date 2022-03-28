@@ -1,124 +1,124 @@
 $(document).ready(function () {
-    createInvoiceAddModal();
-    createInvoiceCloneModal();
-    createRetailCustomerAddModal();
-    createCorporateCustomerAddModal();
+    // invoice
+    registerAddModal(
+        ["invoice"],
+        ["invoice-list-widget", "repository-widget"],
+        "Invoice added successfully!",
+        "Invoice adding failed!");
+    registerCloneModal(
+        ["invoice"],
+        ["invoice-list-widget", "repository-widget"],
+        "Invoice cloned successfully!",
+        "Invoice cloning failed!");
+
+    // retail
+    registerAddModal(
+        ["customer", "retail"],
+        ["customer-list-widget"],
+        "Retail customer added successfully!",
+        "Retail customer adding failed!");
+
+    // corporate
+    registerAddModal(
+        ["customer", "corporate"],
+        ["customer-list-widget"],
+        "Corporate customer added successfully!",
+        "Corporate customer adding failed!");
 });
 
-function createInvoiceAddModal() {
-    $(".invoice-add-button").click(function () {
+function registerInvoiceUpdateModal() {
+    registerUpdateModal(
+        ["invoice"],
+        ["invoice-list-widget", "repository-widget"],
+        "Invoice updated successfully!",
+        "Invoice update failed!");
+}
+
+function registerRetailCustomerUpdateModal() {
+    registerUpdateModal(
+        ["customer", "retail"],
+        ["customer-list-widget"],
+        "Retail customer updated successfully!",
+        "Retail customer update failed!");
+}
+
+function registerCorporateCustomerUpdateModal() {
+    registerUpdateModal(
+        ["customer", "corporate"],
+        ["customer-list-widget"],
+        "Corporate customer updated successfully!",
+        "Corporate customer update failed!");
+}
+
+function registerAddModal(
+    resourcePrefixes,
+    widgetsToReload,
+    successMessage,
+    failMessage
+) {
+    const classPrefix = resourcePrefixes.join("-");
+    $("." + classPrefix + "-add-button").click(function () {
         createModal(
-            "#invoice-add-modal",
-            "/invoice/add/",
-            ["invoice-list-widget", "repository-widget"],
-            "Invoice added successfully!",
-            "Invoice adding failed!");
+            resourcePrefixes,
+            "add-modal",
+            "/modal/add/",
+            widgetsToReload,
+            successMessage,
+            failMessage);
     });
 }
 
-function createInvoiceCloneModal() {
-    $(".invoice-clone-button").click(function () {
+function registerUpdateModal(
+    resourcePrefixes,
+    widgetsToReload,
+    successMessage,
+    failMessage
+) {
+    const classPrefix = resourcePrefixes.join("-");
+    $("." + classPrefix + "-update-button").click(function () {
         createModal(
-            "#invoice-clone-modal",
-            "/invoice/clone/",
-            ["invoice-list-widget", "repository-widget"],
-            "Invoice cloned successfully!",
-            "Invoice cloning failed!");
+            resourcePrefixes,
+            "update-modal",
+            "/modal/update/" + $(this).attr("value"),
+            widgetsToReload,
+            successMessage,
+            failMessage);
     });
 }
 
-function createInvoiceUpdateModal() {
-    $(".invoice-update-button").click(function () {
+function registerCloneModal(
+    resourcePrefixes,
+    widgetsToReload,
+    successMessage,
+    failMessage
+) {
+    const classPrefix = resourcePrefixes.join("-");
+    $("." + classPrefix + "-clone-button").click(function () {
         createModal(
-            "#invoice-update-modal",
-            "/invoice/update/" + $(this).attr("value"),
-            ["invoice-list-widget", "repository-widget"],
-            "Invoice updated successfully!",
-            "Invoice update failed!");
-    });
-}
-
-function createRetailCustomerAddModal() {
-    $(".retail-customer-add-button").click(function () {
-        createModal(
-            "#retail-customer-add-modal",
-            "/customer/retail/add/",
-            ["customer-list-widget"],
-            "Retail customer added successfully!",
-            "Retail customer adding failed!");
-    });
-}
-
-function createRetailCustomerUpdateModal() {
-    $(".retail-customer-update-button").click(function () {
-        createModal(
-            "#retail-customer-update-modal",
-            "/customer/retail/update/" + $(this).attr("value"),
-            ["customer-list-widget"],
-            "Retail customer updated successfully!",
-            "Retail customer update failed!");
-    });
-}
-
-function createCorporateCustomerAddModal() {
-    $(".corporate-customer-add-button").click(function () {
-        createModal(
-            "#corporate-customer-add-modal",
-            "/customer/corporate/add/",
-            ["customer-list-widget"],
-            "Corporate customer added successfully!",
-            "Corporate customer adding failed!");
-    });
-}
-
-function createCorporateCustomerUpdateModal() {
-    $(".corporate-customer-update-button").click(function () {
-        createModal(
-            "#corporate-customer-update-modal",
-            "/customer/corporate/update/" + $(this).attr("value"),
-            ["customer-list-widget"],
-            "Corporate customer updated successfully!",
-            "Corporate customer update failed!");
+            resourcePrefixes,
+            "clone-modal",
+            "/modal/clone/",
+            widgetsToReload,
+            successMessage,
+            failMessage);
     });
 }
 
 function createModal(
-    modalId,
+    resourcePrefixes,
+    modalUniqueName,
     modalGetUrl,
     widgetsToReload,
     successMessage,
     failMessage
 ) {
     const modals = $("#modals");
-
-    function formSubmit(bootstrapModal) {
-        const form = $(modalId + " .modal-form");
-        if (form.length) {
-            form.submit(function (event) {
-                event.preventDefault();
-
-                const url = form.attr('action');
-
-                $.ajax({
-                    "method": "post",
-                    "url": url,
-                    "data": form.serialize()
-                }).done(function () {
-                    reloadWidgets(form, widgetsToReload);
-                    successNotification(successMessage);
-                }).fail(function (e) {
-                    let errorMessage = composeErrorMessage(failMessage, e);
-                    errorNotification(errorMessage);
-                }).always(function () {
-                    bootstrapModal.hide();
-                });
-            });
-        }
-    }
+    const modalId = "#" + resourcePrefixes.join("-") + "-" + modalUniqueName;
+    const resourcePath = "/" + resourcePrefixes.join("/");
 
     $.ajax({
         "method": "get",
-        "url": modalGetUrl
+        "url": resourcePath + modalGetUrl
     }).done(function (fragment) { // get from controller
         modals.prepend(fragment);
 
@@ -132,10 +132,15 @@ function createModal(
                 modal.remove();
             });
 
-            handleAddingTableRow(modalId);
+            handleAddingTableRow(modalId, resourcePath);
             handleTableDeletion(modalId); // this actually initializes it for the first time
 
             $(modalId + " :input").on("input", runCustomValidation).inputmask();
+
+            const triggerTabList = [].slice.call(document.querySelectorAll("#modal-list a"));
+            triggerTabList.forEach(function (triggerEl) {
+                new bootstrap.Tab(triggerEl);
+            })
 
             // submit form
             formSubmit(bootstrapModal);
@@ -143,8 +148,74 @@ function createModal(
     }).fail(function () {
         errorNotification("Can't load modal. Please try again.");
     });
-}
 
+    function formSubmit(bootstrapModal) {
+        function finalAction(form) {
+            const url = form.attr('action');
+            if (url.length) {
+                $.post({
+                    "url": url,
+                    "data": form.serialize()
+                }).done(function () {
+                    reloadWidgets(form, widgetsToReload);
+                    successNotification(successMessage);
+                }).fail(function (e) {
+                    let errorMessage = composeErrorMessage(failMessage, e);
+                    errorNotification(errorMessage);
+                }).always(function () {
+                    bootstrapModal.hide();
+                });
+            }
+        }
+
+        function loadPage(from, to) {
+            $.get({
+                "url": resourcePath + "/modal/page/" + to,
+                "data": $(modalId + " #tab-pane-" + from + " .modal-form").serialize()
+            }).done(function (fragment) {
+                const modalBody = modalId + " #tab-pane-" + to + " .modal-body";
+                $(modalBody).html(fragment);
+
+                handleAddingTableRow(modalBody, resourcePath);
+                handleTableDeletion(modalBody); // this actually initializes it for the first time
+
+                $(modalBody + " :input").on("input", runCustomValidation).inputmask();
+
+                bootstrap.Tab.getInstance(document.querySelector("#modal-list a[href='#tab-pane-" + to + "'")).show();
+            }).fail(function (e) {
+                let errorMessage = composeErrorMessage("Loading next page failed", e);
+                errorNotification(errorMessage);
+            })
+        }
+
+        const forms = $(modalId + " .modal-form");
+        forms.each(function(index) {
+            const form = $(this);
+            form.submit(function (event) {
+                event.preventDefault();
+
+                const button = event.originalEvent.submitter;
+                if(button.classList.contains("modal-next-button")) {
+                    const currentPage = parseInt(button.value);
+                    const nextPage = Math.min(currentPage + 1, forms.length);
+
+                    if(currentPage !== nextPage) {
+                        loadPage(currentPage, nextPage);
+                    }
+                } else if(button.classList.contains("modal-previous-button")) {
+                    const currentPage = parseInt(button.value);
+                    const previousPage = Math.max(currentPage - 1, 0);
+
+                    if(currentPage !== previousPage) {
+                        loadPage(currentPage, previousPage);
+                    }
+                } else if(button.classList.contains("modal-accept-button")) {
+                    finalAction(form);
+                }
+            });
+        });
+    }
+}
 
 function runCustomValidation() {
     this.setCustomValidity("");

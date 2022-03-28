@@ -1,4 +1,4 @@
-package com.avispa.microf.model;
+package com.avispa.microf.model.base.dto;
 
 /**
  * @author Rafał Hiszpański

@@ -90,7 +90,7 @@ function registerWidgetReloadEvent() {
                 "method": "get",
                 "url": "widget/" + widgetName
             }).done(function (fragment) { // get from controller
-                component.prepend(fragment)
+                component.prepend(fragment);
 
                 initializeWidgets(widgetName);
             })/*.fail(function (jqXHR) {
@@ -129,7 +129,7 @@ function registerWidgetReloadEvent() {
 function initializeWidgets(widgetName) {
     switch (widgetName) {
         case "invoice-list-widget": {
-            createInvoiceUpdateModal();
+            registerInvoiceUpdateModal();
 
             let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -139,8 +139,8 @@ function initializeWidgets(widgetName) {
             break;
         }
         case "customer-list-widget": {
-            createRetailCustomerUpdateModal()
-            createCorporateCustomerUpdateModal();
+            registerRetailCustomerUpdateModal()
+            registerCorporateCustomerUpdateModal();
 
             let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

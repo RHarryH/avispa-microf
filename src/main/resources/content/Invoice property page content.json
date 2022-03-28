@@ -25,13 +25,13 @@
             "type": "combo",
             "label": "Seller",
             "property": "seller",
-            "objectType": "Customer"
+            "typeName": "Customer"
           },
           {
             "type": "combo",
             "label": "Buyer",
             "property": "buyer",
-            "objectType": "Customer"
+            "typeName": "Customer"
           }
         ]
       },

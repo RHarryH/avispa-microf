@@ -7,13 +7,14 @@ import com.avispa.ecm.model.content.ContentService;
 import com.avispa.ecm.model.context.ContextService;
 import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
+import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.content.ContentDto;
 import com.avispa.microf.model.content.ContentMapper;
+import com.avispa.microf.model.error.ResourceNotFoundException;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.InvoiceMapper;
 import com.avispa.microf.model.invoice.InvoiceRepository;
-import com.avispa.microf.model.invoice.exception.InvoiceNotFoundException;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
 import com.avispa.microf.model.invoice.service.file.OdfInvoiceFile;
@@ -34,8 +35,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class InvoiceService {
-
+public class InvoiceService implements BaseService<Invoice, InvoiceDto> {
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
 
@@ -49,6 +49,7 @@ public class InvoiceService {
     private final ContextService contextService;
 
     @Transactional
+    @Override
     public void add(Invoice invoice) {
         invoiceRepository.save(invoice);
 
@@ -60,9 +61,10 @@ public class InvoiceService {
     }
 
     @Transactional
+    @Override
     public void update(InvoiceDto invoiceDto) {
         Invoice invoice = findById(invoiceDto.getId());
-        invoiceMapper.updateInvoiceFromDto(invoiceDto, invoice);
+        invoiceMapper.updateEntityFromDto(invoiceDto, invoice);
 
         // delete old content and create new one
         contentService.deleteByRelatedObject(invoice);
@@ -83,6 +85,7 @@ public class InvoiceService {
         }
     }
 
+    @Override
     public void delete(UUID id) {
         invoiceRepository.delete(findById(id));
     }
@@ -91,9 +94,10 @@ public class InvoiceService {
         return contentMapper.convertToDto(contentService.findPdfRenditionByDocumentId(id));
     }
 
+    @Override
     public Invoice findById(UUID id) {
         return invoiceRepository.findById(id)
-                .orElseThrow(InvoiceNotFoundException::new);
+                .orElseThrow(() -> new ResourceNotFoundException(Invoice.class));
     }
 
     public List<Invoice> findAll() {
