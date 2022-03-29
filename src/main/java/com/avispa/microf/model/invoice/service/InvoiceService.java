@@ -20,6 +20,7 @@ import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
 import com.avispa.microf.model.invoice.service.file.OdfInvoiceFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +49,9 @@ public class InvoiceService implements BaseService<Invoice, InvoiceDto> {
 
     private final ContextService contextService;
 
+    @Value("${microf.issuer-name:John Doe}")
+    private String issuerName;
+
     @Transactional
     @Override
     public void add(Invoice invoice) {
@@ -73,7 +77,7 @@ public class InvoiceService implements BaseService<Invoice, InvoiceDto> {
 
     private void generateContent(Invoice invoice) {
         try (IInvoiceFile invoiceFile = new OdfInvoiceFile()) {
-            invoiceFile.generate(invoice);
+            invoiceFile.generate(invoice, issuerName);
             Path fileStorePath = invoiceFile.save(fileStore.getRootPath());
             Content content = contentService.createNewContent(invoiceFile.getExtension(), invoice, fileStorePath);
 
