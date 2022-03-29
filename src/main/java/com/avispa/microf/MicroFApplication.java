@@ -34,7 +34,7 @@ import java.util.Locale;
 public class MicroFApplication {
 	private final PropertyPageService propertyPageService;
 
-	@Value("${microf.invoice.counterStrategy}")
+	@Value("${microf.invoice.counter-strategy}")
 	private String counterStrategyName;
 
 	// Optionally can be realized with Spring interface Condition and @Conditional annotation
