@@ -24,7 +24,7 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
     protected ITemplateReplacer replacer;
 
     @Override
-    public void generate(Invoice invoice) {
+    public void generate(Invoice invoice, String issuerName) {
         InvoiceData invoiceData = new InvoiceData(invoice);
 
         Map<String, String> variables = new HashMap<>();
@@ -42,6 +42,8 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
         variables.put("gross_value_in_words", invoiceData.getGrossValueInWords());
         variables.put("payment_date", FormatUtils.format(invoiceData.getPaymentDate()));
         variables.put("comments", invoiceData.getComments());
+
+        variables.put("issuer_signature", issuerName);
         variables.put("version", SpringContext.getBean(Version.class).getReleaseNumber());
 
         replacer.replaceVariables(variables);

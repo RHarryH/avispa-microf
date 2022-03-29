@@ -28,7 +28,7 @@ import java.util.Locale;
 @EntityScan(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use CMS entities
 @EnableJpaRepositories(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use CMS repositories
 @PropertySource("classpath:application.properties")
-@PropertySource("file:./microf.properties")
+@PropertySource(value = "file:./microf.properties")
 @Import({EcmConfiguration.class})
 @RequiredArgsConstructor
 public class MicroFApplication {

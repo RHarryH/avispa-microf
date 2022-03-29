@@ -10,7 +10,7 @@ import java.nio.file.Path;
  */
 public interface IInvoiceFile extends Closeable {
 
-    void generate(Invoice invoice);
+    void generate(Invoice invoice, String issuerName);
 
     Path save(String path);
 
