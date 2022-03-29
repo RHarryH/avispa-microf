@@ -28,9 +28,9 @@ public interface IModalableController<D extends Dto, C extends ModalContext<D>> 
     @ResponseBody // it will just return status 200 when everything will go fine
     void addFromModal(@Valid @ModelAttribute("context") C context, BindingResult result);
 
-    @PostMapping(value = "/modal/update")
+    @PostMapping(value = "/modal/update/{id}")
     @ResponseBody
-    void updateFromModal(@Valid @ModelAttribute("context") C context, BindingResult result);
+    void updateFromModal(@Valid @ModelAttribute("context") C context, @PathVariable("id") UUID id, BindingResult result);
 
     @GetMapping("/modal/page/{pageNumber}")
     ModelAndView loadPage(@PathVariable("pageNumber") int pageNumber, @ModelAttribute("context") C context);

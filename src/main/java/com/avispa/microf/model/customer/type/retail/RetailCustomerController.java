@@ -48,7 +48,7 @@ public class RetailCustomerController extends BaseModalableController<RetailCust
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
                 .id("customer-retail-update-modal")
                 .title("Update retail customer")
-                .action("/customer/retail/modal/update")
+                .action("/customer/retail/modal/update/" + id)
                 .size("large")
                 .build();
 
@@ -64,15 +64,5 @@ public class RetailCustomerController extends BaseModalableController<RetailCust
             log.error(errorMessage, e);
             throw new CustomerInUseException(errorMessage);
         }
-    }
-
-    @Override
-    protected Class<RetailCustomer> getObjectClass() {
-        return RetailCustomer.class;
-    }
-
-    @Override
-    protected Class<RetailCustomerDto> getDtoClass() {
-        return RetailCustomerDto.class;
     }
 }

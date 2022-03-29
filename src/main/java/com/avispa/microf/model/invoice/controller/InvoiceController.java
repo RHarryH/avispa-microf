@@ -77,7 +77,7 @@ public class InvoiceController extends BaseModalableController<Invoice, InvoiceD
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
                 .id("invoice-update-modal")
                 .title("Update invoice")
-                .action("/invoice/modal/update")
+                .action("/invoice/modal/update/" + id)
                 .size("extra-large")
                 .build();
 
@@ -98,7 +98,7 @@ public class InvoiceController extends BaseModalableController<Invoice, InvoiceD
                 .body(resource);
     }
 
-    @Override
+    /*@Override
     protected Class<Invoice> getObjectClass() {
         return Invoice.class;
     }
@@ -106,7 +106,7 @@ public class InvoiceController extends BaseModalableController<Invoice, InvoiceD
     @Override
     protected Class<InvoiceDto> getDtoClass() {
         return InvoiceDto.class;
-    }
+    }*/
 
     @Override
     protected void registerTableFields(Map<String, Class<? extends Dto>> tableFieldsMap) {

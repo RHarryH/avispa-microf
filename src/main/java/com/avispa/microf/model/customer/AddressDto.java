@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
@@ -16,6 +17,8 @@ public class AddressDto implements Dto {
     public static final String VM_STREET_NOT_EMPTY_NOR_BLANK = "Street cannot be empty or blank";
     public static final String VM_PLACE_NOT_EMPTY_NOR_BLANK = "Place cannot be empty or blank";
     public static final String VM_ZIP_CODE_PATTERN_NOT_MATCH = "Zip code does not match specified pattern";
+
+    private UUID id;
 
     @NotBlank(message = VM_STREET_NOT_EMPTY_NOR_BLANK)
     private String street;

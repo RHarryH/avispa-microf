@@ -46,7 +46,7 @@ public class CorporateCustomerController extends BaseModalableController<Corpora
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
                 .id("customer-corporate-update-modal")
                 .title("Update corporate customer")
-                .action("/customer/corporate/modal/update")
+                .action("/customer/corporate/modal/update/" + id)
                 .size("large")
                 .build();
 
@@ -62,15 +62,5 @@ public class CorporateCustomerController extends BaseModalableController<Corpora
             log.error(errorMessage, e);
             throw new CustomerInUseException(errorMessage);
         }
-    }
-
-    @Override
-    protected Class<CorporateCustomer> getObjectClass() {
-        return CorporateCustomer.class;
-    }
-
-    @Override
-    protected Class<CorporateCustomerDto> getDtoClass() {
-        return CorporateCustomerDto.class;
     }
 }

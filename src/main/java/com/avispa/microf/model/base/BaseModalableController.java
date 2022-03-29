@@ -9,8 +9,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
@@ -50,8 +53,8 @@ public abstract class BaseModalableController<T extends EcmObject, D extends Dto
     }
 
     @Override
-    public void updateFromModal(C context, BindingResult result) {
-        update(context.getObject(), result);
+    public void updateFromModal(C context, UUID id, BindingResult result) {
+        update(context.getObject(), id, result);
     }
 
     @Override
@@ -66,8 +69,20 @@ public abstract class BaseModalableController<T extends EcmObject, D extends Dto
                 modalService.getTemplateRow(tableName, getObjectClass(), getDtoClass(), tableFieldsMap.get(tableName)));
     }
 
-    protected abstract Class<T> getObjectClass();
-    protected abstract Class<D> getDtoClass();
+    @SuppressWarnings("unchecked")
+    private Class<T> getObjectClass() {
+        return (Class<T>)getTypeFromGeneric(0);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<D> getDtoClass() {
+        return (Class<D>)getTypeFromGeneric(1);
+    }
+
+    private Type getTypeFromGeneric(int pos) {
+        return ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[pos];
+    }
 
     protected void registerTableFields(Map<String, Class<? extends Dto>> tableFieldsMap) {
         // No fields are registered by default
