@@ -32,12 +32,14 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, M exten
         service.add(object);
     }
 
-    @PostMapping(value = "/update")
+    @PostMapping(value = "/update/{id}")
     @ResponseBody
-    public void update(D dto, BindingResult result) {
+    public void update(D dto, @PathVariable("id") UUID id, BindingResult result) {
         if(result.hasErrors()) {
             ErrorUtil.processErrors(HttpStatus.BAD_REQUEST, result);
         }
+
+        dto.setId(id);
 
         service.update(dto);
     }
