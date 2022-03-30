@@ -3,11 +3,13 @@ $(document).ready(function () {
     registerAddModal(
         ["invoice"],
         ["invoice-list-widget", "repository-widget"],
+        "invoice-list-widget",
         "Invoice added successfully!",
         "Invoice adding failed!");
     registerCloneModal(
         ["invoice"],
         ["invoice-list-widget", "repository-widget"],
+        "invoice-list-widget",
         "Invoice cloned successfully!",
         "Invoice cloning failed!");
 
@@ -15,6 +17,7 @@ $(document).ready(function () {
     registerAddModal(
         ["customer", "retail"],
         ["customer-list-widget"],
+        "customer-list-widget",
         "Retail customer added successfully!",
         "Retail customer adding failed!");
 
@@ -22,6 +25,7 @@ $(document).ready(function () {
     registerAddModal(
         ["customer", "corporate"],
         ["customer-list-widget"],
+        "customer-list-widget",
         "Corporate customer added successfully!",
         "Corporate customer adding failed!");
 });
@@ -30,6 +34,7 @@ function registerInvoiceUpdateModal() {
     registerUpdateModal(
         ["invoice"],
         ["invoice-list-widget", "repository-widget"],
+        null,
         "Invoice updated successfully!",
         "Invoice update failed!");
 }
@@ -38,6 +43,7 @@ function registerRetailCustomerUpdateModal() {
     registerUpdateModal(
         ["customer", "retail"],
         ["customer-list-widget"],
+        null,
         "Retail customer updated successfully!",
         "Retail customer update failed!");
 }
@@ -46,6 +52,7 @@ function registerCorporateCustomerUpdateModal() {
     registerUpdateModal(
         ["customer", "corporate"],
         ["customer-list-widget"],
+        null,
         "Corporate customer updated successfully!",
         "Corporate customer update failed!");
 }
@@ -53,6 +60,7 @@ function registerCorporateCustomerUpdateModal() {
 function registerAddModal(
     resourcePrefixes,
     widgetsToReload,
+    widgetToFocus,
     successMessage,
     failMessage
 ) {
@@ -63,6 +71,7 @@ function registerAddModal(
             "add-modal",
             "/modal/add/",
             widgetsToReload,
+            widgetToFocus,
             successMessage,
             failMessage);
     });
@@ -71,6 +80,7 @@ function registerAddModal(
 function registerUpdateModal(
     resourcePrefixes,
     widgetsToReload,
+    widgetToFocus,
     successMessage,
     failMessage
 ) {
@@ -81,6 +91,7 @@ function registerUpdateModal(
             "update-modal",
             "/modal/update/" + $(this).attr("value"),
             widgetsToReload,
+            widgetToFocus,
             successMessage,
             failMessage);
     });
@@ -89,6 +100,7 @@ function registerUpdateModal(
 function registerCloneModal(
     resourcePrefixes,
     widgetsToReload,
+    widgetToFocus,
     successMessage,
     failMessage
 ) {
@@ -99,6 +111,7 @@ function registerCloneModal(
             "clone-modal",
             "/modal/clone/",
             widgetsToReload,
+            widgetToFocus,
             successMessage,
             failMessage);
     });
@@ -109,6 +122,7 @@ function createModal(
     modalUniqueName,
     modalGetUrl,
     widgetsToReload,
+    widgetToFocus,
     successMessage,
     failMessage
 ) {
@@ -158,6 +172,9 @@ function createModal(
                     "data": form.serialize()
                 }).done(function () {
                     reloadWidgets(form, widgetsToReload);
+                    if(widgetToFocus !== null) {
+                        focusWidget(form, widgetToFocus);
+                    }
                     successNotification(successMessage);
                 }).fail(function (e) {
                     let errorMessage = composeErrorMessage(failMessage, e);
