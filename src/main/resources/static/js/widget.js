@@ -6,10 +6,10 @@ $(document).ready(function () {
     registerWidgetReloadEvent();
 
     // load widgets
-    $(document).trigger("widget:load", ["invoice-list-widget", "#nav-invoices"]);
-    $(document).trigger("widget:load", ["customer-list-widget", "#nav-customers"]);
-    $(document).trigger("widget:load", ["repository-widget", "#nav-repository"]);
-    $(document).trigger("widget:load", ["properties-widget", "#nav-properties"]);
+    $(document).trigger("widget:load", ["invoice-list-widget", "nav-invoices"]);
+    $(document).trigger("widget:load", ["customer-list-widget", "nav-customers"]);
+    $(document).trigger("widget:load", ["repository-widget", "nav-repository"]);
+    $(document).trigger("widget:load", ["properties-widget", "nav-properties"]);
 });
 
 function registerInvoicesWidget() {
@@ -84,8 +84,11 @@ function registerRepositoryWidget() {
 
 function registerWidgetReloadEvent() {
     $(document).on("widget:load", function (event, widgetName, componentId) {
-        const component = $(componentId);
+        const component = $("#" + componentId);
         if(component.length) {
+            // initialize tab trigger
+            let tabTrigger = new bootstrap.Tab(document.querySelector("#" + componentId + "-tab"));
+
             $.ajax({
                 "method": "get",
                 "url": "widget/" + widgetName
@@ -124,6 +127,12 @@ function registerWidgetReloadEvent() {
             })*/;
         }
     });
+
+    $(document).on("widget:focus", function (event, data) {
+        const componentId = document.querySelector("#" + data.widgetName).parentElement.id;
+        const tab = document.querySelector("#" + componentId + "-tab");
+        bootstrap.Tab.getInstance(tab).show();
+    });
 }
 
 function initializeWidgets(widgetName) {
@@ -134,7 +143,7 @@ function initializeWidgets(widgetName) {
             let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
+            });
 
             break;
         }
@@ -151,6 +160,32 @@ function initializeWidgets(widgetName) {
         case "repository-widget":
             createDirectoryTree();
             break;
+    }
+}
+
+function reloadWidgets(source, widgetsNames) {
+    for(const widgetName of widgetsNames) {
+        if(source == null) {
+            $(document).trigger("widget:reload", {
+                "widgetName": widgetName
+            });
+        } else {
+            source.trigger("widget:reload", {
+                "widgetName": widgetName
+            });
+        }
+    }
+}
+
+function focusWidget(source, widgetName) {
+    if(source == null) {
+        $(document).trigger("widget:focus", {
+            "widgetName": widgetName
+        });
+    } else {
+        source.trigger("widget:focus", {
+            "widgetName": widgetName
+        });
     }
 }
 
@@ -180,6 +215,7 @@ function createDirectoryTree() {
                 "widgetName": "properties-widget",
                 "id": data.node.id
             });
+           focusWidget(null, "properties-widget");
         } else if(data.action === "deselect_node") { // do not pass id
             $(document).trigger("widget:reload", {
                 "widgetName": "properties-widget"
@@ -255,18 +291,4 @@ function createDirectoryTree() {
             ]
         }
     );
-}
-
-function reloadWidgets(source, widgetsNames) {
-    for(const widgetName of widgetsNames) {
-        if(source == null) {
-            $(document).trigger("widget:reload", {
-                "widgetName": widgetName
-            });
-        } else {
-            source.trigger("widget:reload", {
-                "widgetName": widgetName
-            });
-        }
-    }
 }
