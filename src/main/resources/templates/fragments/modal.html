@@ -36,7 +36,7 @@
                         <div class="row">
                             <div class="col-auto p-0 border-end" role="tabpanel" th:if="${#lists.size(pages) > 1}">
                                 <div class="list-group list-group-flush" id="modal-list" role="tablist">
-                                    <a th:each="page : ${pages}" class="list-group-item list-group-item-action"
+                                    <a th:each="page : ${pages}" class="list-group-item list-group-item-action disabled"
                                        data-bs-toggle="list" role="tab"
                                        th:href="|#tab-pane-${pageStat.index}|"
                                        th:classappend="${pageStat.first ? 'active' : ''}" th:aria-current="${pageStat.first}"
