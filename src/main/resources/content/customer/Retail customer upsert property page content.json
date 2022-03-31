@@ -27,7 +27,8 @@
       {
         "type": "email",
         "label": "Email",
-        "property": "email"
+        "property": "email",
+        "maxLength": 150
       },
       {
         "type": "label",

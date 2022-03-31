@@ -21,7 +21,7 @@ public class Address extends EcmObject {
     @Column(nullable = false)
     private String place;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 6)
     private String zipCode;
 
     public String format() {
