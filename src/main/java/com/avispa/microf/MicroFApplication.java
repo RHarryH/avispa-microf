@@ -65,9 +65,10 @@ public class MicroFApplication {
 
 	//@EventListener(ApplicationReadyEvent.class)
 	@EventListener(ContextRefreshedEvent.class) // after bean creation but before the server starts
-	public void doSomethingAfterStartup() {
-		propertyPageService.loadContentTo("Invoice property page", "classpath:/content/Invoice property page content.json");
-		propertyPageService.loadContentTo("Invoice upsert property page", "classpath:/content/Invoice upsert property page content.json");
+	public void loadPropertyPages() {
+		propertyPageService.loadContentTo("Invoice property page", "classpath:/content/invoice/Invoice property page content.json");
+		propertyPageService.loadContentTo("Invoice upsert property page", "classpath:/content/invoice/Invoice upsert property page content.json");
+
 		propertyPageService.loadContentTo("Retail customer upsert property page", "classpath:/content/customer/Retail customer upsert property page content.json");
 		propertyPageService.loadContentTo("Corporate customer upsert property page", "classpath:/content/customer/Corporate customer upsert property page content.json");
 
