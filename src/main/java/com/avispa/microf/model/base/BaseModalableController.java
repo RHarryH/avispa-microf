@@ -37,14 +37,14 @@ public abstract class BaseModalableController<T extends EcmObject, D extends Dto
         registerTableFields(tableFieldsMap);
     }
 
-    protected ModelAndView getModal(Class<T> objectClass, D dto, ModalConfiguration modal) {
+    protected ModelAndView getModal(D dto, ModalConfiguration modal) {
         return new ModelAndView("fragments/modal :: upsertModal",
-                modalService.constructModal(objectClass, dto, modal));
+                modalService.constructModal(getEntityDtoMapper().convertToEntity(dto), dto, modal));
     }
 
-    protected ModelAndView getModal(Class<T> objectClass, Class<D> dtoClass, ModalConfiguration modal) {
+    protected ModelAndView getModal(ModalConfiguration modal) {
         return new ModelAndView("fragments/modal :: upsertModal",
-                modalService.constructModal(objectClass, dtoClass, modal));
+                modalService.constructModal(getObjectClass(), getDtoClass(), modal));
     }
 
     @Override

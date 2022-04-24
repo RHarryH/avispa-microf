@@ -1,7 +1,5 @@
-package com.avispa.microf.model.customer.mapper;
+package com.avispa.microf.model.customer.address;
 
-import com.avispa.microf.model.customer.Address;
-import com.avispa.microf.model.customer.AddressDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;

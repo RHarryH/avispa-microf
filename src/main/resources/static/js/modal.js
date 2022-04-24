@@ -1,11 +1,6 @@
 $(document).ready(function () {
     // invoice
-    registerAddModal(
-        ["invoice"],
-        ["invoice-list-widget", "repository-widget"],
-        "invoice-list-widget",
-        "Invoice added successfully!",
-        "Invoice adding failed!");
+    registerAddModal(["invoice"], ["invoice-list-widget", "repository-widget"], "invoice-list-widget", "Invoice added successfully!", "Invoice adding failed!");
     registerCloneModal(
         ["invoice"],
         ["invoice-list-widget", "repository-widget"],
@@ -14,20 +9,10 @@ $(document).ready(function () {
         "Invoice cloning failed!");
 
     // retail
-    registerAddModal(
-        ["customer", "retail"],
-        ["customer-list-widget"],
-        "customer-list-widget",
-        "Retail customer added successfully!",
-        "Retail customer adding failed!");
+    registerAddModal(["customer"], ["customer-list-widget"], "customer-list-widget", "Customer added successfully!", "Customer adding failed!");
 
-    // corporate
-    registerAddModal(
-        ["customer", "corporate"],
-        ["customer-list-widget"],
-        "customer-list-widget",
-        "Corporate customer added successfully!",
-        "Corporate customer adding failed!");
+    // bank account
+    registerAddModal(["bank", "account"], ["bank-account-list-widget"], "bank-account-list-widget", "Bank account added successfully!", "Bank account adding failed!");
 });
 
 function registerInvoiceUpdateModal() {
@@ -39,22 +24,22 @@ function registerInvoiceUpdateModal() {
         "Invoice update failed!");
 }
 
-function registerRetailCustomerUpdateModal() {
+function registerCustomerUpdateModal() {
     registerUpdateModal(
-        ["customer", "retail"],
+        ["customer"],
         ["customer-list-widget"],
         null,
-        "Retail customer updated successfully!",
-        "Retail customer update failed!");
+        "Customer updated successfully!",
+        "Customer update failed!");
 }
 
-function registerCorporateCustomerUpdateModal() {
+function registerBankAccountUpdateModal() {
     registerUpdateModal(
-        ["customer", "corporate"],
-        ["customer-list-widget"],
+        ["bank", "account"],
+        ["bank-account-list-widget"],
         null,
-        "Corporate customer updated successfully!",
-        "Corporate customer update failed!");
+        "Bank account updated successfully!",
+        "Bank account update failed!");
 }
 
 function registerAddModal(
@@ -64,7 +49,7 @@ function registerAddModal(
     successMessage,
     failMessage
 ) {
-    const classPrefix = resourcePrefixes.join("-");
+    let classPrefix = resourcePrefixes.join("-");
     $("." + classPrefix + "-add-button").click(function () {
         createModal(
             resourcePrefixes,

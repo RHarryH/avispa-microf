@@ -4,10 +4,10 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Control;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
+import com.avispa.microf.model.base.BaseService;
+import com.avispa.microf.model.base.IEntityDtoMapper;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.base.dto.DtoService;
-import com.avispa.microf.model.base.IEntityDtoMapper;
-import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.ui.modal.context.ModalContext;
 import com.avispa.microf.model.ui.modal.page.ModalPage;
 import com.avispa.microf.model.ui.modal.page.ModalPageService;
@@ -62,7 +62,7 @@ public class ModalService {
         context.setTypeName(objectClass.getSimpleName());
 
         if(modal.isCloneModal()) {
-            initCloneModal(objectClass, modelMap, modalPages, context);
+            initCloneModal(modelMap, modalPages, context);
         } else {
             initUpsertModal(objectClass, contextTypedDto, modal, modelMap, modalPages, context);
         }
@@ -79,7 +79,34 @@ public class ModalService {
         return modelMap;
     }
 
-    private <T extends EcmObject, D extends Dto> void initCloneModal(Class<T> objectClass, ModelMap modelMap, List<ModalPage> modalPages, ModalContext<D> context) {
+    public <T extends EcmObject, D extends Dto> ModelMap constructModal(T object, D contextTypedDto, ModalConfiguration modal) {
+        ModelMap modelMap = new ModelMap();
+        List<ModalPage> modalPages = new ArrayList<>();
+
+        ModalContext<D> context = new ModalContext<>();
+        context.setTypeName(object.getClass().getSimpleName());
+
+        if(modal.isCloneModal()) {
+            initCloneModal(modelMap, modalPages, context);
+        } else {
+            initUpsertModal(object, contextTypedDto, modal, modelMap, modalPages, context);
+        }
+
+        addNavigationButtons(modalPages);
+
+        context.setPages(modalPages.stream().map(ModalPage::getType).collect(Collectors.toList()));
+
+        modelMap.addAttribute("pages", modalPages);
+        modelMap.addAttribute("modal", modal);
+
+        modelMap.addAttribute("context", context);
+
+        return modelMap;
+    }
+
+
+
+    private <D extends Dto> void initCloneModal(ModelMap modelMap, List<ModalPage> modalPages, ModalContext<D> context) {
         modalPages.add(modalPageService.createSourceModalPage());
         modalPages.add(modalPageService.createInsertionModalPage());
 
@@ -94,6 +121,16 @@ public class ModalService {
         }
 
         modalPageService.createPropertiesPropertyPage(objectClass, contextTypedDto, modelMap, context);
+    }
+
+    private <T extends EcmObject, D extends Dto> void initUpsertModal(T object, D contextTypedDto, ModalConfiguration modal, ModelMap modelMap, List<ModalPage> modalPages, ModalContext<D> context) {
+        if(modal.isUpdateModal()) {
+            modalPages.add(modalPageService.createUpdateModalPage());
+        } else {
+            modalPages.add(modalPageService.createInsertionModalPage());
+        }
+
+        modalPageService.createPropertiesPropertyPage(object, contextTypedDto, modelMap, context);
     }
 
     private void addNavigationButtons(List<ModalPage> modalPages) {

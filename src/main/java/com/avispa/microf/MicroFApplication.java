@@ -1,6 +1,5 @@
 package com.avispa.microf;
 
-import com.avispa.ecm.EcmConfiguration;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPageService;
 import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
@@ -13,7 +12,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -29,7 +27,6 @@ import java.util.Locale;
 @EnableJpaRepositories(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use CMS repositories
 @PropertySource("classpath:application.properties")
 @PropertySource(value = "file:./microf.properties")
-@Import({EcmConfiguration.class})
 @RequiredArgsConstructor
 public class MicroFApplication {
 	private final PropertyPageService propertyPageService;
@@ -69,8 +66,11 @@ public class MicroFApplication {
 		propertyPageService.loadContentTo("Invoice property page", "classpath:/content/invoice/Invoice property page content.json");
 		propertyPageService.loadContentTo("Invoice upsert property page", "classpath:/content/invoice/Invoice upsert property page content.json");
 
-		propertyPageService.loadContentTo("Retail customer upsert property page", "classpath:/content/customer/Retail customer upsert property page content.json");
-		propertyPageService.loadContentTo("Corporate customer upsert property page", "classpath:/content/customer/Corporate customer upsert property page content.json");
+		propertyPageService.loadContentTo("Customer insert property page", "classpath:/content/customer/Customer insert property page content.json");
+		propertyPageService.loadContentTo("Retail customer update property page", "classpath:/content/customer/Retail customer update property page content.json");
+		propertyPageService.loadContentTo("Corporate customer update property page", "classpath:/content/customer/Corporate customer update property page content.json");
+
+		propertyPageService.loadContentTo("Bank account upsert property page", "classpath:/content/bank-account/Bank account upsert property page content.json");
 
 		propertyPageService.loadContentTo("Select source property page", "classpath:/content/Select source property page content.json");
 	}

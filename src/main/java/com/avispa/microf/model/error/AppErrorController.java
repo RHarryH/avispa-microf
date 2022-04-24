@@ -10,9 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class AppErrorController implements ErrorController {
-    private static final String PATH = "/error";
-
-    @RequestMapping(PATH)
+    @RequestMapping("/error")
     public ModelAndView handleError(HttpServletRequest request) {
         ModelAndView errorPage = new ModelAndView("error/error");
         String errorMessage = "";
@@ -46,10 +44,5 @@ public class AppErrorController implements ErrorController {
         errorPage.addObject("errorMessage", errorMessage);
 
         return errorPage;
-    }
-
-    @Override
-    public String getErrorPath() {
-        return PATH;
     }
 }

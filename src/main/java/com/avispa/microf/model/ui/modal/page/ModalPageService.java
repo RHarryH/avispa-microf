@@ -53,6 +53,12 @@ public class ModalPageService {
         modelMap.addAttribute("prefix", "object");
     }
 
+    public <T extends EcmObject, D extends Dto> void createPropertiesPropertyPage(T object, D contextTypedDto, ModelMap modelMap, ModalContext<D> context) {
+        context.setObject(contextTypedDto);
+        modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage(object, contextTypedDto));
+        modelMap.addAttribute("prefix", "object");
+    }
+
     public <D extends Dto> void createSelectSourcePropertyPage(ModelMap modelMap, ModalContext<D> context) {
         modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage("Select source property page", context));
     }

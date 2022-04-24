@@ -54,7 +54,7 @@ public class InvoiceController extends BaseModalableController<Invoice, InvoiceD
                 .size("extra-large")
                 .build();
 
-        return getModal(Invoice.class, InvoiceDto.class, modal);
+        return getModal(modal);
     }
 
     @GetMapping("/modal/clone")
@@ -66,7 +66,7 @@ public class InvoiceController extends BaseModalableController<Invoice, InvoiceD
                 .size("extra-large")
                 .build();
 
-        return getModal(Invoice.class, InvoiceDto.class, modal);
+        return getModal(modal);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class InvoiceController extends BaseModalableController<Invoice, InvoiceD
                 .size("extra-large")
                 .build();
 
-        return getModal(Invoice.class, invoiceDto, modal);
+        return getModal(invoiceDto, modal);
     }
 
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
@@ -97,16 +97,6 @@ public class InvoiceController extends BaseModalableController<Invoice, InvoiceD
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
-
-    /*@Override
-    protected Class<Invoice> getObjectClass() {
-        return Invoice.class;
-    }
-
-    @Override
-    protected Class<InvoiceDto> getDtoClass() {
-        return InvoiceDto.class;
-    }*/
 
     @Override
     protected void registerTableFields(Map<String, Class<? extends Dto>> tableFieldsMap) {
