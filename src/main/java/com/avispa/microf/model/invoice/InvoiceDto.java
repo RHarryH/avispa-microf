@@ -27,10 +27,10 @@ public class InvoiceDto implements Dto {
     private UUID id;
 
     @NotNull(message = VM_SELLER_NOT_NULL)
-    private UUID seller;
+    private String seller;
 
     @NotNull(message = VM_BUYER_NOT_NULL)
-    private UUID buyer;
+    private String buyer;
 
     private String issueDate;
     private String serviceDate;

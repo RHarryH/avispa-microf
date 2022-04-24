@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import static com.avispa.microf.util.TestValidationUtils.validate;
 
@@ -19,8 +18,8 @@ class PositionDtoValidationTest {
     void createDto() {
         positionDto = new PositionDto();
         positionDto.setObjectName("Name");
-        positionDto.setUnit(UUID.randomUUID());
-        positionDto.setVatRate(UUID.randomUUID());
+        positionDto.setUnit("HOUR");
+        positionDto.setVatRate("VAT_08");
         positionDto.setUnitPrice(BigDecimal.ONE);
     }
 

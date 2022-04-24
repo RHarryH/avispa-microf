@@ -36,6 +36,7 @@
         "type": "table",
         "label": "Positions",
         "property": "positions",
+        "propertyType": "Position",
         "controls": [
           {
             "type": "text",
@@ -55,7 +56,6 @@
             "type": "combo",
             "label": "Unit",
             "property": "unit",
-            "dictionary": "Unit",
             "sortByLabel": true
           },
           {
@@ -75,8 +75,7 @@
           {
             "type": "combo",
             "label": "VAT Rate",
-            "property": "vatRate",
-            "dictionary": "VatRate"
+            "property": "vatRate"
           }
         ]
       },

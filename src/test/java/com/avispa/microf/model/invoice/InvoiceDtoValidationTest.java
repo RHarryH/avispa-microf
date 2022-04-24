@@ -21,15 +21,15 @@ class InvoiceDtoValidationTest {
     @BeforeEach
     void createDto() {
         invoiceDto = new InvoiceDto();
-        invoiceDto.setBuyer(UUID.randomUUID());
-        invoiceDto.setSeller(UUID.randomUUID());
+        invoiceDto.setBuyer(UUID.randomUUID().toString());
+        invoiceDto.setSeller(UUID.randomUUID().toString());
         invoiceDto.setServiceDate(getCurrentDate());
         invoiceDto.setIssueDate(getCurrentDate());
 
         PositionDto positionDto = invoiceDto.getPositions().get(0); // first position is always available when created
         positionDto.setObjectName("Name");
-        positionDto.setUnit(UUID.randomUUID());
-        positionDto.setVatRate(UUID.randomUUID());
+        positionDto.setUnit("UNIT");
+        positionDto.setVatRate("RATE");
         positionDto.setUnitPrice(BigDecimal.ONE);
     }
 

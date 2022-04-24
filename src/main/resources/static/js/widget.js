@@ -1,13 +1,15 @@
 $(document).ready(function () {
     registerInvoicesWidget();
     registerCustomersWidget();
-    registerRepositoryWidget();
+    registerBankAccountWidget();
 
+    registerRepositoryWidget();
     registerWidgetReloadEvent();
 
     // load widgets
     $(document).trigger("widget:load", ["invoice-list-widget", "nav-invoices"]);
     $(document).trigger("widget:load", ["customer-list-widget", "nav-customers"]);
+    $(document).trigger("widget:load", ["bank-account-list-widget", "nav-bank-accounts"]);
     $(document).trigger("widget:load", ["repository-widget", "nav-repository"]);
     $(document).trigger("widget:load", ["properties-widget", "nav-properties"]);
 });
@@ -61,6 +63,32 @@ function registerCustomersWidget() {
         $("#customer-delete-modal .modal-accept-button").attr("value", id);
     }).on("click", "#customer-list-refresh-button", function () {
         reloadWidgets(null,["customer-list-widget"])
+    });
+}
+
+function registerBankAccountWidget() {
+    $('#nav-bank-accounts').on("click", ".modal-accept-button", function (e) { // when modal form will be clicked
+        e.preventDefault(); // disable default behavior
+
+        const id = $("#bank-account-delete-modal .modal-accept-button").attr("value");
+
+        // call deletion event
+        $.ajax({
+            "method": "delete",
+            "url": "/bank/account/delete/" + id
+        }).done(function () {
+            // trigger reloads of widgets
+            reloadWidgets(null, ["bank-account-list-widget"])
+            successNotification("Bank account deleted successfully!");
+        }).fail(function(e) {
+            let errorMessage = composeErrorMessage("Error when deleting bank account!", e);
+            errorNotification(errorMessage);
+        });
+    }).on("click", ".bank-account-delete-button", function () { // modal is created once but bank account id varies in each row and has to be added dynamically
+        const id = $(this).attr("value");
+        $("#bank-account-delete-modal .modal-accept-button").attr("value", id);
+    }).on("click", "#bank-account-list-refresh-button", function () {
+        reloadWidgets(null,["bank-account-list-widget"])
     });
 }
 
@@ -140,27 +168,35 @@ function initializeWidgets(widgetName) {
         case "invoice-list-widget": {
             registerInvoiceUpdateModal();
 
-            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            });
+            createTooltips();
 
             break;
         }
         case "customer-list-widget": {
-            registerRetailCustomerUpdateModal()
-            registerCorporateCustomerUpdateModal();
+            registerCustomerUpdateModal()
 
-            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
+            createTooltips();
+
+            break;
+        }
+        case "bank-account-list-widget": {
+            registerBankAccountUpdateModal();
+
+            createTooltips();
+
             break;
         }
         case "repository-widget":
             createDirectoryTree();
             break;
     }
+}
+
+function createTooltips() {
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
 }
 
 function reloadWidgets(source, widgetsNames) {

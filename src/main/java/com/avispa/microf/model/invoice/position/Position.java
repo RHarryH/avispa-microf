@@ -1,7 +1,7 @@
 package com.avispa.microf.model.invoice.position;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.configuration.dictionary.DictionaryValue;
+import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,6 @@ import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 import java.math.BigDecimal;
 
 /**
@@ -25,8 +24,8 @@ public class Position extends EcmObject {
     @Column(precision=8, scale=3)
     private BigDecimal quantity;
 
-    @OneToOne
-    private DictionaryValue unit;
+    @Dictionary(name = "Unit")
+    private String unit;
 
     @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     @Column(precision=9, scale=2)
@@ -36,8 +35,8 @@ public class Position extends EcmObject {
     @Column(precision=5, scale=2)
     private BigDecimal discount;
 
-    @OneToOne
-    private DictionaryValue vatRate;
+    @Dictionary(name = "VatRate")
+    private String vatRate;
 
     public void setPositionName(String positionName) {
         this.setObjectName(positionName);

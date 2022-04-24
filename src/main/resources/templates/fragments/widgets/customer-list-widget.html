@@ -29,7 +29,7 @@
                     <td><span th:text="${customer.email}"> Email </span></td>
                     <td><span th:text="${customer.address}"> Address </span></td>
                     <td>
-                        <button th:value="${customer.id}" class="btn bi bi-pencil-fill" th:classappend="${customer.corporate ? 'customer-corporate-update-button': 'customer-retail-update-button'}" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit customer"></button>
+                        <button th:value="${customer.id}" class="btn bi bi-pencil-fill customer-update-button" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit customer"></button>
                     </td>
                     <td>
                         <span data-bs-toggle="modal" data-bs-target="#customer-delete-modal">

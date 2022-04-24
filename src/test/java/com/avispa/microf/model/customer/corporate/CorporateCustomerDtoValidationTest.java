@@ -1,6 +1,7 @@
-package com.avispa.microf.model.customer.type.corporate;
+package com.avispa.microf.model.customer.corporate;
 
-import com.avispa.microf.model.customer.AddressDto;
+import com.avispa.microf.model.customer.CustomerDto;
+import com.avispa.microf.model.customer.address.AddressDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,11 +13,11 @@ import static com.avispa.microf.util.TestValidationUtils.validate;
  * @author Rafał Hiszpański
  */
 class CorporateCustomerDtoValidationTest {
-    private CorporateCustomerDto customerDto;
+    private CustomerDto customerDto;
 
     @BeforeEach
     void createDto() {
-        customerDto = new CorporateCustomerDto();
+        customerDto = new CustomerDto();
         customerDto.setCompanyName("First");
         customerDto.setVatIdentificationNumber("111-11-11-111");
         customerDto.setEmail("email@mail.com");
@@ -33,19 +34,19 @@ class CorporateCustomerDtoValidationTest {
     @Test
     void givenEmptyFirstName_whenValidate_thenFail() {
         customerDto.setCompanyName("");
-        validate(customerDto, CorporateCustomerDto.VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK);
+        validate(customerDto, CustomerDto.VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenBlankFirstName_whenValidate_thenFail() {
         customerDto.setCompanyName("   \n\t");
-        validate(customerDto, CorporateCustomerDto.VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK);
+        validate(customerDto, CustomerDto.VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenIncorrectVIN_whenValidate_thenFail() {
         customerDto.setVatIdentificationNumber("123-123-1");
-        validate(customerDto, 2, Set.of(CorporateCustomerDto.VM_VIN_PATTERN_NOT_MATCH, "Vat Identification Number is invalid"));
+        validate(customerDto, 2, Set.of(CustomerDto.VM_VIN_PATTERN_NOT_MATCH, "Vat Identification Number is invalid"));
     }
 
     @Test

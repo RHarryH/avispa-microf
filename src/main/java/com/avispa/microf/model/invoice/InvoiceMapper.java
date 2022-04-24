@@ -29,12 +29,12 @@ public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, Invoice
     @Autowired
     private CustomerRepository customerRepository;
 
-    protected UUID customerToId(Customer customer) {
-        return customer.getId();
+    protected String customerToId(Customer customer) {
+        return customer.getId().toString();
     }
 
-    protected Customer idToCustomer(UUID customerId) {
-        return Hibernate.unproxy(customerRepository.getOne(customerId), Customer.class);
+    protected Customer idToCustomer(String customerId) {
+        return Hibernate.unproxy(customerRepository.getById(UUID.fromString(customerId)), Customer.class);
     }
 
     protected void updatePositionsFromPositionsDto(List<PositionDto> positionDtos, @MappingTarget List<Position> positions) {

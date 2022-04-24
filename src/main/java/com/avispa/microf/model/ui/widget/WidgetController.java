@@ -6,6 +6,7 @@ import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
 import com.avispa.ecm.model.context.ContextService;
+import com.avispa.microf.model.bankaccount.BankAccountService;
 import com.avispa.microf.model.customer.CustomerService;
 import com.avispa.microf.model.invoice.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class WidgetController {
 
     private final InvoiceService invoiceService;
     private final CustomerService customerService;
+    private final BankAccountService bankAccountService;
 
     private final EcmObjectRepository<EcmObject> ecmObjectRepository;
     private final PropertyPageMapper propertyPageMapper;
@@ -57,6 +59,12 @@ public class WidgetController {
     public String getCustomerListWidget(Model model) {
         model.addAttribute("customers", customerService.findAll());
         return "fragments/widgets/customer-list-widget :: customer-list-widget";
+    }
+
+    @GetMapping("/bank-account-list-widget")
+    public String getBankAccountListWidget(Model model) {
+        model.addAttribute("bankAccounts", bankAccountService.findAll());
+        return "fragments/widgets/bank-account-list-widget :: bank-account-list-widget";
     }
 
     @GetMapping("/repository-widget")
