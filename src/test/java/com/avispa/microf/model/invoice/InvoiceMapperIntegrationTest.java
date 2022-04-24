@@ -2,9 +2,8 @@ package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.configuration.dictionary.DictionaryValue;
-import com.avispa.ecm.model.configuration.dictionary.DictionaryValueMapper;
+import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
-import com.avispa.microf.model.customer.type.corporate.CorporateCustomer;
 import com.avispa.microf.model.invoice.position.PositionMapperImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,14 +36,14 @@ class InvoiceMapperIntegrationTest {
     @MockBean
     private CustomerRepository customerRepository;
 
-    @MockBean
-    private DictionaryValueMapper dictionaryValueMapper;
-
     @Test
     void givenInvoiceToDto_whenMaps_thenCorrect() {
+        Customer customer = new Customer();
+        customer.setId(UUID.randomUUID());
+
         Invoice invoice = new Invoice();
-        invoice.setSeller(new CorporateCustomer());
-        invoice.setBuyer(new CorporateCustomer());
+        invoice.setSeller(customer);
+        invoice.setBuyer(customer);
         invoice.setComments("Test comment");
 
         InvoiceDto invoiceDto = mapper.convertToDto(invoice);
@@ -54,9 +53,12 @@ class InvoiceMapperIntegrationTest {
 
     @Test
     void givenLocalDateToStringDate_whenMaps_thenCorrect() {
+        Customer customer = new Customer();
+        customer.setId(UUID.randomUUID());
+
         Invoice invoice = new Invoice();
-        invoice.setSeller(new CorporateCustomer());
-        invoice.setBuyer(new CorporateCustomer());
+        invoice.setSeller(customer);
+        invoice.setBuyer(customer);
         invoice.setIssueDate(LocalDate.of(2011, 11, 10));
         invoice.setServiceDate(LocalDate.of(2011, 11, 10));
 
@@ -69,8 +71,8 @@ class InvoiceMapperIntegrationTest {
     @Test
     void givenDtoToInvoice_whenMaps_thenCorrect() {
         InvoiceDto invoiceDto = new InvoiceDto();
-        invoiceDto.setSeller(UUID.randomUUID());
-        invoiceDto.setBuyer(UUID.randomUUID());
+        invoiceDto.setSeller(UUID.randomUUID().toString());
+        invoiceDto.setBuyer(UUID.randomUUID().toString());
         invoiceDto.setComments("Test comment");
 
         Invoice invoice = mapper.convertToEntity(invoiceDto);
@@ -81,8 +83,8 @@ class InvoiceMapperIntegrationTest {
     @Test
     void givenStringDateToLocalDate_whenMaps_thenCorrect() {
         InvoiceDto invoiceDto = new InvoiceDto();
-        invoiceDto.setSeller(UUID.randomUUID());
-        invoiceDto.setBuyer(UUID.randomUUID());
+        invoiceDto.setSeller(UUID.randomUUID().toString());
+        invoiceDto.setBuyer(UUID.randomUUID().toString());
         invoiceDto.setIssueDate("2011-11-10");
         invoiceDto.setServiceDate("2011-11-10");
 

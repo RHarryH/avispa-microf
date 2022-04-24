@@ -1,4 +1,4 @@
-package com.avispa.microf.model.customer.type.corporate;
+package com.avispa.microf.model.customer;
 
 import com.avispa.microf.model.ui.modal.context.ModalContext;
 import lombok.Getter;
@@ -9,5 +9,5 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CorporateCustomerModalContext extends ModalContext<CorporateCustomerDto> {
+public class CustomerModalContext extends ModalContext<CustomerDto> {
 }

@@ -1,5 +1,6 @@
 package com.avispa.microf.model.invoice.position;
 
+import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
@@ -48,7 +49,8 @@ public class PositionDto implements Dto {
     private BigDecimal quantity = BigDecimal.ONE;
 
     @NotNull(message = VM_UNIT_NOT_NULL)
-    private UUID unit;
+    @Dictionary(name = "Unit")
+    private String unit;
 
     @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     @Digits(integer=7, fraction=2, message = VM_UNIT_PRICE_OUT_OF_RANGE)
@@ -62,5 +64,6 @@ public class PositionDto implements Dto {
     private BigDecimal discount = BigDecimal.ZERO;
 
     @NotNull(message = VM_VAT_RATE_NOT_NULL)
-    private UUID vatRate;
+    @Dictionary(name = "VatRate")
+    private String vatRate;
 }

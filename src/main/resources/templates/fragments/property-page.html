@@ -36,7 +36,7 @@
                     </ul>
                     <div class="tab-content rounded-bottom border-bottom border-start border-end p-3" th:id="${control.label + '-content'}">
                         <div class="tab-pane fade" th:classappend="${tabStat.index == 0 ? ' show active' : ''}" th:id="${tab.name}" role="tabpanel" th:aria-labelledby="${tab.name + '-tab'}" th:each="tab : ${control?.tabs}">
-                            <th:block th:insert="this :: property-page-controls(${tab?.controls}, '')"/>
+                            <th:block th:insert="this :: property-page-controls(${tab?.controls}, ${prefix})"/>
                         </div>
                     </div>
                 </th:block>
@@ -109,12 +109,15 @@
                 <th:block th:case="combo">
                     <th:block th:replace="this :: propertyLabel(${prefix})">Label</th:block>
                     <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
-                        <select class="form-select" th:unless="${propertyPage.readonly}"
-                                th:field="*{__${property}__}" th:disabled="${propertyPage.readonly}" th:required="${control.required}">
-                            <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}"></option>
-                        </select>
-                        <th:block th:if="${propertyPage.readonly}" th:each="value : ${control.values}">
-                            <input type="text" class="form-control" th:if="${value.key == context.__${property}__.id}" th:value="${value.value}" readonly/>
+                        <th:block th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
+                            <input th:if="${propertyPage.readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
+                                   th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
+                            <select th:unless="${propertyPage.readonly}" class="form-select" th:name="__${property}__"
+                                    th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
+                                    th:required="${control.required}">
+                                <option th:if="${propertyValueString != null ? not dictionaryContains : false}" value="" selected disabled hidden>DEPRECATED</option>
+                                <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}" th:selected="${value.key == propertyValueString}"></option>
+                            </select>
                         </th:block>
                     </div>
                 </th:block>
@@ -131,10 +134,9 @@
                     </th:block>
                     <th:block th:if="${propertyPage.readonly}" th:with="property=${#strings.concat(prefix, control.property)}">
                         <th:block th:replace="this :: propertyLabel(${prefix})">Label</th:block>
-                        <div class="col">
-                            <input type="text" class="form-control" th:each="value : ${control.values}"
-                                   th:if="${value.key == context.__${property}__.id}"
-                                   th:value="${value.value}" readonly/>
+                        <div class="col" th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
+                            <input th:if="${propertyPage.readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
+                                   th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
                         </div>
                     </th:block>
                 </th:block>
@@ -251,14 +253,15 @@
                 <th:block th:case="text">
                     <th:block th:replace="this :: table-text(${control}, ${prefix}, ${property}, ${readonly}, 'text')">Text</th:block>
                 </th:block>
-                <th:block th:case="combo">
-                    <select class="form-select" th:unless="${readonly}"
-                            th:field="*{__${property}__}" th:disabled="${readonly}" required>
-                        <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}"></option>
+                <th:block th:case="combo" th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
+                    <input th:if="${readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
+                           th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
+                    <select th:unless="${readonly}" class="form-select" th:name="__${property}__"
+                            th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
+                            required>
+                        <option th:if="${propertyValueString != null ? not dictionaryContains : false}" value="" selected disabled hidden>DEPRECATED</option>
+                        <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}" th:selected="${value.key == propertyValueString}"></option>
                     </select>
-                    <th:block th:if="${readonly}" th:each="value : ${control.values}">
-                        <input type="text" class="form-control" th:if="${value.key == context.__${property}__.id}" th:value="${value.value}" readonly/>
-                    </th:block>
                 </th:block>
                 <th:block th:case="*">
                     <span th:text="|Unsupported control of type '${control.type}'|"></span>

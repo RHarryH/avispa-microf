@@ -1,7 +1,6 @@
 package com.avispa.microf.model.invoice.service.file;
 
 import com.avispa.ecm.util.SpringContext;
-import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
 import com.avispa.microf.model.invoice.service.file.data.PositionData;
 import com.avispa.microf.model.invoice.service.file.data.VatRowData;
@@ -24,9 +23,7 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
     protected ITemplateReplacer replacer;
 
     @Override
-    public void generate(Invoice invoice, String issuerName) {
-        InvoiceData invoiceData = new InvoiceData(invoice);
-
+    public void generate(InvoiceData invoiceData, String issuerName) {
         Map<String, String> variables = new HashMap<>();
         variables.put("invoice_number", invoiceData.getInvoiceName());
         variables.put("seller", invoiceData.getSeller());

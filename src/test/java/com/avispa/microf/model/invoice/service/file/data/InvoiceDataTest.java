@@ -1,9 +1,8 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
-import com.avispa.ecm.model.configuration.dictionary.DictionaryValue;
-import com.avispa.microf.model.customer.Address;
-import com.avispa.microf.model.customer.type.retail.RetailCustomer;
+import com.avispa.microf.model.customer.Customer;
+import com.avispa.microf.model.customer.address.Address;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.position.Position;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -11,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -20,11 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Rafał Hiszpański
@@ -32,15 +29,28 @@ import static org.mockito.Mockito.spy;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 class InvoiceDataTest {
+    @Mock
+    private Dictionary unitDict;
+
+    @Mock
+    private Dictionary vatRateDict;
+
     @Test
     void convertToDetails() {
+        when(unitDict.isEmpty()).thenReturn(false);
+        when(unitDict.getLabel(any(String.class))).thenReturn("godz.");
+
+        when(vatRateDict.getLabel(any(String.class))).thenReturn("5%");
+        when(vatRateDict.getColumnValue(any(String.class), any(String.class))).thenReturn("0.05");
+
         Address address = new Address();
         address.setObjectName("A");
         address.setPlace("Kielce");
         address.setStreet("Strit");
         address.setZipCode("123");
 
-        RetailCustomer customer = new RetailCustomer();
+        Customer customer = new Customer();
+        customer.setType("RETAIL");
         customer.setObjectName("Name Second name");
         customer.setFirstName("Name");
         customer.setLastName("Second name");
@@ -51,16 +61,8 @@ class InvoiceDataTest {
         Position position = new Position();
         position.setPositionName("Position");
         position.setQuantity(BigDecimal.ONE);
-        position.setUnit(new DictionaryValue());
-
-        DictionaryValue vatRateDictionaryValue = spy(DictionaryValue.class);
-        vatRateDictionaryValue.setKey("Key");
-        vatRateDictionaryValue.setLabel("Label");
-
-        Dictionary dictionary = mock(Dictionary.class);
-        doReturn(dictionary).when(vatRateDictionaryValue).getDictionary();
-        doReturn("5.00").when(dictionary).getColumnValue(anyString(), eq("rate"));
-        position.setVatRate(vatRateDictionaryValue);
+        position.setUnit("HOUR");
+        position.setVatRate("VAT_05");
 
         position.setUnitPrice(BigDecimal.TEN);
         position.setDiscount(BigDecimal.ZERO);
@@ -74,12 +76,13 @@ class InvoiceDataTest {
         invoice.setComments("Comment");
         invoice.setPositions(List.of(position));
 
-        InvoiceData invoiceData = new InvoiceData(invoice);
+        InvoiceData invoiceData = new InvoiceData(invoice, unitDict, vatRateDict);
 
-        ObjectMapper oMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
 
         TypeReference<LinkedHashMap<String, Object>> typeRef = new TypeReference<>() {};
-        Map<String, Object> map = oMapper.convertValue(invoiceData, typeRef);
+        Map<String, Object> map = objectMapper.convertValue(invoiceData, typeRef);
 
         log.info(map.toString());
 

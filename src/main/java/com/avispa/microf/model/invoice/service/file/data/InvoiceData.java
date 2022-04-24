@@ -1,5 +1,6 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
+import com.avispa.ecm.model.configuration.dictionary.Dictionary;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.numeral.NumeralToStringConverter;
 import lombok.Getter;
@@ -32,7 +33,15 @@ public class InvoiceData {
 
     private final String comments;
 
-    public InvoiceData(Invoice invoice) {
+    public InvoiceData(Invoice invoice, Dictionary unitDict, Dictionary vatRateDict) {
+        if(unitDict.isEmpty()) {
+            throw new IllegalArgumentException("Dictionary for units cannot be empty");
+        }
+
+        if(unitDict.isEmpty()) {
+            throw new IllegalArgumentException("Dictionary for vat rates cannot be empty");
+        }
+
         this.invoiceName = invoice.getObjectName();
 
         this.seller = invoice.getSeller().format();
@@ -41,7 +50,7 @@ public class InvoiceData {
         this.issueDate = invoice.getIssueDate();
         this.serviceDate = invoice.getServiceDate();
 
-        this.positions = invoice.getPositions().stream().map(PositionData::new).collect(Collectors.toList());
+        this.positions = invoice.getPositions().stream().map(position -> new PositionData(position, unitDict, vatRateDict)).collect(Collectors.toList());
 
         this.vatMatrix = generateVatMatrix();
         setGrossValueInWords(getVatSum().getGrossValue());

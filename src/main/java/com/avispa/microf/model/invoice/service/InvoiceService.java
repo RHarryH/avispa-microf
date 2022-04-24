@@ -18,6 +18,8 @@ import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
 import com.avispa.microf.model.invoice.service.file.OdfInvoiceFile;
+import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
+import com.avispa.microf.model.invoice.service.file.data.InvoiceDataConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +41,8 @@ import java.util.UUID;
 public class InvoiceService implements BaseService<Invoice, InvoiceDto> {
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
+
+    private final InvoiceDataConverter invoiceDataConverter;
 
     private final ContentService contentService;
     private final ContentMapper contentMapper;
@@ -76,8 +80,9 @@ public class InvoiceService implements BaseService<Invoice, InvoiceDto> {
     }
 
     private void generateContent(Invoice invoice) {
+        InvoiceData invoiceData = invoiceDataConverter.convert(invoice);
         try (IInvoiceFile invoiceFile = new OdfInvoiceFile()) {
-            invoiceFile.generate(invoice, issuerName);
+            invoiceFile.generate(invoiceData, issuerName);
             Path fileStorePath = invoiceFile.save(fileStore.getRootPath());
             Content content = contentService.createNewContent(invoiceFile.getExtension(), invoice, fileStorePath);
 

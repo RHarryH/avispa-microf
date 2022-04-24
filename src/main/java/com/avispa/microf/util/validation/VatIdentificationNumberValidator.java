@@ -1,11 +1,17 @@
 package com.avispa.microf.util.validation;
 
+import org.thymeleaf.util.StringUtils;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class VatIdentificationNumberValidator implements ConstraintValidator<VatIdentificationNumberConstraint, String> {
     @Override
     public boolean isValid(String nip, ConstraintValidatorContext cxt) {
+        if(StringUtils.isEmpty(nip)) {
+            return false;
+        }
+
         if (nip.length() == 13) {
             nip = nip.replace("-", "");
         }

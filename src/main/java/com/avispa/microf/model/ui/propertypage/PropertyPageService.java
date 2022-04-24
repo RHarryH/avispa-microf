@@ -34,6 +34,13 @@ public class PropertyPageService {
                 .orElse(null);
     }
 
+    public PropertyPageContent getPropertyPage(EcmObject ecmObject, Dto contextDto) {
+        return contextService.getConfiguration(ecmObject, Upsert.class)
+                .map(Upsert::getPropertyPage)
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false)) // convert to dto
+                .orElse(null);
+    }
+
     public PropertyPageContent getPropertyPage(String name, Object context) {
         return propertyPageRepository.findByObjectName(name)
                 .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false)) // convert to dto

@@ -1,4 +1,4 @@
-package com.avispa.microf.model.customer;
+package com.avispa.microf.model.customer.address;
 
 import com.avispa.ecm.model.EcmObject;
 import lombok.Getter;
