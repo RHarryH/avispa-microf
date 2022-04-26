@@ -2,16 +2,16 @@ package com.avispa.microf.model.base;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.microf.model.base.dto.Dto;
-
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Rafał Hiszpański
  */
-public interface BaseService<T extends EcmObject, D extends Dto> {
-    void add(T object);
-    void update(D dto);
-    void delete(UUID id);
+@RequiredArgsConstructor
+public abstract class BaseService<T extends EcmObject, D extends Dto, M extends IEntityDtoMapper<T, D>> implements IBaseService<T,D> {
+    private final M entityDtoMapper;
 
-    T findById(UUID id);
+    public M getEntityDtoMapper() {
+        return entityDtoMapper;
+    }
 }

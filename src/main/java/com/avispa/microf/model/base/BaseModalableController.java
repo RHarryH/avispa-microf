@@ -18,15 +18,14 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
-public abstract class BaseModalableController<T extends EcmObject, D extends Dto, M extends IEntityDtoMapper<T, D>, S extends BaseService<T, D>, C extends ModalContext<D>> extends BaseController<T, D, M, S> implements IModalableController<D, C> {
+public abstract class BaseModalableController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends IEntityDtoMapper<T, D>>, C extends ModalContext<D>> extends BaseController<T, D, S> implements IModalableController<D, C> {
     private final ModalService modalService;
 
     private final Map<String, Class<? extends Dto>> tableFieldsMap;
 
     protected BaseModalableController(S service,
-                                      M entityDtoMapper,
                                       ModalService modalService) {
-        super(service, entityDtoMapper);
+        super(service);
         this.modalService = modalService;
 
         this.tableFieldsMap = new HashMap<>();

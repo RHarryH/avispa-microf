@@ -5,7 +5,6 @@ import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.content.ContentDto;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceDto;
-import com.avispa.microf.model.invoice.InvoiceMapper;
 import com.avispa.microf.model.invoice.InvoiceModalContext;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import com.avispa.microf.model.invoice.service.InvoiceService;
@@ -36,13 +35,12 @@ import java.util.UUID;
 @Slf4j
 @Controller
 @RequestMapping("/invoice")
-public class InvoiceController extends BaseModalableController<Invoice, InvoiceDto, InvoiceMapper, InvoiceService, InvoiceModalContext> {
+public class InvoiceController extends BaseModalableController<Invoice, InvoiceDto, InvoiceService, InvoiceModalContext> {
 
     @Autowired
     public InvoiceController(InvoiceService invoiceService,
-                             InvoiceMapper invoiceMapper,
                              ModalService modalService) {
-        super(invoiceService, invoiceMapper, modalService);
+        super(invoiceService, modalService);
     }
 
     @Override

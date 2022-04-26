@@ -6,6 +6,7 @@ import com.avispa.microf.model.ui.modal.ModalConfiguration;
 import com.avispa.microf.model.ui.modal.ModalMode;
 import com.avispa.microf.model.ui.modal.ModalService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,11 +23,12 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/bank/account")
 @Slf4j
-public class BankAccountController extends BaseModalableController<BankAccount, BankAccountDto, BankAccountMapper, BankAccountService, BankAccountModalContext> {
-    public BankAccountController(BankAccountMapper customerMapper,
-                                 BankAccountService customerService,
+public class BankAccountController extends BaseModalableController<BankAccount, BankAccountDto, BankAccountService, BankAccountModalContext> {
+
+    @Autowired
+    public BankAccountController(BankAccountService bankAccountService,
                                  ModalService modalService) {
-        super(customerService, customerMapper, modalService);
+        super(bankAccountService, modalService);
     }
 
     @Override

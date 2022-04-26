@@ -17,9 +17,8 @@ import java.util.UUID;
  * @author Rafał Hiszpański
  */
 @RequiredArgsConstructor
-public abstract class BaseController<T extends EcmObject, D extends Dto, M extends IEntityDtoMapper<T, D>, S extends BaseService<T, D>> {
+public abstract class BaseController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends IEntityDtoMapper<T, D>>> {
     private final S service;
-    private final M entityDtoMapper;
 
     @PostMapping(value = "/add")
     @ResponseBody // it will just return status 200 when everything will go fine
@@ -28,7 +27,7 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, M exten
             ErrorUtil.processErrors(HttpStatus.BAD_REQUEST, result);
         }
 
-        T object = entityDtoMapper.convertToEntity(dto);
+        T object = service.getEntityDtoMapper().convertToEntity(dto);
         service.add(object);
     }
 
@@ -54,7 +53,7 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, M exten
         return service;
     }
 
-    public M getEntityDtoMapper() {
-        return entityDtoMapper;
+    public IEntityDtoMapper<T, D> getEntityDtoMapper() {
+        return service.getEntityDtoMapper();
     }
 }
