@@ -6,9 +6,13 @@ import com.avispa.microf.model.ui.modal.ModalConfiguration;
 import com.avispa.microf.model.ui.modal.ModalMode;
 import com.avispa.microf.model.ui.modal.ModalService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
@@ -19,11 +23,11 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/customer")
 @Slf4j
-public class CustomerController extends BaseModalableController<Customer, CustomerDto, CustomerMapper, CustomerService, CustomerModalContext> {
-    public CustomerController(CustomerMapper customerMapper,
-                              CustomerService customerService,
+public class CustomerController extends BaseModalableController<Customer, CustomerDto, CustomerService, CustomerModalContext> {
+    @Autowired
+    public CustomerController(CustomerService customerService,
                               ModalService modalService) {
-        super(customerService, customerMapper, modalService);
+        super(customerService, modalService);
     }
 
     @Override
@@ -58,7 +62,9 @@ public class CustomerController extends BaseModalableController<Customer, Custom
     }
 
     @Override
-    public void delete(UUID id) {
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public void delete(@PathVariable("id") UUID id) {
         try {
             super.delete(id);
         } catch(DataIntegrityViolationException e) {

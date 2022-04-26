@@ -4,7 +4,7 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Control;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
-import com.avispa.microf.model.base.BaseService;
+import com.avispa.microf.model.base.IBaseService;
 import com.avispa.microf.model.base.IEntityDtoMapper;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.base.dto.DtoService;
@@ -147,7 +147,7 @@ public class ModalService {
         }
     }
 
-    public <T extends EcmObject, D extends Dto, C extends ModalContext<D>> ModelMap loadPage(int pageNumber, C context, BaseService<T, D> service, IEntityDtoMapper<T, D> mapper) {
+    public <T extends EcmObject, D extends Dto, C extends ModalContext<D>> ModelMap loadPage(int pageNumber, C context, IBaseService<T, D> service, IEntityDtoMapper<T, D> mapper) {
         ModelMap modelMap = new ModelMap();
         ModalPageType pageType = context.getPageType(pageNumber);
 
