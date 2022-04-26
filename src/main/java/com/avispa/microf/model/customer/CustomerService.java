@@ -4,8 +4,8 @@ import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
 import com.avispa.ecm.model.context.ContextService;
 import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.error.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +17,22 @@ import java.util.stream.Collectors;
  * @author Rafał Hiszpański
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
-public class CustomerService implements BaseService<Customer, CustomerDto> {
+public class CustomerService extends BaseService<Customer, CustomerDto, CustomerMapper> {
     private final CustomerRepository customerRepository;
-    private final CustomerMapper customerMapper;
     private final CustomerListMapper customerListMapper;
     private final ContextService contextService;
+
+    @Autowired
+    public CustomerService(CustomerMapper entityDtoMapper,
+                           CustomerRepository customerRepository,
+                           CustomerListMapper customerListMapper,
+                           ContextService contextService) {
+        super(entityDtoMapper);
+        this.customerRepository = customerRepository;
+        this.customerListMapper = customerListMapper;
+        this.contextService = contextService;
+    }
 
     @Transactional
     @Override
@@ -37,7 +46,7 @@ public class CustomerService implements BaseService<Customer, CustomerDto> {
     @Override
     public void update(CustomerDto customerDto) {
         Customer customer = findById(customerDto.getId());
-        customerMapper.updateEntityFromDto(customerDto, customer);
+        getEntityDtoMapper().updateEntityFromDto(customerDto, customer);
 
         contextService.applyMatchingConfigurations(customer, Autoname.class);
     }

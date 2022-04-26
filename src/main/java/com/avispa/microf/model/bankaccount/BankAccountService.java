@@ -2,8 +2,8 @@ package com.avispa.microf.model.bankaccount;
 
 import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.error.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +14,15 @@ import java.util.UUID;
  * @author Rafał Hiszpański
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
-public class BankAccountService implements BaseService<BankAccount, BankAccountDto> {
+public class BankAccountService extends BaseService<BankAccount, BankAccountDto, BankAccountMapper> {
     private final BankAccountRepository bankAccountRepository;
-    private final BankAccountMapper bankAccountMapper;
+
+    @Autowired
+    public BankAccountService(BankAccountMapper entityDtoMapper, BankAccountRepository bankAccountRepository) {
+        super(entityDtoMapper);
+        this.bankAccountRepository = bankAccountRepository;
+    }
 
     @Transactional
     @Override
@@ -30,7 +34,7 @@ public class BankAccountService implements BaseService<BankAccount, BankAccountD
     @Override
     public void update(BankAccountDto customerDto) {
         BankAccount bankAccount = findById(customerDto.getId());
-        bankAccountMapper.updateEntityFromDto(customerDto, bankAccount);
+        getEntityDtoMapper().updateEntityFromDto(customerDto, bankAccount);
     }
 
     @Override

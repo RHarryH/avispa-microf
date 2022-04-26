@@ -20,8 +20,8 @@ import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
 import com.avispa.microf.model.invoice.service.file.OdfInvoiceFile;
 import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
 import com.avispa.microf.model.invoice.service.file.data.InvoiceDataConverter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +36,9 @@ import java.util.UUID;
  * @author Rafał Hiszpański
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
-public class InvoiceService implements BaseService<Invoice, InvoiceDto> {
+public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceMapper> {
     private final InvoiceRepository invoiceRepository;
-    private final InvoiceMapper invoiceMapper;
-
     private final InvoiceDataConverter invoiceDataConverter;
 
     private final ContentService contentService;
@@ -55,6 +52,27 @@ public class InvoiceService implements BaseService<Invoice, InvoiceDto> {
 
     @Value("${microf.issuer-name:John Doe}")
     private String issuerName;
+
+    @Autowired
+    public InvoiceService(InvoiceMapper invoiceMapper,
+                          InvoiceRepository invoiceRepository,
+                          InvoiceDataConverter invoiceDataConverter,
+                          ContentService contentService,
+                          ContentMapper contentMapper,
+                          RenditionService renditionService,
+                          FileStore fileStore,
+                          CounterStrategy counterStrategy,
+                          ContextService contextService) {
+        super(invoiceMapper);
+        this.invoiceRepository = invoiceRepository;
+        this.invoiceDataConverter = invoiceDataConverter;
+        this.contentService = contentService;
+        this.contentMapper = contentMapper;
+        this.renditionService = renditionService;
+        this.fileStore = fileStore;
+        this.counterStrategy = counterStrategy;
+        this.contextService = contextService;
+    }
 
     @Transactional
     @Override
@@ -72,7 +90,7 @@ public class InvoiceService implements BaseService<Invoice, InvoiceDto> {
     @Override
     public void update(InvoiceDto invoiceDto) {
         Invoice invoice = findById(invoiceDto.getId());
-        invoiceMapper.updateEntityFromDto(invoiceDto, invoice);
+        getEntityDtoMapper().updateEntityFromDto(invoiceDto, invoice);
 
         // delete old content and create new one
         contentService.deleteByRelatedObject(invoice);
