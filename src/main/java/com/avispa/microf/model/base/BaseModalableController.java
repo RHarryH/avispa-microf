@@ -59,7 +59,7 @@ public abstract class BaseModalableController<T extends EcmObject, D extends Dto
     @Override
     public ModelAndView loadPage(int pageNumber, C context) {
         return new ModelAndView("fragments/modal :: modalBody",
-                modalService.loadPage(pageNumber, context, getService(), getEntityDtoMapper()));
+                modalService.loadPage(pageNumber, context, getService()));
     }
 
     @Override
