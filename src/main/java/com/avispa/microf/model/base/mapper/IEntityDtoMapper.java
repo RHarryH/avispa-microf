@@ -1,4 +1,4 @@
-package com.avispa.microf.model.base;
+package com.avispa.microf.model.base.mapper;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.microf.model.base.dto.Dto;

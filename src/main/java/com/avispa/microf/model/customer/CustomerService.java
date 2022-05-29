@@ -5,8 +5,7 @@ import com.avispa.ecm.model.context.ContextService;
 import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.error.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,19 +15,15 @@ import java.util.stream.Collectors;
 /**
  * @author Rafał Hiszpański
  */
-@Component
 @Slf4j
+@Service
 public class CustomerService extends BaseService<Customer, CustomerDto, CustomerMapper> {
     private final CustomerRepository customerRepository;
     private final CustomerListMapper customerListMapper;
     private final ContextService contextService;
 
-    @Autowired
-    public CustomerService(CustomerMapper entityDtoMapper,
-                           CustomerRepository customerRepository,
-                           CustomerListMapper customerListMapper,
-                           ContextService contextService) {
-        super(entityDtoMapper);
+    public CustomerService(CustomerMapper customerMapper, CustomerRepository customerRepository, CustomerListMapper customerListMapper, ContextService contextService) {
+        super(customerMapper);
         this.customerRepository = customerRepository;
         this.customerListMapper = customerListMapper;
         this.contextService = contextService;

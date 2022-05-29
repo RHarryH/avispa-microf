@@ -3,7 +3,7 @@ package com.avispa.microf.model.ui.modal.page;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.ui.modal.button.ModalButton;
-import com.avispa.microf.model.ui.modal.context.ModalContext;
+import com.avispa.microf.model.ui.modal.context.MicroFContext;
 import com.avispa.microf.model.ui.propertypage.PropertyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,19 +47,19 @@ public class ModalPageService {
         return new ModalPage(ModalPageType.PROPERTIES, buttons);
     }
 
-    public <T extends EcmObject, D extends Dto> void createPropertiesPropertyPage(Class<T> objectClass, D contextTypedDto, ModelMap modelMap, ModalContext<D> context) {
+    public <T extends EcmObject, D extends Dto> void createPropertiesPropertyPage(Class<T> objectClass, D contextTypedDto, ModelMap modelMap, MicroFContext<D> context) {
         context.setObject(contextTypedDto);
         modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage(objectClass, contextTypedDto));
         modelMap.addAttribute("prefix", "object");
     }
 
-    public <T extends EcmObject, D extends Dto> void createPropertiesPropertyPage(T object, D contextTypedDto, ModelMap modelMap, ModalContext<D> context) {
+    public <T extends EcmObject, D extends Dto> void createPropertiesPropertyPage(T object, D contextTypedDto, ModelMap modelMap, MicroFContext<D> context) {
         context.setObject(contextTypedDto);
         modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage(object, contextTypedDto));
         modelMap.addAttribute("prefix", "object");
     }
 
-    public <D extends Dto> void createSelectSourcePropertyPage(ModelMap modelMap, ModalContext<D> context) {
+    public <D extends Dto> void createSelectSourcePropertyPage(ModelMap modelMap, MicroFContext<D> context) {
         modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage("Select source property page", context));
     }
 }

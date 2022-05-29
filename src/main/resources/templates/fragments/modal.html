@@ -50,7 +50,7 @@
                                         <form class="modal-form" th:action="${pageStat.last ? modal.action : ''}">
                                             <div class="modal-body">
                                                 <th:block th:if="${pageStat.first}">
-                                                    <th:block th:insert="this :: modalBody()">Body</th:block>
+                                                    <th:block th:insert="this :: modal-body()">Body</th:block>
                                                 </th:block>
                                             </div>
                                             <div class="modal-footer">
@@ -72,7 +72,7 @@
             </div>
         </div>
 
-        <th:block th:fragment="modalBody()" th:object="${context}">
+        <th:block th:fragment="modal-body()" th:object="${context}">
             <input type="hidden" th:field="*{pages}"/>
             <input type="hidden" th:field="*{typeName}"/>
             <th:block th:replace="fragments/property-page :: property-page(${propertyPage})"/>

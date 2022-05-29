@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class ModalContext<D extends Dto> {
+public final class MicroFContext<D extends Dto> {
     private List<ModalPageType> pages;
 
     @Valid private D object;

@@ -5,11 +5,10 @@ import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageConte
 import com.avispa.ecm.model.configuration.propertypage.content.control.Control;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
 import com.avispa.microf.model.base.BaseService;
-import com.avispa.microf.model.base.IBaseService;
-import com.avispa.microf.model.base.IEntityDtoMapper;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.base.dto.DtoService;
-import com.avispa.microf.model.ui.modal.context.ModalContext;
+import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
+import com.avispa.microf.model.ui.modal.context.MicroFContext;
 import com.avispa.microf.model.ui.modal.page.ModalPage;
 import com.avispa.microf.model.ui.modal.page.ModalPageService;
 import com.avispa.microf.model.ui.modal.page.ModalPageType;
@@ -59,7 +58,7 @@ public class ModalService {
         ModelMap modelMap = new ModelMap();
         List<ModalPage> modalPages = new ArrayList<>();
 
-        ModalContext<D> context = new ModalContext<>();
+        MicroFContext<D> context = new MicroFContext<>();
         context.setTypeName(objectClass.getSimpleName());
 
         if(modal.isCloneModal()) {
@@ -84,7 +83,7 @@ public class ModalService {
         ModelMap modelMap = new ModelMap();
         List<ModalPage> modalPages = new ArrayList<>();
 
-        ModalContext<D> context = new ModalContext<>();
+        MicroFContext<D> context = new MicroFContext<>();
         context.setTypeName(object.getClass().getSimpleName());
 
         if(modal.isCloneModal()) {
@@ -105,16 +104,14 @@ public class ModalService {
         return modelMap;
     }
 
-
-
-    private <D extends Dto> void initCloneModal(ModelMap modelMap, List<ModalPage> modalPages, ModalContext<D> context) {
+    private <D extends Dto> void initCloneModal(ModelMap modelMap, List<ModalPage> modalPages, MicroFContext<D> context) {
         modalPages.add(modalPageService.createSourceModalPage());
         modalPages.add(modalPageService.createInsertionModalPage());
 
         modalPageService.createSelectSourcePropertyPage(modelMap, context);
     }
 
-    private <T extends EcmObject, D extends Dto> void initUpsertModal(Class<T> objectClass, D contextTypedDto, ModalConfiguration modal, ModelMap modelMap, List<ModalPage> modalPages, ModalContext<D> context) {
+    private <T extends EcmObject, D extends Dto> void initUpsertModal(Class<T> objectClass, D contextTypedDto, ModalConfiguration modal, ModelMap modelMap, List<ModalPage> modalPages, MicroFContext<D> context) {
         if(modal.isUpdateModal()) {
             modalPages.add(modalPageService.createUpdateModalPage());
         } else {
@@ -124,7 +121,7 @@ public class ModalService {
         modalPageService.createPropertiesPropertyPage(objectClass, contextTypedDto, modelMap, context);
     }
 
-    private <T extends EcmObject, D extends Dto> void initUpsertModal(T object, D contextTypedDto, ModalConfiguration modal, ModelMap modelMap, List<ModalPage> modalPages, ModalContext<D> context) {
+    private <T extends EcmObject, D extends Dto> void initUpsertModal(T object, D contextTypedDto, ModalConfiguration modal, ModelMap modelMap, List<ModalPage> modalPages, MicroFContext<D> context) {
         if(modal.isUpdateModal()) {
             modalPages.add(modalPageService.createUpdateModalPage());
         } else {
@@ -148,7 +145,7 @@ public class ModalService {
         }
     }
 
-    public <T extends EcmObject, D extends Dto, C extends ModalContext<D>> ModelMap loadPage(int pageNumber, C context, BaseService<T, D, ? extends IEntityDtoMapper<T, D>> service) {
+    public <T extends EcmObject, D extends Dto, C extends MicroFContext<D>> ModelMap loadPage(int pageNumber, C context, BaseService<T, D, ? extends IEntityDtoMapper<T, D>> service) {
         ModelMap modelMap = new ModelMap();
         ModalPageType pageType = context.getPageType(pageNumber);
 
