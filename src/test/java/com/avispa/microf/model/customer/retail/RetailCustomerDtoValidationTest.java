@@ -13,11 +13,11 @@ import static com.avispa.microf.util.TestValidationUtils.validate;
  * @author Rafał Hiszpański
  */
 class RetailCustomerDtoValidationTest {
-    private CustomerDto customerDto;
+    private RetailCustomerDto customerDto;
 
     @BeforeEach
     void createDto() {
-        customerDto = new CustomerDto();
+        customerDto = new RetailCustomerDto();
         customerDto.setFirstName("First");
         customerDto.setLastName("Last");
         customerDto.setEmail("email@mail.com");
@@ -34,25 +34,25 @@ class RetailCustomerDtoValidationTest {
     @Test
     void givenEmptyFirstName_whenValidate_thenFail() {
         customerDto.setFirstName("");
-        validate(customerDto, CustomerDto.VM_FIRST_NAME_NOT_EMPTY_NOR_BLANK);
+        validate(customerDto, RetailCustomerDto.VM_FIRST_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenBlankFirstName_whenValidate_thenFail() {
         customerDto.setFirstName("   \n\t");
-        validate(customerDto, CustomerDto.VM_FIRST_NAME_NOT_EMPTY_NOR_BLANK);
+        validate(customerDto, RetailCustomerDto.VM_FIRST_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenEmptyLastName_whenValidate_thenFail() {
         customerDto.setLastName("");
-        validate(customerDto, CustomerDto.VM_LAST_NAME_NOT_EMPTY_NOR_BLANK);
+        validate(customerDto, RetailCustomerDto.VM_LAST_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenBlankLastName_whenValidate_thenFail() {
         customerDto.setLastName("   \n\t");
-        validate(customerDto, CustomerDto.VM_LAST_NAME_NOT_EMPTY_NOR_BLANK);
+        validate(customerDto, RetailCustomerDto.VM_LAST_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test

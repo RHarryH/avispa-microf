@@ -1,6 +1,6 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.microf.model.base.IEntityDtoMapper;
+import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
 import com.avispa.microf.model.invoice.position.Position;

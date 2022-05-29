@@ -8,7 +8,7 @@ $(document).ready(function () {
         "Invoice cloned successfully!",
         "Invoice cloning failed!");
 
-    // retail
+    // customer
     registerAddModal(["customer"], ["customer-list-widget"], "customer-list-widget", "Customer added successfully!", "Customer adding failed!");
 
     // bank account
@@ -54,7 +54,7 @@ function registerAddModal(
         createModal(
             resourcePrefixes,
             "add-modal",
-            "/modal/add/",
+            "/modal/add/" + classPrefix,
             widgetsToReload,
             widgetToFocus,
             successMessage,
@@ -74,7 +74,7 @@ function registerUpdateModal(
         createModal(
             resourcePrefixes,
             "update-modal",
-            "/modal/update/" + $(this).attr("value"),
+            "/modal/update/" + classPrefix + "/" + $(this).attr("value"),
             widgetsToReload,
             widgetToFocus,
             successMessage,
@@ -94,7 +94,7 @@ function registerCloneModal(
         createModal(
             resourcePrefixes,
             "clone-modal",
-            "/modal/clone/",
+            "/modal/clone/" + classPrefix,
             widgetsToReload,
             widgetToFocus,
             successMessage,
@@ -113,7 +113,7 @@ function createModal(
 ) {
     const modals = $("#modals");
     const modalId = "#" + resourcePrefixes.join("-") + "-" + modalUniqueName;
-    const resourcePath = "/" + resourcePrefixes.join("/");
+    const resourcePath = "";
 
     $.ajax({
         "method": "get",

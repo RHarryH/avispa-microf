@@ -1,6 +1,6 @@
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.microf.model.base.IEntityDtoMapper;
+import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

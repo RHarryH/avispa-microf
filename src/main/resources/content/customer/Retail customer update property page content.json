@@ -2,6 +2,11 @@
   "propertyPage": {
     "controls": [
       {
+        "type": "text",
+        "label": "Customer type",
+        "property": "type"
+      },
+      {
         "type": "columns",
         "controls": [
           {

@@ -2,6 +2,7 @@ package com.avispa.microf.model.base;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import lombok.RequiredArgsConstructor;
 
 /**
