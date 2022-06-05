@@ -112,7 +112,8 @@ function createModal(
     failMessage
 ) {
     const modals = $("#modals");
-    const modalId = "#" + resourcePrefixes.join("-") + "-" + modalUniqueName;
+    const resourceIdentifier = resourcePrefixes.join("-");
+    const modalId = "#" + resourceIdentifier + "-" + modalUniqueName;
     const resourcePath = "";
 
     $.ajax({
@@ -131,7 +132,7 @@ function createModal(
                 modal.remove();
             });
 
-            handleAddingTableRow(modalId, resourcePath);
+            handleAddingTableRow(modalId, resourcePath, resourceIdentifier);
             handleTableDeletion(modalId); // this actually initializes it for the first time
 
             $(modalId + " :input").on("input", runCustomValidation).inputmask();
@@ -178,7 +179,7 @@ function createModal(
                 const modalBody = modalId + " #tab-pane-" + to + " .modal-body";
                 $(modalBody).html(fragment);
 
-                handleAddingTableRow(modalBody, resourcePath);
+                handleAddingTableRow(modalBody, resourcePath, resourceIdentifier);
                 handleTableDeletion(modalBody); // this actually initializes it for the first time
 
                 $(modalBody + " :input").on("input", runCustomValidation).inputmask();

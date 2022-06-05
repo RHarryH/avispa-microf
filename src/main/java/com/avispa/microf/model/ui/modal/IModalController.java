@@ -2,6 +2,7 @@ package com.avispa.microf.model.ui.modal;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
@@ -21,8 +22,8 @@ public interface IModalController {
     ModelAndView getCloneModal(@PathVariable("type") String typeIdentifier);
 
     /*@GetMapping("/page/{pageNumber}")
-    ModelAndView loadPage(@PathVariable("pageNumber") int pageNumber, @ModelAttribute("context") C context);
+    ModelAndView loadPage(@PathVariable("pageNumber") int pageNumber, @ModelAttribute("context") C context);*/
 
-    @PostMapping(value = "/row/{tableName}")
-    ModelAndView loadTableTemplate(@PathVariable("tableName") String tableName);*/
+    @PostMapping(value = "/row/{type}/{tableName}")
+    ModelAndView loadTableTemplate(@PathVariable("type") String typeIdentifier, @PathVariable("tableName") String tableName);
 }

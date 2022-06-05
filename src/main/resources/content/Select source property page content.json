@@ -5,7 +5,7 @@
         "type": "combo",
         "label": "Object to clone",
         "property": "sourceId",
-        "typeName": "$value('typeName')",
+        "typeNameExpression": "$value('typeName')",
         "required": true
       }
     ]

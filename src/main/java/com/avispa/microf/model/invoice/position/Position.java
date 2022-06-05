@@ -1,7 +1,6 @@
 package com.avispa.microf.model.invoice.position;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +23,6 @@ public class Position extends EcmObject {
     @Column(precision=8, scale=3)
     private BigDecimal quantity;
 
-    @Dictionary(name = "Unit")
     private String unit;
 
     @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
@@ -35,7 +33,6 @@ public class Position extends EcmObject {
     @Column(precision=5, scale=2)
     private BigDecimal discount;
 
-    @Dictionary(name = "VatRate")
     private String vatRate;
 
     public void setPositionName(String positionName) {
