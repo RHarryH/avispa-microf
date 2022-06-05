@@ -1,6 +1,6 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.dto.IDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class InvoiceDto implements Dto {
+public class InvoiceDto implements IDto {
     public static final String VM_SELLER_NOT_NULL = "Seller cannot be null";
     public static final String VM_BUYER_NOT_NULL = "Buyer cannot be null";
     public static final String VM_POSITIONS_NOT_EMPTY = "Positions list cannot be empty";

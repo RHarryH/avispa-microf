@@ -1,6 +1,6 @@
 package com.avispa.microf.model.base.controller;
 
-import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.dto.IDto;
 import org.springframework.validation.BindingResult;
 
 import java.util.UUID;
@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
-interface IBaseController<D extends Dto> {
+interface IBaseController<D extends IDto> {
     void add(D dto, BindingResult result);
     void update(D dto, BindingResult result);
     void delete(UUID id);

@@ -39,7 +39,6 @@
         "type": "table",
         "label": "Positions",
         "property": "positions",
-        "propertyType": "Position",
         "controls": [
           {
             "type": "text",

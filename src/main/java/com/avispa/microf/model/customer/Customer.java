@@ -1,7 +1,7 @@
 package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
+import com.avispa.ecm.model.type.TypeDiscriminator;
 import com.avispa.microf.model.customer.address.Address;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @Setter
+@TypeDiscriminator(name = "type")
 public class Customer extends EcmObject {
     private String phoneNumber; // kept as string because there is no use case to process it as number
 
@@ -27,7 +28,6 @@ public class Customer extends EcmObject {
     @ManyToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @Dictionary(name = "CustomerType")
     private String type;
 
     // corporate

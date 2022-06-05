@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -34,7 +33,7 @@ public class InvoiceController extends BaseController<Invoice, InvoiceDto, Invoi
     }
 
     @Override
-    protected InvoiceDto createDto(Map<String, Object> object) {
+    protected InvoiceDto createDefaultDto() {
         return new InvoiceDto();
     }
 

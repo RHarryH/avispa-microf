@@ -1,13 +1,17 @@
 package com.avispa.microf.model.base.controller;
 
 import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.type.TypeService;
 import com.avispa.microf.model.base.BaseService;
-import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.dto.DtoRepository;
+import com.avispa.microf.model.base.dto.IDto;
 import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import com.avispa.microf.model.error.ErrorUtil;
 import com.avispa.microf.model.ui.modal.context.MicroFContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +27,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -31,8 +34,11 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Slf4j
-public abstract class BaseController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends IEntityDtoMapper<T, D>>> implements IBaseController<D>, IBaseModalableController {
+public abstract class BaseController<T extends EcmObject, D extends IDto, S extends BaseService<T, D, ? extends IEntityDtoMapper<T, D>>> implements IBaseController<D>, IBaseModalableController {
     private final S service;
+
+    private TypeService typeService;
+    private DtoRepository dtoRepository;
     private WebDataBinderFactory dataBinderFactory;
 
     @Autowired
@@ -40,12 +46,22 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
         this.dataBinderFactory = dataBinderFactory;
     }
 
+    @Autowired
+    public void setTypeService(TypeService typeService) {
+        this.typeService = typeService;
+    }
+
+    @Autowired
+    public void setDtoRepository(DtoRepository dtoRepository) {
+        this.dtoRepository = dtoRepository;
+    }
+
     @PostMapping(value = "/add")
     @ResponseBody // it will just return status 200 when everything will go fine
     @Override
     public void add(HttpServletRequest request) {
         MicroFContext<D> modalContext = new MicroFContext<>();
-        modalContext.setObject(createDto(null));
+        modalContext.setObject(createDto(request));
 
         BindingResult result = bindObjectToDto(request, modalContext);
 
@@ -68,7 +84,7 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
     public void update(HttpServletRequest request, @PathVariable("id") UUID id) {
         MicroFContext<D> modalContext = new MicroFContext<>();
 
-        D dto = createDto(null);
+        D dto = createDto(request);
         dto.setId(id);
         modalContext.setObject(dto);
 
@@ -97,7 +113,23 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
         return service;
     }
 
-    protected abstract D createDto(Map<String, Object> object);
+    @SuppressWarnings("unchecked")
+    protected D createDto(HttpServletRequest request) {
+        Class<? extends EcmObject> entityClass = typeService.getType(request.getParameter("typeName")).getEntityClass();
+        String typeDiscriminatorName = typeService.getTypeDiscriminatorFromAnnotation(entityClass);
+
+        if(StringUtils.isNotEmpty(typeDiscriminatorName)) {
+            String value = request.getParameter("object." + typeDiscriminatorName);
+            return dtoRepository
+                    .findByEntityClassAndDiscriminator(entityClass, value)
+                    .map(d -> (D) BeanUtils.instantiateClass(d.getDtoClass()))
+                    .orElseGet(this::createDefaultDto);
+        }
+
+        return createDefaultDto();
+    }
+
+    protected abstract D createDefaultDto();
 
     private BindingResult bindObjectToDto(HttpServletRequest request, MicroFContext<D> context) {
         BindingResult result = null;
