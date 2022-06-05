@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -28,7 +27,7 @@ public class BankAccountController extends BaseController<BankAccount, BankAccou
     }
 
     @Override
-    protected BankAccountDto createDto(Map<String, Object> object) {
+    protected BankAccountDto createDefaultDto() {
         return new BankAccountDto();
     }
 

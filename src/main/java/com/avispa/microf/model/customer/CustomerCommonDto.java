@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CommonCustomerDto extends CustomerDto {
+public class CustomerCommonDto extends CustomerDto {
     private String companyName;
     private String vatIdentificationNumber;
 

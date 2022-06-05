@@ -7,8 +7,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 /**
  * @author Rafał Hiszpański
  */
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE//,
-/*    uses = DictionaryValueMapper.class*/)
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PositionMapper {
     PositionDto convertToDto(Position position);
 

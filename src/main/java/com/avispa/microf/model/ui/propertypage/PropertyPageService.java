@@ -4,10 +4,11 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
+import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
 import com.avispa.ecm.model.configuration.upsert.Upsert;
 import com.avispa.ecm.model.context.ContextService;
-import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.dto.IDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +23,13 @@ public class PropertyPageService {
     private final EcmObjectRepository<PropertyPage> propertyPageRepository;
 
     /**
-     * Gets property page DTO from upsert configuration matching provided ecm object
-     * @param ecmObjectClass ECM object class which upsert configuration will be used
+     * Gets the content of property page by finding upsert configuration matching provided ECM object
+     * and by filling the labels, combo boxes, radios and other components (if any) with data from the context DTO
+     * @param ecmObject ECM object which upsert configuration will be used
      * @param contextDto DTO object used as context for property page
      * @return
      */
-    public PropertyPageContent getPropertyPage(Class<? extends EcmObject> ecmObjectClass, Dto contextDto) {
-        return contextService.getConfiguration(ecmObjectClass, Upsert.class)
-                .map(Upsert::getPropertyPage)
-                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false)) // convert to dto
-                .orElse(null);
-    }
-
-    public PropertyPageContent getPropertyPage(EcmObject ecmObject, Dto contextDto) {
+    public PropertyPageContent getPropertyPage(EcmObject ecmObject, IDto contextDto) {
         return contextService.getConfiguration(ecmObject, Upsert.class)
                 .map(Upsert::getPropertyPage)
                 .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false)) // convert to dto
@@ -44,6 +39,13 @@ public class PropertyPageService {
     public PropertyPageContent getPropertyPage(String name, Object context) {
         return propertyPageRepository.findByObjectName(name)
                 .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false)) // convert to dto
+                .orElse(null);
+    }
+
+    public Table getTable(String tableName, Class<? extends EcmObject> ecmObjectClass, Class<? extends IDto> contextDtoClass) {
+        return contextService.getConfiguration(ecmObjectClass, Upsert.class)
+                .map(Upsert::getPropertyPage)
+                .map(propertyPage -> propertyPageMapper.getTable(propertyPage, tableName, contextDtoClass))
                 .orElse(null);
     }
 }

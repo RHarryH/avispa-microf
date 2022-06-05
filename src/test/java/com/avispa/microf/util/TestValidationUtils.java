@@ -1,6 +1,6 @@
 package com.avispa.microf.util;
 
-import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.dto.IDto;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
@@ -21,12 +21,12 @@ public class TestValidationUtils {
     private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 
-    public static void validate(Dto dto, String expectedErrorMessage) {
+    public static void validate(IDto dto, String expectedErrorMessage) {
         validate(dto, 1, Set.of(expectedErrorMessage));
     }
 
-    public static void validate(Dto dto, int numberOfExpectedErrors, Set<String> expectedErrorMessages) {
-        Set<ConstraintViolation<Dto>> constraintViolations =
+    public static void validate(IDto dto, int numberOfExpectedErrors, Set<String> expectedErrorMessages) {
+        Set<ConstraintViolation<IDto>> constraintViolations =
                 validator.validate(dto);
         Set<String> validationErrors = constraintViolations.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
 

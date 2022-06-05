@@ -1,6 +1,6 @@
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.dto.IDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class BankAccountDto implements Dto {
+public class BankAccountDto implements IDto {
     public static final String VM_ACCOUNT_NAME_NO_LONGER = "The account name cannot be longer than 50 characters";
     public static final String VM_BANK_NAME_NO_LONGER = "The bank name cannot be longer than 50 characters";
 

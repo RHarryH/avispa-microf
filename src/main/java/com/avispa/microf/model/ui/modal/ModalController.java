@@ -2,13 +2,12 @@ package com.avispa.microf.model.ui.modal;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
-import com.avispa.ecm.model.type.TypeNameUtils;
-import com.avispa.ecm.model.type.TypeRepository;
-import com.avispa.microf.model.bankaccount.BankAccountDto;
+import com.avispa.ecm.model.type.TypeService;
 import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.dto.DtoRepository;
+import com.avispa.microf.model.base.dto.IDto;
 import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
-import com.avispa.microf.model.customer.CommonCustomerDto;
-import com.avispa.microf.model.invoice.InvoiceDto;
+import com.avispa.microf.util.TypeNameUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.TypeUtils;
@@ -19,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,9 +31,10 @@ import java.util.UUID;
 public class ModalController implements IModalController {
 
     private final ModalService modalService;
-    private final TypeRepository typeRepository;
+    private final TypeService typeService;
+    private final DtoRepository dtoRepository;
     private final EcmObjectRepository<EcmObject> ecmObjectRepository;
-    private final List<IEntityDtoMapper<? extends EcmObject, ? extends Dto>> mappers;
+    private final List<IEntityDtoMapper<? extends EcmObject, ? extends IDto>> mappers;
 
     @Override
     public ModelAndView getAddModal(String typeIdentifier) {
@@ -55,111 +54,83 @@ public class ModalController implements IModalController {
         String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
 
         EcmObject entity = ecmObjectRepository.findById(id).orElseThrow();
-        Class<? extends EcmObject> clazz = typeRepository.findByTypeName(typeName).getClazz();
-        if(!entity.getClass().isAssignableFrom(clazz)) {
-            log.error("Not an object of '{}' type", typeName);
-            return null;
+        Class<? extends EcmObject> entityClass = typeService.getType(typeName).getEntityClass();
+        if(!entity.getClass().isAssignableFrom(entityClass)) {
+            throw new IllegalStateException(String.format("Not an object of '%s' type", typeName));
         }
 
-        IEntityDtoMapper<EcmObject, Dto> usedMapper = null;
-        for(IEntityDtoMapper<? extends EcmObject, ? extends Dto> mapper : mappers) {
-            Class<?> entityClass = getMapperEntity(mapper.getClass());
-            if(entityClass.equals(clazz)) {
-                usedMapper = (IEntityDtoMapper<EcmObject, Dto>) mapper;
-                break;
-            }
-        }
-
-        if(usedMapper == null) {
-            throw new IllegalArgumentException();
-        }
-
-        Dto dto = usedMapper.convertToDto(entity);
+        IDto dto = convertToDto(entity);
 
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
-                .id(typeName + "-update-modal")
-                .title("Update " + typeIdentifier)
-                .action(typeName + "/update/" + id)
+                .id(typeIdentifier + "-update-modal")
+                .title("Update " + typeName)
+                .action(typeIdentifier + "/update/" + id)
                 .size("large")
                 .build();
 
-        return getModal(entity, dto, modal);
+        return getModal(modal, entity, dto);
     }
 
-    private ModelAndView getModal(EcmObject entity, Dto dto, ModalConfiguration modal) {
-        return new ModelAndView("fragments/modal :: upsertModal",
-                modalService.constructModal(entity, dto, modal));
+    @SuppressWarnings("unchecked")
+    private IDto convertToDto(EcmObject entity) {
+        IEntityDtoMapper<EcmObject,IDto> foundMapper =
+                (IEntityDtoMapper<EcmObject, IDto>) mappers.stream().filter(m -> {
+            Class<?> foundEntityClass = getMapperEntity(m.getClass());
+            return entity.getClass().equals(foundEntityClass);
+        }).findFirst().orElseThrow();
+
+        return foundMapper.convertToDto(entity);
     }
 
     private Class<?> getMapperEntity(Class<?> mapperClass) {
-        Map<TypeVariable<?>, Type> typeArgs  = TypeUtils.getTypeArguments(mapperClass, IEntityDtoMapper.class);
-        TypeVariable<?> argTypeParam = IEntityDtoMapper.class.getTypeParameters()[0];
+        Map<TypeVariable<?>, Type> typeArgs  = TypeUtils.getTypeArguments(mapperClass,  IEntityDtoMapper.class);
+        TypeVariable<?> argTypeParam =  IEntityDtoMapper.class.getTypeParameters()[0];
         Type argType = typeArgs.get(argTypeParam);
         return TypeUtils.getRawType(argType, null);
     }
 
+    private ModelAndView getModal(ModalConfiguration modal, EcmObject entity, IDto dto) {
+        return new ModelAndView("fragments/modal :: upsertModal",
+                modalService.constructModal(entity, dto, modal));
+    }
+
     @Override
     public ModelAndView getCloneModal(String typeIdentifier) {
-        String typeNameLowerCase = typeIdentifier.toLowerCase(Locale.ROOT);
+        String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
 
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.CLONE)
-                .id(typeNameLowerCase + "-clone-modal")
-                .title("Clone existing " + typeNameLowerCase)
-                .action(typeNameLowerCase + "/add")
+                .id(typeIdentifier + "-clone-modal")
+                .title("Clone existing " + typeName)
+                .action(typeIdentifier + "/add")
                 .size("extra-large")
                 .build();
 
-        return getModal(modal, typeNameLowerCase);
+        return getModal(modal, typeName);
     }
 
     protected ModelAndView getModal(ModalConfiguration modal, String typeName) {
-        Class<? extends EcmObject> clazz = typeRepository.findByTypeName(typeName).getClazz();
-
-        Class<? extends Dto> dtoClass = null;
-        // TODO: read from mapper? using map<string, string> ?
-        if(clazz.getSimpleName().equalsIgnoreCase("customer")) {
-            dtoClass = CommonCustomerDto.class;
-        } else if(clazz.getSimpleName().equalsIgnoreCase("invoice")) {
-            dtoClass = InvoiceDto.class;
-        } else if(clazz.getSimpleName().equalsIgnoreCase("bankaccount")) {
-            dtoClass = BankAccountDto.class;
-        }
+        // TODO: include discriminator? add tests
+        Dto dto = dtoRepository.findByTypeNameAndDiscriminatorIsNull(typeName).orElseThrow();
 
         return new ModelAndView("fragments/modal :: upsertModal",
-                modalService.constructModal(clazz, dtoClass, modal));
+                modalService.constructModal(dto.getType().getEntityClass(), dto.getDtoClass(), modal));
     }
 
     /*@Override
     public ModelAndView loadPage(int pageNumber, C context) {
         return new ModelAndView("fragments/modal :: modal-body",
                 modalService.loadPage(pageNumber, context, getService()));
-    }
-
-    private final Map<String, Class<? extends Dto>> tableFieldsMap = new HashMap<>();
+    }*/
 
     @Override
-    public ModelAndView loadTableTemplate(String tableName) {
+    public ModelAndView loadTableTemplate(String typeIdentifier, String tableName) {
+        String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
+
+        // TODO: include discriminator? add tests
+        Dto dto = dtoRepository.findByTypeNameAndDiscriminatorIsNull(typeName).orElseThrow();
+        Class<? extends IDto> dtoClass = dto.getDtoClass();
+
         return new ModelAndView("fragments/property-page :: table-template-row",
-                modalService.getTemplateRow(tableName, getObjectClass(), getDtoClass(), tableFieldsMap.get(tableName)));
+                modalService.getTemplateRow(tableName, dto.getType().getEntityClass(), dtoClass));
     }
-
-    private Class<T> getObjectClass() {
-        return (Class<T>)getTypeFromGeneric(0);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<D> getDtoClass() {
-        return (Class<D>)getTypeFromGeneric(1);
-    }
-
-    private Type getTypeFromGeneric(int pos) {
-        return ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[pos];
-    }
-
-    //@Override
-    // INVOICE
-    protected void registerTableFields(Map<String, Class<? extends Dto>> tableFieldsMap) {
-        tableFieldsMap.put("positions", PositionDto.class);
-    }*/
 }

@@ -1,4 +1,4 @@
-function handleAddingTableRow(root, resourcePath) {
+function handleAddingTableRow(root, resourcePath, resourceIdentifier) {
     $(root + " button[id$=-table-add-button]").click(function (e) {
         e.preventDefault();
 
@@ -12,7 +12,7 @@ function handleAddingTableRow(root, resourcePath) {
         if(!rowTemplate.innerHTML.length) {
             $.ajax({
                 "method": "post",
-                "url": resourcePath + "/modal/row/" + tablePropertyName
+                "url": resourcePath + "/modal/row/" + resourceIdentifier + "/" + tablePropertyName
             }).done(function (fragment) {
                 rowTemplate.innerHTML = fragment;
                 addRow();
