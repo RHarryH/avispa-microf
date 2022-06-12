@@ -96,6 +96,11 @@
                 <th:block th:case="text">
                     <th:block th:replace="this :: text(${control}, ${prefix}, 'text')">Text</th:block>
                 </th:block>
+                <th:block th:case="hidden">
+                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
+                        <input type="hidden" th:field="*{__${property}__}" />
+                    </div>
+                </th:block>
                 <th:block th:case="textarea">
                     <th:block th:replace="this :: propertyLabel(${prefix})">Label</th:block>
                     <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
