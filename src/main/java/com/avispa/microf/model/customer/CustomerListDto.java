@@ -1,6 +1,6 @@
 package com.avispa.microf.model.customer;
 
-import com.avispa.microf.model.base.dto.IDto;
+import com.avispa.microf.model.base.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class CustomerListDto implements IDto {
+public class CustomerListDto implements Dto {
     private UUID id;
     private String customerName;
     private boolean corporate;

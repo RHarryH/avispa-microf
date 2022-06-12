@@ -25,11 +25,6 @@ public class CustomerController extends BaseController<Customer, CustomerDto, Cu
     }
 
     @Override
-    protected CustomerDto createDefaultDto() {
-        return new CustomerCommonDto();
-    }
-
-    @Override
     @DeleteMapping("/delete/{id}")
     @ResponseBody
     public void delete(@PathVariable("id") UUID id) {

@@ -1,6 +1,6 @@
 package com.avispa.microf.model.ui.modal.context;
 
-import com.avispa.microf.model.base.dto.IDto;
+import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.ui.modal.page.ModalPageType;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public final class MicroFContext<D extends IDto> {
+public final class MicroFContext<D extends Dto> {
     private List<ModalPageType> pages;
 
     @Valid private D object;

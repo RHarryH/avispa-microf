@@ -1,7 +1,7 @@
 package com.avispa.microf.model.invoice.position;
 
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
-import com.avispa.microf.model.base.dto.IDto;
+import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +24,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class PositionDto implements IDto {
+public class PositionDto implements Dto {
     public static final String VM_POSITION_NOT_EMPTY_NOR_BLANK = "Position name cannot be empty or blank";
     public static final String VM_POSITION_NAME_NO_LONGER = "Position name cannot be longer than 50 characters";
     public static final String VM_QUANTITY_POSITIVE = "Quantity must be greater than 0";

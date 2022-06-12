@@ -1,7 +1,7 @@
 package com.avispa.microf.model.base.mapper;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.microf.model.base.dto.IDto;
+import com.avispa.microf.model.base.dto.Dto;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -10,7 +10,7 @@ import javax.annotation.PostConstruct;
 /**
  * @author Rafał Hiszpański
  */
-public abstract class MultiTypeEntityDtoMapper<T extends EcmObject, D extends IDto> implements IEntityDtoMapper<T, D> {
+public abstract class MultiTypeEntityDtoMapper<T extends EcmObject, D extends Dto> implements IEntityDtoMapper<T, D> {
     @Autowired
     private MultiTypeMapperRegistry multiTypeMapperRegistry;
 
@@ -38,7 +38,7 @@ public abstract class MultiTypeEntityDtoMapper<T extends EcmObject, D extends ID
         getActualMapper(getDiscriminator(dto)).updateEntityFromDto(dto, entity);
     }
 
-    private <A extends EcmObject, B extends IDto> IEntityDtoMapper<A, B> getActualMapper(String discriminator) {
+    private <A extends EcmObject, B extends Dto> IEntityDtoMapper<A, B> getActualMapper(String discriminator) {
         return multiTypeMapperRegistry.getMapper(discriminator);
     }
 
