@@ -3,11 +3,6 @@
     "controls": [
       {
         "type": "text",
-        "label": "Customer type",
-        "property": "type"
-      },
-      {
-        "type": "text",
         "label": "Company name",
         "required": true,
         "property": "companyName"

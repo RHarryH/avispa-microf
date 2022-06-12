@@ -1,11 +1,15 @@
 package com.avispa.microf.model.ui.modal.page;
 
 import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
+import com.avispa.ecm.model.configuration.propertypage.content.control.PropertyControl;
+import com.avispa.ecm.model.type.TypeService;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.ui.modal.button.ModalButton;
 import com.avispa.microf.model.ui.modal.context.MicroFContext;
 import com.avispa.microf.model.ui.propertypage.PropertyPageService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
@@ -19,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ModalPageService {
     private final PropertyPageService propertyPageService;
+    private final TypeService typeService;
 
     public ModalPage createSourceModalPage() {
         List<ModalButton> buttons = new ArrayList<>(1);
@@ -48,8 +53,25 @@ public class ModalPageService {
     }
 
     public void createPropertiesPropertyPage(ModelMap modelMap, EcmObject entity, MicroFContext<Dto> context) {
-        modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage(entity, context.getObject()));
+        PropertyPageContent propertyPageContent = propertyPageService.getPropertyPage(entity, context.getObject());
+
+        // always add discriminator field as hidden if not explicitly defined
+        addDiscriminatorAsHiddenControl(propertyPageContent, entity);
+
+        modelMap.addAttribute("propertyPage", propertyPageContent);
         modelMap.addAttribute("prefix", "object");
+    }
+
+    private void addDiscriminatorAsHiddenControl(PropertyPageContent propertyPageContent, EcmObject entity) {
+        String discriminator = typeService.getTypeDiscriminatorFromAnnotation(entity.getClass());
+        boolean propertyPageHasDiscriminator = propertyPageContent.getControls().stream()
+                .filter(PropertyControl.class::isInstance)
+                .map(PropertyControl.class::cast)
+                .anyMatch(propertyControl -> propertyControl.getProperty().equals(discriminator));
+
+        if(StringUtils.isNotEmpty(discriminator) && !propertyPageHasDiscriminator) {
+            propertyPageContent.addHiddenControl(discriminator);
+        }
     }
 
     public void createSelectSourcePropertyPage(ModelMap modelMap, MicroFContext<Dto> context) {
