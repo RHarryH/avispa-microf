@@ -27,11 +27,6 @@ public class BankAccountController extends BaseController<BankAccount, BankAccou
     }
 
     @Override
-    protected BankAccountDto createDefaultDto() {
-        return new BankAccountDto();
-    }
-
-    @Override
     @DeleteMapping("/delete/{id}")
     @ResponseBody
     public void delete(@PathVariable("id") UUID id) {

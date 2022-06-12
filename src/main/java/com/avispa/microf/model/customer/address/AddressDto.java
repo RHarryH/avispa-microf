@@ -1,6 +1,6 @@
 package com.avispa.microf.model.customer.address;
 
-import com.avispa.microf.model.base.dto.IDto;
+import com.avispa.microf.model.base.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class AddressDto implements IDto {
+public class AddressDto implements Dto {
     public static final String VM_STREET_NOT_EMPTY_NOR_BLANK = "Street cannot be empty or blank";
     public static final String VM_PLACE_NOT_EMPTY_NOR_BLANK = "Place cannot be empty or blank";
     public static final String VM_ZIP_CODE_PATTERN_NOT_MATCH = "Zip code does not match specified pattern";

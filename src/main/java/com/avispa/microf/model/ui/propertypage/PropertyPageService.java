@@ -8,7 +8,7 @@ import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
 import com.avispa.ecm.model.configuration.upsert.Upsert;
 import com.avispa.ecm.model.context.ContextService;
-import com.avispa.microf.model.base.dto.IDto;
+import com.avispa.microf.model.base.dto.Dto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,20 +29,20 @@ public class PropertyPageService {
      * @param contextDto DTO object used as context for property page
      * @return
      */
-    public PropertyPageContent getPropertyPage(EcmObject ecmObject, IDto contextDto) {
+    public PropertyPageContent getPropertyPage(EcmObject ecmObject, Dto contextDto) {
         return contextService.getConfiguration(ecmObject, Upsert.class)
                 .map(Upsert::getPropertyPage)
-                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false)) // convert to dto
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false))
                 .orElse(null);
     }
 
     public PropertyPageContent getPropertyPage(String name, Object context) {
         return propertyPageRepository.findByObjectName(name)
-                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false)) // convert to dto
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false))
                 .orElse(null);
     }
 
-    public Table getTable(String tableName, Class<? extends EcmObject> ecmObjectClass, Class<? extends IDto> contextDtoClass) {
+    public Table getTable(String tableName, Class<? extends EcmObject> ecmObjectClass, Class<? extends Dto> contextDtoClass) {
         return contextService.getConfiguration(ecmObjectClass, Upsert.class)
                 .map(Upsert::getPropertyPage)
                 .map(propertyPage -> propertyPageMapper.getTable(propertyPage, tableName, contextDtoClass))

@@ -1,25 +1,24 @@
 package com.avispa.microf.model.ui.modal;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.EcmObjectRepository;
-import com.avispa.ecm.model.type.TypeService;
+import com.avispa.ecm.model.EcmObjectService;
 import com.avispa.microf.model.base.dto.Dto;
-import com.avispa.microf.model.base.dto.DtoRepository;
-import com.avispa.microf.model.base.dto.IDto;
-import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
+import com.avispa.microf.model.base.dto.DtoObject;
+import com.avispa.microf.model.base.dto.DtoService;
+import com.avispa.microf.model.ui.modal.context.MicroFContext;
+import com.avispa.microf.model.ui.modal.page.ModalPageType;
 import com.avispa.microf.util.TypeNameUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.reflect.TypeUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Rafał Hiszpański
@@ -31,14 +30,13 @@ import java.util.UUID;
 public class ModalController implements IModalController {
 
     private final ModalService modalService;
-    private final TypeService typeService;
-    private final DtoRepository dtoRepository;
-    private final EcmObjectRepository<EcmObject> ecmObjectRepository;
-    private final List<IEntityDtoMapper<? extends EcmObject, ? extends IDto>> mappers;
+    private final DtoService dtoService;
+    private final EcmObjectService ecmObjectService;
 
     @Override
     public ModelAndView getAddModal(String typeIdentifier) {
         String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
+
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.INSERT)
                 .id(typeIdentifier + "-add-modal")
                 .title("Add new " + typeName)
@@ -47,51 +45,6 @@ public class ModalController implements IModalController {
                 .build();
 
         return getModal(modal, typeName);
-    }
-
-    @Override
-    public ModelAndView getUpdateModal(String typeIdentifier, UUID id) {
-        String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
-
-        EcmObject entity = ecmObjectRepository.findById(id).orElseThrow();
-        Class<? extends EcmObject> entityClass = typeService.getType(typeName).getEntityClass();
-        if(!entity.getClass().isAssignableFrom(entityClass)) {
-            throw new IllegalStateException(String.format("Not an object of '%s' type", typeName));
-        }
-
-        IDto dto = convertToDto(entity);
-
-        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
-                .id(typeIdentifier + "-update-modal")
-                .title("Update " + typeName)
-                .action(typeIdentifier + "/update/" + id)
-                .size("large")
-                .build();
-
-        return getModal(modal, entity, dto);
-    }
-
-    @SuppressWarnings("unchecked")
-    private IDto convertToDto(EcmObject entity) {
-        IEntityDtoMapper<EcmObject,IDto> foundMapper =
-                (IEntityDtoMapper<EcmObject, IDto>) mappers.stream().filter(m -> {
-            Class<?> foundEntityClass = getMapperEntity(m.getClass());
-            return entity.getClass().equals(foundEntityClass);
-        }).findFirst().orElseThrow();
-
-        return foundMapper.convertToDto(entity);
-    }
-
-    private Class<?> getMapperEntity(Class<?> mapperClass) {
-        Map<TypeVariable<?>, Type> typeArgs  = TypeUtils.getTypeArguments(mapperClass,  IEntityDtoMapper.class);
-        TypeVariable<?> argTypeParam =  IEntityDtoMapper.class.getTypeParameters()[0];
-        Type argType = typeArgs.get(argTypeParam);
-        return TypeUtils.getRawType(argType, null);
-    }
-
-    private ModelAndView getModal(ModalConfiguration modal, EcmObject entity, IDto dto) {
-        return new ModelAndView("fragments/modal :: upsertModal",
-                modalService.constructModal(entity, dto, modal));
     }
 
     @Override
@@ -110,27 +63,68 @@ public class ModalController implements IModalController {
 
     protected ModelAndView getModal(ModalConfiguration modal, String typeName) {
         // TODO: include discriminator? add tests
-        Dto dto = dtoRepository.findByTypeNameAndDiscriminatorIsNull(typeName).orElseThrow();
+        DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
+
+        EcmObject entity = BeanUtils.instantiateClass(dtoObject.getType().getEntityClass());
+        Dto dto = BeanUtils.instantiateClass(dtoObject.getDtoClass());
 
         return new ModelAndView("fragments/modal :: upsertModal",
-                modalService.constructModal(dto.getType().getEntityClass(), dto.getDtoClass(), modal));
+                modalService.constructModal(modal, entity, dto));
     }
 
-    /*@Override
-    public ModelAndView loadPage(int pageNumber, C context) {
+    @Override
+    public ModelAndView getUpdateModal(String typeIdentifier, UUID id) {
+        String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
+
+        ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
+                .id(typeIdentifier + "-update-modal")
+                .title("Update " + typeName)
+                .action(typeIdentifier + "/update/" + id)
+                .size("large")
+                .build();
+
+        return getModal(modal, id, typeName);
+    }
+
+    private ModelAndView getModal(ModalConfiguration modal, UUID id, String typeName) {
+        EcmObject entity = ecmObjectService.getEcmObjectFrom(id, typeName);
+        Dto dto = dtoService.convertEntityToDto(entity);
+
+        return new ModelAndView("fragments/modal :: upsertModal",
+                modalService.constructModal(modal, entity, dto));
+    }
+
+    @Override
+    public ModelAndView loadPage(HttpServletRequest request, int pageNumber) {
+        MicroFContext<Dto> context = new MicroFContext<>();
+
+        String sourceId = request.getParameter("sourceId");
+        context.setSourceId(sourceId != null ? UUID.fromString(request.getParameter("sourceId")) : null);
+        context.setPages(Arrays.stream(request.getParameter("pages").split(","))
+                .map(ModalPageType::valueOf)
+                .collect(Collectors.toList()));
+        context.setTypeName(request.getParameter("typeName"));
+
+        EcmObject entity = null;
+        if(null != context.getSourceId()) {
+            entity = ecmObjectService.getEcmObjectFrom(context.getSourceId(), context.getTypeName());
+            Dto dto = dtoService.convertEntityToDto(entity);
+            context.setObject(dto);
+        }
+
         return new ModelAndView("fragments/modal :: modal-body",
-                modalService.loadPage(pageNumber, context, getService()));
-    }*/
+                modalService.loadPage(context, entity, pageNumber));
+    }
 
     @Override
     public ModelAndView loadTableTemplate(String typeIdentifier, String tableName) {
         String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
 
         // TODO: include discriminator? add tests
-        Dto dto = dtoRepository.findByTypeNameAndDiscriminatorIsNull(typeName).orElseThrow();
-        Class<? extends IDto> dtoClass = dto.getDtoClass();
+        DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
+        Class<? extends Dto> dtoClass = dtoObject.getDtoClass();
 
         return new ModelAndView("fragments/property-page :: table-template-row",
-                modalService.getTemplateRow(tableName, dto.getType().getEntityClass(), dtoClass));
+                modalService.getTableTemplateRow(tableName, dtoObject.getType().getEntityClass(), dtoClass));
     }
 }

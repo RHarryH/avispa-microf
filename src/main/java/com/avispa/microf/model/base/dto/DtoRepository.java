@@ -13,28 +13,28 @@ import java.util.Optional;
  * @author Rafał Hiszpański
  */
 @Repository
-public interface DtoRepository extends EcmEntityRepository<Dto> {
-    List<Dto> findByType(Type type);
+interface DtoRepository extends EcmEntityRepository<DtoObject> {
+    List<DtoObject> findByType(Type type);
 
     /**
      * Finds default/common Dto
      * @param entityClass
      * @return
      */
-    @Query("select d from Dto d, Type t where d.type = t and t.entityClass = :entityClass and d.discriminator is null")
-    Optional<Dto> findByEntityClassAndDiscriminatorIsNull(Class<? extends EcmObject> entityClass);
+    @Query("select d from DtoObject d, Type t where d.type = t and t.entityClass = :entityClass and d.discriminator is null")
+    Optional<DtoObject> findByEntityClassAndDiscriminatorIsNull(Class<? extends EcmObject> entityClass);
 
     /**
      * Finds default/common Dto
      * @param typeName
      * @return
      */
-    @Query("select d from Dto d, Type t where d.type = t and t.objectName = :typeName and d.discriminator is null")
-    Optional<Dto> findByTypeNameAndDiscriminatorIsNull(String typeName);
+    @Query("select d from DtoObject d, Type t where d.type = t and t.objectName = :typeName and d.discriminator is null")
+    Optional<DtoObject> findByTypeNameAndDiscriminatorIsNull(String typeName);
 
-    @Query("select d from Dto d, Type t where d.type = t and t.entityClass = :entityClass and d.discriminator = :discriminator")
-    Optional<Dto> findByEntityClassAndDiscriminator(Class<? extends EcmObject> entityClass, String discriminator);
+    @Query("select d from DtoObject d, Type t where d.type = t and t.entityClass = :entityClass and d.discriminator = :discriminator")
+    Optional<DtoObject> findByEntityClassAndDiscriminator(Class<? extends EcmObject> entityClass, String discriminator);
 
-    @Query("select d from Dto d, Type t where d.type = t and t.objectName = :typeName and d.discriminator = :discriminator")
-    Optional<Dto> findByTypeNameClassAndDiscriminator(String typeName, String discriminator);
+    @Query("select d from DtoObject d, Type t where d.type = t and t.objectName = :typeName and d.discriminator = :discriminator")
+    Optional<DtoObject> findByTypeNameClassAndDiscriminator(String typeName, String discriminator);
 }

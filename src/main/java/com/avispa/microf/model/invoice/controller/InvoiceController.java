@@ -32,11 +32,6 @@ public class InvoiceController extends BaseController<Invoice, InvoiceDto, Invoi
         super(service);
     }
 
-    @Override
-    protected InvoiceDto createDefaultDto() {
-        return new InvoiceDto();
-    }
-
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<Resource> download(@PathVariable UUID id) throws IOException {
         ContentDto contentDto = getService().getRendition(id);
