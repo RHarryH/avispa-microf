@@ -1,7 +1,7 @@
 package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
-import com.avispa.microf.model.base.dto.IDto;
+import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.customer.address.AddressDto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public abstract class CustomerDto implements IDto {
+public abstract class CustomerDto implements Dto {
     public static final String VM_PHONE_PATTERN_NOT_MATCH = "Phone does not match specified pattern";
     public static final String VM_EMAIL_INVALID = "Email address is invalid";
     public static final String VM_EMAIL_NO_LONGER = "The email cannot be longer than 150 characters";

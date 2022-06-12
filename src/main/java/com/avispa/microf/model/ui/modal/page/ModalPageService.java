@@ -1,7 +1,7 @@
 package com.avispa.microf.model.ui.modal.page;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.microf.model.base.dto.IDto;
+import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.ui.modal.button.ModalButton;
 import com.avispa.microf.model.ui.modal.context.MicroFContext;
 import com.avispa.microf.model.ui.propertypage.PropertyPageService;
@@ -47,12 +47,12 @@ public class ModalPageService {
         return new ModalPage(ModalPageType.PROPERTIES, buttons);
     }
 
-    public <T extends EcmObject, D extends IDto> void createPropertiesPropertyPage(T object, ModelMap modelMap, MicroFContext<D> context) {
-        modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage(object, context.getObject()));
+    public void createPropertiesPropertyPage(ModelMap modelMap, EcmObject entity, MicroFContext<Dto> context) {
+        modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage(entity, context.getObject()));
         modelMap.addAttribute("prefix", "object");
     }
 
-    public <D extends IDto> void createSelectSourcePropertyPage(ModelMap modelMap, MicroFContext<D> context) {
+    public void createSelectSourcePropertyPage(ModelMap modelMap, MicroFContext<Dto> context) {
         modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage("Select source property page", context));
     }
 }

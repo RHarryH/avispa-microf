@@ -1,10 +1,11 @@
 package com.avispa.microf.model.ui.modal;
 
 import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.EcmObjectService;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
-import com.avispa.microf.model.base.BaseService;
-import com.avispa.microf.model.base.dto.IDto;
-import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
+import com.avispa.ecm.model.type.TypeService;
+import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.model.base.dto.DtoService;
 import com.avispa.microf.model.ui.modal.context.MicroFContext;
 import com.avispa.microf.model.ui.modal.page.ModalPage;
 import com.avispa.microf.model.ui.modal.page.ModalPageService;
@@ -18,7 +19,6 @@ import org.springframework.ui.ModelMap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -30,42 +30,30 @@ import java.util.stream.Collectors;
 public class ModalService {
     private final ModalPageService modalPageService;
     private final PropertyPageService propertyPageService;
-
-    /**
-     * Returns modal instance. Useful for inserts. Creates new empty instance of DTO object.
-     * @param entityClass  class of ECM object
-     * @param dtoClass class of DTO object
-     * @param modal modal configuration
-     * @param <D>
-     * @return
-     */
-    public <T extends EcmObject, D extends IDto> Map<String, Object> constructModal(Class<T> entityClass, Class<D> dtoClass, ModalConfiguration modal) {
-        T object = BeanUtils.instantiateClass(entityClass);
-        D dto = BeanUtils.instantiateClass(dtoClass);
-        return constructModal(object, dto, modal);
-    }
+    private final TypeService typeService;
+    private final DtoService dtoService;
+    private final EcmObjectService ecmObjectService;
 
     /**
      * Returns modal instance. This version of method works with already existing DTOs. Useful for
      * updates.
+     * @param modal modal configuration
      * @param entity ECM object
      * @param contextTypedDto DTO object
-     * @param modal modal configuration
-     * @param <D>
      * @return
      */
-    public <T extends EcmObject, D extends IDto> ModelMap constructModal(T entity, D contextTypedDto, ModalConfiguration modal) {
+    public ModelMap constructModal(ModalConfiguration modal, EcmObject entity, Dto contextTypedDto) {
         ModelMap modelMap = new ModelMap();
         List<ModalPage> modalPages = new ArrayList<>();
 
-        MicroFContext<D> context = new MicroFContext<>();
-        context.setTypeName(entity.getClass().getSimpleName());
+        MicroFContext<Dto> context = new MicroFContext<>();
+        context.setTypeName(typeService.getTypeName(entity.getClass()));
         context.setObject(contextTypedDto);
 
         if(modal.isCloneModal()) {
             initCloneModal(modelMap, modalPages, context);
         } else {
-            initUpsertModal(entity, modal, modelMap, modalPages, context);
+            initUpsertModal(modal, modelMap, modalPages, entity, context);
         }
 
         addNavigationButtons(modalPages);
@@ -80,21 +68,21 @@ public class ModalService {
         return modelMap;
     }
 
-    private <D extends IDto> void initCloneModal(ModelMap modelMap, List<ModalPage> modalPages, MicroFContext<D> context) {
+    private void initCloneModal(ModelMap modelMap, List<ModalPage> modalPages, MicroFContext<Dto> context) {
         modalPages.add(modalPageService.createSourceModalPage());
         modalPages.add(modalPageService.createInsertionModalPage());
 
         modalPageService.createSelectSourcePropertyPage(modelMap, context);
     }
 
-    private <T extends EcmObject, D extends IDto> void initUpsertModal(T entity, ModalConfiguration modal, ModelMap modelMap, List<ModalPage> modalPages, MicroFContext<D> context) {
+    private void initUpsertModal(ModalConfiguration modal, ModelMap modelMap, List<ModalPage> modalPages, EcmObject entity, MicroFContext<Dto> context) {
         if(modal.isUpdateModal()) {
             modalPages.add(modalPageService.createUpdateModalPage());
         } else {
             modalPages.add(modalPageService.createInsertionModalPage());
         }
 
-        modalPageService.createPropertiesPropertyPage(entity, modelMap, context);
+        modalPageService.createPropertiesPropertyPage(modelMap, entity, context);
     }
 
     private void addNavigationButtons(List<ModalPage> modalPages) {
@@ -111,7 +99,7 @@ public class ModalService {
         }
     }
 
-    public <T extends EcmObject, D extends IDto, C extends MicroFContext<D>> ModelMap loadPage(int pageNumber, C context, BaseService<T, D, ? extends IEntityDtoMapper<T, D>> service) {
+    public ModelMap loadPage(MicroFContext<Dto> context, EcmObject entity, int pageNumber) {
         ModelMap modelMap = new ModelMap();
         ModalPageType pageType = context.getPageType(pageNumber);
 
@@ -120,11 +108,7 @@ public class ModalService {
                 modalPageService.createSelectSourcePropertyPage(modelMap, context);
                 break;
             case PROPERTIES:
-                T entity = service.findById(context.getSourceId());
-                D dto = service.getEntityDtoMapper().convertToDto(entity);
-
-                // TODO: missing when loading next page
-                //modalPageService.createPropertiesPropertyPage(entity, dto, modelMap, context);
+                modalPageService.createPropertiesPropertyPage(modelMap, entity, context);
                 break;
             default:
                 break;
@@ -135,7 +119,7 @@ public class ModalService {
         return modelMap;
     }
 
-    public ModelMap getTemplateRow(String tableName, Class<? extends EcmObject> entityClass, Class<? extends IDto> dtoClass) {
+    public ModelMap getTableTemplateRow(String tableName, Class<? extends EcmObject> entityClass, Class<? extends Dto> dtoClass) {
         Table table = propertyPageService.getTable(tableName, entityClass, dtoClass);
         ModelMap modelMap = new ModelMap();
 
