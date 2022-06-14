@@ -1,6 +1,8 @@
 package com.avispa.microf.model.bankaccount;
 
 import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.microf.util.validation.account.IBANConstraint;
+import com.avispa.microf.util.validation.account.NRBConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +26,8 @@ public class BankAccountDto implements Dto {
     @Size(max = 50, message = VM_BANK_NAME_NO_LONGER)
     private String bankName;
 
+    @IBANConstraint
+    @NRBConstraint
     private String accountNumber;
 
     /**

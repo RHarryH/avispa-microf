@@ -1,7 +1,7 @@
 package com.avispa.microf.model.customer.corporate;
 
 import com.avispa.microf.model.customer.CustomerDto;
-import com.avispa.microf.util.validation.VatIdentificationNumberConstraint;
+import com.avispa.microf.util.validation.VATINConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +20,7 @@ public class CorporateCustomerDto extends CustomerDto {
     @NotBlank(message = VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK)
     private String companyName;
 
-    @VatIdentificationNumberConstraint
+    @VATINConstraint
     @Pattern(regexp = "[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}", message = VM_VIN_PATTERN_NOT_MATCH)
     private String vatIdentificationNumber;
 }
