@@ -19,4 +19,14 @@ public class BankAccount extends EcmObject {
 
     @Column(length = 28)
     private String accountNumber;
+
+    public String getFormattedAccountNumber() {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < accountNumber.length(); i+=4) {
+            sb.append(accountNumber, i, Math.min(i + 4, accountNumber.length()));
+            sb.append(" ");
+        }
+
+        return sb.deleteCharAt(sb.length() - 1).toString();
+    }
 }
