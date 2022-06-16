@@ -23,6 +23,7 @@ public class InvoiceDto implements Dto {
     public static final String VM_BUYER_NOT_NULL = "Buyer cannot be null";
     public static final String VM_POSITIONS_NOT_EMPTY = "Positions list cannot be empty";
     public static final String VM_COMMENTS_NO_LONGER = "The comments cannot be longer than 200 characters";
+    public static final String VM_BANK_ACCOUNT_NOT_NULL = "Bank account cannot be null";
 
     private UUID id;
 
@@ -37,6 +38,9 @@ public class InvoiceDto implements Dto {
 
     @NotEmpty(message = VM_POSITIONS_NOT_EMPTY)
     private List<@Valid PositionDto> positions = new ArrayList<>(1);
+
+    @NotNull(message = VM_BANK_ACCOUNT_NOT_NULL)
+    private String bankAccount;
 
     @Size(max = 200, message = VM_COMMENTS_NO_LONGER)
     private String comments;

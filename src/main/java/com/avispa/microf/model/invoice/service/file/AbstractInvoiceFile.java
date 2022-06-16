@@ -38,6 +38,10 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
 
         variables.put("gross_value_in_words", invoiceData.getGrossValueInWords());
         variables.put("payment_date", FormatUtils.format(invoiceData.getPaymentDate()));
+
+        variables.put("bank_name", invoiceData.getBankName());
+        variables.put("bank_account_number", invoiceData.getBankAccountNumber());
+
         variables.put("comments", invoiceData.getComments());
 
         variables.put("issuer_signature", issuerName);

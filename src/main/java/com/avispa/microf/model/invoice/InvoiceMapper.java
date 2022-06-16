@@ -1,5 +1,7 @@
 package com.avispa.microf.model.invoice;
 
+import com.avispa.microf.model.bankaccount.BankAccount;
+import com.avispa.microf.model.bankaccount.BankAccountRepository;
 import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
@@ -29,12 +31,23 @@ public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, Invoice
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private BankAccountRepository bankAccountRepository;
+
     protected String customerToId(Customer customer) {
         return customer.getId().toString();
     }
 
     protected Customer idToCustomer(String customerId) {
         return Hibernate.unproxy(customerRepository.getById(UUID.fromString(customerId)), Customer.class);
+    }
+
+    protected String bankAccountToId(BankAccount bankAccount) {
+        return bankAccount.getId().toString();
+    }
+
+    protected BankAccount idToBankAccount(String bankAccountId) {
+        return Hibernate.unproxy(bankAccountRepository.getById(UUID.fromString(bankAccountId)), BankAccount.class);
     }
 
     protected void updatePositionsFromPositionsDto(List<PositionDto> positionDtos, @MappingTarget List<Position> positions) {
