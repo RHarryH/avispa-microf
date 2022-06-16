@@ -79,6 +79,12 @@
         ]
       },
       {
+        "type": "combo",
+        "label": "Bank account",
+        "property": "bankAccount",
+        "typeName": "Bank account"
+      },
+      {
         "type": "textarea",
         "label": "Comments",
         "property": "comments",

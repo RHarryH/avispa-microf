@@ -1,6 +1,7 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
+import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.numeral.NumeralToStringConverter;
 import lombok.Getter;
@@ -31,6 +32,9 @@ public class InvoiceData {
     private String grossValueInWords;
     private LocalDate paymentDate;
 
+    private String bankName;
+    private String bankAccountNumber;
+
     private final String comments;
 
     public InvoiceData(Invoice invoice, Dictionary unitDict, Dictionary vatRateDict) {
@@ -54,6 +58,10 @@ public class InvoiceData {
 
         this.vatMatrix = generateVatMatrix();
         setGrossValueInWords(getVatSum().getGrossValue());
+
+        BankAccount bankAccount = invoice.getBankAccount();
+        this.bankName = bankAccount.getBankName();
+        this.bankAccountNumber = bankAccount.getFormattedAccountNumber();
 
         this.comments = invoice.getComments();
 

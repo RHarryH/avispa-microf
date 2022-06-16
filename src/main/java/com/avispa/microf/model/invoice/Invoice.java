@@ -1,6 +1,7 @@
 package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.document.Document;
+import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.invoice.position.Position;
 import lombok.Getter;
@@ -42,6 +43,9 @@ public class Invoice extends Document {
     @OrderColumn
     @OneToMany(cascade = CascadeType.ALL)
     private List<Position> positions;
+
+    @ManyToOne(optional = false)
+    private BankAccount bankAccount;
 
     private String comments;
 }
