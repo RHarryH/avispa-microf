@@ -1,6 +1,7 @@
 package com.avispa.microf.model.bankaccount;
 
 import com.avispa.ecm.model.EcmObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,7 @@ public class BankAccount extends EcmObject {
     @Column(length = 28)
     private String accountNumber;
 
+    @JsonIgnore
     public String getFormattedAccountNumber() {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < accountNumber.length(); i+=4) {
