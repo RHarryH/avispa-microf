@@ -54,6 +54,7 @@
             "type": "combo",
             "label": "Unit",
             "property": "unit",
+            "dictionary": "Unit",
             "sortByLabel": true
           },
           {
@@ -70,6 +71,7 @@
           {
             "type": "combo",
             "label": "VAT Rate",
+            "dictionary": "VatRate",
             "property": "vatRate"
           }
         ]
