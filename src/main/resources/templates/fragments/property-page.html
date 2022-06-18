@@ -12,12 +12,28 @@
 
         <th:block th:fragment="property-page-controls(controls, prefix)">
             <th:block th:each="control : ${controls}">
-                <fieldset class="row mb-3" th:if="${#strings.equals(control.type, 'radio')}">
-                    <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
-                </fieldset>
-                <div th:class="${(#strings.equals(control.type, 'tabs') ? '' : 'row') + (controlStat.last ? '' : ' mb-3')}" th:unless="${#strings.equals(control.type, 'radio')}">
-                    <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
-                </div>
+                <th:block th:switch="${control.type}">
+                    <th:block th:case="radio">
+                        <fieldset class="row mb-3">
+                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
+                        </fieldset>
+                    </th:block>
+                    <th:block th:case="group">
+                        <div class="mb-3" th:name="${control.name}">
+                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
+                        </div>
+                    </th:block>
+                    <th:block th:case="tabs">
+                        <div th:class="${controlStat.last ? '' : 'mb-3'}">
+                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
+                        </div>
+                    </th:block>
+                    <th:block th:case="*">
+                        <div class="row" th:classappend="${controlStat.last ? '' : ' mb-3'}">
+                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
+                        </div>
+                    </th:block>
+                </th:block>
             </th:block>
         </th:block>
 
@@ -27,6 +43,9 @@
                     <th:block th:each="columnControl : ${control?.controls}">
                         <th:block th:insert="this :: property-page-control(${columnControl}, ${prefix})"/>
                     </th:block>
+                </th:block>
+                <th:block th:case="group">
+                    <th:block th:insert="this :: property-page-controls(${control?.controls}, ${prefix})"/>
                 </th:block>
                 <th:block th:case="tabs">
                     <ul class="nav nav-tabs" th:id="${control.label}" role="tablist">
