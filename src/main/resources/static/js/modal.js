@@ -192,7 +192,7 @@ function createModal(
         }
 
         const forms = $(modalId + " .modal-form");
-        forms.each(function(index) {
+        forms.each(function() {
             const form = $(this);
             form.submit(function (event) {
                 event.preventDefault();
@@ -215,6 +215,8 @@ function createModal(
                 } else if(button.classList.contains("modal-accept-button")) {
                     finalAction(form);
                 }
+            }).change(function () {
+                conditionsCheck($(this)[0]);
             });
         });
     }
