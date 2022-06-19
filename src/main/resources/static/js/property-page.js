@@ -85,3 +85,79 @@ function handleTableRowDelete(deleteButton) {
         row.remove(); // remove row
     });
 }
+
+function conditionsCheck(form) {
+    Array.from(form.elements).forEach((input) => {
+        console.log(input.id + ' ' + input.name + ' ' + input.value);
+        let condition = Math.random() < 0.5;
+        setRequirement(input, condition);
+        setVisibility(input, condition);
+    });
+}
+
+function setRequirement(element, condition) {
+    if(condition) {
+        console.log("Add required to " + element.name);
+        element.setAttribute("required", "required");
+        if (element.labels) {
+            element.labels.forEach(function(label) {
+                if(!label.textContent.endsWith("*")) {
+                    label.textContent = label.textContent + '*';
+                }
+            })
+        }
+    } else {
+        console.log("Remove required to " + element.name);
+        element.removeAttribute("required");
+        if (element.labels) {
+            element.labels.forEach(function(label) {
+                if(label.textContent.endsWith("*")) {
+                    label.textContent = label.textContent.slice(0, -1);
+                }
+            })
+        }
+    }
+}
+
+function setVisibility(element, condition) {
+    let closestGroupDiv = element.closest(".form-group");
+
+    function updateColunbLabelsWidth(modifier) {
+        let closesColumnDiv = closestGroupDiv.closest(".form-column");
+        if(closesColumnDiv) {
+            closesColumnDiv.querySelectorAll('label, legend').forEach(function (element) {
+                let classIndex = -1;
+                for (let i = 0; i < element.classList.length; i++) {
+                    if (element.classList[i].startsWith("col-sm-")) {
+                        classIndex = i;
+                        break;
+                    }
+                }
+
+                if (classIndex !== -1) {
+                    let classValue = element.classList[classIndex]; // get original value
+                    element.classList.remove(classValue); // remove it from class list
+                    let value = parseInt(classValue.slice(-1));
+                    value += modifier;
+                    element.classList.add("col-sm-" + value); // add new class
+                }
+            });
+        }
+    }
+
+    if(closestGroupDiv) {
+        if (condition) {
+            if(closestGroupDiv.classList.contains("d-none")) {
+                console.log("Remove d-none to " + element.name);
+                closestGroupDiv.classList.remove("d-none");
+                updateColunbLabelsWidth(2);
+            }
+        } else {
+            if(!closestGroupDiv.classList.contains("d-none")) {
+                console.log("Add d-none to " + element.name);
+                closestGroupDiv.classList.add("d-none");
+                updateColunbLabelsWidth(-2);
+            }
+        }
+    }
+}
