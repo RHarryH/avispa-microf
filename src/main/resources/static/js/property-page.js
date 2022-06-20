@@ -122,7 +122,7 @@ function setRequirement(element, condition) {
 function setVisibility(element, condition) {
     let closestGroupDiv = element.closest(".form-group");
 
-    function updateColunbLabelsWidth(modifier) {
+    function updateColumnLabelsWidth(modifier) {
         let closesColumnDiv = closestGroupDiv.closest(".form-column");
         if(closesColumnDiv) {
             closesColumnDiv.querySelectorAll('label, legend').forEach(function (element) {
@@ -150,13 +150,13 @@ function setVisibility(element, condition) {
             if(closestGroupDiv.classList.contains("d-none")) {
                 console.log("Remove d-none to " + element.name);
                 closestGroupDiv.classList.remove("d-none");
-                updateColunbLabelsWidth(2);
+                updateColumnLabelsWidth(2);
             }
         } else {
             if(!closestGroupDiv.classList.contains("d-none")) {
                 console.log("Add d-none to " + element.name);
                 closestGroupDiv.classList.add("d-none");
-                updateColunbLabelsWidth(-2);
+                updateColumnLabelsWidth(-2);
             }
         }
     }
