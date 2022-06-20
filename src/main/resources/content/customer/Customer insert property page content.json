@@ -42,7 +42,11 @@
                 "type": "text",
                 "label": "First name",
                 "property": "firstName",
-                "required": true
+                "required": true,
+                "conditions": {
+                  "visibility": "2 != 3",
+                  "requirement": "3 > 5"
+                }
               },
               {
                 "type": "text",

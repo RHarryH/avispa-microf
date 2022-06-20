@@ -88,41 +88,24 @@ function handleTableRowDelete(deleteButton) {
 
 function conditionsCheck(form) {
     Array.from(form.elements).forEach((input) => {
-        console.log(input.id + ' ' + input.name + ' ' + input.value);
-        let condition = Math.random() < 0.5;
-        setRequirement(input, condition);
-        setVisibility(input, condition);
-    });
-}
+        let visibilityCondition = input.getAttribute("data-visibility-condition");
+        if(visibilityCondition) {
+            let condition = eval(visibilityCondition);
+            setVisibility(input, condition);
+        }
 
-function setRequirement(element, condition) {
-    if(condition) {
-        console.log("Add required to " + element.name);
-        element.setAttribute("required", "required");
-        if (element.labels) {
-            element.labels.forEach(function(label) {
-                if(!label.textContent.endsWith("*")) {
-                    label.textContent = label.textContent + '*';
-                }
-            })
+        let requirementCondition = input.getAttribute("data-requirement-condition");
+        if(requirementCondition) {
+            let condition = eval(requirementCondition);
+            setRequirement(input, condition);
         }
-    } else {
-        console.log("Remove required to " + element.name);
-        element.removeAttribute("required");
-        if (element.labels) {
-            element.labels.forEach(function(label) {
-                if(label.textContent.endsWith("*")) {
-                    label.textContent = label.textContent.slice(0, -1);
-                }
-            })
-        }
-    }
+    });
 }
 
 function setVisibility(element, condition) {
     let closestGroupDiv = element.closest(".form-group");
 
-    function updateColumnLabelsWidth(modifier) {
+    function updateColumnLabelsWidth(increase) {
         let closesColumnDiv = closestGroupDiv.closest(".form-column");
         if(closesColumnDiv) {
             closesColumnDiv.querySelectorAll('label, legend').forEach(function (element) {
@@ -135,10 +118,11 @@ function setVisibility(element, condition) {
                 }
 
                 if (classIndex !== -1) {
+                    let sign = 2 * increase - 1;
                     let classValue = element.classList[classIndex]; // get original value
                     element.classList.remove(classValue); // remove it from class list
                     let value = parseInt(classValue.slice(-1));
-                    value += modifier;
+                    value += 2 * sign;
                     element.classList.add("col-sm-" + value); // add new class
                 }
             });
@@ -148,16 +132,36 @@ function setVisibility(element, condition) {
     if(closestGroupDiv) {
         if (condition) {
             if(closestGroupDiv.classList.contains("d-none")) {
-                console.log("Remove d-none to " + element.name);
                 closestGroupDiv.classList.remove("d-none");
-                updateColumnLabelsWidth(2);
+                updateColumnLabelsWidth(true);
             }
         } else {
             if(!closestGroupDiv.classList.contains("d-none")) {
-                console.log("Add d-none to " + element.name);
                 closestGroupDiv.classList.add("d-none");
-                updateColumnLabelsWidth(-2);
+                updateColumnLabelsWidth(false);
             }
+        }
+    }
+}
+
+function setRequirement(element, condition) {
+    if(condition) {
+        element.setAttribute("required", "required");
+        if (element.labels) {
+            element.labels.forEach(function(label) {
+                if(!label.textContent.endsWith("*")) {
+                    label.textContent = label.textContent + '*';
+                }
+            })
+        }
+    } else {
+        element.removeAttribute("required");
+        if (element.labels) {
+            element.labels.forEach(function(label) {
+                if(label.textContent.endsWith("*")) {
+                    label.textContent = label.textContent.slice(0, -1);
+                }
+            })
         }
     }
 }

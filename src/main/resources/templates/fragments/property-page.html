@@ -65,11 +65,54 @@
                         </div>
                     </div>
                 </th:block>
+
                 <th:block th:case="label">
                     <h3 th:text="${control.expression}" class="col-sm-12">Label</h3>
                 </th:block>
                 <th:block th:case="separator">
                     <hr/>
+                </th:block>
+
+                <th:block th:case="combo">
+                    <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
+                        <th:block th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
+                            <input th:if="${propertyPage.readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
+                                   th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
+                            <select th:unless="${propertyPage.readonly}" class="form-select" th:name="__${property}__"
+                                    th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
+                                    th:data-visibility-condition="${control.conditions?.visibility}"
+                                    th:data-requirement-condition="${control.conditions?.requirement}"
+                                    th:required="${control.required}">
+                                <option th:if="${propertyValueString != null ? not dictionaryContains : false}" value="" selected disabled hidden>DEPRECATED</option>
+                                <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}" th:selected="${value.key == propertyValueString}"></option>
+                            </select>
+                        </th:block>
+                    </div>
+                </th:block>
+                <th:block th:case="date">
+                    <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
+                        <input type="date" class="form-control"
+                               th:data-custom-validation-function="${control.customValidation?.function}"
+                               th:data-custom-validation-message="${control.customValidation?.message}"
+                               th:data-visibility-condition="${control.conditions?.visibility}"
+                               th:data-requirement-condition="${control.conditions?.requirement}"
+                               th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
+                               th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
+                    </div>
+                </th:block>
+                <th:block th:case="datetime">
+                    <th:block th:replace="this :: property-label(${prefix}, $(numberOfControls}))">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
+                        <input type="datetime-local" class="form-control"
+                               th:data-custom-validation-function="${control.customValidation?.function}"
+                               th:data-custom-validation-message="${control.customValidation?.message}"
+                               th:data-visibility-condition="${control.conditions?.visibility}"
+                               th:data-requirement-condition="${control.conditions?.requirement}"
+                               th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
+                               th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
+                    </div>
                 </th:block>
                 <th:block th:case="money">
                     <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
@@ -79,6 +122,8 @@
                                    data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
                                    th:data-custom-validation-function="${control.customValidation?.function}"
                                    th:data-custom-validation-message="${control.customValidation?.message}"
+                                   th:data-visibility-condition="${control.conditions?.visibility}"
+                                   th:data-requirement-condition="${control.conditions?.requirement}"
                                    th:readonly="${propertyPage.readonly}" th:required="${control.required}"
                                    th:field="*{__${property}__}" autocomplete="off"/>
                             <span class="input-group-text" th:text="${control.currency}"></span>
@@ -91,64 +136,10 @@
                         <input type="number" class="form-control"
                                th:data-custom-validation-function="${control.customValidation?.function}"
                                th:data-custom-validation-message="${control.customValidation?.message}"
+                               th:data-visibility-condition="${control.conditions?.visibility}"
+                               th:data-requirement-condition="${control.conditions?.requirement}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
-                    </div>
-                </th:block>
-                <th:block th:case="date">
-                    <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
-                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
-                        <input type="date" class="form-control"
-                               th:data-custom-validation-function="${control.customValidation?.function}"
-                               th:data-custom-validation-message="${control.customValidation?.message}"
-                               th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
-                               th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
-                    </div>
-                </th:block>
-                <th:block th:case="datetime">
-                    <th:block th:replace="this :: property-label(${prefix}, $(numberOfControls}))">Label</th:block>
-                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
-                        <input type="datetime-local" class="form-control"
-                               th:data-custom-validation-function="${control.customValidation?.function}"
-                               th:data-custom-validation-message="${control.customValidation?.message}"
-                               th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
-                               th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
-                    </div>
-                </th:block>
-                <th:block th:case="email">
-                    <th:block th:replace="this :: text(${control}, ${prefix}, 'email')">Text</th:block>
-                </th:block>
-                <th:block th:case="text">
-                    <th:block th:replace="this :: text(${control}, ${prefix}, 'text')">Text</th:block>
-                </th:block>
-                <th:block th:case="hidden">
-                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
-                        <input type="hidden" th:field="*{__${property}__}" />
-                    </div>
-                </th:block>
-                <th:block th:case="textarea">
-                    <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
-                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
-                        <textarea class="form-control"
-                                  th:data-custom-validation-function="${control.customValidation?.function}"
-                                  th:data-custom-validation-message="${control.customValidation?.message}"
-                                  th:rows="${control.rows}" th:cols="${control.cols}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
-                                  th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"></textarea>
-                    </div>
-                </th:block>
-                <th:block th:case="combo">
-                    <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
-                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
-                        <th:block th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
-                            <input th:if="${propertyPage.readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
-                                   th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
-                            <select th:unless="${propertyPage.readonly}" class="form-select" th:name="__${property}__"
-                                    th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
-                                    th:required="${control.required}">
-                                <option th:if="${propertyValueString != null ? not dictionaryContains : false}" value="" selected disabled hidden>DEPRECATED</option>
-                                <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}" th:selected="${value.key == propertyValueString}"></option>
-                            </select>
-                        </th:block>
                     </div>
                 </th:block>
                 <th:block th:case="radio">
@@ -157,7 +148,7 @@
                         <div class="col" th:with="property=${#strings.concat(prefix, control.property)}" >
                             <div class="form-check form-check-inline" th:each="value : ${control.values}">
                                 <input class="form-check-input" type="radio" th:required="${control.required}"
-                                    th:field="*{__${property}__}" th:value="${value.key}">
+                                       th:field="*{__${property}__}" th:value="${value.key}">
                                 <label class="form-check-label" th:for="${control.property + valueStat.count}" th:text="${value.value}"></label>
                             </div>
                         </div>
@@ -170,6 +161,25 @@
                         </div>
                     </th:block>
                 </th:block>
+                <th:block th:case="text">
+                    <th:block th:replace="this :: text(${control}, ${prefix}, 'text')">Text</th:block>
+                </th:block>
+                <th:block th:case="email">
+                    <th:block th:replace="this :: text(${control}, ${prefix}, 'email')">Text</th:block>
+                </th:block>
+                <th:block th:case="textarea">
+                    <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
+                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
+                        <textarea class="form-control"
+                                  th:data-custom-validation-function="${control.customValidation?.function}"
+                                  th:data-custom-validation-message="${control.customValidation?.message}"
+                                  th:data-visibility-condition="${control.conditions?.visibility}"
+                                  th:data-requirement-condition="${control.conditions?.requirement}"
+                                  th:rows="${control.rows}" th:cols="${control.cols}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
+                                  th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"></textarea>
+                    </div>
+                </th:block>
+
                 <th:block th:case="table">
                     <div class="col">
                         <th:block th:insert="this :: table(${control}, ${propertyPage.readonly})"></th:block>
@@ -180,6 +190,13 @@
                             th:value="${prefix}"> Add new</button>
                     </div>
                 </th:block>
+
+                <th:block th:case="hidden">
+                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
+                        <input type="hidden" th:field="*{__${property}__}" />
+                    </div>
+                </th:block>
+
                 <th:block th:case="*">
                     <span th:text="|Unsupported control of type '${control.type}'|"></span>
                 </th:block>
@@ -192,6 +209,8 @@
                 <input th:type="${textType}" class="form-control"
                        th:data-custom-validation-function="${control.customValidation?.function}"
                        th:data-custom-validation-message="${control.customValidation?.message}"
+                       th:data-visibility-condition="${control.conditions?.visibility}"
+                       th:data-requirement-condition="${control.conditions?.requirement}"
                        th:data-inputmask-regex="${control.pattern}"
                        th:pattern="${control.pattern}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
                        th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
