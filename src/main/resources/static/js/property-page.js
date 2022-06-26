@@ -87,22 +87,74 @@ function handleTableRowDelete(deleteButton) {
 }
 
 function conditionsCheck(form) {
-    Array.from(form.elements).forEach((input) => {
-        let visibilityCondition = input.getAttribute("data-visibility-condition");
-        if(visibilityCondition) {
-            let condition = eval(visibilityCondition);
-            setVisibility(input, condition);
-        }
+    Array.from(form.elements)
+        .filter(input => input.tagName !== 'BUTTON') // exclude buttons
+        .forEach(input => {
+            let visibilityConditions = input.getAttribute("data-visibility-conditions");
+            if(visibilityConditions) {
+                let result = resolveConditions(form, visibilityConditions);
+                setVisibility(input, result);
+            }
 
-        let requirementCondition = input.getAttribute("data-requirement-condition");
-        if(requirementCondition) {
-            let condition = eval(requirementCondition);
-            setRequirement(input, condition);
-        }
-    });
+            let requirementConditions = input.getAttribute("data-requirement-conditions");
+            if(requirementConditions) {
+                let result = resolveConditions(form, requirementConditions);
+                setRequirement(input, result);
+            }
+        });
 }
 
-function setVisibility(element, condition) {
+function resolveConditions(form, conditions) {
+    let conditionsObject = JSON.parse(conditions);
+
+    let result = true;
+
+    for (let [key, value] of Object.entries(conditionsObject)) {
+        result &= resolveCondition(key, value);
+    }
+    return result;
+
+    function resolveCondition(key, value) {
+        console.log(`${key}: ${value}`);
+        if(key === "$and") {
+            let result = true;
+            value.forEach(element => {
+                let [elementKey, elementValue] = Object.entries(element)[0];
+                result &= resolveCondition(elementKey, elementValue);
+                console.log("anding result");
+            });
+            return result;
+        } else if(key === "$or") {
+            let result = false;
+            value.forEach(element => {
+                let [elementKey, elementValue] = Object.entries(element)[0];
+                result |= resolveCondition(elementKey, elementValue);
+                console.log("oring result");
+            });
+            return result;
+        } else {
+            if(typeof value === 'object' && !Array.isArray(value) && value !== null) { // value is an object
+                let [operator, actualValue] = Object.entries(value)[0];
+                console.log("'object." + key + "' " + operator + "? " + actualValue);
+                return comparators[operator](form.elements["object." + key].value, actualValue);
+            } else {
+                console.log("'object." + key + "' $eq? " + value);
+                return comparators["$eq"](form.elements["object." + key].value, value);
+            }
+        }
+    }
+}
+
+const comparators = {
+    "$eq": (a, b) => a === b,
+    "$ne": (a, b) => a !== b,
+    "$lt": (a, b) => a < b,
+    "$lte": (a, b) => a <= b,
+    "$gt": (a, b) => a > b,
+    "$gte": (a, b) => a >= b
+};
+
+function setVisibility(element, conditionsResult) {
     let closestGroupDiv = element.closest(".form-group");
 
     function updateColumnLabelsWidth(increase) {
@@ -130,7 +182,7 @@ function setVisibility(element, condition) {
     }
 
     if(closestGroupDiv) {
-        if (condition) {
+        if (conditionsResult) {
             if(closestGroupDiv.classList.contains("d-none")) {
                 closestGroupDiv.classList.remove("d-none");
                 updateColumnLabelsWidth(true);
@@ -144,8 +196,8 @@ function setVisibility(element, condition) {
     }
 }
 
-function setRequirement(element, condition) {
-    if(condition) {
+function setRequirement(element, conditionsResult) {
+    if(conditionsResult) {
         element.setAttribute("required", "required");
         if (element.labels) {
             element.labels.forEach(function(label) {
