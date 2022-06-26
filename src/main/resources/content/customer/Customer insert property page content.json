@@ -44,8 +44,30 @@
                 "property": "firstName",
                 "required": true,
                 "conditions": {
-                  "visibility": "2 != 3",
-                  "requirement": "3 > 5"
+                  "visibility": {
+                    "$or": [
+                      {
+                        "firstName" : {
+                          "$ne": "B"
+                        }
+                      },
+                      {
+                      "$and": [
+                        {
+                          "firstName": {
+                            "$eq": "test"
+                          }
+                        },
+                        {
+                          "lastName": {
+                            "$ne": "test20"
+                          }
+                        }
+                        ]
+                      }
+                    ],
+                    "companyName": "z"
+                  }
                 }
               },
               {

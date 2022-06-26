@@ -81,8 +81,8 @@
                                    th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
                             <select th:unless="${propertyPage.readonly}" class="form-select" th:name="__${property}__"
                                     th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
-                                    th:data-visibility-condition="${control.conditions?.visibility}"
-                                    th:data-requirement-condition="${control.conditions?.requirement}"
+                                    th:data-visibility-conditions="${control.conditions?.visibility}"
+                                    th:data-requirement-conditions="${control.conditions?.requirement}"
                                     th:required="${control.required}">
                                 <option th:if="${propertyValueString != null ? not dictionaryContains : false}" value="" selected disabled hidden>DEPRECATED</option>
                                 <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}" th:selected="${value.key == propertyValueString}"></option>
@@ -96,8 +96,8 @@
                         <input type="date" class="form-control"
                                th:data-custom-validation-function="${control.customValidation?.function}"
                                th:data-custom-validation-message="${control.customValidation?.message}"
-                               th:data-visibility-condition="${control.conditions?.visibility}"
-                               th:data-requirement-condition="${control.conditions?.requirement}"
+                               th:data-visibility-conditions="${control.conditions?.visibility}"
+                               th:data-requirement-conditions="${control.conditions?.requirement}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
@@ -108,8 +108,8 @@
                         <input type="datetime-local" class="form-control"
                                th:data-custom-validation-function="${control.customValidation?.function}"
                                th:data-custom-validation-message="${control.customValidation?.message}"
-                               th:data-visibility-condition="${control.conditions?.visibility}"
-                               th:data-requirement-condition="${control.conditions?.requirement}"
+                               th:data-visibility-conditions="${control.conditions?.visibility}"
+                               th:data-requirement-conditions="${control.conditions?.requirement}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
@@ -122,8 +122,8 @@
                                    data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
                                    th:data-custom-validation-function="${control.customValidation?.function}"
                                    th:data-custom-validation-message="${control.customValidation?.message}"
-                                   th:data-visibility-condition="${control.conditions?.visibility}"
-                                   th:data-requirement-condition="${control.conditions?.requirement}"
+                                   th:data-visibility-conditions="${control.conditions?.visibility}"
+                                   th:data-requirement-conditions="${control.conditions?.requirement}"
                                    th:readonly="${propertyPage.readonly}" th:required="${control.required}"
                                    th:field="*{__${property}__}" autocomplete="off"/>
                             <span class="input-group-text" th:text="${control.currency}"></span>
@@ -136,8 +136,8 @@
                         <input type="number" class="form-control"
                                th:data-custom-validation-function="${control.customValidation?.function}"
                                th:data-custom-validation-message="${control.customValidation?.message}"
-                               th:data-visibility-condition="${control.conditions?.visibility}"
-                               th:data-requirement-condition="${control.conditions?.requirement}"
+                               th:data-visibility-conditions="${control.conditions?.visibility}"
+                               th:data-requirement-conditions="${control.conditions?.requirement}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
@@ -173,8 +173,8 @@
                         <textarea class="form-control"
                                   th:data-custom-validation-function="${control.customValidation?.function}"
                                   th:data-custom-validation-message="${control.customValidation?.message}"
-                                  th:data-visibility-condition="${control.conditions?.visibility}"
-                                  th:data-requirement-condition="${control.conditions?.requirement}"
+                                  th:data-visibility-conditions="${control.conditions?.visibility}"
+                                  th:data-requirement-conditions="${control.conditions?.requirement}"
                                   th:rows="${control.rows}" th:cols="${control.cols}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
                                   th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"></textarea>
                     </div>
@@ -209,8 +209,8 @@
                 <input th:type="${textType}" class="form-control"
                        th:data-custom-validation-function="${control.customValidation?.function}"
                        th:data-custom-validation-message="${control.customValidation?.message}"
-                       th:data-visibility-condition="${control.conditions?.visibility}"
-                       th:data-requirement-condition="${control.conditions?.requirement}"
+                       th:data-visibility-conditions="${control.conditions?.visibility}"
+                       th:data-requirement-conditions="${control.conditions?.requirement}"
                        th:data-inputmask-regex="${control.pattern}"
                        th:pattern="${control.pattern}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
                        th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
