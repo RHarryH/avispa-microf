@@ -16,7 +16,12 @@
             "type": "text",
             "label": "Company name",
             "required": true,
-            "property": "companyName"
+            "property": "companyName",
+            "conditions": {
+              "requirement": {
+                "type": "CORPORATE"
+              }
+            }
           },
           {
             "type": "text",
@@ -27,9 +32,19 @@
             "customValidation": {
               "function": "NIPIsValid",
               "message": "Vat Identification Number is invalid"
+            },
+            "conditions": {
+              "requirement": {
+                "type": "CORPORATE"
+              }
             }
           }
-        ]
+        ],
+        "conditions": {
+          "visibility": {
+            "type": "CORPORATE"
+          }
+        }
       },
       {
         "type": "group",
@@ -44,29 +59,8 @@
                 "property": "firstName",
                 "required": true,
                 "conditions": {
-                  "visibility": {
-                    "$or": [
-                      {
-                        "firstName" : {
-                          "$ne": "B"
-                        }
-                      },
-                      {
-                      "$and": [
-                        {
-                          "firstName": {
-                            "$eq": "test"
-                          }
-                        },
-                        {
-                          "lastName": {
-                            "$ne": "test20"
-                          }
-                        }
-                        ]
-                      }
-                    ],
-                    "companyName": "z"
+                  "requirement": {
+                    "type": "RETAIL"
                   }
                 }
               },
@@ -74,11 +68,21 @@
                 "type": "text",
                 "label": "Last name",
                 "property": "lastName",
-                "required": true
+                "required": true,
+                "conditions": {
+                  "requirement": {
+                    "type": "RETAIL"
+                  }
+                }
               }
             ]
           }
-        ]
+        ],
+        "conditions": {
+          "visibility": {
+            "type": "RETAIL"
+          }
+        }
       },
       {
         "type": "text",

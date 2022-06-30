@@ -14,28 +14,42 @@
             <th:block th:each="control : ${controls}">
                 <th:block th:switch="${control.type}">
                     <th:block th:case="columns">
-                        <div class="form-column row" th:classappend="${controlStat.last ? '' : ' mb-3'}">
-                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
+                        <div class="row" th:classappend="${controlStat.last ? '' : ' mb-3'}">
+                            <div class="form-group col"
+                                 th:each="columnControl : ${control?.controls}"
+                                 th:data-visibility-conditions="${columnControl.conditions?.visibility}"
+                                 th:data-requirement-conditions="${columnControl.conditions?.requirement}">
+                                <div class="row"
+                                     th:insert="this :: property-page-control(control = ${columnControl}, prefix = ${prefix}, numberOfControls = ${#lists.size(control?.controls)})">
+                                </div>
+                            </div>
                         </div>
                     </th:block>
-                    <th:block th:case="radio">
-                        <fieldset class="form-group row mb-3">
-                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
-                        </fieldset>
-                    </th:block>
                     <th:block th:case="group">
-                        <div class="mb-3" th:name="${control.name}">
-                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
+                        <div class="form-group mb-3" th:name="${control.name}"
+                             th:data-visibility-conditions="${control.conditions?.visibility}"
+                             th:insert="this :: property-page-controls(${control?.controls}, ${prefix})">
                         </div>
                     </th:block>
                     <th:block th:case="tabs">
-                        <div class="form-group" th:classappend="${controlStat.last ? '' : 'mb-3'}">
-                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
+                        <div class="form-group" th:classappend="${controlStat.last ? '' : 'mb-3'}"
+                             th:data-visibility-conditions="${control.conditions?.visibility}"
+                             th:insert="this :: property-page-control(${control}, ${prefix})">
                         </div>
                     </th:block>
+
+                    <th:block th:case="radio">
+                        <fieldset class="form-group row mb-3"
+                                  th:data-visibility-conditions="${control.conditions?.visibility}"
+                                  th:data-requirement-conditions="${control.conditions?.requirement}"
+                                  th:insert="this :: property-page-control(${control}, ${prefix})">
+                        </fieldset>
+                    </th:block>
                     <th:block th:case="*">
-                        <div class="form-group row" th:classappend="${controlStat.last ? '' : ' mb-3'}">
-                            <th:block th:insert="this :: property-page-control(${control}, ${prefix})"/>
+                        <div class="form-group row" th:classappend="${controlStat.last ? '' : ' mb-3'}"
+                             th:data-visibility-conditions="${control.conditions?.visibility}"
+                             th:data-requirement-conditions="${control.conditions?.requirement}"
+                             th:insert="this :: property-page-control(${control}, ${prefix})">
                         </div>
                     </th:block>
                 </th:block>
@@ -44,15 +58,6 @@
 
         <th:block th:fragment="property-page-control(control, prefix)">
             <th:block th:switch="${control.type}">
-                <th:block th:case="columns">
-                    <div class="col form-group" th:each="columnControl : ${control?.controls}">
-                        <div class="row" th:insert="this :: property-page-control(control = ${columnControl}, prefix = ${prefix}, numberOfControls = ${#lists.size(control?.controls)})">
-                        </div>
-                    </div>
-                </th:block>
-                <th:block th:case="group">
-                    <th:block th:insert="this :: property-page-controls(${control?.controls}, ${prefix})"/>
-                </th:block>
                 <th:block th:case="tabs">
                     <ul class="nav nav-tabs" th:id="${control.label}" role="tablist">
                         <li class="nav-item" role="presentation" th:each="tab : ${control?.tabs}">
@@ -79,10 +84,8 @@
                         <th:block th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
                             <input th:if="${propertyPage.readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
                                    th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
-                            <select th:unless="${propertyPage.readonly}" class="form-select" th:name="__${property}__"
+                            <select class="form-select" th:name="__${property}__"
                                     th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
-                                    th:data-visibility-conditions="${control.conditions?.visibility}"
-                                    th:data-requirement-conditions="${control.conditions?.requirement}"
                                     th:required="${control.required}">
                                 <option th:if="${propertyValueString != null ? not dictionaryContains : false}" value="" selected disabled hidden>DEPRECATED</option>
                                 <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}" th:selected="${value.key == propertyValueString}"></option>
@@ -96,8 +99,6 @@
                         <input type="date" class="form-control"
                                th:data-custom-validation-function="${control.customValidation?.function}"
                                th:data-custom-validation-message="${control.customValidation?.message}"
-                               th:data-visibility-conditions="${control.conditions?.visibility}"
-                               th:data-requirement-conditions="${control.conditions?.requirement}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
@@ -108,8 +109,6 @@
                         <input type="datetime-local" class="form-control"
                                th:data-custom-validation-function="${control.customValidation?.function}"
                                th:data-custom-validation-message="${control.customValidation?.message}"
-                               th:data-visibility-conditions="${control.conditions?.visibility}"
-                               th:data-requirement-conditions="${control.conditions?.requirement}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
@@ -122,8 +121,6 @@
                                    data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
                                    th:data-custom-validation-function="${control.customValidation?.function}"
                                    th:data-custom-validation-message="${control.customValidation?.message}"
-                                   th:data-visibility-conditions="${control.conditions?.visibility}"
-                                   th:data-requirement-conditions="${control.conditions?.requirement}"
                                    th:readonly="${propertyPage.readonly}" th:required="${control.required}"
                                    th:field="*{__${property}__}" autocomplete="off"/>
                             <span class="input-group-text" th:text="${control.currency}"></span>
@@ -136,30 +133,19 @@
                         <input type="number" class="form-control"
                                th:data-custom-validation-function="${control.customValidation?.function}"
                                th:data-custom-validation-message="${control.customValidation?.message}"
-                               th:data-visibility-conditions="${control.conditions?.visibility}"
-                               th:data-requirement-conditions="${control.conditions?.requirement}"
                                th:min="${control.min}" th:max="${control.max}" th:step="${control.step}"
                                th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
                     </div>
                 </th:block>
                 <th:block th:case="radio">
-                    <th:block th:unless="${propertyPage.readonly}">
-                        <legend th:text="${control.label + (control.required ? '*' : '')}" class="col-form-label pt-0" th:classappend="'col-sm-' + ${2*(numberOfControls == null ? 1 : numberOfControls)}">Property name</legend>
-                        <div class="col" th:with="property=${#strings.concat(prefix, control.property)}" >
-                            <div class="form-check form-check-inline" th:each="value : ${control.values}">
-                                <input class="form-check-input" type="radio" th:required="${control.required}"
-                                       th:field="*{__${property}__}" th:value="${value.key}">
-                                <label class="form-check-label" th:for="${control.property + valueStat.count}" th:text="${value.value}"></label>
-                            </div>
+                    <legend th:text="${control.label + (control.required ? '*' : '')}" class="col-form-label pt-0" th:classappend="'col-sm-' + ${2*(numberOfControls == null ? 1 : numberOfControls)}">Property name</legend>
+                    <div class="col" th:with="property=${#strings.concat(prefix, control.property)}" >
+                        <div class="form-check form-check-inline" th:each="value : ${control.values}">
+                            <input class="form-check-input" type="radio" th:required="${control.required}"
+                                   th:field="*{__${property}__}" th:value="${value.key}" th:disabled="${propertyPage.readonly}">
+                            <label class="form-check-label" th:for="${property + valueStat.count}" th:text="${value.value}"></label>
                         </div>
-                    </th:block>
-                    <th:block th:if="${propertyPage.readonly}" th:with="property=${#strings.concat(prefix, control.property)}">
-                        <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
-                        <div class="col" th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
-                            <input th:if="${propertyPage.readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
-                                   th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
-                        </div>
-                    </th:block>
+                    </div>
                 </th:block>
                 <th:block th:case="text">
                     <th:block th:replace="this :: text(${control}, ${prefix}, 'text')">Text</th:block>
@@ -173,8 +159,6 @@
                         <textarea class="form-control"
                                   th:data-custom-validation-function="${control.customValidation?.function}"
                                   th:data-custom-validation-message="${control.customValidation?.message}"
-                                  th:data-visibility-conditions="${control.conditions?.visibility}"
-                                  th:data-requirement-conditions="${control.conditions?.requirement}"
                                   th:rows="${control.rows}" th:cols="${control.cols}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
                                   th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"></textarea>
                     </div>
@@ -209,8 +193,6 @@
                 <input th:type="${textType}" class="form-control"
                        th:data-custom-validation-function="${control.customValidation?.function}"
                        th:data-custom-validation-message="${control.customValidation?.message}"
-                       th:data-visibility-conditions="${control.conditions?.visibility}"
-                       th:data-requirement-conditions="${control.conditions?.requirement}"
                        th:data-inputmask-regex="${control.pattern}"
                        th:pattern="${control.pattern}" th:minlength="${control.minLength}" th:maxlength="${control.maxLength}"
                        th:field="*{__${property}__}" th:readonly="${propertyPage.readonly}" th:required="${control.required}"/>
@@ -231,7 +213,7 @@
             </thead>
             <tbody>
             <tr th:each="row : *{__${property}__}"> <!--/* for each array element */-->
-                <th:block th:insert="this :: table-row(${control}, ${rowStat.index}, ${readonly})"></th:block>
+                <th:block th:insert="this :: table-row(${control}, ${rowStat.index}, ${readonly})"/>
             </tr>
             </tbody>
         </table>

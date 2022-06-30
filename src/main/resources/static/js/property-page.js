@@ -87,30 +87,33 @@ function handleTableRowDelete(deleteButton) {
 }
 
 function conditionsCheck(form) {
-    Array.from(form.elements)
-        .filter(input => input.tagName !== 'BUTTON') // exclude buttons
-        .forEach(input => {
-            let visibilityConditions = input.getAttribute("data-visibility-conditions");
-            if(visibilityConditions) {
-                let result = resolveConditions(form, visibilityConditions);
-                setVisibility(input, result);
-            }
+    const formData = new FormData(form);
+    form.querySelectorAll('[data-visibility-conditions]')
+        .forEach(control => {
+            const visibilityConditions = control.getAttribute("data-visibility-conditions");
+            const result = resolveConditions(formData, visibilityConditions);
+            setVisibility(control, result);
+        });
 
-            let requirementConditions = input.getAttribute("data-requirement-conditions");
-            if(requirementConditions) {
-                let result = resolveConditions(form, requirementConditions);
-                setRequirement(input, result);
-            }
+    form.querySelectorAll('[data-requirement-conditions]')
+        .forEach(control => {
+            const requirementConditions = control.getAttribute("data-requirement-conditions");
+            const result = resolveConditions(formData, requirementConditions);
+            setRequirement(control, result);
         });
 }
 
-function resolveConditions(form, conditions) {
+function resolveConditions(formData, conditions) {
     let conditionsObject = JSON.parse(conditions);
 
     let result = true;
 
     for (let [key, value] of Object.entries(conditionsObject)) {
-        result &= resolveCondition(key, value);
+        result &&= resolveCondition(key, value);
+        if(result === false) {
+            console.log("And short-circuiting");
+            return result;
+        }
     }
     return result;
 
@@ -120,26 +123,34 @@ function resolveConditions(form, conditions) {
             let result = true;
             value.forEach(element => {
                 let [elementKey, elementValue] = Object.entries(element)[0];
-                result &= resolveCondition(elementKey, elementValue);
-                console.log("anding result");
+                result &&= resolveCondition(elementKey, elementValue);
+                if(result === false) {
+                    console.log("And short-circuiting");
+                    return result;
+                }
+                console.log("Anding result");
             });
             return result;
         } else if(key === "$or") {
             let result = false;
             value.forEach(element => {
                 let [elementKey, elementValue] = Object.entries(element)[0];
-                result |= resolveCondition(elementKey, elementValue);
-                console.log("oring result");
+                result ||= resolveCondition(elementKey, elementValue);
+                if(result === true) {
+                    console.log("Or short-circuiting");
+                    return result;
+                }
+                console.log("Oring result");
             });
             return result;
         } else {
             if(typeof value === 'object' && !Array.isArray(value) && value !== null) { // value is an object
                 let [operator, actualValue] = Object.entries(value)[0];
                 console.log("'object." + key + "' " + operator + "? " + actualValue);
-                return comparators[operator](form.elements["object." + key].value, actualValue);
+                return comparators[operator](formData.get("object." + key), actualValue);
             } else {
                 console.log("'object." + key + "' $eq? " + value);
-                return comparators["$eq"](form.elements["object." + key].value, value);
+                return comparators["$eq"](formData.get("object." + key), value);
             }
         }
     }
@@ -155,65 +166,82 @@ const comparators = {
 };
 
 function setVisibility(element, conditionsResult) {
-    let closestGroupDiv = element.closest(".form-group");
-
     function updateColumnLabelsWidth(increase) {
-        let closesColumnDiv = closestGroupDiv.closest(".form-column");
-        if(closesColumnDiv) {
-            closesColumnDiv.querySelectorAll('label, legend').forEach(function (element) {
-                let classIndex = -1;
-                for (let i = 0; i < element.classList.length; i++) {
-                    if (element.classList[i].startsWith("col-sm-")) {
-                        classIndex = i;
-                        break;
-                    }
+        element.parentNode.querySelectorAll('label, legend').forEach(function (label) {
+            let classIndex = -1;
+            for (let i = 0; i < label.classList.length; i++) {
+                if (label.classList[i].startsWith("col-sm-")) {
+                    classIndex = i;
+                    break;
                 }
+            }
 
-                if (classIndex !== -1) {
-                    let sign = 2 * increase - 1;
-                    let classValue = element.classList[classIndex]; // get original value
-                    element.classList.remove(classValue); // remove it from class list
-                    let value = parseInt(classValue.slice(-1));
-                    value += 2 * sign;
-                    element.classList.add("col-sm-" + value); // add new class
-                }
-            });
-        }
+            if (classIndex !== -1) {
+                let sign = 2 * increase - 1;
+                let classValue = label.classList[classIndex]; // get original value
+                label.classList.remove(classValue); // remove it from class list
+                let value = parseInt(classValue.slice(-1));
+                value += 2 * sign;
+                label.classList.add("col-sm-" + value); // add new class
+            }
+        });
     }
 
-    if(closestGroupDiv) {
-        if (conditionsResult) {
-            if(closestGroupDiv.classList.contains("d-none")) {
-                closestGroupDiv.classList.remove("d-none");
-                updateColumnLabelsWidth(true);
-            }
-        } else {
-            if(!closestGroupDiv.classList.contains("d-none")) {
-                closestGroupDiv.classList.add("d-none");
-                updateColumnLabelsWidth(false);
-            }
+    if (conditionsResult) {
+        if(element.classList.contains("d-none")) {
+            element.classList.remove("d-none");
+            updateColumnLabelsWidth(true);
+        }
+    } else {
+        if(!element.classList.contains("d-none")) {
+            element.classList.add("d-none");
+            updateColumnLabelsWidth(false);
+
+            // clear values
+            $(element).find(":input").toArray().forEach(function (input) {
+                if(input.type === "radio") {
+                    input.checked = false;
+                } else {
+                    input.value = "";
+                }
+            });
         }
     }
 }
 
 function setRequirement(element, conditionsResult) {
-    if(conditionsResult) {
-        element.setAttribute("required", "required");
-        if (element.labels) {
-            element.labels.forEach(function(label) {
-                if(!label.textContent.endsWith("*")) {
-                    label.textContent = label.textContent + '*';
-                }
-            })
-        }
-    } else {
-        element.removeAttribute("required");
-        if (element.labels) {
-            element.labels.forEach(function(label) {
-                if(label.textContent.endsWith("*")) {
-                    label.textContent = label.textContent.slice(0, -1);
-                }
-            })
+    const legend = element.querySelector("legend");
+    if(legend) {
+        if(conditionsResult) {
+            if (!legend.textContent.endsWith("*")) {
+                legend.textContent = legend.textContent + '*';
+            }
+        } else {
+            if (legend.textContent.endsWith("*")) {
+                legend.textContent = legend.textContent.slice(0, -1);
+            }
         }
     }
+
+    $(element).find(":input").toArray().forEach(function (input) {
+        if(conditionsResult) {
+            input.setAttribute("required", "required");
+            if (input.type !== "radio" && input.labels) {
+                input.labels.forEach(function (label) {
+                    if (!label.textContent.endsWith("*")) {
+                        label.textContent = label.textContent + '*';
+                    }
+                })
+            }
+        } else {
+            input.removeAttribute("required");
+            if (input.type !== "radio" && input.labels) {
+                input.labels.forEach(function(label) {
+                    if(label.textContent.endsWith("*")) {
+                        label.textContent = label.textContent.slice(0, -1);
+                    }
+                })
+            }
+        }
+    });
 }
