@@ -25,6 +25,7 @@ class InvoiceDtoValidationTest {
         invoiceDto.setSeller(UUID.randomUUID().toString());
         invoiceDto.setServiceDate(getCurrentDate());
         invoiceDto.setIssueDate(getCurrentDate());
+        invoiceDto.setBankAccount(RandomStringUtils.randomAlphanumeric(20));
 
         PositionDto positionDto = invoiceDto.getPositions().get(0); // first position is always available when created
         positionDto.setObjectName("Name");
@@ -55,5 +56,11 @@ class InvoiceDtoValidationTest {
     void givenCommentsExceedMaxLength_whenValidate_thenFail() {
         invoiceDto.setComments(RandomStringUtils.randomAlphabetic(201));
         validate(invoiceDto, InvoiceDto.VM_COMMENTS_NO_LONGER);
+    }
+
+    @Test
+    void givenNullBankAccount_whenValidate_thenFail() {
+        invoiceDto.setBankAccount(null);
+        validate(invoiceDto, InvoiceDto.VM_BANK_ACCOUNT_NOT_NULL);
     }
 }

@@ -1,6 +1,7 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
+import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.address.Address;
 import com.avispa.microf.model.invoice.Invoice;
@@ -8,6 +9,7 @@ import com.avispa.microf.model.invoice.position.Position;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,6 +70,11 @@ class InvoiceDataTest {
         position.setUnitPrice(BigDecimal.TEN);
         position.setDiscount(BigDecimal.ZERO);
 
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setId(UUID.randomUUID());
+        bankAccount.setAccountNumber(RandomStringUtils.randomAlphanumeric(24));
+        bankAccount.setBankName("test bank");
+
         Invoice invoice = new Invoice();
         invoice.setObjectName("123");
         invoice.setBuyer(customer);
@@ -75,6 +83,7 @@ class InvoiceDataTest {
         invoice.setServiceDate(LocalDate.now());
         invoice.setComments("Comment");
         invoice.setPositions(List.of(position));
+        invoice.setBankAccount(bankAccount);
 
         InvoiceData invoiceData = new InvoiceData(invoice, unitDict, vatRateDict);
 
