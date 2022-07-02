@@ -87,23 +87,24 @@ function handleTableRowDelete(deleteButton) {
 }
 
 function conditionsCheck(form) {
-    const formData = new FormData(form);
+
     form.querySelectorAll('[data-visibility-conditions]')
         .forEach(control => {
             const visibilityConditions = control.getAttribute("data-visibility-conditions");
-            const result = resolveConditions(formData, visibilityConditions);
+            const result = resolveConditions(form, visibilityConditions);
             setVisibility(control, result);
         });
 
     form.querySelectorAll('[data-requirement-conditions]')
         .forEach(control => {
             const requirementConditions = control.getAttribute("data-requirement-conditions");
-            const result = resolveConditions(formData, requirementConditions);
+            const result = resolveConditions(form, requirementConditions);
             setRequirement(control, result);
         });
 }
 
-function resolveConditions(formData, conditions) {
+function resolveConditions(form, conditions) {
+    const formData = new FormData(form);
     let conditionsObject = JSON.parse(conditions);
 
     let result = true;
@@ -119,6 +120,20 @@ function resolveConditions(formData, conditions) {
 
     function resolveCondition(key, value) {
         console.log(`${key}: ${value}`);
+
+        function getValueToCompare(fullKey) {
+            const element = form.querySelector("select[name='" + fullKey + "'],input[name='" + fullKey + "']:checked");
+            if (element) { // multi-select not supported!
+                if(element.type === 'select-one') {
+                    return element.options[element.selectedIndex].innerText;
+                } else if(element.type === 'radio') {
+                    return element.labels[0].innerText;
+                }
+            } else {
+                return formData.get(fullKey);
+            }
+        }
+
         if(key === "$and") {
             let result = true;
             value.forEach(element => {
@@ -144,13 +159,16 @@ function resolveConditions(formData, conditions) {
             });
             return result;
         } else {
+            const fullKey = "object." + key;
+            const valueToCompare = getValueToCompare(fullKey);
+
             if(typeof value === 'object' && !Array.isArray(value) && value !== null) { // value is an object
-                let [operator, actualValue] = Object.entries(value)[0];
-                console.log("'object." + key + "' " + operator + "? " + actualValue);
-                return comparators[operator](formData.get("object." + key), actualValue);
+                let [operator, nestedValue] = Object.entries(value)[0];
+                console.log("'" + fullKey + "' " + operator + "? " + nestedValue);
+                return comparators[operator](valueToCompare, nestedValue);
             } else {
-                console.log("'object." + key + "' $eq? " + value);
-                return comparators["$eq"](formData.get("object." + key), value);
+                console.log("'" + fullKey + "' $eq? " + value);
+                return comparators["$eq"](valueToCompare, value);
             }
         }
     }
@@ -167,7 +185,7 @@ const comparators = {
 
 function setVisibility(element, conditionsResult) {
     function updateColumnLabelsWidth(increase) {
-        element.parentNode.querySelectorAll('label, legend').forEach(function (label) {
+        element.querySelectorAll('label, legend').forEach(function (label) {
             let classIndex = -1;
             for (let i = 0; i < label.classList.length; i++) {
                 if (label.classList[i].startsWith("col-sm-")) {
