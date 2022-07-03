@@ -124,13 +124,14 @@ function createModal(
 
         const modal = $(modalId);
         if (modal.length) {
+            modal.on("hidden.bs.modal", function () { // remove modal when hidden
+                modal.remove();
+            }).on("show.bs.modal", function() {
+                conditionsCheck(this.querySelector(".modal-form")); // initialize modal
+            });
+
             let bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
             bootstrapModal.show();
-
-            // remove modal when hidden
-            modal.on("hidden.bs.modal", function () {
-                modal.remove();
-            });
 
             handleAddingTableRow(modalId, resourcePath, resourceIdentifier);
             handleTableDeletion(modalId); // this actually initializes it for the first time
@@ -140,7 +141,7 @@ function createModal(
             const triggerTabList = [].slice.call(document.querySelectorAll("#modal-list a"));
             triggerTabList.forEach(function (triggerEl) {
                 new bootstrap.Tab(triggerEl);
-            })
+            });
 
             // submit form
             formSubmit(bootstrapModal);
@@ -163,7 +164,7 @@ function createModal(
                     }
                     successNotification(successMessage);
                 }).fail(function (e) {
-                    let errorMessage = composeErrorMessage(failMessage, e);
+                    const errorMessage = composeErrorMessage(failMessage, e);
                     errorNotification(errorMessage);
                 }).always(function () {
                     bootstrapModal.hide();

@@ -107,69 +107,60 @@ function resolveConditions(form, conditions) {
     const formData = new FormData(form);
     let conditionsObject = JSON.parse(conditions);
 
-    let result = true;
-
-    for (let [key, value] of Object.entries(conditionsObject)) {
-        result &&= resolveCondition(key, value);
-        if(result === false) {
-            console.log("And short-circuiting");
-            return result;
-        }
-    }
-    return result;
+    return Object.entries(conditionsObject).every(function(entry) {
+        let [key, value] = entry;
+        return resolveCondition(key, value);
+    });
 
     function resolveCondition(key, value) {
         console.log(`${key}: ${value}`);
 
-        function getValueToCompare(fullKey) {
+        function getValues(fullKey) { // extract values from the form, for radios and combos includes additionally values from labels
+            const values = [];
+
             const element = form.querySelector("select[name='" + fullKey + "'],input[name='" + fullKey + "']:checked");
             if (element) { // multi-select not supported!
                 if(element.type === 'select-one') {
-                    return element.options[element.selectedIndex].innerText;
+                    values.push(element.options[element.selectedIndex].innerText);
                 } else if(element.type === 'radio') {
-                    return element.labels[0].innerText;
+                    values.push(element.labels[0].innerText);
                 }
-            } else {
-                return formData.get(fullKey);
             }
+
+            values.push(formData.get(fullKey));
+
+            return values;
         }
 
         if(key === "$and") {
-            let result = true;
-            value.forEach(element => {
+            return value.every(element => {
                 let [elementKey, elementValue] = Object.entries(element)[0];
-                result &&= resolveCondition(elementKey, elementValue);
-                if(result === false) {
-                    console.log("And short-circuiting");
-                    return result;
-                }
-                console.log("Anding result");
+                return resolveCondition(elementKey, elementValue);
             });
-            return result;
         } else if(key === "$or") {
-            let result = false;
-            value.forEach(element => {
+            return value.some(element => {
                 let [elementKey, elementValue] = Object.entries(element)[0];
-                result ||= resolveCondition(elementKey, elementValue);
-                if(result === true) {
-                    console.log("Or short-circuiting");
-                    return result;
-                }
-                console.log("Oring result");
+                return resolveCondition(elementKey, elementValue);
             });
-            return result;
         } else {
             const fullKey = "object." + key;
-            const valueToCompare = getValueToCompare(fullKey);
+            const actualValues = getValues(fullKey);
 
+            let operator;
+            let comparedValue;
             if(typeof value === 'object' && !Array.isArray(value) && value !== null) { // value is an object
-                let [operator, nestedValue] = Object.entries(value)[0];
-                console.log("'" + fullKey + "' " + operator + "? " + nestedValue);
-                return comparators[operator](valueToCompare, nestedValue);
+                [operator, comparedValue] = Object.entries(value)[0];
             } else {
-                console.log("'" + fullKey + "' $eq? " + value);
-                return comparators["$eq"](valueToCompare, value);
+                operator = "$eq";
+                comparedValue = value;
             }
+
+            console.log("'" + fullKey + "' " + operator + "? " + comparedValue);
+            return actualValues.some(
+                function(actualValue) {
+                    return comparators[operator](actualValue, comparedValue);
+                }
+            );
         }
     }
 }
