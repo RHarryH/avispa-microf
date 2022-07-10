@@ -69,15 +69,15 @@ public class DtoService {
     public Dto convertEntityToDto(EcmObject entity) {
         IEntityDtoMapper<EcmObject, Dto> foundMapper =
                 (IEntityDtoMapper<EcmObject, Dto>) mappers.stream().filter(m -> {
-                    Class<?> foundEntityClass = getMapperEntity(m.getClass());
-                    return entity.getClass().equals(foundEntityClass);
+                    Class<?> mapperEntityClass = getMapperEntity(m.getClass());
+                    return entity.getClass().equals(mapperEntityClass);
                 }).findFirst().orElseThrow();
 
         return foundMapper.convertToDto(entity);
     }
 
     private Class<?> getMapperEntity(Class<?> mapperClass) {
-        Map<TypeVariable<?>, Type> typeArgs  = TypeUtils.getTypeArguments(mapperClass,  IEntityDtoMapper.class);
+        Map<TypeVariable<?>, Type> typeArgs  = TypeUtils.getTypeArguments(mapperClass, IEntityDtoMapper.class);
         TypeVariable<?> argTypeParam =  IEntityDtoMapper.class.getTypeParameters()[0];
         Type argType = typeArgs.get(argTypeParam);
         return TypeUtils.getRawType(argType, null);

@@ -23,6 +23,7 @@ import com.avispa.microf.model.invoice.service.file.data.InvoiceDataConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,7 +128,8 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceMapp
                 .orElseThrow(() -> new ResourceNotFoundException(Invoice.class));
     }
 
+    @Override
     public List<Invoice> findAll() {
-        return invoiceRepository.findAll();
+        return invoiceRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 }

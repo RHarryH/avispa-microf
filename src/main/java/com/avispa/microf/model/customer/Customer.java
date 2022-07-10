@@ -58,7 +58,7 @@ public class Customer extends EcmObject {
         return companyName +
                 FormatUtils.getNewLine() +
                 FormatUtils.getNewLine() +
-                getAddress().format() +
+                getAddress() +
                 FormatUtils.getNewLine() +
                 "NIP: " + vatIdentificationNumber;
     }
@@ -67,6 +67,6 @@ public class Customer extends EcmObject {
         return firstName + " " + lastName +
                 FormatUtils.getNewLine() +
                 FormatUtils.getNewLine() +
-                getAddress().format();
+                getAddress();
     }
 }

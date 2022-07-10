@@ -1,6 +1,6 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.ecm.model.EcmObjectRepository;
+import com.avispa.ecm.model.EcmEntityRepository;
 import com.avispa.ecm.model.configuration.dictionary.DictionaryValue;
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.bankaccount.BankAccountRepository;
@@ -37,7 +37,7 @@ class InvoiceMapperIntegrationTest {
     private InvoiceMapperImpl mapper;
 
     @MockBean
-    private EcmObjectRepository<DictionaryValue> ecmObjectRepository;
+    private EcmEntityRepository<DictionaryValue> dictionaryValueRepository;
 
     @MockBean
     private CustomerRepository customerRepository;

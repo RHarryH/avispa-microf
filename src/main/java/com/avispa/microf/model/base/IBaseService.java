@@ -3,6 +3,7 @@ package com.avispa.microf.model.base;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.microf.model.base.dto.Dto;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -14,4 +15,6 @@ public interface IBaseService<T extends EcmObject, D extends Dto> {
     void delete(UUID id);
 
     T findById(UUID id);
+
+    List<T> findAll();
 }

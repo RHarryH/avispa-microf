@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <body>
+        <div th:id="${listWidgetDto.resourceId + '-list-widget'}" class="py-3" th:fragment="list-widget(listWidgetDto)">
+            <button th:id="${listWidgetDto.resourceId + '-list-refresh-button'}" type="button" class="btn btn-sm btn-outline-dark mb-2 bi bi-arrow-clockwise"> Refresh</button>
+            <table class="table table-striped">
+                <caption th:text="${listWidgetDto.caption}">Caption</caption>
+                <thead>
+                <tr>
+                    <th scope="col" th:each="header : ${listWidgetDto.headers}" th:text="${header}">Header</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                    <th scope="col" th:if="${listWidgetDto.isDocument}">Download</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr scope="col" th:if="${listWidgetDto.dataList.empty}">
+                    <td colspan="8" th:text="${listWidgetDto.emptyMessage}">Empty message</td>
+                </tr>
+                <tr scope="col" th:each="data : ${listWidgetDto.dataList}">
+                    <td th:each="value : ${data.values}"><span th:text="${value}">Property</span></td>
+                    <td>
+                        <button th:value="${data.id}" class="btn bi bi-pencil-fill" th:classappend="${listWidgetDto.resourceId + '-update-button'}" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" th:title="${'Edit ' + listWidgetDto.typeName}"></button>
+                    </td>
+                    <td>
+                        <span data-bs-toggle="modal" th:data-bs-target="${'#' + listWidgetDto.resourceId + '-delete-modal'}">
+                            <button th:value="${data.id}" class="btn bi bi-trash-fill" th:classappend="${listWidgetDto.resourceId + '-delete-button'}" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" th:title="${'Delete ' + listWidgetDto.typeName}"></button>
+                        </span>
+                    </td>
+                    <td th:if="${listWidgetDto.isDocument}">
+                        <form th:if="${data.hasPdfRendition}" th:action="@{/{type}/rendition/{id}(type = ${listWidgetDto.resourceId}, id = ${data.id})}" method="get">
+                            <button class="btn bi bi-file-earmark-arrow-down-fill" type="submit" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Download PDF rendition"></button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <th:block th:replace="fragments/modal :: modal(${listWidgetDto.resourceId + '-delete-modal'}, 'Deletion', ${'Do you really want to delete this ' +  listWidgetDto.typeName + '?'})">modal</th:block>
+        </div>
+    </body>
+</html>

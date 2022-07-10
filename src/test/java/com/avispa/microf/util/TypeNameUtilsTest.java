@@ -12,12 +12,12 @@ class TypeNameUtilsTest {
     @Test
     void hyphenIdentifierToTypeNameTest() {
         String urlIdentifier = "bank-account";
-        assertEquals("Bank account", TypeNameUtils.convertURLIdentifierToTypeName(urlIdentifier));
+        assertEquals("Bank account", TypeNameUtils.convertResourceIdToTypeName(urlIdentifier));
     }
 
     @Test
     void whitespaceTest() {
         String urlIdentifier = "    bank-account   ";
-        assertEquals("Bank account", TypeNameUtils.convertURLIdentifierToTypeName(urlIdentifier));
+        assertEquals("Bank account", TypeNameUtils.convertResourceIdToTypeName(urlIdentifier));
     }
 }
