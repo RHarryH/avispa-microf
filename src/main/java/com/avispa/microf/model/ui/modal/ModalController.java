@@ -35,7 +35,7 @@ public class ModalController implements IModalController {
 
     @Override
     public ModelAndView getAddModal(String typeIdentifier) {
-        String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
+        String typeName = TypeNameUtils.convertResourceIdToTypeName(typeIdentifier);
 
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.INSERT)
                 .id(typeIdentifier + "-add-modal")
@@ -49,7 +49,7 @@ public class ModalController implements IModalController {
 
     @Override
     public ModelAndView getCloneModal(String typeIdentifier) {
-        String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
+        String typeName = TypeNameUtils.convertResourceIdToTypeName(typeIdentifier);
 
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.CLONE)
                 .id(typeIdentifier + "-clone-modal")
@@ -75,7 +75,7 @@ public class ModalController implements IModalController {
 
     @Override
     public ModelAndView getUpdateModal(String typeIdentifier, UUID id) {
-        String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
+        String typeName = TypeNameUtils.convertResourceIdToTypeName(typeIdentifier);
 
         ModalConfiguration modal = ModalConfiguration.builder(ModalMode.UPDATE)
                 .id(typeIdentifier + "-update-modal")
@@ -119,7 +119,7 @@ public class ModalController implements IModalController {
 
     @Override
     public ModelAndView loadTableTemplate(String typeIdentifier, String tableName) {
-        String typeName = TypeNameUtils.convertURLIdentifierToTypeName(typeIdentifier);
+        String typeName = TypeNameUtils.convertResourceIdToTypeName(typeIdentifier);
 
         /* TODO: include discriminator? here we should probably operate on discriminators
          * example: we have selected Customer type, let's suppose Retail customer has a table
