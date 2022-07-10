@@ -4,6 +4,7 @@ import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.error.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,8 @@ public class BankAccountService extends BaseService<BankAccount, BankAccountDto,
                 .orElseThrow(() -> new ResourceNotFoundException(BankAccount.class));
     }
 
+    @Override
     public List<BankAccount> findAll() {
-        return bankAccountRepository.findAll();
+        return bankAccountRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 }
