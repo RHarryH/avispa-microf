@@ -1,7 +1,7 @@
 package com.avispa.microf.model.ui.propertypage;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.EcmObjectRepository;
+import com.avispa.ecm.model.configuration.EcmConfigRepository;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class PropertyPageService {
     private final ContextService contextService;
     private final PropertyPageMapper propertyPageMapper;
-    private final EcmObjectRepository<PropertyPage> propertyPageRepository;
+    private final EcmConfigRepository<PropertyPage> propertyPageRepository;
 
     /**
      * Gets the content of property page by finding upsert configuration matching provided ECM object

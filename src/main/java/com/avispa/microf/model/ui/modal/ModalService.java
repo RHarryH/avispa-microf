@@ -1,11 +1,9 @@
 package com.avispa.microf.model.ui.modal;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.EcmObjectService;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.microf.model.base.dto.Dto;
-import com.avispa.microf.model.base.dto.DtoService;
 import com.avispa.microf.model.ui.modal.context.MicroFContext;
 import com.avispa.microf.model.ui.modal.page.ModalPage;
 import com.avispa.microf.model.ui.modal.page.ModalPageService;
@@ -31,8 +29,6 @@ public class ModalService {
     private final ModalPageService modalPageService;
     private final PropertyPageService propertyPageService;
     private final TypeService typeService;
-    private final DtoService dtoService;
-    private final EcmObjectService ecmObjectService;
 
     /**
      * Returns modal instance. This version of method works with already existing DTOs. Useful for

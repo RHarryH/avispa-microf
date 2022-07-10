@@ -1,24 +1,24 @@
 $(document).ready(function () {
     // invoice
-    registerAddModal(["invoice"], ["invoice-list-widget", "repository-widget"], "invoice-list-widget", "Invoice added successfully!", "Invoice adding failed!");
+    registerAddModal("invoice", ["list-widget", "repository-widget"], "list-widget", "Invoice added successfully!", "Invoice adding failed!");
     registerCloneModal(
         ["invoice"],
-        ["invoice-list-widget", "repository-widget"],
-        "invoice-list-widget",
+        ["list-widget", "repository-widget"],
+        "list-widget",
         "Invoice cloned successfully!",
         "Invoice cloning failed!");
 
     // customer
-    registerAddModal(["customer"], ["customer-list-widget"], "customer-list-widget", "Customer added successfully!", "Customer adding failed!");
+    registerAddModal("customer", ["list-widget"], "list-widget", "Customer added successfully!", "Customer adding failed!");
 
     // bank account
-    registerAddModal(["bank", "account"], ["bank-account-list-widget"], "bank-account-list-widget", "Bank account added successfully!", "Bank account adding failed!");
+    registerAddModal("bank-account", ["list-widget"], "list-widget", "Bank account added successfully!", "Bank account adding failed!");
 });
 
 function registerInvoiceUpdateModal() {
     registerUpdateModal(
-        ["invoice"],
-        ["invoice-list-widget", "repository-widget"],
+        "invoice",
+        ["list-widget", "repository-widget"],
         null,
         "Invoice updated successfully!",
         "Invoice update failed!");
@@ -26,8 +26,8 @@ function registerInvoiceUpdateModal() {
 
 function registerCustomerUpdateModal() {
     registerUpdateModal(
-        ["customer"],
-        ["customer-list-widget"],
+        "customer",
+        ["list-widget"],
         null,
         "Customer updated successfully!",
         "Customer update failed!");
@@ -35,26 +35,25 @@ function registerCustomerUpdateModal() {
 
 function registerBankAccountUpdateModal() {
     registerUpdateModal(
-        ["bank", "account"],
-        ["bank-account-list-widget"],
+        "bank-account",
+        ["list-widget"],
         null,
         "Bank account updated successfully!",
         "Bank account update failed!");
 }
 
 function registerAddModal(
-    resourcePrefixes,
+    resourceId,
     widgetsToReload,
     widgetToFocus,
     successMessage,
     failMessage
 ) {
-    let classPrefix = resourcePrefixes.join("-");
-    $("." + classPrefix + "-add-button").click(function () {
+    $("." + resourceId + "-add-button").click(function () {
         createModal(
-            resourcePrefixes,
+            resourceId,
             "add-modal",
-            "/modal/add/" + classPrefix,
+            "/modal/add/" + resourceId,
             widgetsToReload,
             widgetToFocus,
             successMessage,
@@ -63,18 +62,17 @@ function registerAddModal(
 }
 
 function registerUpdateModal(
-    resourcePrefixes,
+    resourceId,
     widgetsToReload,
     widgetToFocus,
     successMessage,
     failMessage
 ) {
-    const classPrefix = resourcePrefixes.join("-");
-    $("." + classPrefix + "-update-button").click(function () {
+    $("." + resourceId + "-update-button").click(function () {
         createModal(
-            resourcePrefixes,
+            resourceId,
             "update-modal",
-            "/modal/update/" + classPrefix + "/" + $(this).attr("value"),
+            "/modal/update/" + resourceId + "/" + $(this).attr("value"),
             widgetsToReload,
             widgetToFocus,
             successMessage,
@@ -83,18 +81,17 @@ function registerUpdateModal(
 }
 
 function registerCloneModal(
-    resourcePrefixes,
+    resourceId,
     widgetsToReload,
     widgetToFocus,
     successMessage,
     failMessage
 ) {
-    const classPrefix = resourcePrefixes.join("-");
-    $("." + classPrefix + "-clone-button").click(function () {
+    $("." + resourceId + "-clone-button").click(function () {
         createModal(
-            resourcePrefixes,
+            resourceId,
             "clone-modal",
-            "/modal/clone/" + classPrefix,
+            "/modal/clone/" + resourceId,
             widgetsToReload,
             widgetToFocus,
             successMessage,
@@ -103,7 +100,7 @@ function registerCloneModal(
 }
 
 function createModal(
-    resourcePrefixes,
+    resourceId,
     modalUniqueName,
     modalGetUrl,
     widgetsToReload,
@@ -112,8 +109,7 @@ function createModal(
     failMessage
 ) {
     const modals = $("#modals");
-    const resourceIdentifier = resourcePrefixes.join("-");
-    const modalId = "#" + resourceIdentifier + "-" + modalUniqueName;
+    const modalId = "#" + resourceId + "-" + modalUniqueName;
     const resourcePath = "";
 
     $.ajax({
@@ -133,7 +129,7 @@ function createModal(
             let bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
             bootstrapModal.show();
 
-            handleAddingTableRow(modalId, resourcePath, resourceIdentifier);
+            handleAddingTableRow(modalId, resourcePath, resourceId);
             handleTableDeletion(modalId); // this actually initializes it for the first time
 
             $(modalId + " :input").on("input", runCustomValidation).inputmask();
@@ -158,9 +154,9 @@ function createModal(
                     "url": url,
                     "data": form.serialize()
                 }).done(function () {
-                    reloadWidgets(form, widgetsToReload);
+                    reloadWidgets(form, widgetsToReload, resourceId);
                     if(widgetToFocus !== null) {
-                        focusWidget(form, widgetToFocus);
+                        focusWidget(form, widgetToFocus, resourceId);
                     }
                     successNotification(successMessage);
                 }).fail(function (e) {
@@ -180,7 +176,7 @@ function createModal(
                 const modalBody = modalId + " #tab-pane-" + to + " .modal-body";
                 $(modalBody).html(fragment);
 
-                handleAddingTableRow(modalBody, resourcePath, resourceIdentifier);
+                handleAddingTableRow(modalBody, resourcePath, resourceId);
                 handleTableDeletion(modalBody); // this actually initializes it for the first time
 
                 $(modalBody + " :input").on("input", runCustomValidation).inputmask();

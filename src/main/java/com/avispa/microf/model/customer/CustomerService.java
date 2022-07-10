@@ -5,12 +5,12 @@ import com.avispa.ecm.model.context.ContextService;
 import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.error.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Rafał Hiszpański
@@ -57,7 +57,8 @@ public class CustomerService extends BaseService<Customer, CustomerDto, Customer
                 .orElseThrow(() -> new ResourceNotFoundException(Customer.class));
     }
 
-    public List<CustomerListDto> findAll() {
-        return customerRepository.findAll().stream().map(customerListMapper::toCustomerListDto).collect(Collectors.toList());
+    @Override
+    public List<Customer> findAll() {
+        return customerRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 }

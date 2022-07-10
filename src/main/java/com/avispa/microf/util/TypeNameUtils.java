@@ -11,7 +11,7 @@ public class TypeNameUtils {
 
     private TypeNameUtils() {}
 
-    public static String convertURLIdentifierToTypeName(String typeName) {
-        return StringUtils.capitalize(typeName.trim().toLowerCase(Locale.ROOT).replace("-", " "));
+    public static String convertResourceIdToTypeName(String resourceId) {
+        return StringUtils.capitalize(resourceId.trim().toLowerCase(Locale.ROOT).replace("-", " "));
     }
 }
