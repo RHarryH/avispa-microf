@@ -17,14 +17,14 @@ class BankAccountDtoValidationTest {
     @BeforeEach
     void createDto() {
         bankAccountDto = new BankAccountDto();
-        bankAccountDto.setAccountName(RandomStringUtils.randomAlphabetic(30));
+        bankAccountDto.setObjectName(RandomStringUtils.randomAlphabetic(30));
         bankAccountDto.setAccountNumber("PL27114020040000300201355387");
         bankAccountDto.setBankName(RandomStringUtils.randomAlphabetic(30));
     }
 
     @Test
     void givenAccountNameExceedMaxLength_whenValidate_thenFail() {
-        bankAccountDto.setAccountName(RandomStringUtils.randomAlphabetic(51));
+        bankAccountDto.setObjectName(RandomStringUtils.randomAlphabetic(51));
         validate(bankAccountDto, BankAccountDto.VM_ACCOUNT_NAME_NO_LONGER);
     }
 

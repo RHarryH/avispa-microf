@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface VATINConstraint {
-    String message() default "Vat Identification Number is invalid";
+    String message() default "VAT Identification Number is invalid";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

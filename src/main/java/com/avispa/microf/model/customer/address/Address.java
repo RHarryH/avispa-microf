@@ -23,11 +23,4 @@ public class Address extends EcmObject {
 
     @Column(nullable = false, length = 6)
     private String zipCode;
-
-    @Override
-    public String toString() {
-        return street +
-                System.getProperty("line.separator") +
-                zipCode + " " + place;
-    }
 }
