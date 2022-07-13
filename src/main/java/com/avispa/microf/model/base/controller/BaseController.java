@@ -1,5 +1,6 @@
 package com.avispa.microf.model.base.controller;
 
+import com.avispa.ecm.model.EcmEntityRepository;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.base.dto.Dto;
@@ -25,7 +26,7 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Slf4j
-public abstract class BaseController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends IEntityDtoMapper<T, D>>> implements IBaseController<D>, IBaseModalableController {
+public abstract class BaseController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends EcmEntityRepository<T>, ? extends IEntityDtoMapper<T, D>>> implements IBaseController<D>, IBaseModalableController {
     private final S service;
 
     private DtoService dtoService;

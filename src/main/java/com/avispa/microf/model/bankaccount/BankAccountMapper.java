@@ -1,5 +1,6 @@
 package com.avispa.microf.model.bankaccount;
 
+import com.avispa.microf.model.base.mapper.IEntityCommonDtoMapper;
 import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,9 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface BankAccountMapper extends IEntityDtoMapper<BankAccount, BankAccountDto> {
+public interface BankAccountMapper extends IEntityDtoMapper<BankAccount, BankAccountDto>, IEntityCommonDtoMapper<BankAccount, BankAccountDto> {
     @Override
-    @Mapping(source = "objectName", target = "accountName")
     @Mapping(source = "accountNumber", target = "accountNumber", qualifiedByName = "prettyPrintAccountNumber")
     BankAccountDto convertToDto(BankAccount entity);
 
@@ -37,11 +37,9 @@ public interface BankAccountMapper extends IEntityDtoMapper<BankAccount, BankAcc
     }
 
     @Override
-    @Mapping(source = "accountName", target = "objectName")
     @Mapping(source = "accountNumber", target = "accountNumber", qualifiedByName = "compactAccountNumber")
     BankAccount convertToEntity(BankAccountDto dto);
 
-    @Mapping(source = "accountName", target = "objectName")
     @Mapping(source = "accountNumber", target = "accountNumber", qualifiedByName = "compactAccountNumber")
     void updateEntityFromDto(BankAccountDto dto, @MappingTarget BankAccount entity);
 

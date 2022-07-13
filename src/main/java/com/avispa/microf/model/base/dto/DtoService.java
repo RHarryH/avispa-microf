@@ -53,12 +53,18 @@ public class DtoService {
             String value = request.getParameter("object." + typeDiscriminatorName);
             dtoObject = dtoRepository.findByEntityClassAndDiscriminator(entityClass, value);
         } else {
-            dtoObject = dtoRepository.findByEntityClassAndDiscriminatorIsNull(entityClass);
+            dtoObject = getDtoObject(entityClass);
         }
 
         return (D) dtoObject
                 .map(d -> BeanUtils.instantiateClass(d.getDtoClass()))
                 .orElseThrow();
+    }
+
+    private Optional<DtoObject> getDtoObject(Class<? extends EcmObject> entityClass) {
+        Optional<DtoObject> dtoObject;
+        dtoObject = dtoRepository.findByEntityClassAndDiscriminatorIsNull(entityClass);
+        return dtoObject;
     }
 
     public DtoObject getDtoObjectFromTypeName(String typeName) {

@@ -1,14 +1,18 @@
-package com.avispa.microf.model.ui.widget;
+package com.avispa.microf.model.ui.widget.list;
 
 import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.configuration.display.DisplayService;
 import com.avispa.ecm.model.document.Document;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.util.reflect.PropertyUtils;
 import com.avispa.microf.model.base.IBaseService;
+import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.model.base.dto.Dto;
-import com.avispa.microf.model.ui.configuration.columns.ListWidgetConfig;
-import com.avispa.microf.model.ui.configuration.columns.ListWidgetRepository;
+import com.avispa.microf.model.base.dto.DtoObject;
+import com.avispa.microf.model.base.dto.DtoService;
+import com.avispa.microf.model.ui.widget.list.config.ListWidgetConfig;
+import com.avispa.microf.model.ui.widget.list.config.ListWidgetRepository;
 import com.avispa.microf.util.TypeNameUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +41,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ListWidgetController {
     private final TypeService typeService;
+    private final DtoService dtoService;
+    private final DisplayService displayService;
     private final ListWidgetRepository listWidgetRepository;
     private final List<IBaseService<? extends EcmObject, ? extends Dto>> services;
 
@@ -54,10 +60,9 @@ public class ListWidgetController {
     public String getListWidget(@PathVariable("type") String resourceId, Model model) {
         String typeName = TypeNameUtils.convertResourceIdToTypeName(resourceId);
         Type type = this.typeService.getType(typeName);
-
         ListWidgetConfig listWidgetConfig = listWidgetRepository.findByType(type).orElseThrow();
 
-        List<EcmObject> ecmObjects = findAll(type.getEntityClass());
+        List<CommonDto> dtos = findAll(type.getEntityClass());
 
         ListWidgetDto listWidgetDto = new ListWidgetDto();
         listWidgetDto.setResourceId(resourceId);
@@ -65,14 +70,20 @@ public class ListWidgetController {
         listWidgetDto.setCaption(listWidgetConfig.getCaption());
         listWidgetDto.setEmptyMessage(listWidgetConfig.getEmptyMessage());
         listWidgetDto.setDocument(Document.class.isAssignableFrom(type.getEntityClass()));
-        listWidgetDto.setHeaders(listWidgetConfig.getProperties());
 
-        List<ListDataDto> listDataDtos = new ArrayList<>(ecmObjects.size());
-        for(EcmObject object : ecmObjects) {
-            Map<String, Object> map = PropertyUtils.introspect(object);
+        DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
+
+        listWidgetDto.setHeaders(listWidgetConfig.getProperties().stream()
+                        .map(property -> displayService.getValueFromAnnotation(dtoObject.getDtoClass(), property))
+                        .collect(Collectors.toList())
+        );
+
+        List<ListDataDto> listDataDtos = new ArrayList<>(dtos.size());
+        for(CommonDto dto : dtos) {
+            Map<String, Object> map = PropertyUtils.introspect(dto);
             ListDataDto listDataDto = new ListDataDto();
-            listDataDto.setId(object.getId());
-            listDataDto.setHasPdfRendition(object.hasPdfRendition());
+            listDataDto.setId(dto.getId());
+            listDataDto.setHasPdfRendition(dto.hasPdfRendition());
 
             listDataDto.setValues(listWidgetConfig.getProperties().stream()
                     .map(map::get)
@@ -88,7 +99,7 @@ public class ListWidgetController {
     }
 
     @SuppressWarnings("unchecked")
-    public List<EcmObject> findAll(Class<? extends EcmObject> entityClass) {
+    public List<CommonDto> findAll(Class<? extends EcmObject> entityClass) {
         IBaseService<EcmObject, Dto> foundService =
                 (IBaseService<EcmObject, Dto>) services.stream().filter(m -> {
                     Class<?> serviceEntityClass = getServiceEntity(m.getClass());

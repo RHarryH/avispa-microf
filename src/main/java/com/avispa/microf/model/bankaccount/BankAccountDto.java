@@ -1,6 +1,7 @@
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.microf.model.base.dto.Dto;
+import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
+import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.util.validation.account.IBANConstraint;
 import com.avispa.microf.util.validation.account.NRBConstraint;
 import lombok.Getter;
@@ -14,20 +15,23 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class BankAccountDto implements Dto {
+public class BankAccountDto implements CommonDto {
     public static final String VM_ACCOUNT_NAME_NO_LONGER = "The account name cannot be longer than 50 characters";
     public static final String VM_BANK_NAME_NO_LONGER = "The bank name cannot be longer than 50 characters";
 
     private UUID id;
 
     @Size(max = 50, message = VM_ACCOUNT_NAME_NO_LONGER)
-    private String accountName;
+    @DisplayName("Account Name")
+    private String objectName;
 
     @Size(max = 50, message = VM_BANK_NAME_NO_LONGER)
+    @DisplayName("Bank Name")
     private String bankName;
 
     @IBANConstraint
     @NRBConstraint
+    @DisplayName("Account Number")
     private String accountNumber;
 
     /**

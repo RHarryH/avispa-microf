@@ -4,11 +4,9 @@ import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.error.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,19 +14,17 @@ import java.util.UUID;
  */
 @Component
 @Slf4j
-public class BankAccountService extends BaseService<BankAccount, BankAccountDto, BankAccountMapper> {
-    private final BankAccountRepository bankAccountRepository;
+public class BankAccountService extends BaseService<BankAccount, BankAccountDto, BankAccountRepository, BankAccountMapper> {
 
     @Autowired
-    public BankAccountService(BankAccountMapper entityDtoMapper, BankAccountRepository bankAccountRepository) {
-        super(entityDtoMapper);
-        this.bankAccountRepository = bankAccountRepository;
+    public BankAccountService(BankAccountRepository bankAccountRepository, BankAccountMapper entityDtoMapper) {
+        super(bankAccountRepository, entityDtoMapper);
     }
 
     @Transactional
     @Override
     public void add(BankAccount customer) {
-        bankAccountRepository.save(customer);
+        getRepository().save(customer);
     }
 
     @Transactional
@@ -40,17 +36,12 @@ public class BankAccountService extends BaseService<BankAccount, BankAccountDto,
 
     @Override
     public void delete(UUID id) {
-        bankAccountRepository.delete(findById(id));
+        getRepository().delete(findById(id));
     }
 
     @Override
     public BankAccount findById(UUID id) {
-        return bankAccountRepository.findById(id)
+        return getRepository().findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(BankAccount.class));
-    }
-
-    @Override
-    public List<BankAccount> findAll() {
-        return bankAccountRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 }

@@ -15,7 +15,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 public class CorporateCustomerDto extends CustomerDto {
     public static final String VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK = "Company name cannot be empty or blank";
-    public static final String VM_VIN_PATTERN_NOT_MATCH = "Vat Identification Number does not match specified pattern";
+    public static final String VM_VIN_PATTERN_NOT_MATCH = "VAT Identification Number does not match specified pattern";
 
     @NotBlank(message = VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK)
     private String companyName;
