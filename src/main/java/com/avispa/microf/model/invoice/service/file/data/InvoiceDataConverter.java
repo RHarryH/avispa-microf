@@ -16,8 +16,8 @@ public class InvoiceDataConverter {
     private final DictionaryService dictionaryService;
 
     public InvoiceData convert(Invoice invoice) {
-        Dictionary unitDict = dictionaryService.getDictionary(dictionaryService.getDictionaryNameFromAnnotation(PositionDto.class, "unit"));
-        Dictionary vatRateDict = dictionaryService.getDictionary(dictionaryService.getDictionaryNameFromAnnotation(PositionDto.class, "vatRate"));
+        Dictionary unitDict = dictionaryService.getDictionary(dictionaryService.getValueFromAnnotation(PositionDto.class, "unit"));
+        Dictionary vatRateDict = dictionaryService.getDictionary(dictionaryService.getValueFromAnnotation(PositionDto.class, "vatRate"));
 
         return new InvoiceData(invoice, unitDict, vatRateDict);
     }

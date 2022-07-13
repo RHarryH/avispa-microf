@@ -9,7 +9,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public abstract class CustomerMapper extends MultiTypeEntityDtoMapper<Customer, CustomerDto> {
+public abstract class CustomerMapper extends MultiTypeEntityDtoMapper<Customer, CustomerDto, CustomerCommonDto> {
     @Autowired
     private CorporateCustomerMapper corporateCustomerMapper;
 

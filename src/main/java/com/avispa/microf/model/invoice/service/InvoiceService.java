@@ -23,14 +23,12 @@ import com.avispa.microf.model.invoice.service.file.data.InvoiceDataConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -38,8 +36,7 @@ import java.util.UUID;
  */
 @Component
 @Slf4j
-public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceMapper> {
-    private final InvoiceRepository invoiceRepository;
+public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceRepository, InvoiceMapper> {
     private final InvoiceDataConverter invoiceDataConverter;
 
     private final ContentService contentService;
@@ -55,8 +52,7 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceMapp
     private String issuerName;
 
     @Autowired
-    public InvoiceService(InvoiceMapper invoiceMapper,
-                          InvoiceRepository invoiceRepository,
+    public InvoiceService(InvoiceRepository invoiceRepository, InvoiceMapper invoiceMapper,
                           InvoiceDataConverter invoiceDataConverter,
                           ContentService contentService,
                           ContentMapper contentMapper,
@@ -64,8 +60,7 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceMapp
                           FileStore fileStore,
                           CounterStrategy counterStrategy,
                           ContextService contextService) {
-        super(invoiceMapper);
-        this.invoiceRepository = invoiceRepository;
+        super(invoiceRepository, invoiceMapper);
         this.invoiceDataConverter = invoiceDataConverter;
         this.contentService = contentService;
         this.contentMapper = contentMapper;
@@ -78,7 +73,7 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceMapp
     @Transactional
     @Override
     public void add(Invoice invoice) {
-        invoiceRepository.save(invoice);
+        getRepository().save(invoice);
 
         invoice.setSerialNumber(counterStrategy.getNextSerialNumber(invoice));
 
@@ -115,7 +110,7 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceMapp
 
     @Override
     public void delete(UUID id) {
-        invoiceRepository.delete(findById(id));
+        getRepository().delete(findById(id));
     }
 
     public ContentDto getRendition(UUID id) {
@@ -124,12 +119,7 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceMapp
 
     @Override
     public Invoice findById(UUID id) {
-        return invoiceRepository.findById(id)
+        return getRepository().findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Invoice.class));
-    }
-
-    @Override
-    public List<Invoice> findAll() {
-        return invoiceRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 }

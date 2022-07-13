@@ -1,4 +1,4 @@
-package com.avispa.microf.model.ui.configuration.columns;
+package com.avispa.microf.model.ui.widget.list.config;
 
 import com.avispa.ecm.model.configuration.EcmConfig;
 import com.avispa.ecm.model.type.Type;

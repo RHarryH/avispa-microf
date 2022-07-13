@@ -28,4 +28,11 @@ public class AddressDto implements Dto {
 
     @Pattern(regexp = "[0-9]{2}-[0-9]{3}", message = VM_ZIP_CODE_PATTERN_NOT_MATCH)
     private String zipCode;
+
+    @Override
+    public String toString() {
+        return street +
+                System.getProperty("line.separator") +
+                zipCode + " " + place;
+    }
 }

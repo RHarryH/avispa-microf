@@ -45,12 +45,12 @@ class CorporateCustomerDtoValidationTest {
     @Test
     void givenIncorrectVIN_whenValidate_thenFail() {
         customerDto.setVatIdentificationNumber("123-123-1");
-        validate(customerDto, 2, Set.of(CorporateCustomerDto.VM_VIN_PATTERN_NOT_MATCH, "Vat Identification Number is invalid"));
+        validate(customerDto, 2, Set.of(CorporateCustomerDto.VM_VIN_PATTERN_NOT_MATCH, "VAT Identification Number is invalid"));
     }
 
     @Test
     void givenIncorrectVINControlSum_whenValidate_thenFail() { // incorrect control sum
         customerDto.setVatIdentificationNumber("111-11-11-112");
-        validate(customerDto, "Vat Identification Number is invalid");
+        validate(customerDto, "VAT Identification Number is invalid");
     }
 }

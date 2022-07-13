@@ -2,6 +2,7 @@ package com.avispa.microf.model.invoice;
 
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.bankaccount.BankAccountRepository;
+import com.avispa.microf.model.base.mapper.IEntityCommonDtoMapper;
 import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
@@ -11,6 +12,7 @@ import com.avispa.microf.model.invoice.position.PositionMapper;
 import com.google.common.collect.MoreCollectors;
 import org.hibernate.Hibernate;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = PositionMapper.class)
-public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, InvoiceDto> {
+public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, InvoiceDto>, IEntityCommonDtoMapper<Invoice, InvoiceDto> {
     // not required when componentModel = "spring", can be autowired
     //InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
 
@@ -68,4 +70,7 @@ public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, Invoice
             }
         }
     }
+
+    @Mapping(target = "hasPdfRendition", expression = "java(entity.hasPdfRendition())")
+    public abstract InvoiceDto convertToCommonDto(Invoice entity);
 }

@@ -19,17 +19,17 @@ class BankAccountMapperIntegrationTest {
 
         BankAccountDto bankAccountDto = mapper.convertToDto(bankAccount);
 
-        assertEquals(bankAccount.getObjectName(), bankAccountDto.getAccountName());
+        assertEquals(bankAccount.getObjectName(), bankAccountDto.getObjectName());
     }
 
     @Test
     void givenDtoToEntity_whenMaps_thenCorrect() {
         BankAccountDto bankAccountDto = new BankAccountDto();
-        bankAccountDto.setAccountName(RandomStringUtils.randomAlphabetic(40));
+        bankAccountDto.setObjectName(RandomStringUtils.randomAlphabetic(40));
 
         BankAccount bankAccount = mapper.convertToEntity(bankAccountDto);
 
-        assertEquals(bankAccountDto.getAccountName(), bankAccount.getObjectName());
+        assertEquals(bankAccountDto.getObjectName(), bankAccount.getObjectName());
     }
 
     @Test

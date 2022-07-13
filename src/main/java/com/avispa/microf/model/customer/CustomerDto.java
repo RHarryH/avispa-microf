@@ -1,6 +1,7 @@
 package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
+import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.customer.address.AddressDto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -26,17 +27,24 @@ public abstract class CustomerDto implements Dto {
 
     private UUID id;
 
+    @DisplayName("Customer Name")
+    private String objectName;
+
     @Dictionary(name = "CustomerType")
+    @DisplayName("Customer Type")
     private String type;
 
     @Pattern(regexp = EMPTY_STRING_REGEX + "(\\+48 \\d{9})", message = VM_PHONE_PATTERN_NOT_MATCH)
+    @DisplayName("Phone Number")
     private String phoneNumber;
 
     @Email(message = VM_EMAIL_INVALID)
     @Size(max = 150, message = VM_EMAIL_NO_LONGER)
+    @DisplayName("Email")
     private String email;
 
     @NotNull(message = VM_ADDRESS_NOT_NULL)
     @JsonUnwrapped
+    @DisplayName("Address")
     private AddressDto address;
 }
