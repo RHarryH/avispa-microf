@@ -1,6 +1,7 @@
 package com.avispa.microf.model.base.dto;
 
 import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import com.avispa.microf.model.ui.modal.context.MicroFContext;
@@ -19,7 +20,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +71,10 @@ public class DtoService {
         return dtoRepository.findByTypeNameAndDiscriminatorIsNull(typeName).orElseThrow();
     }
 
+    public DtoObject getDtoObjectFromType(Type type) {
+        return dtoRepository.findByTypeAndDiscriminatorIsNull(type).orElseThrow();
+    }
+
     @SuppressWarnings("unchecked")
     public Dto convertEntityToDto(EcmObject entity) {
         IEntityDtoMapper<EcmObject, Dto> foundMapper =
@@ -83,9 +87,9 @@ public class DtoService {
     }
 
     private Class<?> getMapperEntity(Class<?> mapperClass) {
-        Map<TypeVariable<?>, Type> typeArgs  = TypeUtils.getTypeArguments(mapperClass, IEntityDtoMapper.class);
+        Map<TypeVariable<?>, java.lang.reflect.Type> typeArgs  = TypeUtils.getTypeArguments(mapperClass, IEntityDtoMapper.class);
         TypeVariable<?> argTypeParam =  IEntityDtoMapper.class.getTypeParameters()[0];
-        Type argType = typeArgs.get(argTypeParam);
+        java.lang.reflect.Type argType = typeArgs.get(argTypeParam);
         return TypeUtils.getRawType(argType, null);
     }
 

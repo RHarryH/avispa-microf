@@ -1,5 +1,6 @@
-package com.avispa.microf.model.ui.widget.list;
+package com.avispa.microf.model.ui.widget.list.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +15,11 @@ import java.util.UUID;
 public class ListDataDto {
     private UUID id;
     private List<String> values;
+
+    @Getter(AccessLevel.NONE)
     private boolean hasPdfRendition;
+
+    public boolean hasPdfRendition() {
+        return hasPdfRendition;
+    }
 }

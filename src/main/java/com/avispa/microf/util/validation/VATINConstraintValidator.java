@@ -1,6 +1,6 @@
 package com.avispa.microf.util.validation;
 
-import org.thymeleaf.util.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -8,7 +8,7 @@ import javax.validation.ConstraintValidatorContext;
 public class VATINConstraintValidator implements ConstraintValidator<VATINConstraint, String> {
     @Override
     public boolean isValid(String vatin, ConstraintValidatorContext cxt) {
-        if(StringUtils.isEmpty(vatin)) {
+        if(Strings.isEmpty(vatin)) {
             return false;
         }
 

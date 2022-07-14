@@ -2,12 +2,12 @@ package com.avispa.microf.model.bankaccount;
 
 import com.avispa.microf.model.base.mapper.IEntityCommonDtoMapper;
 import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
+import org.apache.logging.log4j.util.Strings;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.thymeleaf.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ public interface BankAccountMapper extends IEntityDtoMapper<BankAccount, BankAcc
 
     @Named("prettyPrintAccountNumber")
     default String prettyPrintAccountNumber(String accountNumber) {
-        if(StringUtils.isEmpty(accountNumber)) {
+        if(Strings.isEmpty(accountNumber)) {
             return accountNumber;
         }
 
@@ -45,6 +45,6 @@ public interface BankAccountMapper extends IEntityDtoMapper<BankAccount, BankAcc
 
     @Named("compactAccountNumber")
     default String compactAccountNumber(String accountNumber) {
-        return StringUtils.isEmpty(accountNumber) ? accountNumber : accountNumber.replace(" ", "");
+        return Strings.isEmpty(accountNumber) ? accountNumber : accountNumber.replace(" ", "");
     }
 }
