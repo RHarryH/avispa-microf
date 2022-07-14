@@ -1,4 +1,4 @@
-package com.avispa.microf.model.ui.widget.list;
+package com.avispa.microf.model.ui.widget.list.dto;
 
 import lombok.Getter;
 import lombok.Setter;

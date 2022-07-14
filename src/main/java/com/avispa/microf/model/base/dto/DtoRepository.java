@@ -32,6 +32,8 @@ interface DtoRepository extends EcmEntityRepository<DtoObject> {
     @Query("select d from DtoObject d, Type t where d.type = t and t.objectName = :typeName and d.discriminator is null")
     Optional<DtoObject> findByTypeNameAndDiscriminatorIsNull(String typeName);
 
+    Optional<DtoObject> findByTypeAndDiscriminatorIsNull(Type type);
+
     @Query("select d from DtoObject d, Type t where d.type = t and t.entityClass = :entityClass and d.discriminator = :discriminator")
     Optional<DtoObject> findByEntityClassAndDiscriminator(Class<? extends EcmObject> entityClass, String discriminator);
 
