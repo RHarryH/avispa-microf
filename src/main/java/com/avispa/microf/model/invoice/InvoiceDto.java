@@ -3,6 +3,7 @@ package com.avispa.microf.model.invoice;
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,6 +59,7 @@ public class InvoiceDto implements CommonDto {
     @DisplayName("Comments")
     private String comments;
 
+    @Getter(AccessLevel.NONE)
     private boolean hasPdfRendition;
 
     @Override
