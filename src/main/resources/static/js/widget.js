@@ -116,15 +116,16 @@ function registerWidgetReloadEvent() {
     });
 
     $(document).on("widget:reload", function (event, data) {
+        const isListWidget = data.widgetName === "list-widget" && data.resourceId;
         let url = data.widgetName;
-        if(data.hasOwnProperty("resourceId")) {
+        if(isListWidget) {
             url += "/" + data.resourceId;
         }
         if(data.hasOwnProperty("id")) {
             url += "/" + data.id;
         }
 
-        const widget = $("#" + (data.resourceId ? data.resourceId + "-" : "") + data.widgetName);
+        const widget = $("#" + (isListWidget ? data.resourceId + "-" : "") + data.widgetName);
 
         if(widget.length) {
             $.ajax({

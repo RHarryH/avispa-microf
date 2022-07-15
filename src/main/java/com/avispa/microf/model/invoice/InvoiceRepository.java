@@ -1,6 +1,6 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.ecm.model.EcmEntityRepository;
+import com.avispa.ecm.model.EcmObjectRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * @author Rafał Hiszpański
  */
 @Repository
-public interface InvoiceRepository extends EcmEntityRepository<Invoice> {
+public interface InvoiceRepository extends EcmObjectRepository<Invoice> {
     @Query("select coalesce(max(i.serialNumber), 0) from Invoice i")
     int findMaxSerialNumber();
 

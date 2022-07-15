@@ -22,7 +22,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class GenericService {
-    private final List<BaseService<? extends EcmObject, ? extends Dto, ? extends EcmObjectRepository<? extends EcmObject>, ? extends IExtendedEntityDtoMapper<? extends EcmObject, ? extends Dto, ? extends CommonDto>>> services;
+    private final List<BaseService<? extends EcmObject, ? extends Dto, ? extends EcmObjectRepository<? extends EcmObject>, ?>> services;
 
     @SuppressWarnings("unchecked")
     public BaseService<EcmObject, Dto, EcmObjectRepository<EcmObject>, IExtendedEntityDtoMapper<EcmObject, Dto, CommonDto>> getService(Class<? extends EcmObject> entityClass) {
