@@ -3,12 +3,11 @@ package com.avispa.microf.model.base.dto;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
-import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import com.avispa.microf.model.ui.modal.context.MicroFContext;
+import com.avispa.microf.util.GenericService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.TypeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyValues;
 import org.springframework.stereotype.Service;
@@ -20,9 +19,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.TypeVariable;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -34,8 +30,10 @@ import java.util.Optional;
 public class DtoService {
     private final DtoRepository dtoRepository;
     private final TypeService typeService;
-    private final List<IEntityDtoMapper<? extends EcmObject, ? extends Dto>> mappers;
+
     private final WebDataBinderFactory dataBinderFactory;
+
+    private final GenericService genericService;
 
     /**
      * Extracts
@@ -75,22 +73,8 @@ public class DtoService {
         return dtoRepository.findByTypeAndDiscriminatorIsNull(type).orElseThrow();
     }
 
-    @SuppressWarnings("unchecked")
     public Dto convertEntityToDto(EcmObject entity) {
-        IEntityDtoMapper<EcmObject, Dto> foundMapper =
-                (IEntityDtoMapper<EcmObject, Dto>) mappers.stream().filter(m -> {
-                    Class<?> mapperEntityClass = getMapperEntity(m.getClass());
-                    return entity.getClass().equals(mapperEntityClass);
-                }).findFirst().orElseThrow();
-
-        return foundMapper.convertToDto(entity);
-    }
-
-    private Class<?> getMapperEntity(Class<?> mapperClass) {
-        Map<TypeVariable<?>, java.lang.reflect.Type> typeArgs  = TypeUtils.getTypeArguments(mapperClass, IEntityDtoMapper.class);
-        TypeVariable<?> argTypeParam =  IEntityDtoMapper.class.getTypeParameters()[0];
-        java.lang.reflect.Type argType = typeArgs.get(argTypeParam);
-        return TypeUtils.getRawType(argType, null);
+        return genericService.getService(entity.getClass()).getEntityDtoMapper().convertToDto(entity);
     }
 
     public <D extends Dto> BindingResult bindObjectToDto(HttpServletRequest request, MicroFContext<D> context) {

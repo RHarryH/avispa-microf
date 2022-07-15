@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 /**
  * @author Rafał Hiszpański
  */
-public abstract class MultiTypeEntityDtoMapper<T extends EcmObject, D extends Dto, C extends CommonDto> implements IEntityDtoMapper<T, D>, IEntityCommonDtoMapper<T, C> {
+public abstract class MultiTypeEntityDtoMapper<T extends EcmObject, D extends Dto, C extends CommonDto> implements IExtendedEntityDtoMapper<T, D, C> {
     @Autowired
     private MultiTypeMapperRegistry multiTypeMapperRegistry;
 
