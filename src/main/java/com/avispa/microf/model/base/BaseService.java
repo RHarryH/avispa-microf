@@ -4,8 +4,7 @@ import com.avispa.ecm.model.EcmEntityRepository;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.model.base.dto.Dto;
-import com.avispa.microf.model.base.mapper.IEntityCommonDtoMapper;
-import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
+import com.avispa.microf.model.base.mapper.IExtendedEntityDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
  * @author Rafał Hiszpański
  */
 @RequiredArgsConstructor
-public abstract class BaseService<T extends EcmObject, D extends Dto, R extends EcmEntityRepository<T>, M extends IEntityDtoMapper<T, D> & IEntityCommonDtoMapper<T, ? extends CommonDto>> implements IBaseService<T, D> {
+public abstract class BaseService<T extends EcmObject, D extends Dto, R extends EcmEntityRepository<T>, M extends IExtendedEntityDtoMapper<T, D, ? extends CommonDto>> implements IBaseService<T, D> {
     private final R repository;
     private final M entityDtoMapper;
 

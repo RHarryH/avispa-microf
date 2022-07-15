@@ -2,8 +2,7 @@ package com.avispa.microf.model.invoice;
 
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.bankaccount.BankAccountRepository;
-import com.avispa.microf.model.base.mapper.IEntityCommonDtoMapper;
-import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
+import com.avispa.microf.model.base.mapper.IExtendedEntityDtoMapper;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
 import com.avispa.microf.model.invoice.position.Position;
@@ -23,7 +22,7 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = PositionMapper.class)
-public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, InvoiceDto>, IEntityCommonDtoMapper<Invoice, InvoiceDto> {
+public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice, InvoiceDto, InvoiceDto> {
     // not required when componentModel = "spring", can be autowired
     //InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
 
