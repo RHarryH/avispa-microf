@@ -1,7 +1,7 @@
 package com.avispa.microf.model.base;
 
-import com.avispa.ecm.model.EcmEntityRepository;
 import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.base.mapper.IExtendedEntityDtoMapper;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @author Rafał Hiszpański
  */
 @RequiredArgsConstructor
-public abstract class BaseService<T extends EcmObject, D extends Dto, R extends EcmEntityRepository<T>, M extends IExtendedEntityDtoMapper<T, D, ? extends CommonDto>> implements IBaseService<T, D> {
+public abstract class BaseService<T extends EcmObject, D extends Dto, R extends EcmObjectRepository<T>, M extends IExtendedEntityDtoMapper<T, D, ? extends CommonDto>> implements IBaseService<T, D> {
     private final R repository;
     private final M entityDtoMapper;
 
