@@ -29,7 +29,7 @@ public abstract class BaseService<T extends EcmObject, D extends Dto, R extends 
 
     public List<CommonDto> findAll() {
         return repository
-                .findAll(Sort.by(Sort.Direction.ASC, "id")).stream()
+                .findAll(Sort.by(Sort.Direction.ASC, "objectName")).stream()
                 .map(entityDtoMapper::convertToCommonDto)
                 .collect(Collectors.toList());
     }
