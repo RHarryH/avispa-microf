@@ -5,6 +5,7 @@ import com.avispa.ecm.model.configuration.display.DisplayService;
 import com.avispa.ecm.model.document.Document;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
+import com.avispa.ecm.util.reflect.PropertyUtils;
 import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.model.base.dto.DtoObject;
 import com.avispa.microf.model.base.dto.DtoService;
@@ -16,6 +17,7 @@ import com.avispa.microf.model.ui.widget.list.mapper.ListDataDtoMapper;
 import com.avispa.microf.util.GenericService;
 import com.avispa.microf.util.TypeNameUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ListWidgetService {
     private final TypeService typeService;
     private final DtoService dtoService;
@@ -49,8 +52,13 @@ public class ListWidgetService {
         listWidgetDto.setCaption(listWidgetConfig.getCaption());
         listWidgetDto.setEmptyMessage(listWidgetConfig.getEmptyMessage());
 
-        listWidgetDto.setHeaders(getHeader(type, listWidgetConfig.getProperties()));
-        listWidgetDto.setDataList(getData(type, listWidgetConfig.getProperties()));
+        DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
+        List<String> filteredProperties = listWidgetConfig.getProperties().stream()
+            .filter(property -> PropertyUtils.hasField(dtoObject.getDtoClass(), property)) // exclude fields not present in the object
+            .collect(Collectors.toList());
+
+        listWidgetDto.setHeaders(getHeader(dtoObject, filteredProperties));
+        listWidgetDto.setDataList(getData(type, filteredProperties));
 
         return listWidgetDto;
     }
@@ -58,12 +66,11 @@ public class ListWidgetService {
     /**
      * Header values stored in the database are just property names. They are then mapped by searching for
      * DisplayName annotation on the properties defined in CommonDto
-     * @param type  type having Common Dto where searched DisplayName is defined
+     * @param dtoObject Common Dto type where searched DisplayName is defined
      * @param properties list of properties which should be visible on the list widget
      * @return
      */
-    private List<String> getHeader(Type type, List<String> properties) {
-        DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
+    private List<String> getHeader(DtoObject dtoObject, List<String> properties) {
 
         return properties.stream()
                 .map(property -> displayService.getDisplayValueFromAnnotation(dtoObject.getDtoClass(), property))

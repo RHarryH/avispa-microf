@@ -33,7 +33,9 @@ public abstract class ListDataDtoMapper {
         listDataDto.setValues(properties.stream()
                 .map(property -> {
                     Object value = map.get(property);
-                    return dictionaryService.getValueFromDictionary(commonDto.getClass(), property, value.toString());
+                    return null != value ?
+                            dictionaryService.getValueFromDictionary(commonDto.getClass(), property, value.toString()) :
+                            "-";
                 })
                 .collect(Collectors.toList()));
     }
