@@ -66,7 +66,7 @@ public class ListWidgetService {
         DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
 
         return properties.stream()
-                .map(property -> displayService.getValueFromAnnotation(dtoObject.getDtoClass(), property))
+                .map(property -> displayService.getDisplayValueFromAnnotation(dtoObject.getDtoClass(), property))
                 .collect(Collectors.toList());
     }
 
