@@ -15,7 +15,7 @@
                 </thead>
                 <tbody>
                 <tr scope="col" th:if="${listWidgetDto.dataList.empty}">
-                    <td colspan="8" th:text="${listWidgetDto.emptyMessage}">Empty message</td>
+                    <td colspan="100%" th:text="${listWidgetDto.emptyMessage}">Empty message</td>
                 </tr>
                 <tr scope="col" th:each="data : ${listWidgetDto.dataList}">
                     <td th:each="value : ${data.values}"><span th:text="${value}">Property</span></td>
