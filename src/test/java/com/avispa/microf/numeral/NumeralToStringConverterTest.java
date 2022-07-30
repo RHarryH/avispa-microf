@@ -183,6 +183,12 @@ class NumeralToStringConverterTest {
         assertEquals("dwadzieścia pięć milionów sześćset szesnaście tysięcy sto siedemdziesiąt pięć", convert(25616175));
     }
 
+    @Test
+    void negativeNumberTest() {
+        assertEquals("minus dwadzieścia cztery złote", convert("-24"));
+        assertEquals("minus dwadzieścia cztery", convert(-24));
+    }
+
     private String convert(String s) {
         return NumeralToStringConverter.convert(s, '.');
     }
