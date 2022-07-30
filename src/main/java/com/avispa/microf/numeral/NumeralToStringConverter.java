@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * NOTE: does not support negative numbers
  * @author Rafał Hiszpański
  */
 public final class NumeralToStringConverter {
@@ -57,6 +58,9 @@ public final class NumeralToStringConverter {
             "złoty", "złote", "złotych"
     };
 
+    private static final String ZERO_TEXT = "zero";
+    private static final String MINUS_TEXT = "minus";
+
     private NumeralToStringConverter() {
 
     }
@@ -82,13 +86,20 @@ public final class NumeralToStringConverter {
             throw new IllegalArgumentException("Only numbers up to 9 digits are supported");
         }
 
-        List<String> triplets = getTriplets(integer);
         StringBuilder sb = new StringBuilder();
 
+        // minus handling
+        if(integer.startsWith("-")) {
+            sb.append(MINUS_TEXT).append(" ");
+            integer = integer.substring(1);
+        }
+
+        List<String> triplets = getTriplets(integer);
+
         if(integer.equals(ZERO)) {
-            sb.append("zero");
-            sb.append(" ");
-            sb.append(CURRENCY[GENITIVE_PLURAL]);
+            sb.append("zero")
+              .append(" ")
+              .append(CURRENCY[GENITIVE_PLURAL]);
         } else {
             int size = triplets.size();
             for(int i = 0; i < size; i++) {
@@ -210,11 +221,15 @@ public final class NumeralToStringConverter {
         int power = 0;
         int j = 0;
 
-        if (number == 0) {
-            return "zero";
-        }
-
         List<String> result = new ArrayList<>();
+
+        boolean isNegative = false;
+        if (number == 0) {
+            return ZERO_TEXT;
+        } else if(number < 0) {
+            isNegative = true;
+            number = Math.abs(number);
+        }
 
         while (number > 0) {
             lastDigit = (number % 10);
@@ -244,6 +259,9 @@ public final class NumeralToStringConverter {
         }
 
         result.removeIf(String::isEmpty);
+        if(isNegative) {
+            result.add(MINUS_TEXT);
+        }
         Collections.reverse(result); // results must be reversed
 
         return Strings.join(result, " ");
