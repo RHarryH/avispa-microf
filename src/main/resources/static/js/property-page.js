@@ -113,23 +113,34 @@ function resolveConditions(form, conditions) {
     });
 
     function resolveCondition(key, value) {
-        console.log(`${key}: ${value}`);
+        const valueString = JSON.stringify(value);
+        console.log(`${key}: ${valueString}`);
 
-        function getValues(fullKey) { // extract values from the form, for radios and combos includes additionally values from labels
-            const values = [];
+        // extract values from the form
+        // for radios and combos when the value is UUID, the label is used
+        // for inputs using inputmask unmasked value is get and radix conversion is performed
+        function getValue(fullKey) {
+            function isUUID(uuid) { // UUID v4
+                const s = "" + uuid;
+                return /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(s);
+            }
 
-            const element = form.querySelector("select[name='" + fullKey + "'],input[name='" + fullKey + "']:checked");
-            if (element) { // multi-select not supported!
+            let element = form.querySelector("select[name='" + fullKey + "'],input[name='" + fullKey + "']:checked");
+            if (element && isUUID(formData.get(fullKey))) { // multi-select not supported!
                 if(element.type === 'select-one') {
-                    values.push(element.options[element.selectedIndex].innerText);
+                    return element.options[Math.max(element.selectedIndex, 0)].innerText;
                 } else if(element.type === 'radio') {
-                    values.push(element.labels[0].innerText);
+                    return element.labels[0].innerText;
                 }
             }
 
-            values.push(formData.get(fullKey));
+            element = form.querySelector("input[name='" + fullKey + "']");
+            if(element && element.inputmask && element.inputmask.opts.alias === "customDecimal") {
+                const radixPoint = element.inputmask.opts.radixPoint;
+                return element.inputmask.unmaskedvalue().replace(radixPoint, ".");
+            }
 
-            return values;
+            return formData.get(fullKey);
         }
 
         if(key === "$and") {
@@ -144,7 +155,7 @@ function resolveConditions(form, conditions) {
             });
         } else {
             const fullKey = "object." + key;
-            const actualValues = getValues(fullKey);
+            const actualValue = getValue(fullKey);
 
             let operator;
             let comparedValue;
@@ -155,12 +166,8 @@ function resolveConditions(form, conditions) {
                 comparedValue = value;
             }
 
-            console.log("'" + fullKey + "' " + operator + "? " + comparedValue);
-            return actualValues.some(
-                function(actualValue) {
-                    return comparators[operator](actualValue, comparedValue);
-                }
-            );
+            console.log("'" + fullKey + "'(" + actualValue + ") " + operator + "? " + comparedValue);
+            return comparators[operator](actualValue, comparedValue);
         }
     }
 }
@@ -176,7 +183,7 @@ const comparators = {
 
 function setVisibility(element, conditionsResult) {
     function updateColumnLabelsWidth(increase) {
-        element.querySelectorAll('label, legend').forEach(function (label) {
+        element.closest(".row").querySelectorAll('label, legend').forEach(function (label) {
             let classIndex = -1;
             for (let i = 0; i < label.classList.length; i++) {
                 if (label.classList[i].startsWith("col-sm-")) {
@@ -200,20 +207,17 @@ function setVisibility(element, conditionsResult) {
         if(element.classList.contains("d-none")) {
             element.classList.remove("d-none");
             updateColumnLabelsWidth(true);
+
+            // enable values
+            $(element).find(":input").prop("disabled", false);
         }
     } else {
         if(!element.classList.contains("d-none")) {
             element.classList.add("d-none");
             updateColumnLabelsWidth(false);
 
-            // clear values
-            $(element).find(":input").toArray().forEach(function (input) {
-                if(input.type === "radio") {
-                    input.checked = false;
-                } else {
-                    input.value = "";
-                }
-            });
+            // disable values
+            $(element).find(":input").prop("disabled", true);
         }
     }
 }

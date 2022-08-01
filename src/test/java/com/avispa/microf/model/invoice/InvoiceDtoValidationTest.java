@@ -1,5 +1,6 @@
 package com.avispa.microf.model.invoice;
 
+import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +26,18 @@ class InvoiceDtoValidationTest {
         invoiceDto.setSeller(UUID.randomUUID().toString());
         invoiceDto.setServiceDate(getCurrentDate());
         invoiceDto.setIssueDate(getCurrentDate());
-        invoiceDto.setBankAccount(RandomStringUtils.randomAlphanumeric(20));
 
         PositionDto positionDto = invoiceDto.getPositions().get(0); // first position is always available when created
         positionDto.setObjectName("Name");
         positionDto.setUnit("UNIT");
         positionDto.setVatRate("RATE");
         positionDto.setUnitPrice(BigDecimal.ONE);
+
+        PaymentDto paymentDto = invoiceDto.getPayment();
+        paymentDto.setMethod("BANK_TRANSFER");
+        paymentDto.setPaidAmount(BigDecimal.ZERO);
+        paymentDto.setDeadline(14);
+        paymentDto.setBankAccount(RandomStringUtils.randomAlphanumeric(20));
     }
 
     @Test
@@ -56,11 +62,5 @@ class InvoiceDtoValidationTest {
     void givenCommentsExceedMaxLength_whenValidate_thenFail() {
         invoiceDto.setComments(RandomStringUtils.randomAlphabetic(201));
         validate(invoiceDto, InvoiceDto.VM_COMMENTS_NO_LONGER);
-    }
-
-    @Test
-    void givenNullBankAccount_whenValidate_thenFail() {
-        invoiceDto.setBankAccount(null);
-        validate(invoiceDto, InvoiceDto.VM_BANK_ACCOUNT_NOT_NULL);
     }
 }

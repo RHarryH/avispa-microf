@@ -22,16 +22,16 @@ public class TestValidationUtils {
 
 
     public static void validate(Dto dto, String expectedErrorMessage) {
-        validate(dto, 1, Set.of(expectedErrorMessage));
+        validate(dto, Set.of(expectedErrorMessage));
     }
 
-    public static void validate(Dto dto, int numberOfExpectedErrors, Set<String> expectedErrorMessages) {
+    public static void validate(Dto dto, Set<String> expectedErrorMessages) {
         Set<ConstraintViolation<Dto>> constraintViolations =
                 validator.validate(dto);
         Set<String> validationErrors = constraintViolations.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
 
         log.info("Found {} validation errors: {}", constraintViolations.size(), validationErrors);
-        assertEquals(numberOfExpectedErrors, constraintViolations.size());
+        assertEquals(expectedErrorMessages.size(), constraintViolations.size());
         assertEquals(expectedErrorMessages, validationErrors);
     }
 

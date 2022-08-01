@@ -5,7 +5,7 @@
         "type": "text",
         "label": "Account name",
         "required": true,
-        "property": "accountName",
+        "property": "objectName",
         "maxLength": 50
       },
       {

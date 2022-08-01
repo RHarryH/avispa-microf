@@ -38,7 +38,7 @@ public class WidgetController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("error/widgetError :: widgetError");
         modelAndView.addObject("errorMessage", ex.getMessage());
-        modelAndView.addObject("widgetId", "properties-widget"); // TODO:
+        modelAndView.addObject("widgetId", "properties-widget"); // TODO: refresh refreshes always property widget
         return modelAndView;
     }
 
