@@ -1,12 +1,9 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
-import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.invoice.Invoice;
-import com.avispa.microf.numeral.NumeralToStringConverter;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -29,21 +26,21 @@ public class InvoiceData {
     private final List<PositionData> positions;
     private final List<VatRowData> vatMatrix;
 
-    private String grossValueInWords;
-    private LocalDate paymentDate;
-
-    private String bankName;
-    private String bankAccountNumber;
+    private final PaymentData payment;
 
     private final String comments;
 
-    public InvoiceData(Invoice invoice, Dictionary unitDict, Dictionary vatRateDict) {
+    public InvoiceData(Invoice invoice, Dictionary unitDict, Dictionary vatRateDict, Dictionary paymentMethodDict) {
         if(unitDict.isEmpty()) {
             throw new IllegalArgumentException("Dictionary for units cannot be empty");
         }
 
-        if(unitDict.isEmpty()) {
+        if(vatRateDict.isEmpty()) {
             throw new IllegalArgumentException("Dictionary for vat rates cannot be empty");
+        }
+
+        if(paymentMethodDict.isEmpty()) {
+            throw new IllegalArgumentException("Dictionary for payment methods cannot be empty");
         }
 
         this.invoiceName = invoice.getObjectName();
@@ -57,15 +54,10 @@ public class InvoiceData {
         this.positions = invoice.getPositions().stream().map(position -> new PositionData(position, unitDict, vatRateDict)).collect(Collectors.toList());
 
         this.vatMatrix = generateVatMatrix();
-        setGrossValueInWords(getVatSum().getGrossValue());
 
-        BankAccount bankAccount = invoice.getBankAccount();
-        this.bankName = bankAccount.getBankName();
-        this.bankAccountNumber = bankAccount.getFormattedAccountNumber();
+        this.payment = PaymentData.of(invoice, getVatSum().getGrossValue(), paymentMethodDict);
 
         this.comments = invoice.getComments();
-
-        setPaymentDate();
     }
 
     private List<VatRowData> generateVatMatrix() {
@@ -117,13 +109,5 @@ public class InvoiceData {
 
     public VatRowData getVatSum() {
         return vatMatrix.get(vatMatrix.size() - 1);
-    }
-
-    private void setGrossValueInWords(BigDecimal grossValueSum) {
-        this.grossValueInWords = NumeralToStringConverter.convert(grossValueSum);
-    }
-
-    public void setPaymentDate() {
-        this.paymentDate = this.issueDate.plusDays(14);
     }
 }

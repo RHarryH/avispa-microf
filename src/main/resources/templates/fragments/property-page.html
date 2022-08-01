@@ -14,8 +14,8 @@
             <th:block th:each="control : ${controls}">
                 <th:block th:switch="${control.type}">
                     <th:block th:case="columns">
-                        <div class="row" th:classappend="${controlStat.last ? '' : ' mb-3'}">
-                            <div class="form-group col"
+                        <div class="row" th:classappend="${controlStat.last ? '' : 'mb-3'}">
+                            <div class="col"
                                  th:each="columnControl : ${control?.controls}"
                                  th:data-visibility-conditions="${columnControl.conditions?.visibility}"
                                  th:data-requirement-conditions="${columnControl.conditions?.requirement}">
@@ -26,27 +26,30 @@
                         </div>
                     </th:block>
                     <th:block th:case="group">
-                        <div class="form-group mb-3" th:name="${control.name}"
-                             th:data-visibility-conditions="${control.conditions?.visibility}"
-                             th:insert="this :: property-page-controls(${control?.controls}, ${prefix})">
-                        </div>
+                        <fieldset class="border row mx-0 pb-3"
+                                  th:classappend="${controlStat.last ? '' : 'mb-3'}"
+                                  th:data-visibility-conditions="${control.conditions?.visibility}">
+                            <legend style="float: initial; width: initial;" th:text="${control.name}"></legend>
+                            <div class="col"
+                                 th:insert="this :: property-page-controls(${control?.controls}, ${prefix})">Controls</div>
+                        </fieldset>
                     </th:block>
                     <th:block th:case="tabs">
-                        <div class="form-group" th:classappend="${controlStat.last ? '' : 'mb-3'}"
+                        <div th:classappend="${controlStat.last ? '' : 'mb-3'}"
                              th:data-visibility-conditions="${control.conditions?.visibility}"
                              th:insert="this :: property-page-control(${control}, ${prefix})">
                         </div>
                     </th:block>
 
                     <th:block th:case="radio">
-                        <fieldset class="form-group row mb-3"
+                        <fieldset class="row" th:classappend="${controlStat.last ? '' : 'mb-3'}"
                                   th:data-visibility-conditions="${control.conditions?.visibility}"
                                   th:data-requirement-conditions="${control.conditions?.requirement}"
                                   th:insert="this :: property-page-control(${control}, ${prefix})">
                         </fieldset>
                     </th:block>
                     <th:block th:case="*">
-                        <div class="form-group row" th:classappend="${controlStat.last ? '' : ' mb-3'}"
+                        <div class="row" th:classappend="${controlStat.last ? '' : ' mb-3'}"
                              th:data-visibility-conditions="${control.conditions?.visibility}"
                              th:data-requirement-conditions="${control.conditions?.requirement}"
                              th:insert="this :: property-page-control(${control}, ${prefix})">
@@ -84,7 +87,7 @@
                         <th:block th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
                             <input th:if="${propertyPage.readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
                                    th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
-                            <select class="form-select" th:name="__${property}__"
+                            <select th:unless="${propertyPage.readonly}" class="form-select" th:name="__${property}__"
                                     th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
                                     th:required="${control.required}">
                                 <option th:if="${propertyValueString != null ? not dictionaryContains : false}" value="" selected disabled hidden>DEPRECATED</option>
@@ -118,7 +121,7 @@
                     <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
                         <div class="input-group">
                             <input type="text" class="form-control"
-                                   data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
+                                   data-inputmask="'alias': 'customDecimal'"
                                    th:data-custom-validation-function="${control.customValidation?.function}"
                                    th:data-custom-validation-message="${control.customValidation?.message}"
                                    th:readonly="${propertyPage.readonly}" th:required="${control.required}"
@@ -249,7 +252,7 @@
                 <th:block th:case="money">
                     <div class="input-group">
                         <input type="text" class="form-control"
-                               data-inputmask="'alias': 'numeric', 'groupSeparator': '&nbsp;', 'radixPoint': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'"
+                               data-inputmask="'alias': 'customDecimal'"
                                th:data-custom-validation-function="${control.customValidation?.function}"
                                th:data-custom-validation-message="${control.customValidation?.message}"
                                th:readonly="${readonly}" required

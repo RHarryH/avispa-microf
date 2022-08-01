@@ -70,7 +70,7 @@ class RetailCustomerDtoValidationTest {
     @Test
     void givenEmptyPhoneNumber_whenValidate_thenDontFail() {
         customerDto.setPhoneNumber("");
-        validate(customerDto, 0, Collections.emptySet());
+        validate(customerDto, Collections.emptySet());
     }
 
     @Test

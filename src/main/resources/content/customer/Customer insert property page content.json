@@ -10,7 +10,7 @@
       },
       {
         "type": "group",
-        "name": "corporate-properties",
+        "name": "Corporate",
         "controls": [
           {
             "type": "text",
@@ -48,7 +48,7 @@
       },
       {
         "type": "group",
-        "name": "retail-properties",
+        "name": "Retail",
         "controls": [
           {
             "type": "columns",

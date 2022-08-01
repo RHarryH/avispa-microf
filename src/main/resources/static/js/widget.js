@@ -191,7 +191,7 @@ function reloadWidgets(source, widgetsNames, resourceId) {
                 "resourceId": resourceId
             });
         } else {
-            source.trigger("widget:reload", {
+            $(source).trigger("widget:reload", {
                 "widgetName": widgetName,
                 "resourceId": resourceId
             });
@@ -206,7 +206,7 @@ function focusWidget(source, widgetName, resourceId) {
             "resourceId": resourceId
         });
     } else {
-        source.trigger("widget:focus", {
+        $(source).trigger("widget:focus", {
             "widgetName": widgetName,
             "resourceId": resourceId
         });

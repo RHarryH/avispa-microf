@@ -5,9 +5,8 @@ import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.address.Address;
 import com.avispa.microf.model.invoice.Invoice;
+import com.avispa.microf.model.invoice.payment.Payment;
 import com.avispa.microf.model.invoice.position.Position;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -17,13 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
+import java.time.Month;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -38,13 +36,19 @@ class InvoiceDataTest {
     @Mock
     private Dictionary vatRateDict;
 
+    @Mock
+    private Dictionary paymentTypeDict;
+
     @Test
     void convertToDetails() {
         when(unitDict.isEmpty()).thenReturn(false);
-        when(unitDict.getLabel(any(String.class))).thenReturn("godz.");
+        when(unitDict.getLabel(anyString())).thenReturn("godz.");
 
-        when(vatRateDict.getLabel(any(String.class))).thenReturn("5%");
-        when(vatRateDict.getColumnValue(any(String.class), any(String.class))).thenReturn("0.05");
+        when(vatRateDict.getLabel(anyString())).thenReturn("5%");
+        when(vatRateDict.getColumnValue(anyString(), anyString())).thenReturn("0.05");
+
+        when(paymentTypeDict.isEmpty()).thenReturn(false);
+        when(paymentTypeDict.getLabel(anyString())).thenReturn("przelew bankowy");
 
         Address address = new Address();
         address.setObjectName("A");
@@ -75,27 +79,26 @@ class InvoiceDataTest {
         bankAccount.setAccountNumber(RandomStringUtils.randomAlphanumeric(24));
         bankAccount.setBankName("test bank");
 
+        Payment payment = new Payment();
+        payment.setMethod("BANK_TRANSFER");
+        payment.setDeadline(14);
+        payment.setPaidAmount(BigDecimal.ZERO);
+        payment.setBankAccount(bankAccount);
+
         Invoice invoice = new Invoice();
         invoice.setObjectName("123");
         invoice.setBuyer(customer);
         invoice.setSeller(customer);
-        invoice.setIssueDate(LocalDate.now());
+        invoice.setIssueDate(LocalDate.of(2022, Month.JULY, 17));
         invoice.setServiceDate(LocalDate.now());
         invoice.setComments("Comment");
         invoice.setPositions(List.of(position));
-        invoice.setBankAccount(bankAccount);
+        invoice.setPayment(payment);
 
-        InvoiceData invoiceData = new InvoiceData(invoice, unitDict, vatRateDict);
+        InvoiceData invoiceData = new InvoiceData(invoice, unitDict, vatRateDict, paymentTypeDict);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-
-        TypeReference<LinkedHashMap<String, Object>> typeRef = new TypeReference<>() {};
-        Map<String, Object> map = objectMapper.convertValue(invoiceData, typeRef);
-
-        log.info(map.toString());
-
-        assertEquals("123", map.get("invoiceName"));
-        assertEquals("Position", ((Map<?, ?>)((List<?>)map.get("positions")).get(0)).get("positionName"));
+        assertEquals("123", invoiceData.getInvoiceName());
+        assertEquals("Position", invoiceData.getPositions().get(0).getPositionName());
+        assertEquals("2022-07-31", invoiceData.getPayment().getDeadlineDate());
     }
 }

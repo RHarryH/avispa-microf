@@ -118,21 +118,28 @@ function createModal(
     }).done(function (fragment) { // get from controller
         modals.prepend(fragment);
 
-        const modal = $(modalId);
-        if (modal.length) {
-            modal.on("hidden.bs.modal", function () { // remove modal when hidden
-                modal.remove();
-            }).on("show.bs.modal", function() {
-                conditionsCheck(this.querySelector(".modal-form")); // initialize modal
+        const modal = document.querySelector(modalId);
+        if(modal) {
+            const formElements = modal.getElementsByClassName("modal-form")[0].elements;
+            Array.from(formElements).forEach(function(element) {
+                element.addEventListener("input", runCustomValidation);
+                if(element.hasAttribute("data-inputmask") || element.hasAttribute("data-inputmask-regex")) {
+                    Inputmask().mask(element);
+                }
             });
-
-            let bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
-            bootstrapModal.show();
 
             handleAddingTableRow(modalId, resourcePath, resourceId);
             handleTableDeletion(modalId); // this actually initializes it for the first time
 
-            $(modalId + " :input").on("input", runCustomValidation).inputmask();
+            modal.addEventListener("hidden.bs.modal", function () { // remove modal when hidden
+                modal.remove();
+            });
+            modal.addEventListener("show.bs.modal", function () { // remove modal when hidden
+                conditionsCheck(this.querySelector(".modal-form")); // initialize modal
+            });
+
+            const bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
+            bootstrapModal.show();
 
             const triggerTabList = [].slice.call(document.querySelectorAll("#modal-list a"));
             triggerTabList.forEach(function (triggerEl) {
@@ -148,11 +155,11 @@ function createModal(
 
     function formSubmit(bootstrapModal) {
         function finalAction(form) {
-            const url = form.attr('action');
+            const url = form.getAttribute('action');
             if (url.length) {
                 $.post({
                     "url": url,
-                    "data": form.serialize()
+                    "data": $(form).serialize()
                 }).done(function () {
                     reloadWidgets(form, widgetsToReload, resourceId);
                     if(widgetToFocus !== null) {
@@ -176,10 +183,18 @@ function createModal(
                 const modalBody = modalId + " #tab-pane-" + to + " .modal-body";
                 $(modalBody).html(fragment);
 
+                const modal = document.querySelector(modalId);
+
+                const formElements = modal.getElementsByClassName("modal-form")[0].elements;
+                Array.from(formElements).forEach(function(element) {
+                    element.addEventListener("input", runCustomValidation);
+                    if(element.hasAttribute("data-inputmask") || element.hasAttribute("data-inputmask-regex")) {
+                        Inputmask().mask(element);
+                    }
+                });
+
                 handleAddingTableRow(modalBody, resourcePath, resourceId);
                 handleTableDeletion(modalBody); // this actually initializes it for the first time
-
-                $(modalBody + " :input").on("input", runCustomValidation).inputmask();
 
                 bootstrap.Tab.getInstance(document.querySelector("#modal-list a[href='#tab-pane-" + to + "'")).show();
             }).fail(function (e) {
@@ -188,13 +203,12 @@ function createModal(
             })
         }
 
-        const forms = $(modalId + " .modal-form");
-        forms.each(function() {
-            const form = $(this);
-            form.submit(function (event) {
+        const forms = document.querySelectorAll(modalId + " .modal-form");
+        forms.forEach(function(form) {
+            form.addEventListener("submit", function (event) {
                 event.preventDefault();
 
-                const button = event.originalEvent.submitter;
+                const button = event.submitter;
                 if(button.classList.contains("modal-next-button")) {
                     const currentPage = parseInt(button.value);
                     const nextPage = Math.min(currentPage + 1, forms.length);
@@ -212,8 +226,11 @@ function createModal(
                 } else if(button.classList.contains("modal-accept-button")) {
                     finalAction(form);
                 }
-            }).change(function () {
-                conditionsCheck($(this)[0]);
+            });
+            Array.from(form.elements).forEach(function (element) {
+                element.addEventListener("input", function() {
+                    conditionsCheck(form);
+                });
             });
         });
     }
