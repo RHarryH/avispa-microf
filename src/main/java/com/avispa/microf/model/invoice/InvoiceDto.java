@@ -2,6 +2,7 @@ package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.microf.model.base.dto.CommonDto;
+import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,8 +25,8 @@ public class InvoiceDto implements CommonDto {
     public static final String VM_SELLER_NOT_NULL = "Seller cannot be null";
     public static final String VM_BUYER_NOT_NULL = "Buyer cannot be null";
     public static final String VM_POSITIONS_NOT_EMPTY = "Positions list cannot be empty";
+    public static final String VM_PAYMENT_NOT_EMPTY = "Payment cannot be empty";
     public static final String VM_COMMENTS_NO_LONGER = "The comments cannot be longer than 200 characters";
-    public static final String VM_BANK_ACCOUNT_NOT_NULL = "Bank account cannot be null";
 
     private UUID id;
 
@@ -52,8 +53,8 @@ public class InvoiceDto implements CommonDto {
     @NotEmpty(message = VM_POSITIONS_NOT_EMPTY)
     private List<@Valid PositionDto> positions = new ArrayList<>(1);
 
-    @NotNull(message = VM_BANK_ACCOUNT_NOT_NULL)
-    private String bankAccount;
+    @NotNull(message = VM_PAYMENT_NOT_EMPTY)
+    private @Valid PaymentDto payment;
 
     @Size(max = 200, message = VM_COMMENTS_NO_LONGER)
     @DisplayName("Comments")
@@ -69,5 +70,6 @@ public class InvoiceDto implements CommonDto {
 
     public InvoiceDto() {
         this.positions.add(new PositionDto());
+        this.payment = new PaymentDto();
     }
 }

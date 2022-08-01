@@ -77,10 +77,62 @@
         ]
       },
       {
-        "type": "combo",
-        "label": "Bank account",
-        "property": "bankAccount",
-        "typeName": "Bank account"
+        "type": "group",
+        "name": "Payment",
+        "controls": [
+          {
+            "type": "columns",
+            "controls": [
+              {
+                "type": "combo",
+                "label": "Method",
+                "property": "payment.method",
+                "sortByLabel": true
+              },
+              {
+                "type": "number",
+                "label": "Deadline (days)",
+                "property": "payment.deadline"
+              }
+            ]
+          },
+          {
+            "type": "columns",
+            "controls": [
+              {
+                "type": "money",
+                "label": "Paid amount",
+                "currency": "PLN",
+                "property": "payment.paidAmount"
+              },
+              {
+                "type": "date",
+                "label": "Paid amount date",
+                "property": "payment.paidAmountDate",
+                "conditions": {
+                  "visibility": {
+                    "payment.paidAmount": {
+                      "$gt": 0
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "combo",
+            "label": "Bank account",
+            "property": "payment.bankAccount",
+            "typeName": "Bank account",
+            "conditions": {
+              "visibility": {
+                "payment.method": {
+                  "$ne": "CASH"
+                }
+              }
+            }
+          }
+        ]
       },
       {
         "type": "textarea",

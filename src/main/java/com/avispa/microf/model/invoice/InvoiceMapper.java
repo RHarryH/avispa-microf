@@ -1,10 +1,9 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.microf.model.bankaccount.BankAccount;
-import com.avispa.microf.model.bankaccount.BankAccountRepository;
 import com.avispa.microf.model.base.mapper.IExtendedEntityDtoMapper;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
+import com.avispa.microf.model.invoice.payment.PaymentMapper;
 import com.avispa.microf.model.invoice.position.Position;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import com.avispa.microf.model.invoice.position.PositionMapper;
@@ -21,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-    uses = PositionMapper.class)
+    uses = {PositionMapper.class, PaymentMapper.class})
 public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice, InvoiceDto, InvoiceDto> {
     // not required when componentModel = "spring", can be autowired
     //InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
@@ -32,23 +31,12 @@ public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice,
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Autowired
-    private BankAccountRepository bankAccountRepository;
-
     protected String customerToId(Customer customer) {
         return customer.getId().toString();
     }
 
     protected Customer idToCustomer(String customerId) {
         return Hibernate.unproxy(customerRepository.getById(UUID.fromString(customerId)), Customer.class);
-    }
-
-    protected String bankAccountToId(BankAccount bankAccount) {
-        return bankAccount.getId().toString();
-    }
-
-    protected BankAccount idToBankAccount(String bankAccountId) {
-        return Hibernate.unproxy(bankAccountRepository.getById(UUID.fromString(bankAccountId)), BankAccount.class);
     }
 
     protected void updatePositionsFromPositionsDto(List<PositionDto> positionDtos, @MappingTarget List<Position> positions) {
@@ -63,7 +51,7 @@ public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice,
                     .collect(MoreCollectors.toOptional());
 
             if(position.isPresent()) {
-                positionMapper.updatePositionFromDto(positionDto, position.get());
+                positionMapper.updateEntityFromDto(positionDto, position.get());
             } else {
                 positions.add(i, positionMapper.convertToEntity(positionDto));
             }

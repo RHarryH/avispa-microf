@@ -37,7 +37,7 @@ class BankAccountDtoValidationTest {
     @Test
     void givenInvalidIBAN_whenValidate_thenFail() {
         bankAccountDto.setAccountNumber(RandomStringUtils.randomAlphabetic(26));
-        validate(bankAccountDto, 2, Set.of("IBAN is invalid", "The number is not a valid NRB number"));
+        validate(bankAccountDto, Set.of("IBAN is invalid", "The number is not a valid NRB number"));
     }
 
     @Test

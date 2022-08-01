@@ -3,6 +3,7 @@ package com.avispa.microf.model.invoice.service.file.data;
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
 import com.avispa.ecm.model.configuration.dictionary.DictionaryService;
 import com.avispa.microf.model.invoice.Invoice;
+import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ public class InvoiceDataConverter {
     public InvoiceData convert(Invoice invoice) {
         Dictionary unitDict = dictionaryService.getDictionary(PositionDto.class, "unit");
         Dictionary vatRateDict = dictionaryService.getDictionary(PositionDto.class, "vatRate");
+        Dictionary paymentMethodDict = dictionaryService.getDictionary(PaymentDto.class, "method");
 
-        return new InvoiceData(invoice, unitDict, vatRateDict);
+        return new InvoiceData(invoice, unitDict, vatRateDict, paymentMethodDict);
     }
 }

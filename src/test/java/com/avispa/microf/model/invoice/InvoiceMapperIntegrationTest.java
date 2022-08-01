@@ -6,13 +6,16 @@ import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.bankaccount.BankAccountRepository;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
+import com.avispa.microf.model.invoice.payment.Payment;
+import com.avispa.microf.model.invoice.payment.PaymentDto;
+import com.avispa.microf.model.invoice.payment.PaymentMapperImpl;
 import com.avispa.microf.model.invoice.position.PositionMapperImpl;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -30,11 +33,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         InvoiceMapperImpl.class,
-        PositionMapperImpl.class
+        PositionMapperImpl.class,
+        PaymentMapperImpl.class
 })
 class InvoiceMapperIntegrationTest {
-    @SpyBean
-    private InvoiceMapperImpl mapper;
+    @Autowired
+    private InvoiceMapperImpl invoiceMapper;
 
     @MockBean
     private EcmEntityRepository<DictionaryValue> dictionaryValueRepository;
@@ -61,9 +65,12 @@ class InvoiceMapperIntegrationTest {
         invoice.setSeller(customer);
         invoice.setBuyer(customer);
         invoice.setComments("Test comment");
-        invoice.setBankAccount(getBankAccount());
 
-        InvoiceDto invoiceDto = mapper.convertToDto(invoice);
+        Payment payment = new Payment();
+        payment.setBankAccount(getBankAccount());
+        invoice.setPayment(payment);
+
+        InvoiceDto invoiceDto = invoiceMapper.convertToDto(invoice);
 
         assertEquals(invoice.getComments(), invoiceDto.getComments());
     }
@@ -78,9 +85,12 @@ class InvoiceMapperIntegrationTest {
         invoice.setBuyer(customer);
         invoice.setIssueDate(LocalDate.of(2011, 11, 10));
         invoice.setServiceDate(LocalDate.of(2011, 11, 10));
-        invoice.setBankAccount(getBankAccount());
 
-        InvoiceDto invoiceDto = mapper.convertToDto(invoice);
+        Payment payment = new Payment();
+        payment.setBankAccount(getBankAccount());
+        invoice.setPayment(payment);
+
+        InvoiceDto invoiceDto = invoiceMapper.convertToDto(invoice);
 
         assertEquals(invoice.getIssueDate().format(DateTimeFormatter.ISO_LOCAL_DATE), invoiceDto.getIssueDate());
         assertEquals(invoice.getServiceDate().format(DateTimeFormatter.ISO_LOCAL_DATE), invoiceDto.getServiceDate());
@@ -92,9 +102,12 @@ class InvoiceMapperIntegrationTest {
         invoiceDto.setSeller(UUID.randomUUID().toString());
         invoiceDto.setBuyer(UUID.randomUUID().toString());
         invoiceDto.setComments("Test comment");
-        invoiceDto.setBankAccount(UUID.randomUUID().toString());
 
-        Invoice invoice = mapper.convertToEntity(invoiceDto);
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setBankAccount(UUID.randomUUID().toString());
+        invoiceDto.setPayment(paymentDto);
+
+        Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
 
         assertEquals(invoiceDto.getComments(), invoice.getComments());
     }
@@ -106,9 +119,12 @@ class InvoiceMapperIntegrationTest {
         invoiceDto.setBuyer(UUID.randomUUID().toString());
         invoiceDto.setIssueDate("2011-11-10");
         invoiceDto.setServiceDate("2011-11-10");
-        invoiceDto.setBankAccount(UUID.randomUUID().toString());
 
-        Invoice invoice = mapper.convertToEntity(invoiceDto);
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setBankAccount(UUID.randomUUID().toString());
+        invoiceDto.setPayment(paymentDto);
+
+        Invoice invoice = invoiceMapper.convertToEntity(invoiceDto);
 
         assertEquals(invoiceDto.getIssueDate(), invoice.getIssueDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
         assertEquals(invoiceDto.getServiceDate(), invoice.getServiceDate().format(DateTimeFormatter.ISO_LOCAL_DATE));

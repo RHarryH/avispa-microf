@@ -41,7 +41,7 @@ public class ModalController implements IModalController {
                 .id(typeIdentifier + "-add-modal")
                 .title("Add new " + typeName)
                 .action(typeIdentifier + "/add")
-                .size("large")
+                .size("extra-large") // TODO: bring back configuration possibility
                 .build();
 
         return getModal(modal, typeName);
@@ -55,14 +55,14 @@ public class ModalController implements IModalController {
                 .id(typeIdentifier + "-clone-modal")
                 .title("Clone existing " + typeName)
                 .action(typeIdentifier + "/add")
-                .size("extra-large")
+                .size("extra-large") // TODO: bring back configuration possibility
                 .build();
 
         return getModal(modal, typeName);
     }
 
     protected ModelAndView getModal(ModalConfiguration modal, String typeName) {
-        // in these cases we're creating an empty instance of entity and dto so there there is no need
+        // in these cases we're creating an empty instance of entity and dto so there is no need
         // to check the discriminator - we want to select common Dto object every time
         DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
 
@@ -81,7 +81,7 @@ public class ModalController implements IModalController {
                 .id(typeIdentifier + "-update-modal")
                 .title("Update " + typeName)
                 .action(typeIdentifier + "/update/" + id)
-                .size("large")
+                .size("extra-large") // TODO: bring back configuration possibility
                 .build();
 
         return getModal(modal, id, typeName);

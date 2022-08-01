@@ -1,8 +1,8 @@
 package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.document.Document;
-import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.customer.Customer;
+import com.avispa.microf.model.invoice.payment.Payment;
 import com.avispa.microf.model.invoice.position.Position;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import java.time.LocalDate;
 import java.util.List;
@@ -44,8 +45,8 @@ public class Invoice extends Document {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Position> positions;
 
-    @ManyToOne(optional = false)
-    private BankAccount bankAccount;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Payment payment;
 
     private String comments;
 }
