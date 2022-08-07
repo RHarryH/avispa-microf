@@ -105,7 +105,7 @@ function conditionsCheck(form) {
 
 function resolveConditions(form, conditions) {
     const formData = new FormData(form);
-    let conditionsObject = JSON.parse(conditions);
+    const conditionsObject = spJSON.parse(conditions);
 
     return Object.entries(conditionsObject).every(function(entry) {
         let [key, value] = entry;
