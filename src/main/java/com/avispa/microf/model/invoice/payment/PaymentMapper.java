@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -33,5 +34,9 @@ public abstract class PaymentMapper implements IEntityDtoMapper<Payment, Payment
             return null;
         }
         return Hibernate.unproxy(bankAccountRepository.getById(UUID.fromString(bankAccountId)), BankAccount.class);
+    }
+
+    protected LocalDate stringToLocalDate(String date) {
+        return Strings.isBlank(date) ? null : LocalDate.parse(date);
     }
 }
