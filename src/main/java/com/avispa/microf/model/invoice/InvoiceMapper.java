@@ -36,7 +36,7 @@ public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice,
     }
 
     protected Customer idToCustomer(String customerId) {
-        return Hibernate.unproxy(customerRepository.getById(UUID.fromString(customerId)), Customer.class);
+        return Hibernate.unproxy(customerRepository.getReferenceById(UUID.fromString(customerId)), Customer.class);
     }
 
     protected void updatePositionsFromPositionsDto(List<PositionDto> positionDtos, @MappingTarget List<Position> positions) {

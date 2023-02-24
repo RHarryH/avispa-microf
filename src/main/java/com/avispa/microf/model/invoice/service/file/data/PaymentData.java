@@ -7,6 +7,7 @@ import com.avispa.microf.model.invoice.payment.Payment;
 import com.avispa.microf.numeral.NumeralToStringConverter;
 import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,7 +33,7 @@ public class PaymentData {
         return new PaymentData(invoice.getPayment(), invoice.getIssueDate(), grossValue, paymentTypeDict);
     }
 
-    private PaymentData(Payment payment, LocalDate issueDate, BigDecimal grossValue, Dictionary paymentTypeDict) {
+    private PaymentData(@NonNull Payment payment, LocalDate issueDate, BigDecimal grossValue, Dictionary paymentTypeDict) {
         this.paidAmount = payment.getPaidAmount();
         if(payment.getPaidAmount().compareTo(BigDecimal.ZERO) > 0) { // only if paid amount is greater than zero
             this.paidAmountDate = FormatUtils.format(payment.getPaidAmountDate());

@@ -1,6 +1,5 @@
 package com.avispa.microf.numeral;
 
-import joptsimple.internal.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -264,7 +263,7 @@ public final class NumeralToStringConverter {
         }
         Collections.reverse(result); // results must be reversed
 
-        return Strings.join(result, " ");
+        return String.join(" ", result);
     }
 
     private static void addPower(int number, int lastDigit, int power, List<String> result) {
