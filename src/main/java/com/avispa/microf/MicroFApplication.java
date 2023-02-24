@@ -1,6 +1,7 @@
 package com.avispa.microf;
 
 import com.avispa.ecm.model.configuration.propertypage.PropertyPageService;
+import com.avispa.ecm.model.configuration.template.TemplateService;
 import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.ContinuousCounterStrategy;
@@ -28,10 +29,11 @@ import java.util.Locale;
 @EntityScan(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use CMS entities
 @EnableJpaRepositories(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use CMS repositories
 @PropertySource("classpath:application.properties")
-@PropertySource(value = "file:./microf.properties")
+@PropertySource("file:./microf.properties")
 @RequiredArgsConstructor
 public class MicroFApplication {
 	private final PropertyPageService propertyPageService;
+	private final TemplateService templateService;
 
 	@Value("${microf.invoice.counter-strategy}")
 	private String counterStrategyName;
@@ -69,17 +71,19 @@ public class MicroFApplication {
 
 	//@EventListener(ApplicationReadyEvent.class)
 	@EventListener(ContextRefreshedEvent.class) // after bean creation but before the server starts
-	public void loadPropertyPages() {
-		propertyPageService.loadContentTo("Invoice property page", "classpath:/content/invoice/Invoice property page content.json");
-		propertyPageService.loadContentTo("Invoice upsert property page", "classpath:/content/invoice/Invoice upsert property page content.json");
+	public void loadConfiguration() {
+		propertyPageService.loadContent("Invoice property page", "classpath:/content/invoice/Invoice property page content.json");
+		propertyPageService.loadContent("Invoice upsert property page", "classpath:/content/invoice/Invoice upsert property page content.json");
 
-		propertyPageService.loadContentTo("Customer insert property page", "classpath:/content/customer/Customer insert property page content.json");
-		propertyPageService.loadContentTo("Retail customer update property page", "classpath:/content/customer/Retail customer update property page content.json");
-		propertyPageService.loadContentTo("Corporate customer update property page", "classpath:/content/customer/Corporate customer update property page content.json");
+		propertyPageService.loadContent("Customer insert property page", "classpath:/content/customer/Customer insert property page content.json");
+		propertyPageService.loadContent("Retail customer update property page", "classpath:/content/customer/Retail customer update property page content.json");
+		propertyPageService.loadContent("Corporate customer update property page", "classpath:/content/customer/Corporate customer update property page content.json");
 
-		propertyPageService.loadContentTo("Bank account upsert property page", "classpath:/content/bank-account/Bank account upsert property page content.json");
+		propertyPageService.loadContent("Bank account upsert property page", "classpath:/content/bank-account/Bank account upsert property page content.json");
 
-		propertyPageService.loadContentTo("Select source property page", "classpath:/content/Select source property page content.json");
+		propertyPageService.loadContent("Select source property page", "classpath:/content/Select source property page content.json");
+
+		templateService.loadContent("VAT Invoice template", "classpath:/vat_invoice_variables_template.odt");
 	}
 
 	public static void main(String[] args) {

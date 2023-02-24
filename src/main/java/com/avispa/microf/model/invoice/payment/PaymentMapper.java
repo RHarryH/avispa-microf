@@ -33,7 +33,7 @@ public abstract class PaymentMapper implements IEntityDtoMapper<Payment, Payment
         if(Strings.isEmpty(bankAccountId)) {
             return null;
         }
-        return Hibernate.unproxy(bankAccountRepository.getById(UUID.fromString(bankAccountId)), BankAccount.class);
+        return Hibernate.unproxy(bankAccountRepository.getReferenceById(UUID.fromString(bankAccountId)), BankAccount.class);
     }
 
     protected LocalDate stringToLocalDate(String date) {

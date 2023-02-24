@@ -2,11 +2,14 @@ package com.avispa.microf.model.invoice.service;
 
 import com.avispa.ecm.model.configuration.callable.autolink.Autolink;
 import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
+import com.avispa.ecm.model.configuration.template.Template;
 import com.avispa.ecm.model.content.Content;
 import com.avispa.ecm.model.content.ContentService;
 import com.avispa.ecm.model.context.ContextService;
 import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
+import com.avispa.ecm.util.exception.EcmException;
+import com.avispa.ecm.util.transaction.TransactionUtils;
 import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.content.ContentDto;
 import com.avispa.microf.model.content.ContentMapper;
@@ -24,11 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -70,19 +73,17 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceRepo
         this.contextService = contextService;
     }
 
-    @Transactional
     @Override
     public void add(Invoice invoice) {
         getRepository().save(invoice);
 
         invoice.setSerialNumber(counterStrategy.getNextSerialNumber(invoice));
 
-        contextService.applyMatchingConfigurations(invoice, Autoname.class, Autolink.class);
+        contextService.applyMatchingConfigurations(invoice, List.of(Autoname.class, Autolink.class));
 
         generateContent(invoice);
     }
 
-    @Transactional
     @Override
     public void update(InvoiceDto invoiceDto) {
         Invoice invoice = findById(invoiceDto.getId());
@@ -95,16 +96,30 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceRepo
 
     private void generateContent(Invoice invoice) {
         InvoiceData invoiceData = invoiceDataConverter.convert(invoice);
-        try (IInvoiceFile invoiceFile = new OdfInvoiceFile()) {
+
+        Template template = contextService.getConfiguration(invoice, Template.class).
+                orElseThrow(() -> new EcmException("Document template for '" + invoice.getId() + "' document couldn't be found"));
+        Content templateContent = template.getPrimaryContent();
+
+        if(null == templateContent) {
+            throw new EcmException("Template " + template.getObjectName() + " does not have any content file assigned");
+        }
+
+        try (IInvoiceFile invoiceFile = new OdfInvoiceFile(templateContent.getFileStorePath())) {
             invoiceFile.generate(invoiceData, issuerName);
+
+            // save file in the file store and create content object
             Path fileStorePath = invoiceFile.save(fileStore.getRootPath());
+            TransactionUtils.registerFileRollback(fileStorePath);
             Content content = contentService.createNewContent(invoiceFile.getExtension(), invoice, fileStorePath);
 
             renditionService.generate(content);
         } catch (FileNotFoundException e) {
             log.error("Cannot open template file", e);
+            throw new EcmException("Cannot open template file");
         } catch (IOException e) {
-            log.error("Exception during invoice generation", e);
+            log.error("IO during invoice generation", e);
+            throw new EcmException("IO during invoice generation");
         }
     }
 
