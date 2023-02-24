@@ -1,10 +1,12 @@
 package com.avispa.microf.model.invoice.service.file;
 
+import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.microf.model.invoice.service.replacer.InvoiceOdtReplacer;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,14 +18,15 @@ import java.util.UUID;
 public class OdfInvoiceFile extends AbstractInvoiceFile {
     private static final Logger log = LoggerFactory.getLogger(OdfInvoiceFile.class);
 
-    private OdfTextDocument invoice;
+    private final OdfTextDocument invoice;
 
-    public OdfInvoiceFile() {
+    public OdfInvoiceFile(String templatePath) {
         try {
-            this.invoice = OdfTextDocument.loadDocument(ClassLoader.getSystemClassLoader().getResourceAsStream("vat_invoice_variables_template.odt"));
+            this.invoice = OdfTextDocument.loadDocument(new File(templatePath));
             this.replacer = new InvoiceOdtReplacer(this.invoice);
         } catch (Exception e) {
             log.error("Unable to load document", e);
+            throw new EcmException("Unable to load document");
         }
     }
 
@@ -47,6 +50,8 @@ public class OdfInvoiceFile extends AbstractInvoiceFile {
 
     @Override
     public void close() {
-        invoice.close();
+        if(null != invoice) {
+            invoice.close();
+        }
     }
 }

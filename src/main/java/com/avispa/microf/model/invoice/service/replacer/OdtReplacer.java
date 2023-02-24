@@ -81,9 +81,8 @@ public class OdtReplacer extends AbstractReplacer {
             for(int i = 0; i < nodes.getLength(); i++) {
                 TextVariableSetElement element = (TextVariableSetElement) nodes.item(i);
 
-                if(log.isDebugEnabled()) {
-                    log.debug("Found '{}' content for '{}' variable", element.getTextContent(), element.getTextNameAttribute());
-                }
+                log.debug("Found '{}' content for '{}' variable", element.getTextContent(), element.getTextNameAttribute());
+
                 element.setTextContent(variables.get(element.getTextNameAttribute()));
             }
         } catch (XPathExpressionException e) {

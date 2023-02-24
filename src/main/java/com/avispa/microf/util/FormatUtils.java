@@ -3,8 +3,6 @@ package com.avispa.microf.util;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -17,7 +15,6 @@ import java.util.Locale;
  */
 @Slf4j
 public class FormatUtils {
-    public static final MathContext mathContext = new MathContext(2, RoundingMode.HALF_UP);
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
     public static final String QUANTITY_DECIMAL_FORMAT = "#0.###";

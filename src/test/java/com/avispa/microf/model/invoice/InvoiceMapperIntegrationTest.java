@@ -53,7 +53,7 @@ class InvoiceMapperIntegrationTest {
     public void init() {
         BankAccount bankAccount = getBankAccount();
 
-        when(bankAccountRepository.getById(any(UUID.class))).thenReturn(bankAccount);
+        when(bankAccountRepository.getReferenceById(any(UUID.class))).thenReturn(bankAccount);
     }
 
     @Test
