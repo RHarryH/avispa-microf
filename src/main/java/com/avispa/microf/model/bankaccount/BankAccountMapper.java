@@ -4,6 +4,7 @@ import com.avispa.microf.model.base.mapper.IExtendedEntityDtoMapper;
 import org.apache.logging.log4j.util.Strings;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -11,7 +12,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import java.util.Arrays;
 import java.util.List;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface BankAccountMapper extends IExtendedEntityDtoMapper<BankAccount, BankAccountDto, BankAccountDto> {
     @Override
     @Mapping(source = "accountNumber", target = "accountNumber", qualifiedByName = "prettyPrintAccountNumber")
