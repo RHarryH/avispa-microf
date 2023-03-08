@@ -6,6 +6,7 @@ import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import org.apache.logging.log4j.util.Strings;
 import org.hibernate.Hibernate;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class PaymentMapper implements IEntityDtoMapper<Payment, PaymentDto> {
 
     @Autowired

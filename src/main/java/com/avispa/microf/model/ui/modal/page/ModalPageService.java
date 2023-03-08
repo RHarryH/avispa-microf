@@ -4,6 +4,7 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.control.PropertyControl;
 import com.avispa.ecm.model.type.TypeService;
+import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.ui.modal.button.ModalButton;
 import com.avispa.microf.model.ui.modal.context.MicroFContext;
@@ -53,7 +54,8 @@ public class ModalPageService {
     }
 
     public void createPropertiesPropertyPage(ModelMap modelMap, EcmObject entity, MicroFContext<Dto> context) {
-        PropertyPageContent propertyPageContent = propertyPageService.getPropertyPage(entity, context.getObject());
+        PropertyPageContent propertyPageContent = propertyPageService.getPropertyPage(entity, context.getObject())
+                .orElseThrow(() -> new EcmException("Property page content can't be retrieved"));
 
         // always add discriminator field as hidden if not explicitly defined
         addDiscriminatorAsHiddenControl(propertyPageContent, entity);
@@ -75,6 +77,9 @@ public class ModalPageService {
     }
 
     public void createSelectSourcePropertyPage(ModelMap modelMap, MicroFContext<Dto> context) {
-        modelMap.addAttribute("propertyPage", propertyPageService.getPropertyPage("Select source property page", context));
+        PropertyPageContent propertyPageContent = propertyPageService.getPropertyPage("Select source property page", context)
+                        .orElseThrow(() -> new EcmException("Property page content can't be retrieved"));
+
+        modelMap.addAttribute("propertyPage", propertyPageContent);
     }
 }

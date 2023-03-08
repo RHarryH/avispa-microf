@@ -4,7 +4,7 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.configuration.template.Template;
 import com.avispa.ecm.model.content.Content;
-import com.avispa.ecm.model.context.ContextService;
+import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.format.Format;
 import com.avispa.ecm.model.format.FormatRepository;
 import com.avispa.ecm.util.exception.EcmException;
@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SyncTaskExecutor;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -51,8 +52,11 @@ import static org.mockito.Mockito.when;
 /**
  * @author Rafał Hiszpański
  */
-@SpringBootTest(properties = "jodconverter.local.existing-process-action=connect_or_kill")
-//@DirtiesContext
+@SpringBootTest(properties = {
+        "jodconverter.local.existing-process-action=connect_or_kill",
+        "avispa.ecm.configuration.paths=config/microf-configuration.zip"
+})
+@ActiveProfiles("test")
 class InvoiceServiceIntegrationTest {
     private static final String fileStorePath = Path.of("target", "rendition-test").toAbsolutePath().toString();
 
@@ -176,7 +180,7 @@ class InvoiceServiceIntegrationTest {
         Format format = formatRepository.findByExtension("odt");
 
         Content content = new Content();
-        content.setFileStorePath(Path.of("src/main/resources/vat_invoice_variables_template.odt").toAbsolutePath().toString());
+        content.setFileStorePath(Path.of("src/test/resources/test.odt").toAbsolutePath().toString());
         content.setFormat(format);
 
         Template template = new Template();

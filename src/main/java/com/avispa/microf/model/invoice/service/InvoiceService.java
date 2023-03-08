@@ -2,10 +2,10 @@ package com.avispa.microf.model.invoice.service;
 
 import com.avispa.ecm.model.configuration.callable.autolink.Autolink;
 import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
+import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.template.Template;
 import com.avispa.ecm.model.content.Content;
 import com.avispa.ecm.model.content.ContentService;
-import com.avispa.ecm.model.context.ContextService;
 import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.ecm.util.exception.EcmException;
@@ -90,7 +90,7 @@ public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceRepo
         getEntityDtoMapper().updateEntityFromDto(invoiceDto, invoice);
 
         // delete old content and create new one
-        contentService.deleteByRelatedObject(invoice);
+        contentService.deleteByRelatedEntity(invoice);
         generateContent(invoice);
     }
 

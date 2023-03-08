@@ -11,6 +11,7 @@ import com.google.common.collect.MoreCollectors;
 import org.hibernate.Hibernate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = {PositionMapper.class, PaymentMapper.class})
 public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice, InvoiceDto, InvoiceDto> {
     // not required when componentModel = "spring", can be autowired
