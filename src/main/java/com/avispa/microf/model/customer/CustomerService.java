@@ -1,7 +1,7 @@
 package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
-import com.avispa.ecm.model.context.ContextService;
+import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.microf.model.base.BaseService;
 import com.avispa.microf.model.error.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;

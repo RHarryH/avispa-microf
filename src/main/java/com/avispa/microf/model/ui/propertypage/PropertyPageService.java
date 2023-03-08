@@ -2,20 +2,22 @@ package com.avispa.microf.model.ui.propertypage;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.EcmConfigRepository;
+import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
 import com.avispa.ecm.model.configuration.upsert.Upsert;
-import com.avispa.ecm.model.context.ContextService;
 import com.avispa.microf.model.base.dto.Dto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * @author Rafał Hiszpański
  */
-@Service("UIPropertyPageService")
+@Service
 @RequiredArgsConstructor
 public class PropertyPageService {
     private final ContextService contextService;
@@ -29,17 +31,15 @@ public class PropertyPageService {
      * @param contextDto DTO object used as context for property page
      * @return
      */
-    public PropertyPageContent getPropertyPage(EcmObject ecmObject, Dto contextDto) {
+    public Optional<PropertyPageContent> getPropertyPage(EcmObject ecmObject, Dto contextDto) {
         return contextService.getConfiguration(ecmObject, Upsert.class)
                 .map(Upsert::getPropertyPage)
-                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false))
-                .orElse(null);
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false));
     }
 
-    public PropertyPageContent getPropertyPage(String name, Object context) {
+    public Optional<PropertyPageContent> getPropertyPage(String name, Object context) {
         return propertyPageRepository.findByObjectName(name)
-                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false))
-                .orElse(null);
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false));
     }
 
     public Table getTable(String tableName, Class<? extends EcmObject> ecmObjectClass, Class<? extends Dto> contextDtoClass) {
