@@ -1,10 +1,9 @@
 package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
-import com.avispa.microf.model.base.dto.CommonDto;
+import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +20,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class InvoiceDto implements CommonDto {
+public class InvoiceDto implements Dto {
     public static final String VM_SELLER_NOT_NULL = "Seller cannot be null";
     public static final String VM_BUYER_NOT_NULL = "Buyer cannot be null";
     public static final String VM_POSITIONS_NOT_EMPTY = "Positions list cannot be empty";
@@ -60,13 +59,7 @@ public class InvoiceDto implements CommonDto {
     @DisplayName("Comments")
     private String comments;
 
-    @Getter(AccessLevel.NONE)
-    private boolean hasPdfRendition;
-
-    @Override
-    public boolean hasPdfRendition() {
-        return hasPdfRendition;
-    }
+    private boolean pdfRenditionAvailable;
 
     public InvoiceDto() {
         this.positions.add(new PositionDto());

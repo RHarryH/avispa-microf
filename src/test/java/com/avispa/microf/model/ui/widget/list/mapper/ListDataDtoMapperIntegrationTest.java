@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -34,16 +35,16 @@ class ListDataDtoMapperIntegrationTest {
     void givenCommonDto_whenMaps_thenCorrect() {
         when(dictionaryService.getValueFromDictionary(InvoiceDto.class, "objectName", "test name")).thenReturn("test name");
         when(dictionaryService.getValueFromDictionary(InvoiceDto.class, "issueDate", "2022-07-14")).thenReturn("2022-07-14");
+        when(dictionaryService.getValueFromDictionary(InvoiceDto.class, "pdfRenditionAvailable", "true")).thenReturn("true");
 
         InvoiceDto invoiceDto = new InvoiceDto();
         invoiceDto.setObjectName("test name");
         invoiceDto.setIssueDate(LocalDate.of(2022, Month.JULY, 14).format(DateTimeFormatter.ISO_LOCAL_DATE));
-        invoiceDto.setHasPdfRendition(true);
+        invoiceDto.setPdfRenditionAvailable(true);
 
-        ListDataDto listDataDto = mapper.convert(invoiceDto, List.of("objectName", "issueDate"));
+        ListDataDto listDataDto = mapper.convert(invoiceDto, List.of("objectName", "issueDate", "pdfRenditionAvailable"));
 
         assertEquals(invoiceDto.getId(), listDataDto.getId());
-        assertEquals(invoiceDto.hasPdfRendition(), listDataDto.hasPdfRendition());
-        assertEquals(List.of(invoiceDto.getObjectName(), invoiceDto.getIssueDate()), listDataDto.getValues());
+        assertEquals(Map.of("objectName", invoiceDto.getObjectName(), "issueDate", invoiceDto.getIssueDate(), "pdfRenditionAvailable", Boolean.toString(invoiceDto.isPdfRenditionAvailable())), listDataDto.getValues());
     }
 }

@@ -34,7 +34,7 @@ public abstract class CustomerDto implements Dto {
     @DisplayName("Customer Type")
     private String type;
 
-    @Pattern(regexp = EMPTY_STRING_REGEX + "(\\+48 \\d{9})", message = VM_PHONE_PATTERN_NOT_MATCH)
+    @Pattern(regexp = EMPTY_STRING_REGEX + "|(\\+48 \\d{9})", message = VM_PHONE_PATTERN_NOT_MATCH)
     @DisplayName("Phone Number")
     private String phoneNumber;
 

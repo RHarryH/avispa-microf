@@ -1,7 +1,7 @@
 package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
-import com.avispa.microf.model.base.dto.CommonDto;
+import com.avispa.microf.model.base.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CustomerCommonDto extends CustomerDto implements CommonDto {
+public class CustomerCommonDto extends CustomerDto implements Dto {
     private String companyName;
 
     @DisplayName("VAT Identification Number")
