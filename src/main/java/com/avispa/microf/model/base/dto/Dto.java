@@ -6,8 +6,12 @@ import java.util.UUID;
  * @author Rafał Hiszpański
  */
 public interface Dto {
-    String EMPTY_STRING_REGEX = "^$|";
+    String EMPTY_STRING_REGEX = "^$";
 
     UUID getId();
     void setId(UUID id);
+
+    default boolean isPdfRenditionAvailable() {
+        return false;
+    }
 }

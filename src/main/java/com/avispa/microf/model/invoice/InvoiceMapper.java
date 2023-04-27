@@ -1,6 +1,6 @@
 package com.avispa.microf.model.invoice;
 
-import com.avispa.microf.model.base.mapper.IExtendedEntityDtoMapper;
+import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.CustomerRepository;
 import com.avispa.microf.model.invoice.payment.PaymentMapper;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = {PositionMapper.class, PaymentMapper.class})
-public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice, InvoiceDto, InvoiceDto> {
+public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, InvoiceDto> {
     // not required when componentModel = "spring", can be autowired
     //InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
 
@@ -31,6 +31,9 @@ public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice,
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Mapping(target = "pdfRenditionAvailable", expression = "java(entity.isPdfRenditionAvailable())")
+    public abstract InvoiceDto convertToDto(Invoice entity);
 
     protected String customerToId(Customer customer) {
         return customer.getId().toString();
@@ -58,7 +61,4 @@ public abstract class InvoiceMapper implements IExtendedEntityDtoMapper<Invoice,
             }
         }
     }
-
-    @Mapping(target = "hasPdfRendition", expression = "java(entity.hasPdfRendition())")
-    public abstract InvoiceDto convertToCommonDto(Invoice entity);
 }

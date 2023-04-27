@@ -27,14 +27,12 @@ However when the tool started to become more generic application they got very
 troublesome. Below are some restrictions and things needed to be aware of
 when working with DTOs in MicroF.
 
-1. DTO and Common DTO must be registered in DtoObject table in the database.
+1. DTO must be registered in DtoObject table in the database.
 2. Each DTO requires additional Mapper class.
 3. When the object supports Multi Types (or Subtypes) it requires additional DTO instances for each subtype and dedicated mapper.
-4. To work correctly with List Widget, Common DTO has been introduced being the almost exact map of fields in the object.
-5. When Multi Types are not used then DTO and Common DTO are the same types.
-6. Primitives can't be used in DTO as they are initialized with default values and null can't be assigned to them. Object wrappers has to be used instead.
-7. Default values defined on DTO level will be inserted to the database even if we don't want to (for instance the field is invisible on the Property Page and wasn't sent to the server by frontend).
-8. Overall additional work needed to introduce new object
+4. Primitives can't be used in DTO as they are initialized with default values and null can't be assigned to them. Object wrappers has to be used instead.
+5. Default values defined on DTO level will be inserted to the database even if we don't want to (for instance the field is invisible on the Property Page and wasn't sent to the server by frontend).
+6. Overall additional work needed to introduce new object
 
 #### Proposed solution
 1. Complete removal of DTOs

@@ -63,7 +63,7 @@ public class ModalController implements IModalController {
 
     protected ModelAndView getModal(ModalConfiguration modal, String typeName) {
         // in these cases we're creating an empty instance of entity and dto so there is no need
-        // to check the discriminator - we want to select common Dto object every time
+        // to check the discriminator
         DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
 
         EcmObject entity = BeanUtils.instantiateClass(dtoObject.getType().getEntityClass());
@@ -124,8 +124,6 @@ public class ModalController implements IModalController {
         /* TODO: include discriminator? here we should probably operate on discriminators
          * example: we have selected Customer type, let's suppose Retail customer has a table
          * we'd like to load - it would be good to use specific Dto
-         * NOTE: common Dto will have this field anyway. The concept of specific Dtos is useful
-         * only in context of validation and/or default values (debatable)
          */
         DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
         Class<? extends Dto> dtoClass = dtoObject.getDtoClass();
