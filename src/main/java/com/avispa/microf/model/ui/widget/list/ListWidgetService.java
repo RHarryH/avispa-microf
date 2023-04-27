@@ -6,7 +6,7 @@ import com.avispa.ecm.model.document.Document;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.util.reflect.PropertyUtils;
-import com.avispa.microf.model.base.dto.CommonDto;
+import com.avispa.microf.model.base.dto.Dto;
 import com.avispa.microf.model.base.dto.DtoObject;
 import com.avispa.microf.model.base.dto.DtoService;
 import com.avispa.microf.model.ui.widget.list.config.ListWidgetConfig;
@@ -65,8 +65,8 @@ public class ListWidgetService {
 
     /**
      * Header values stored in the database are just property names. They are then mapped by searching for
-     * DisplayName annotation on the properties defined in CommonDto
-     * @param dtoObject Common Dto type where searched DisplayName is defined
+     * DisplayName annotation on the properties defined in Dto
+     * @param dtoObject Dto type where searched DisplayName is defined
      * @param properties list of properties which should be visible on the list widget
      * @return
      */
@@ -84,14 +84,14 @@ public class ListWidgetService {
      * @return
      */
     private List<ListDataDto> getData(Type type, List<String> properties) {
-        List<CommonDto> commonDtoList = findAll(type.getEntityClass());
+        List<Dto> dtoList = findAll(type.getEntityClass());
 
-        return commonDtoList.stream()
-                .map(commonDto -> listDataDtoMapper.convert(commonDto, properties))
+        return dtoList.stream()
+                .map(dto -> listDataDtoMapper.convert(dto, properties))
                 .collect(Collectors.toList());
     }
 
-    private List<CommonDto> findAll(Class<? extends EcmObject> entityClass) {
+    private List<Dto> findAll(Class<? extends EcmObject> entityClass) {
         return genericService.getService(entityClass).findAll();
     }
 }

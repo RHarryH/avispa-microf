@@ -2,9 +2,8 @@ package com.avispa.microf.model.base;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
-import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.model.base.dto.Dto;
-import com.avispa.microf.model.base.mapper.IExtendedEntityDtoMapper;
+import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
  * @author Rafał Hiszpański
  */
 @RequiredArgsConstructor
-public abstract class BaseService<T extends EcmObject, D extends Dto, R extends EcmObjectRepository<T>, M extends IExtendedEntityDtoMapper<T, D, ? extends CommonDto>> implements IBaseService<T, D> {
+public abstract class BaseService<T extends EcmObject, D extends Dto, R extends EcmObjectRepository<T>, M extends IEntityDtoMapper<T, D>> implements IBaseService<T, D> {
     private final R repository;
     private final M entityDtoMapper;
 
@@ -27,10 +26,10 @@ public abstract class BaseService<T extends EcmObject, D extends Dto, R extends 
         return entityDtoMapper;
     }
 
-    public List<CommonDto> findAll() {
+    public List<D> findAll() {
         return repository
                 .findAll(Sort.by(Sort.Direction.ASC, "objectName")).stream()
-                .map(entityDtoMapper::convertToCommonDto)
+                .map(entityDtoMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 }

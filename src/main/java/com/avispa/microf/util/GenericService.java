@@ -3,9 +3,8 @@ package com.avispa.microf.util;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.microf.model.base.BaseService;
-import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.model.base.dto.Dto;
-import com.avispa.microf.model.base.mapper.IExtendedEntityDtoMapper;
+import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,8 @@ public class GenericService {
     private final List<BaseService<? extends EcmObject, ? extends Dto, ? extends EcmObjectRepository<? extends EcmObject>, ?>> services;
 
     @SuppressWarnings("unchecked")
-    public BaseService<EcmObject, Dto, EcmObjectRepository<EcmObject>, IExtendedEntityDtoMapper<EcmObject, Dto, CommonDto>> getService(Class<? extends EcmObject> entityClass) {
-        return (BaseService<EcmObject, Dto, EcmObjectRepository<EcmObject>, IExtendedEntityDtoMapper<EcmObject, Dto, CommonDto>>) services.stream().filter(service -> {
+    public BaseService<EcmObject, Dto, EcmObjectRepository<EcmObject>, IEntityDtoMapper<EcmObject, Dto>> getService(Class<? extends EcmObject> entityClass) {
+        return (BaseService<EcmObject, Dto, EcmObjectRepository<EcmObject>, IEntityDtoMapper<EcmObject, Dto>>) services.stream().filter(service -> {
                     Class<?> serviceEntityClass = getServiceEntity(service.getClass());
                     return entityClass.equals(serviceEntityClass);
                 }).findFirst().orElseThrow();

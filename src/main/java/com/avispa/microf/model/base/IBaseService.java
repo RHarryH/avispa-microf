@@ -1,7 +1,6 @@
 package com.avispa.microf.model.base;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.microf.model.base.dto.CommonDto;
 import com.avispa.microf.model.base.dto.Dto;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,5 +21,5 @@ public interface IBaseService<T extends EcmObject, D extends Dto> {
 
     T findById(UUID id);
 
-    List<CommonDto> findAll();
+    List<D> findAll();
 }

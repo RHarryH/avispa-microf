@@ -17,7 +17,7 @@ interface DtoRepository extends EcmEntityRepository<DtoObject> {
     List<DtoObject> findByType(Type type);
 
     /**
-     * Finds default/common Dto
+     * Finds default Dto
      * @param entityClass
      * @return
      */
@@ -25,7 +25,7 @@ interface DtoRepository extends EcmEntityRepository<DtoObject> {
     Optional<DtoObject> findByEntityClassAndDiscriminatorIsNull(Class<? extends EcmObject> entityClass);
 
     /**
-     * Finds default/common Dto
+     * Finds default Dto
      * @param typeName
      * @return
      */
