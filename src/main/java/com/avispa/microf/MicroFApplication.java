@@ -1,15 +1,19 @@
 package com.avispa.microf;
 
+import com.avispa.ecm.model.configuration.load.ConfigurationRegistry;
+import com.avispa.ecm.model.configuration.load.ConfigurationType;
 import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.ContinuousCounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.MonthCounterStrategy;
+import com.avispa.microf.model.ui.configuration.dto.ListWidgetConfigDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.support.DefaultDataBinderFactory;
@@ -26,8 +30,17 @@ import java.util.Locale;
 @PropertySource("classpath:application.properties")
 @PropertySource("file:./microf.properties")
 public class MicroFApplication {
+
 	@Value("${microf.invoice.counter-strategy}")
 	private String counterStrategyName;
+
+	@Bean
+	@Primary
+	public ConfigurationRegistry microFConfigurationRegistry() {
+		var registry = new ConfigurationRegistry();
+		registry.registerNewConfigurationType(ConfigurationType.of("ecm_list_widget", ListWidgetConfigDto.class, false));
+		return registry;
+	}
 
 	// Optionally can be realized with Spring interface Condition and @Conditional annotation
 	@Bean

@@ -8,7 +8,6 @@ import com.avispa.microf.model.invoice.position.Position;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import com.avispa.microf.model.invoice.position.PositionMapper;
 import com.google.common.collect.MoreCollectors;
-import org.hibernate.Hibernate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -40,7 +39,7 @@ public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, Invoice
     }
 
     protected Customer idToCustomer(String customerId) {
-        return Hibernate.unproxy(customerRepository.getReferenceById(UUID.fromString(customerId)), Customer.class);
+        return customerRepository.getReferenceById(UUID.fromString(customerId));
     }
 
     protected void updatePositionsFromPositionsDto(List<PositionDto> positionDtos, @MappingTarget List<Position> positions) {
