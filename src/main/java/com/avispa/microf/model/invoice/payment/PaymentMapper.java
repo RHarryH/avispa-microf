@@ -4,7 +4,6 @@ import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.bankaccount.BankAccountRepository;
 import com.avispa.microf.model.base.mapper.IEntityDtoMapper;
 import org.apache.logging.log4j.util.Strings;
-import org.hibernate.Hibernate;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -34,7 +33,7 @@ public abstract class PaymentMapper implements IEntityDtoMapper<Payment, Payment
         if(Strings.isEmpty(bankAccountId)) {
             return null;
         }
-        return Hibernate.unproxy(bankAccountRepository.getReferenceById(UUID.fromString(bankAccountId)), BankAccount.class);
+        return bankAccountRepository.getReferenceById(UUID.fromString(bankAccountId));
     }
 
     protected LocalDate stringToLocalDate(String date) {
