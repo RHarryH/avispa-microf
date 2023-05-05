@@ -1,0 +1,16 @@
+<assembly>
+    <id>package-microf-configuration</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>config</directory>
+            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>microf-configuration.zip</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</assembly>

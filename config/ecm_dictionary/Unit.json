@@ -1,0 +1,16 @@
+{
+	"dictionary": {
+		"name": "Unit",
+		"description": "Unit used to specify quantity/amount of product on invoice position",
+		"values": [
+			{
+				"key": "PIECE",
+				"label": "szt."
+			},
+			{
+				"key": "HOUR",
+				"label": "godz."
+			}
+		]
+	}
+}

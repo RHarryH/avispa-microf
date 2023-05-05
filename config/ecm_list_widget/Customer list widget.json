@@ -1,0 +1,15 @@
+{
+  "listWidget": {
+    "name": "Customer list widget",
+    "type": "Customer",
+    "caption": "Customers",
+    "emptyMessage": "No Customers Available",
+    "properties": [
+      "objectName",
+      "type",
+      "vatIdentificationNumber",
+      "email",
+      "address"
+    ]
+  }
+}

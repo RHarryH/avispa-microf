@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
  */
 @SpringBootTest(properties = {
         "jodconverter.local.existing-process-action=connect_or_kill",
-        "avispa.ecm.configuration.paths=config/microf-configuration.zip"
+        "avispa.ecm.configuration.paths=src/test/resources/config/microf-test-configuration.zip"
 })
 @ActiveProfiles("test")
 class InvoiceServiceIntegrationTest {

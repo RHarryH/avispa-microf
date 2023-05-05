@@ -1,0 +1,17 @@
+{
+  "listWidget": {
+    "name": "Invoice list widget",
+    "type": "Invoice",
+    "caption": "Invoices",
+    "emptyMessage": "No Invoices Available",
+    "properties": [
+      "serialNumber",
+      "objectName",
+      "issueDate",
+      "serviceDate",
+      "PaymentMethod",
+      "comments",
+      "pdfRenditionAvailable"
+    ]
+  }
+}

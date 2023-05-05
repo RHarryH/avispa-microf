@@ -1,0 +1,12 @@
+{
+	"context": {
+		"name": "Retail customer context",
+		"type": "Customer",
+		"matchRule": "{ \"type\": \"RETAIL\" }",
+		"importance": 4,
+		"configNames": [
+			"Retail customer autonaming",
+			"Retail customer update"
+		]
+	}
+}
