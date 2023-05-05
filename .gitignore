@@ -1,7 +1,7 @@
 HELP.md
 target/
 logs/
-config/**
+config/microf-configuration.zip
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

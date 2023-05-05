@@ -1,0 +1,63 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "columns",
+        "controls": [
+          {
+            "type": "text",
+            "label": "First name",
+            "property": "firstName",
+            "required": true
+          },
+          {
+            "type": "text",
+            "label": "Last name",
+            "property": "lastName",
+            "required": true
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "label": "Phone number",
+        "property": "phoneNumber",
+        "pattern": "\\+48 \\d{9}"
+      },
+      {
+        "type": "email",
+        "label": "Email",
+        "property": "email",
+        "maxLength": 150
+      },
+      {
+        "type": "label",
+        "expression": "'Customer address'"
+      },
+      {
+        "type": "text",
+        "label": "Street",
+        "property": "address.street",
+        "required": true
+      },
+      {
+        "type": "columns",
+        "controls": [
+          {
+            "type": "text",
+            "label": "Zip code",
+            "property": "address.zipCode",
+            "required": true,
+            "pattern": "[0-9]{2}-[0-9]{3}"
+          },
+          {
+            "type": "text",
+            "label": "Place",
+            "property": "address.place",
+            "required": true
+          }
+        ]
+      }
+    ]
+  }
+}

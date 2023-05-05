@@ -1,0 +1,31 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "text",
+        "label": "Account name",
+        "required": true,
+        "property": "objectName",
+        "maxLength": 50
+      },
+      {
+        "type": "text",
+        "label": "Bank name",
+        "required": true,
+        "property": "bankName",
+        "maxLength": 50
+      },
+      {
+        "type": "text",
+        "label": "Account number",
+        "required": true,
+        "property": "accountNumber",
+        "pattern": "PL \\d{2} \\d{4} \\d{4} \\d{4} \\d{4} \\d{4} \\d{4}",
+        "customValidation": {
+          "function": "isNRB",
+          "message": "Provided account number is not a valid NRB number"
+        }
+      }
+    ]
+  }
+}

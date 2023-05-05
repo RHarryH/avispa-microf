@@ -1,0 +1,162 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "columns",
+        "controls": [
+          {
+            "type": "combo",
+            "label": "Seller",
+            "property": "seller",
+            "typeName": "Customer",
+            "required": true
+          },
+          {
+            "type": "combo",
+            "label": "Buyer",
+            "property": "buyer",
+            "typeName": "Customer",
+            "required": true
+          }
+        ]
+      },
+      {
+        "type": "date",
+        "label": "Issue date",
+        "property": "issueDate",
+        "required": true
+      },
+      {
+        "type": "date",
+        "label": "Service date",
+        "property": "serviceDate",
+        "required": true
+      },
+      {
+        "type": "table",
+        "label": "Positions",
+        "property": "positions",
+        "controls": [
+          {
+            "type": "text",
+            "label": "Name",
+            "property": "objectName",
+            "maxLength": 50
+          },
+          {
+            "type": "number",
+            "label": "Quantity",
+            "property": "quantity",
+            "min": 0.001,
+            "max": 10000,
+            "step": 0.001
+          },
+          {
+            "type": "combo",
+            "label": "Unit",
+            "property": "unit",
+            "sortByLabel": true
+          },
+          {
+            "type": "money",
+            "currency": "PLN",
+            "label": "Unit price",
+            "property": "unitPrice"
+          },
+          {
+            "type": "number",
+            "label": "Discount",
+            "property": "discount",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          },
+          {
+            "type": "combo",
+            "label": "VAT Rate",
+            "property": "vatRate"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "name": "Payment",
+        "controls": [
+          {
+            "type": "columns",
+            "controls": [
+              {
+                "type": "combo",
+                "label": "Method",
+                "property": "payment.method",
+                "sortByLabel": true,
+                "required": true
+              },
+              {
+                "type": "number",
+                "label": "Deadline (days)",
+                "min": 1,
+                "max": 365,
+                "property": "payment.deadline",
+                "required": true
+              }
+            ]
+          },
+          {
+            "type": "columns",
+            "controls": [
+              {
+                "type": "money",
+                "label": "Paid amount",
+                "currency": "PLN",
+                "property": "payment.paidAmount",
+                "required": true
+              },
+              {
+                "type": "date",
+                "label": "Paid amount date",
+                "property": "payment.paidAmountDate",
+                "conditions": {
+                  "visibility": {
+                    "payment.paidAmount": {
+                      "$gt": 0
+                    }
+                  },
+                  "requirement": {
+                    "payment.paidAmount": {
+                      "$gt": 0
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "combo",
+            "label": "Bank account",
+            "property": "payment.bankAccount",
+            "typeName": "Bank account",
+            "conditions": {
+              "visibility": {
+                "payment.method": {
+                  "$ne": "CASH"
+                }
+              },
+              "requirement": {
+                "payment.method": {
+                  "$ne": "CASH"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "textarea",
+        "label": "Comments",
+        "property": "comments",
+        "maxLength": 200
+      }
+    ]
+  }
+}

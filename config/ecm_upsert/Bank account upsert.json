@@ -1,0 +1,6 @@
+{
+	"upsert": {
+		"name": "Bank account upsert",
+		"propertyPage": "Bank account upsert property page"
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"context": {
+		"name": "Customer context",
+		"type": "Customer",
+		"importance": 3,
+		"configNames": [
+			"Customer insert"
+		]
+	}
+}

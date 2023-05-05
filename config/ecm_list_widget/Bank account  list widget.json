@@ -1,0 +1,13 @@
+{
+  "listWidget": {
+    "name": "Bank account list widget",
+    "type": "Bank account",
+    "caption": "Bank Accounts",
+    "emptyMessage": "No Bank Accounts Available",
+    "properties": [
+      "serialNumber",
+      "bankName",
+      "accountNumber"
+    ]
+  }
+}
