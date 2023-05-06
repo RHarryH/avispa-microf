@@ -2,6 +2,8 @@ HELP.md
 target/
 logs/
 config/microf-configuration.zip
+misc/avispa-h2.sql
+src/main/java/com/avispa/microf/Email.java
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
