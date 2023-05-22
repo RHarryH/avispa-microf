@@ -1,0 +1,17 @@
+package com.avispa.ecm.model.base.dto;
+
+import java.util.UUID;
+
+/**
+ * @author Rafał Hiszpański
+ */
+public interface Dto {
+    String EMPTY_STRING_REGEX = "^$";
+
+    UUID getId();
+    void setId(UUID id);
+
+    default boolean isPdfRenditionAvailable() {
+        return false;
+    }
+}
