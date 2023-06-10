@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
@@ -18,20 +19,19 @@
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
-            <totalSizeCap>20GB</totalSizeCap>
+            <totalSizeCap>1GB</totalSizeCap>
             <!-- 60 days to keep -->
-            <maxHistory>60</maxHistory>
+            <maxHistory>15</maxHistory>
         </rollingPolicy>
     </appender>
 
     <root level="info">
         <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="CONSOLE" />
     </root>
 
     <logger name="com.avispa" level="trace" additivity="false">
         <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="CONSOLE" />
     </logger>
-
 </configuration>
