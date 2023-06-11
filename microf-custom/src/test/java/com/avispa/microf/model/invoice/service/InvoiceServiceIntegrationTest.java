@@ -1,19 +1,19 @@
 package com.avispa.microf.model.invoice.service;
 
-import com.avispa.microf.model.invoice.payment.Payment;
-import com.avispa.microf.model.invoice.position.Position;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
+import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.template.Template;
 import com.avispa.ecm.model.content.Content;
-import com.avispa.ecm.model.configuration.context.ContextService;
+import com.avispa.ecm.model.error.ResourceNotFoundException;
 import com.avispa.ecm.model.format.Format;
 import com.avispa.ecm.model.format.FormatRepository;
 import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.customer.Customer;
-import com.avispa.ecm.model.error.ResourceNotFoundException;
 import com.avispa.microf.model.invoice.Invoice;
+import com.avispa.microf.model.invoice.payment.Payment;
+import com.avispa.microf.model.invoice.position.Position;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -54,8 +54,7 @@ import static org.mockito.Mockito.when;
  */
 @SpringBootTest(properties = {
         "jodconverter.local.existing-process-action=connect_or_kill",
-        "avispa.ecm.configuration.paths=src/test/resources/config/microf-test-configuration.zip",
-        "spring.config.additional-location=file:.."
+        "avispa.ecm.configuration.paths=src/test/resources/config/microf-test-configuration.zip"
 })
 @ActiveProfiles("test")
 class InvoiceServiceIntegrationTest {
