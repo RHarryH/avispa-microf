@@ -63,8 +63,8 @@ Additionally, there are several environment variables presented in the below tab
 | `AVISPA_ECM_FILE_STORE_NAME` | `avispa.ecm.file-store.name` | Specifies the name of the file store in the database             |
 | `DATASOURCE_USERNAME`        | `spring.datasource.user`     | Database user                                                    |
 | `DATASOURCE_PASSWORD`        | `spring.datasource.password` | Database password                                                |
-| `DEBUG`                      | `-`                          | 1 to enable remote debugging capabilities                        |
-| `DEBUG_PORT`                 | `-`                          | Remote debug port, `5005` by default                             |
+| `REMOTE_DEBUG`               | `-`                          | 1 to enable remote debugging capabilities                        |
+| `REMOTE_DEBUG_PORT`          | `-`                          | Remote debug port, `5005` by default                             |
 
 For more explanation about the ECM properties please check `README.md` of `ecm` project.
 
@@ -96,8 +96,8 @@ below
 instructions:
 
 1. Copy sql scripts to `docker/sql` from `sql` folder in `ecm` project.
-2. Copy custom sql scripts to `docker/sql` from `sql` folder in `microf` project.
-3. Scripts from `emc-application` and `microf-custom` are automatically copied during build.
+2. PostgreSQL scripts from `sql` folder (`microf` module) are automatically copied during build.
+3. PostgreSQL scripts from `emc-application` and `microf-custom` modules are automatically copied during build.
 
 ### Actuators
 
