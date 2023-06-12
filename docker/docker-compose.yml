@@ -38,7 +38,7 @@ services:
       AVISPA_ECM_FILE_STORE_NAME: ${FILE_STORE_NAME}
       DATASOURCE_USERNAME: ${DATABASE_USER}
       DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
-      DEBUG: 0
+      REMOTE_DEBUG: 0
     links:
       - postgresql
     depends_on:
