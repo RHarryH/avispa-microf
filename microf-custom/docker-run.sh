@@ -11,4 +11,4 @@ exec java -Dspring.profiles.active=prod \
   -Dspring.datasource.password=${DATASOURCE_PASSWORD} \
   -Davispa.ecm.file-store.path=${AVISPA_ECM_FILE_STORE_PATH} \
   -Davispa.ecm.file-store.name=${AVISPA_ECM_FILE_STORE_NAME} \
-  -jar ${REMOTE_DEBUG_STRING} microf.jar
+  -cp "/opt/microf:/opt/microf/lib/*" com.avispa.microf.MicroFApplication
