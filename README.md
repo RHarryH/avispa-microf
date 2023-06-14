@@ -53,7 +53,8 @@ docker compose --env-file=.prod.env up -d --no-deps --build microf
 Image contains built-in LibreOffice with only Liberation fonts family supported to minimize the
 image's size. LibreOffice is required by `ecm` to perform conversion of documents to `pdf`.
 
-There is one build argument `MICROF_PATH` specifying internal path of μF. It is set to `/opt/microf` by default.
+There are two build arguments. `MICROF_DIR` specifies internal path of μF. It is set to `/opt/microf` by default.
+`EXTRACTED_DIR` specifies location of extracted final jar. By default, it is `target/extracted` relative path.
 
 Additionally, there are several environment variables presented in the below table.
 
