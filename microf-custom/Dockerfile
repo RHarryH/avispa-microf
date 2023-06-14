@@ -6,9 +6,10 @@ ENV AVISPA_ECM_FILE_STORE_PATH="/home/microf/default-file-store"
 ENV AVISPA_ECM_FILE_STORE_NAME="default-file-store"
 ENV REMOTE_DEBUG=0
 ENV REMOTE_DEBUG_PORT=5005
-ARG MICROF_PATH="/opt/microf"
+ARG MICROF_DIR="/opt/microf"
+ARG EXTRACTED_DIR="target/extracted"
 
-WORKDIR ${MICROF_PATH}
+WORKDIR ${MICROF_DIR}
 
 # install libreoffice and Liberation font family
 RUN apk --update --upgrade --no-cache add libreoffice
@@ -23,5 +24,7 @@ USER microf
 VOLUME /tmp
 
 COPY docker-run.sh .
-COPY target/*.jar microf.jar
+COPY ${EXTRACTED_DIR}/BOOT-INF/lib lib
+COPY ${EXTRACTED_DIR}/META-INF META-INF
+COPY ${EXTRACTED_DIR}/BOOT-INF/classes .
 ENTRYPOINT ["sh", "docker-run.sh"]
