@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jre-11.0.19_7-alpine
+FROM eclipse-temurin:11.0.19_7-jre-alpine
 
 MAINTAINER rafalhiszpanski.pl
 

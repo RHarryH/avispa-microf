@@ -117,8 +117,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <mainClass>com.avispa.microf.MicroFApplication</mainClass>
-
                 </configuration>
             </plugin>
             <plugin>
@@ -133,7 +131,6 @@
                         </goals>
                         <configuration>
                             <target>
-                                <echo message="unzipping file" />
                                 <unjar src="${project.build.directory}/microf.jar" dest="${project.build.directory}/extracted" />
                             </target>
                         </configuration>
