@@ -1,6 +1,9 @@
+![Status](https://github.com/RHarryH/avispa-microf/actions/workflows/main.yml/badge.svg) ![Coverage](.github/badges/jacoco.svg)  [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
 # Avispa μF
 
-Small tool for generating invoices for Avispa purposes.
+An invoice generating software built on top of Avispa ECM. It works with Polish invoices only
+however can be recustomized for own needs.
 
 ## Running
 
