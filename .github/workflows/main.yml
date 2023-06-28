@@ -1,19 +1,17 @@
 name: build
 on: [push]
 jobs:
-  install_ecm:
+  build_job: # job name
     runs-on: ubuntu-22.04
     steps:
-      - name: Standard Checkout
+      - name: Checkout of Avispa ECM
         uses: actions/checkout@v3.2.0
         with:
           repository: RHarryH/avispa-ecm
 
-      - name: Build with Maven
+      - name: Installment of Avispa ECM into Maven repository
         run: mvn -B -DskipTests install
-  build_job: # job name
-    runs-on: ubuntu-22.04
-    steps:
+
       - name: Standard Checkout
         uses: actions/checkout@v3.2.0
 
