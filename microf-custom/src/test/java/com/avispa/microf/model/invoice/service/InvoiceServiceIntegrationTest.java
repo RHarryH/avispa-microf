@@ -26,6 +26,7 @@ import com.avispa.ecm.model.content.Content;
 import com.avispa.ecm.model.error.ResourceNotFoundException;
 import com.avispa.ecm.model.format.Format;
 import com.avispa.ecm.model.format.FormatRepository;
+import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.customer.Customer;
@@ -35,6 +36,7 @@ import com.avispa.microf.model.invoice.position.Position;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,6 +57,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,7 +74,6 @@ import static org.mockito.Mockito.when;
  * @author Rafał Hiszpański
  */
 @SpringBootTest(properties = {
-        "jodconverter.local.existing-process-action=connect_or_kill",
         "avispa.ecm.configuration.paths=src/test/resources/config/microf-test-configuration.zip"
 })
 @ActiveProfiles("test")
@@ -95,14 +97,23 @@ class InvoiceServiceIntegrationTest {
     @MockBean
     private ContextService contextService;
 
+    @MockBean
+    private RenditionService renditionService;
+
     @TestConfiguration
     static class InvoiceServiceIntegrationConfig {
-
         // overwrite default executor to force async methods to be run sync
         @Bean
         public Executor taskExecutor() {
             return new SyncTaskExecutor();
         }
+    }
+
+    @BeforeEach
+    public void mockRenditionService() {
+        when(renditionService.generate(any())).thenAnswer(answer -> {
+            return CompletableFuture.completedFuture(answer.getArgument(0));
+        });
     }
 
     @AfterAll
