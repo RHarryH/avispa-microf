@@ -162,9 +162,19 @@
                     <execution>
                         <id>report</id>
                         <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                    <execution>
+                        <id>report-aggregation</id>
+                        <goals>
                             <goal>report-aggregate</goal>
                         </goals>
                         <phase>verify</phase>
+                        <configuration>
+                            <includeCurrentProject>true</includeCurrentProject>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
