@@ -74,6 +74,7 @@ import static org.mockito.Mockito.when;
  * @author Rafał Hiszpański
  */
 @SpringBootTest(properties = {
+        "jodconverter.local.enabled=false",
         "avispa.ecm.configuration.paths=src/test/resources/config/microf-test-configuration.zip"
 })
 @ActiveProfiles("test")
@@ -111,9 +112,7 @@ class InvoiceServiceIntegrationTest {
 
     @BeforeEach
     public void mockRenditionService() {
-        when(renditionService.generate(any())).thenAnswer(answer -> {
-            return CompletableFuture.completedFuture(answer.getArgument(0));
-        });
+        when(renditionService.generate(any())).thenAnswer(answer -> CompletableFuture.completedFuture(answer.getArgument(0)));
     }
 
     @AfterAll
