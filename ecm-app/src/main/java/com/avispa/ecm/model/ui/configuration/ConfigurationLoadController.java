@@ -6,6 +6,7 @@ import com.avispa.ecm.util.api.exception.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,8 +22,9 @@ import java.io.IOException;
 /**
  * @author Rafał Hiszpański
  */
-@RestController()
+@RestController
 @RequestMapping("configuration")
+@Tag(name = "Configuration Load", description = "Allows to manage zip configuration used for customization of Avispa ECM")
 @RequiredArgsConstructor
 public class ConfigurationLoadController {
     private final ConfigurationLoadService configurationLoadService;
@@ -47,10 +49,5 @@ public class ConfigurationLoadController {
                     HttpStatus.BAD_REQUEST, "Can't load the configuration", e);*/
             throw new ApiException(HttpStatus.BAD_REQUEST, "Can't load the configuration", e);
         }
-    }
-
-    @PostMapping(value = "test")
-    public void test() {
-        throw new ApiException(HttpStatus.BAD_REQUEST, "Can't load the configuration");
     }
 }
