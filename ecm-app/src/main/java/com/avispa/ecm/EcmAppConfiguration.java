@@ -21,6 +21,10 @@ package com.avispa.ecm;
 import com.avispa.ecm.model.configuration.load.ConfigurationRegistry;
 import com.avispa.ecm.model.configuration.load.ConfigurationType;
 import com.avispa.ecm.model.ui.configuration.dto.ListWidgetConfigDto;
+import com.avispa.ecm.util.Version;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,5 +64,14 @@ public class EcmAppConfiguration {
 	@Bean
 	public DefaultDataBinderFactory getDataBinderFactory(@Autowired RequestMappingHandlerAdapter requestMappingHandlerAdapter) {
 		return new DefaultDataBinderFactory(requestMappingHandlerAdapter.getWebBindingInitializer());
+	}
+
+	@Bean
+	public OpenAPI ecmApi(Version version) {
+		return new OpenAPI()
+				.info(new Info().title("Avispa ECM Backend")
+						.description("API for communication with Avispa ECM. It includes customization endpoints.")
+						.version(version.getNumber())
+						.license(new License().name("AGPL v3").url("https://www.gnu.org/licenses/agpl-3.0.txt")));
 	}
 }
