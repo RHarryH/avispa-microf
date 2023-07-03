@@ -18,8 +18,10 @@
 
 package com.avispa.ecm.util.api;
 
-import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.ecm.util.api.exception.ApiException;
+import com.avispa.ecm.util.exception.EcmException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ControllerAdvice
+@Slf4j
 public class ApiErrorHandler {
+
+    @Value("${spring.profiles.active:}")
+    private List<String> profiles;
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<Object> handleApiException(ApiException e, HttpServletRequest request) {
@@ -45,9 +51,12 @@ public class ApiErrorHandler {
     }
 
     private ResponseEntity<Object> handleException(Exception e, HttpStatus statusCode, HttpServletRequest request) {
-        List<String> stackTrace = new ArrayList<>();
-        for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-            stackTrace.add(stackTraceElement.toString());
+        List<String> stackTrace = null;
+        if(!this.profiles.contains("prod")) {
+            stackTrace = new ArrayList<>();
+            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                stackTrace.add(stackTraceElement.toString());
+            }
         }
 
         ApiError error = new ApiError(statusCode, e.getLocalizedMessage(), request.getRequestURI(), stackTrace);
