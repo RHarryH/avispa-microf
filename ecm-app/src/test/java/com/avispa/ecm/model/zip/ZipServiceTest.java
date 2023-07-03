@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -65,7 +66,7 @@ class ZipServiceTest {
 
         List<String> entries = getZipEntriesPaths(zipFile);
 
-        assertEquals(List.of("Root folder\\content.txt"), entries);
+        assertEquals(List.of(Path.of("Root folder", "content.txt").toString()), entries);
     }
 
     @Test
@@ -83,7 +84,7 @@ class ZipServiceTest {
 
         List<String> entries = getZipEntriesPaths(zipFile);
 
-        assertEquals(List.of("Root folder\\Folder 2\\content.txt"), entries);
+        assertEquals(List.of(Path.of("Root folder", "Folder 2","content.txt").toString()), entries);
     }
 
     /**
