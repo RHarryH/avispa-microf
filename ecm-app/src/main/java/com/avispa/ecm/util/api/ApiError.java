@@ -27,12 +27,12 @@ import java.util.List;
 
 @Getter
 public class ApiError {
-    private String timestamp;
-    private int status;
-    private String error;
-    private String message;
-    private List<String> stackTrace;
-    private String path;
+    private final String timestamp;
+    private final int status;
+    private final String error;
+    private final String message;
+    private final List<String> stackTrace;
+    private final String path;
 
     public ApiError(HttpStatus status, String message, String path, String stackTrace) {
         this(status, message, path, List.of(stackTrace));

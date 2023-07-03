@@ -18,16 +18,14 @@
 
 package com.avispa.ecm.model.directory;
 
-import com.avispa.ecm.model.content.Content;
 import com.avispa.ecm.model.document.Document;
 import com.avispa.ecm.model.folder.Folder;
-import com.avispa.ecm.model.format.Format;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Set;
-import java.util.UUID;
-
+import static com.avispa.ecm.util.FolderCreationUtils.getDocument;
+import static com.avispa.ecm.util.FolderCreationUtils.getFolder;
+import static com.avispa.ecm.util.FolderCreationUtils.getRoot;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -90,40 +88,4 @@ class DirectoryNodeMapperIntegrationTest {
         assertEquals(nestedDocument.getId().toString(), directoryNode.getId());
         assertEquals("pdf", directoryNode.getType());
     }
-
-    private Folder getRoot() {
-        Folder root = new Folder();
-        root.setId(UUID.randomUUID());
-        root.setObjectName("Root folder");
-        return root;
-    }
-
-    private Folder getFolder(Folder ancestor) {
-        Folder folder = new Folder();
-        folder.setId(UUID.randomUUID());
-        folder.setObjectName("Folder");
-        folder.setFolder(ancestor);
-        return folder;
-    }
-
-    private Document getDocument() {
-        return getDocument(null);
-    }
-
-    private Document getDocument(Folder folder) {
-        Document document = new Document();
-        document.setId(UUID.randomUUID());
-        document.setObjectName("Document");
-        document.setFolder(folder);
-
-        Format format = new Format();
-        format.setObjectName("pdf");
-
-        Content content = new Content();
-        content.setFormat(format);
-
-        document.setContents(Set.of(content));
-        return document;
-    }
-
 }
