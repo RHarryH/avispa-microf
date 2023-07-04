@@ -20,7 +20,8 @@ sql/06-avispa-*.sql
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/*
+!.idea/copyright
 *.iws
 *.iml
 *.ipr
