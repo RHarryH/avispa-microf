@@ -74,7 +74,6 @@ import static org.mockito.Mockito.when;
  * @author Rafał Hiszpański
  */
 @SpringBootTest(properties = {
-        "jodconverter.local.enabled=false",
         "avispa.ecm.configuration.paths=src/test/resources/config/microf-test-configuration.zip"
 })
 @ActiveProfiles("test")
