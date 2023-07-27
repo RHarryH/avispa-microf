@@ -18,14 +18,12 @@
 
 package com.avispa.ecm;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public class ServletInitializer extends SpringBootServletInitializer {
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
-	}
+/**
+ * @author Rafał Hiszpański
+ */
+@SpringBootApplication
+public class EcmClientTestApplication {
 
 }

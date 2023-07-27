@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "additionalProperties": false,
+  "description": "Schema for layout configuration content",
+  "type": "object",
+  "properties": {
+    "layout": {
+      "type": "object",
+      "properties": {
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["sidebar", "center"]
+              },
+              "widgets": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "oneOf": [
+                    { "$ref": "widget/list-widget.json#" },
+                    { "$ref": "widget/other-widgets.json#" }
+                  ]
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              }
+            },
+            "required": [
+              "location",
+              "widgets"
+            ]
+          }
+        }
+      },
+      "required": [
+        "sections"
+      ]
+    }
+  },
+  "required": [
+    "layout"
+  ]
+}

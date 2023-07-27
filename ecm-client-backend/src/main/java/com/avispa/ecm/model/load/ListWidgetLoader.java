@@ -16,16 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm;
+package com.avispa.ecm.model.load;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import com.avispa.ecm.model.configuration.load.GenericLoader;
+import com.avispa.ecm.model.content.ContentService;
+import com.avispa.ecm.model.load.dto.ListWidgetDto;
+import com.avispa.ecm.model.load.mapper.ListWidgetMapper;
+import com.avispa.ecm.model.ui.widget.list.ListWidget;
+import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
+import org.springframework.stereotype.Component;
 
-public class ServletInitializer extends SpringBootServletInitializer {
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
-	}
-
+/**
+ * @author Rafał Hiszpański
+ */
+@Component
+class ListWidgetLoader extends GenericLoader<ListWidget, ListWidgetDto, ListWidgetMapper> {
+    protected ListWidgetLoader(ListWidgetRepository ecmConfigRepository, ListWidgetMapper ecmConfigMapper, ContentService contentService) {
+        super(ecmConfigRepository, ecmConfigMapper, contentService);
+    }
 }

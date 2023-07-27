@@ -16,16 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm;
+package com.avispa.ecm.model.ui.application;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import com.avispa.ecm.model.configuration.EcmConfig;
+import lombok.Getter;
+import lombok.Setter;
 
-public class ServletInitializer extends SpringBootServletInitializer {
+import javax.persistence.Entity;
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
-	}
-
+/**
+ * @author Rafał Hiszpański
+ */
+@Entity
+@Getter
+@Setter
+public class Application extends EcmConfig {
+    private String fullName;
+    private String shortName;
+    private String description;
 }

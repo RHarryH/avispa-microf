@@ -1,0 +1,8 @@
+{
+  "application": {
+    "name": "Default application",
+    "fullName": "AVISPA μF Invoice Manager",
+    "shortName": "μF",
+    "description": "AVISPA μF - an application for generating simple invoices"
+  }
+}

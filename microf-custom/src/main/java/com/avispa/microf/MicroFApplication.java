@@ -57,8 +57,8 @@ public class MicroFApplication {
     }
 
     @Bean
-    public Version version(@Value("${microf.version}") String number) {
-        return new Version(number);
+    public Version microfVersion(@Value("${spring.application.name}") String applicationName, @Value("${microf.version}") String number) {
+        return new Version(applicationName, number);
     }
 
     public static void main(String[] args) {

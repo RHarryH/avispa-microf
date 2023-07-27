@@ -1,0 +1,41 @@
+{
+  "layout": {
+    "sections": [
+      {
+        "location": "sidebar",
+        "widgets": [
+          {
+            "label": "Repository",
+            "activeByDefault": true,
+            "type": "repository"
+          }
+        ]
+      },
+      {
+        "location": "center",
+        "widgets": [
+          {
+            "label": "Properties",
+            "type": "properties"
+          },
+          {
+            "label": "Invoices",
+            "activeByDefault": true,
+            "type": "list",
+            "configuration":  "Invoice list widget"
+          },
+          {
+            "label": "Customers",
+            "type": "list",
+            "configuration": "Customer list widget"
+          },
+          {
+            "label": "Bank Accounts",
+            "type": "list",
+            "configuration": "Bank account list widget"
+          }
+        ]
+      }
+    ]
+  }
+}

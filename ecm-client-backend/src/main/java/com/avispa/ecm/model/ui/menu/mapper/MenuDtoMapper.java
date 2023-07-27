@@ -16,16 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm;
+package com.avispa.ecm.model.ui.menu.mapper;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import com.avispa.ecm.model.ui.menu.Menu;
+import com.avispa.ecm.model.ui.menu.dto.MenuDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-public class ServletInitializer extends SpringBootServletInitializer {
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
-	}
-
+/**
+ * @author Rafał Hiszpański
+ */
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    uses = MenuItemDtoMapper.class)
+public interface MenuDtoMapper {
+    MenuDto convert(Menu entity);
 }
