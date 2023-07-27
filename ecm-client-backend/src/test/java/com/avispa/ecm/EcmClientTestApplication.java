@@ -18,7 +18,16 @@
 
 package com.avispa.ecm;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jodconverter.core.DocumentConverter;
+import org.jodconverter.core.document.DocumentFormatRegistry;
+import org.jodconverter.core.job.ConversionJobWithOptionalSourceFormatUnspecified;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+
+import java.io.File;
+import java.io.InputStream;
 
 /**
  * @author Rafał Hiszpański
@@ -26,4 +35,29 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class EcmClientTestApplication {
 
+    @Bean
+    @ConditionalOnProperty(prefix = "jodconverter.local", name = "enabled", havingValue = "false")
+    public DocumentConverter dummyDocumentConverter() {
+        return new DocumentConverter() {
+            @Override
+            public @NonNull ConversionJobWithOptionalSourceFormatUnspecified convert(@NonNull File file) {
+                return null;
+            }
+
+            @Override
+            public @NonNull ConversionJobWithOptionalSourceFormatUnspecified convert(@NonNull InputStream inputStream) {
+                return null;
+            }
+
+            @Override
+            public @NonNull ConversionJobWithOptionalSourceFormatUnspecified convert(@NonNull InputStream inputStream, boolean b) {
+                return null;
+            }
+
+            @Override
+            public @NonNull DocumentFormatRegistry getFormatRegistry() {
+                return null;
+            }
+        };
+    }
 }
