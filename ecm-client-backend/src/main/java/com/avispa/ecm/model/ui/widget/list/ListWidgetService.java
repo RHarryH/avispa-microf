@@ -18,22 +18,20 @@
 
 package com.avispa.ecm.model.ui.widget.list;
 
+import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.base.dto.Dto;
-import com.avispa.ecm.model.ui.widget.list.config.ListWidgetConfig;
-import com.avispa.ecm.model.ui.widget.list.config.ListWidgetRepository;
+import com.avispa.ecm.model.base.dto.DtoObject;
+import com.avispa.ecm.model.base.dto.DtoService;
+import com.avispa.ecm.model.configuration.display.DisplayService;
+import com.avispa.ecm.model.document.Document;
+import com.avispa.ecm.model.type.Type;
+import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.model.ui.widget.list.dto.ListDataDto;
 import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
 import com.avispa.ecm.model.ui.widget.list.mapper.ListDataDtoMapper;
 import com.avispa.ecm.util.GenericService;
 import com.avispa.ecm.util.TypeNameUtils;
-import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.configuration.display.DisplayService;
-import com.avispa.ecm.model.document.Document;
-import com.avispa.ecm.model.type.Type;
-import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.util.reflect.PropertyUtils;
-import com.avispa.ecm.model.base.dto.DtoObject;
-import com.avispa.ecm.model.base.dto.DtoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,12 +64,12 @@ public class ListWidgetService {
         listWidgetDto.setTypeName(typeName);
         listWidgetDto.setDocument(Document.class.isAssignableFrom(type.getEntityClass()));
 
-        ListWidgetConfig listWidgetConfig = repository.findByType(type).orElseThrow();
-        listWidgetDto.setCaption(listWidgetConfig.getCaption());
-        listWidgetDto.setEmptyMessage(listWidgetConfig.getEmptyMessage());
+        ListWidget listWidget = repository.findByType(type).orElseThrow();
+        listWidgetDto.setCaption(listWidget.getCaption());
+        listWidgetDto.setEmptyMessage(listWidget.getEmptyMessage());
 
         DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
-        List<String> filteredProperties = listWidgetConfig.getProperties().stream()
+        List<String> filteredProperties = listWidget.getProperties().stream()
             .filter(property -> PropertyUtils.hasField(dtoObject.getDtoClass(), property)) // exclude fields not present in the object
             .collect(Collectors.toList());
 

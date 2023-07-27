@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "list"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "activeByDefault": {
+      "type": "boolean"
+    },
+    "configuration": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "type",
+    "label",
+    "configuration"
+  ]
+}

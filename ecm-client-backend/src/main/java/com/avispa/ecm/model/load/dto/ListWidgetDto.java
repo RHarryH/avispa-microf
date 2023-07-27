@@ -16,16 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm;
+package com.avispa.ecm.model.load.dto;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import com.avispa.ecm.model.configuration.load.dto.EcmConfigDto;
+import lombok.Data;
 
-public class ServletInitializer extends SpringBootServletInitializer {
+import java.util.List;
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
-	}
+/**
+ * @author Rafał Hiszpański
+ */
+@Data
+public class ListWidgetDto implements EcmConfigDto {
+    private String name;
 
+    private String type;
+    private String caption;
+    private String emptyMessage;
+    private List<String> properties;
 }

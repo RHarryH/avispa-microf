@@ -16,16 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm;
+package com.avispa.ecm.model.ui.layout.dto;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
+import lombok.extern.jackson.Jacksonized;
 
-public class ServletInitializer extends SpringBootServletInitializer {
+import java.util.List;
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
-	}
-
+/**
+ * @author Rafał Hiszpański
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Jacksonized
+public class LayoutDto {
+    @Singular
+    private List<SectionDto> sections;
 }

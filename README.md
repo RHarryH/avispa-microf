@@ -14,6 +14,48 @@ Two environments are available:
   automatically.
 - `prod` - configured to be run inside Docker container, it uses PostgreSQL database
 
+### ECM Client properties
+
+| Property name                                 | Description                                                                                                                                                                                                      |
+|-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `avispa.ecm.client.name`                      | ECM Client application name, this is the default name of the application set in `spring.application.name`                                                                                                        |
+| `avispa.ecm.client.short-name`                | Shortened name of the ECM Client application                                                                                                                                                                     |
+| `avispa.ecm.client.description`               | Brief description of the application presented in `meta` tag                                                                                                                                                     |
+| `avispa.ecm.client.configuration.application` | Name of the application configuration, which will be picked by the ECM Client. If not specified `avispa.ecm.client.name`, `avispa.ecm.client.short-name` and `avispa.ecm.client.description` values will be used |
+| `avispa.ecm.client.configuration.layout`      | Name of the layout configuration, which will be picked by the ECM Client                                                                                                                                         |
+| `avispa.ecm.client.configuration.menu`        | Name of the default menu configuration, which will be picked by the ECM Client                                                                                                                                   |
+
+In the final idea it should be the context responsibility to retrieve UI configurations. But because context operates
+now only on objects, `configuration` properties were introduced. With contexts it would use groups definitions but it
+requires
+security implementation.
+
+### ECM Client configuration
+
+ECM Client provides an extension of ECM configuration zip file. It introduces following configurations:
+
+- `ecm_application` for defining more detailed information about the application like short name and description. If not
+  defined then `avispa.ecm.client.name`, `avispa.ecm.client.short-name` and `avispa.ecm.client.description` will be used
+  as defaults printed in the UI (please note `version` bean will always use `spring.application.name`)
+- `ecm_layout` for defining how widgets will be placed on the application screen
+- `ecm_menu` for defining the menus visible on the navigation bar
+- `ecm_list_widget` for defining what data type and which columns should be visible on the widget, this configuration is
+  later used in `ecm_layout`
+
+### ECM Client names hierarchy
+
+Both ECM and ECM Client contains their own properties used to provide technical name of the
+application (`avispa.ecm.name` and `avispa.ecm.client.name` respectively). They are
+both used as `version` beans presenting version of each component on the UI, so they can be considered as _component
+name_. On the other hand, they are also used in each component for the value of `spring.application.name` property,
+which should be considered as _top component name_ (ECM Client or customization name if overrides the property).
+
+Business name of the application, presented on the UI as description, brand name or website title is stored in the zip
+configuration as `ecm_application` element. For the time being the name of applied configuration should be provided
+in `avispa.ecm.client.configuration.application` property. If it is not defined
+then `avispa.ecm.client.name`, `avispa.ecm.client.short-name` and `avispa.ecm.client.description` will be used to
+construct default basic application configuration.
+
 ### μF properties file
 
 The application will search for `config/microf.properties` file. Below table presents the μF specific properties, which

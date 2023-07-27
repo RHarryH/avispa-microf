@@ -1,0 +1,21 @@
+{
+  "layout": {
+    "sections": [
+      {
+        "location": "sidebar",
+        "widgets": [
+          {
+            "type": "repository",
+            "label": "Repository",
+            "active": true
+          },
+          {
+            "type": "list",
+            "label": "Bank Account",
+            "configuration": "Bank Account List Widget"
+          }
+        ]
+      }
+    ]
+  }
+}

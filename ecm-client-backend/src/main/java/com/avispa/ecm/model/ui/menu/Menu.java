@@ -16,16 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm;
+package com.avispa.ecm.model.ui.menu;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import com.avispa.ecm.model.configuration.EcmConfig;
+import lombok.Getter;
+import lombok.Setter;
 
-public class ServletInitializer extends SpringBootServletInitializer {
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import java.util.ArrayList;
+import java.util.List;
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
-	}
-
+/**
+ * @author Rafał Hiszpański
+ */
+@Entity
+@Getter
+@Setter
+public class Menu extends EcmConfig {
+    @OrderColumn(nullable = false)
+    @Column(nullable = false)
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<MenuItem> items = new ArrayList<>();
 }

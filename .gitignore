@@ -1,7 +1,7 @@
 target/
 logs/
-config/
-!config/microf.docker.template.properties
+/config/
+!/config/microf.docker.template.properties
 docker/
 !docker/.prod.template.env
 !docker/docker-compose.yml

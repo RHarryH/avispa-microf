@@ -18,6 +18,8 @@
 
 package com.avispa.microf.model.invoice.service.file;
 
+import com.avispa.ecm.util.SpringContext;
+import com.avispa.ecm.util.Version;
 import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
 import com.avispa.microf.model.invoice.service.file.data.PaymentData;
 import com.avispa.microf.model.invoice.service.file.data.PositionData;
@@ -25,8 +27,6 @@ import com.avispa.microf.model.invoice.service.file.data.VatRowData;
 import com.avispa.microf.model.invoice.service.file.variable.Variable;
 import com.avispa.microf.model.invoice.service.file.variable.VariableNameGenerator;
 import com.avispa.microf.model.invoice.service.replacer.ITemplateReplacer;
-import com.avispa.ecm.util.SpringContext;
-import com.avispa.ecm.util.Version;
 import com.avispa.microf.util.FormatUtils;
 
 import java.util.HashMap;
@@ -70,7 +70,7 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
         variables.put("comments", invoiceData.getComments());
 
         variables.put("issuer_signature", issuerName);
-        variables.put("version", SpringContext.getBean(Version.class).getReleaseNumber());
+        variables.put("version", SpringContext.getBean("microfVersion", Version.class).getReleaseNumber());
 
         replacer.replaceVariables(variables);
     }

@@ -1,0 +1,38 @@
+{
+  "menu": {
+    "name": "Default menu",
+    "items": [
+      {
+        "label": "Invoice",
+        "items": [
+          {
+            "label": "Add new",
+            "action": "invoice-add-button"
+          },
+          {
+            "label": "Clone",
+            "action": "invoice-clone-button"
+          }
+        ]
+      },
+      {
+        "label": "Customer",
+        "items": [
+          {
+            "label": "Add new",
+            "action": "customer-add-button"
+          }
+        ]
+      },
+      {
+        "label": "Bank account",
+        "items": [
+          {
+            "label": "Add new",
+            "action": "bank-account-add-button"
+          }
+        ]
+      }
+    ]
+  }
+}

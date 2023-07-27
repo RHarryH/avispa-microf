@@ -16,16 +16,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm;
+package com.avispa.ecm.model.ui.widget.list;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import com.avispa.ecm.model.configuration.EcmConfig;
+import com.avispa.ecm.model.type.Type;
+import lombok.Getter;
+import lombok.Setter;
 
-public class ServletInitializer extends SpringBootServletInitializer {
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
+import java.util.List;
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
-	}
+/**
+ * @author Rafał Hiszpański
+ */
+@Entity
+@Getter
+@Setter
+public class ListWidget extends EcmConfig {
+    @OneToOne(optional = false)
+    private Type type;
 
+    private String caption;
+    private String emptyMessage;
+
+    @ElementCollection
+    @OrderColumn
+    private List<String> properties;
 }
