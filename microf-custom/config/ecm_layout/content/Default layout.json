@@ -6,7 +6,7 @@
         "widgets": [
           {
             "label": "Repository",
-            "activeByDefault": true,
+            "active": true,
             "type": "repository"
           }
         ]
@@ -20,7 +20,7 @@
           },
           {
             "label": "Invoices",
-            "activeByDefault": true,
+            "active": true,
             "type": "list",
             "configuration":  "Invoice list widget"
           },
