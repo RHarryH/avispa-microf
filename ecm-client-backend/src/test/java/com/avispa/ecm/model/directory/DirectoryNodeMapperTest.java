@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Rafał Hiszpański
  */
-class DirectoryNodeMapperIntegrationTest {
+class DirectoryNodeMapperTest {
     private final DirectoryNodeMapper mapper = Mappers.getMapper(DirectoryNodeMapper.class);
 
     @Test

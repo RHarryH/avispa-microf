@@ -27,9 +27,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -38,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("directory")
 @RequiredArgsConstructor
 @Slf4j
 public class DirectoryController {
@@ -48,7 +48,7 @@ public class DirectoryController {
     private final ZipService zipService;
     private final DirectoryNodeMapper directoryNodeMapper;
 
-    @GetMapping
+    @GetMapping(value = {"directory", "v1/directory"})
     public List<DirectoryNode> directory() {
         List<DirectoryNode> directoryNodes = new ArrayList<>();
 
@@ -72,12 +72,13 @@ public class DirectoryController {
         }
     }
 
-    @GetMapping(params = "export", produces = "application/zip")
+    @GetMapping(value = {"directory/export", "v1/directory/export"}, produces = "application/zip")
+    @CrossOrigin(exposedHeaders = HttpHeaders.CONTENT_DISPOSITION)
     public ResponseEntity<Resource> exportStructure() {
         ByteArrayResource resource = new ByteArrayResource(zipService.getZippedStructure());
 
         return ResponseEntity.ok()
-                .header("Content-disposition", "attachment; filename=structure-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")) + ".zip")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=structure-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")) + ".zip")
                 .contentLength(resource.contentLength())
                 .body(resource);
     }
