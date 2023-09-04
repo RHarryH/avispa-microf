@@ -18,6 +18,7 @@
 
 package com.avispa.microf.model.invoice.service.file;
 
+import com.avispa.ecm.util.FormatUtils;
 import com.avispa.ecm.util.SpringContext;
 import com.avispa.ecm.util.Version;
 import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
@@ -27,7 +28,6 @@ import com.avispa.microf.model.invoice.service.file.data.VatRowData;
 import com.avispa.microf.model.invoice.service.file.variable.Variable;
 import com.avispa.microf.model.invoice.service.file.variable.VariableNameGenerator;
 import com.avispa.microf.model.invoice.service.replacer.ITemplateReplacer;
-import com.avispa.microf.util.FormatUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,10 +54,10 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
         createVatMatrixVariables(invoiceData, variables);
 
         PaymentData paymentData = invoiceData.getPayment();
-        variables.put("paid_amount", FormatUtils.format(paymentData.getPaidAmount()));
+        variables.put("paid_amount", FormatUtils.formatMoney(paymentData.getPaidAmount()));
         variables.put("paid_amount_date", paymentData.getPaidAmountDate());
 
-        variables.put("amount", FormatUtils.format(paymentData.getAmount()));
+        variables.put("amount", FormatUtils.formatMoney(paymentData.getAmount()));
         variables.put("amount_in_words", paymentData.getAmountInWords());
 
         variables.put("payment_status", paymentData.getStatus());
@@ -83,12 +83,12 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
 
             variables.put(VariableNameGenerator.generatePositionName(row, 0), String.valueOf(row + 1));
             variables.put(VariableNameGenerator.generatePositionName(row, 1), position.getPositionName());
-            variables.put(VariableNameGenerator.generatePositionName(row, 2), FormatUtils.format(position.getQuantity()));
+            variables.put(VariableNameGenerator.generatePositionName(row, 2), FormatUtils.formatMoney(position.getQuantity()));
             variables.put(VariableNameGenerator.generatePositionName(row, 3), position.getUnit());
-            variables.put(VariableNameGenerator.generatePositionName(row, 4), FormatUtils.format(position.getUnitPrice()));
-            variables.put(VariableNameGenerator.generatePositionName(row, 5), FormatUtils.format(position.getDiscount()));
-            variables.put(VariableNameGenerator.generatePositionName(row, 6), FormatUtils.format(position.getPrice()));
-            variables.put(VariableNameGenerator.generatePositionName(row, 7), FormatUtils.format(position.getNetValue()));
+            variables.put(VariableNameGenerator.generatePositionName(row, 4), FormatUtils.formatMoney(position.getUnitPrice()));
+            variables.put(VariableNameGenerator.generatePositionName(row, 5), FormatUtils.formatMoney(position.getDiscount()));
+            variables.put(VariableNameGenerator.generatePositionName(row, 6), FormatUtils.formatMoney(position.getPrice()));
+            variables.put(VariableNameGenerator.generatePositionName(row, 7), FormatUtils.formatMoney(position.getNetValue()));
             String vatRate = position.getVatRateLabel();
             variables.put(VariableNameGenerator.generatePositionName(row, 8), vatRate.substring(0, vatRate.length() - 1)); // remove percent sign
         }
@@ -102,9 +102,9 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
 
             String vatRate = vatRow.getVatRate() == null ? TOTAL_TEXT : vatRow.getVatRate();
             variables.put(VariableNameGenerator.generateVatMatrixName(row, 0), vatRate);
-            variables.put(VariableNameGenerator.generateVatMatrixName(row, 1), FormatUtils.format(vatRow.getNetValue()));
-            variables.put(VariableNameGenerator.generateVatMatrixName(row, 2), FormatUtils.format(vatRow.getVat()));
-            variables.put(VariableNameGenerator.generateVatMatrixName(row, 3), FormatUtils.format(vatRow.getGrossValue()));
+            variables.put(VariableNameGenerator.generateVatMatrixName(row, 1), FormatUtils.formatMoney(vatRow.getNetValue()));
+            variables.put(VariableNameGenerator.generateVatMatrixName(row, 2), FormatUtils.formatMoney(vatRow.getVat()));
+            variables.put(VariableNameGenerator.generateVatMatrixName(row, 3), FormatUtils.formatMoney(vatRow.getGrossValue()));
         }
     }
 }

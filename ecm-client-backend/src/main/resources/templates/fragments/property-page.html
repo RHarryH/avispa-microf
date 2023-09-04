@@ -102,9 +102,9 @@
                 <th:block th:case="combo">
                     <th:block th:replace="this :: property-label(${prefix}, ${numberOfControls})">Label</th:block>
                     <div class="col" th:with="property=${#strings.concat(prefix, control.property)}">
-                        <th:block th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
+                        <th:block th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.options, propertyValueString)}">
                             <input th:if="${propertyPage.readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
-                                   th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
+                                   th:value="${dictionaryContains ? control.options.get(propertyValueString) : 'DEPRECATED'}" readonly/>
                             <select th:unless="${propertyPage.readonly}" class="form-select" th:name="__${property}__"
                                     th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
                                     th:required="${control.required}">
@@ -161,7 +161,7 @@
                 <th:block th:case="radio">
                     <legend th:text="${control.label + (control.required ? '*' : '')}" class="col-form-label pt-0" th:classappend="'col-sm-' + ${2*(numberOfControls == null ? 1 : numberOfControls)}">Property name</legend>
                     <div class="col" th:with="property=${#strings.concat(prefix, control.property)}" >
-                        <div class="form-check form-check-inline" th:each="value : ${control.values}">
+                        <div class="form-check form-check-inline" th:each="value : ${control.options}">
                             <input class="form-check-input" type="radio" th:required="${control.required}"
                                    th:field="*{__${property}__}" th:value="${value.key}" th:disabled="${propertyPage.readonly}">
                             <label class="form-check-label" th:for="${property + valueStat.count}" th:text="${value.value}"></label>
@@ -305,14 +305,14 @@
                 <th:block th:case="text">
                     <th:block th:replace="this :: table-text(${control}, ${prefix}, ${property}, ${readonly}, 'text')">Text</th:block>
                 </th:block>
-                <th:block th:case="combo" th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.values, propertyValueString)}">
+                <th:block th:case="combo" th:with="propertyValue=${context.__${property}__},propertyValueString=${propertyValue instanceof T(java.lang.String) or propertyValue == null ? propertyValue : propertyValue.id.toString()},dictionaryContains=${#maps.containsKey(control.options, propertyValueString)}">
                     <input th:if="${readonly}" type="text" class="form-control" th:classappend="${dictionaryContains} ? '' : 'bg-danger'"
-                           th:value="${dictionaryContains ? control.values.get(propertyValueString) : 'DEPRECATED'}" readonly/>
+                           th:value="${dictionaryContains ? control.options.get(propertyValueString) : 'DEPRECATED'}" readonly/>
                     <select th:unless="${readonly}" class="form-select" th:name="__${property}__"
                             th:id="__${#strings.replace(#strings.replace(property, '[', ''), ']', '')}__"
                             required>
                         <option th:if="${propertyValueString != null ? not dictionaryContains : false}" value="" selected disabled hidden>DEPRECATED</option>
-                        <option th:each="value : ${control.values}" th:value="${value.key}" th:text="${value.value}" th:selected="${value.key == propertyValueString}"></option>
+                        <option th:each="value : ${control.options}" th:value="${value.key}" th:text="${value.value}" th:selected="${value.key == propertyValueString}"></option>
                     </select>
                 </th:block>
                 <th:block th:case="*">

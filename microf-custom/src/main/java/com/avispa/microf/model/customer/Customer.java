@@ -20,8 +20,8 @@ package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.type.TypeDiscriminator;
+import com.avispa.ecm.util.FormatUtils;
 import com.avispa.microf.model.customer.address.Address;
-import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
 

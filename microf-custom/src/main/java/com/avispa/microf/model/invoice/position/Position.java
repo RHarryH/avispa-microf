@@ -19,10 +19,13 @@
 package com.avispa.microf.model.invoice.position;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.microf.util.FormatUtils;
+import com.avispa.ecm.util.json.MoneyDeserializer;
+import com.avispa.ecm.util.json.MoneySerializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,17 +40,18 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class Position extends EcmObject {
-    @NumberFormat(style = NumberFormat.Style.NUMBER)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Column(precision=8, scale=3)
     private BigDecimal quantity;
 
     private String unit;
 
-    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = MoneyDeserializer.class)
+    @JsonSerialize(using = MoneySerializer.class)
     @Column(precision=9, scale=2)
     private BigDecimal unitPrice;
 
-    @NumberFormat(style = NumberFormat.Style.PERCENT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Column(precision=5, scale=2)
     private BigDecimal discount;
 
