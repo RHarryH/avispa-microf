@@ -18,12 +18,12 @@
 
 package com.avispa.microf.model.invoice.service.file.data;
 
+import com.avispa.ecm.model.configuration.dictionary.Dictionary;
+import com.avispa.ecm.util.FormatUtils;
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.payment.Payment;
-import com.avispa.ecm.model.configuration.dictionary.Dictionary;
 import com.avispa.microf.numeral.NumeralToStringConverter;
-import com.avispa.microf.util.FormatUtils;
 import lombok.Getter;
 import lombok.NonNull;
 

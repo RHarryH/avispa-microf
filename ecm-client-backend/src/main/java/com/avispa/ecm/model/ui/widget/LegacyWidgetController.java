@@ -24,52 +24,59 @@ import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-@RestController
-@RequestMapping("/v1/widget")
-@Tag(name = "Widgets", description = "Endpoints for getting data required by widgets to be properly displayed")
+@Controller
+@RequestMapping("/widget")
 @RequiredArgsConstructor
 @Slf4j
-public class WidgetController {
+public class LegacyWidgetController {
 
     private final EcmObjectRepository<EcmObject> ecmObjectRepository;
     private final PropertyPageMapper propertyPageMapper;
     private final ContextService contextService;
 
-    @GetMapping(value={"/properties-widget/{id}"})
-    public PropertiesWidgetDto getPropertiesWidget(@PathVariable UUID id) {
-        // convert to dto
-        // return null otherwise
-        return ecmObjectRepository.findById(id).flatMap(ecmObject ->
-                        contextService.getConfiguration(ecmObject, PropertyPage.class)
-                                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, ecmObject, true)))
-                .map(PropertiesWidgetDto::new)
-                .orElse(new PropertiesWidgetDto());
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleException(Exception ex) {
+        //Do something additional if required
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("error/widgetError :: widgetError");
+        modelAndView.addObject("errorMessage", ex.getMessage());
+        modelAndView.addObject("widgetId", "properties-widget"); // TODO: refresh refreshes always property widget
+        return modelAndView;
     }
 
-    @Getter
-    @NoArgsConstructor
-    public static class PropertiesWidgetDto {
-        private boolean objectFound;
-        private PropertyPageContent propertyPage;
+    @GetMapping("/repository-widget")
+    public String getRepositoryWidget() {
+        return "fragments/widgets/repository-widget :: repository-widget";
+    }
 
-        public PropertiesWidgetDto(PropertyPageContent propertyPage) {
-            this.objectFound = true;
-            this.propertyPage = propertyPage;
-        }
+    @GetMapping(value={"/properties-widget", "/properties-widget/{id}"})
+    public String getPropertiesWidget(@PathVariable Optional<UUID> id, Model model) {
+        id.flatMap(ecmObjectRepository::findById).ifPresentOrElse(ecmObject -> {
+            PropertyPageContent propertyPageContent = contextService.getConfiguration(ecmObject, PropertyPage.class)
+                    .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, ecmObject, true)) // convert to dto
+                    .orElse(null); // return null otherwise
+
+            model.addAttribute("propertyPage", propertyPageContent);
+            model.addAttribute("context", ecmObject);
+        },
+        () -> model.addAttribute("nothingSelected", true)
+        );
+        return "fragments/widgets/properties-widget :: properties-widget";
     }
 }
