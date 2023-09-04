@@ -18,11 +18,17 @@
 
 package com.avispa.microf.model.invoice.service.file.data;
 
-import com.avispa.microf.model.invoice.position.Position;
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
-import com.avispa.microf.util.FormatUtils;
+import com.avispa.ecm.util.json.MoneyDeserializer;
+import com.avispa.ecm.util.json.MoneySerializer;
+import com.avispa.ecm.util.json.PercentDeserializer;
+import com.avispa.ecm.util.json.PercentSerializer;
+import com.avispa.ecm.util.json.QuantityDeserializer;
+import com.avispa.ecm.util.json.QuantitySerializer;
+import com.avispa.microf.model.invoice.position.Position;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
-import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 
@@ -33,30 +39,38 @@ import java.math.BigDecimal;
 public class PositionData {
     private final String positionName;
 
-    @NumberFormat(pattern = FormatUtils.QUANTITY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = QuantityDeserializer.class)
+    @JsonSerialize(using = QuantitySerializer.class)
     private final BigDecimal quantity;
 
     private final String unit;
 
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = MoneyDeserializer.class)
+    @JsonSerialize(using = MoneySerializer.class)
     private final BigDecimal unitPrice;
 
-    @NumberFormat(pattern = FormatUtils.PERCENT_DECIMAL_FORMAT)
+    @JsonDeserialize(using = PercentDeserializer.class)
+    @JsonSerialize(using = PercentSerializer.class)
     private final BigDecimal discount;
 
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = MoneyDeserializer.class)
+    @JsonSerialize(using = MoneySerializer.class)
     private BigDecimal price;
 
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = MoneyDeserializer.class)
+    @JsonSerialize(using = MoneySerializer.class)
     private BigDecimal netValue;
 
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = MoneyDeserializer.class)
+    @JsonSerialize(using = MoneySerializer.class)
     private BigDecimal vat;
 
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = MoneyDeserializer.class)
+    @JsonSerialize(using = MoneySerializer.class)
     private BigDecimal grossValue;
 
-    @NumberFormat(pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = MoneyDeserializer.class)
+    @JsonSerialize(using = MoneySerializer.class)
     private final BigDecimal vatRate;
 
     private final String vatRateLabel;

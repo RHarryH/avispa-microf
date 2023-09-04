@@ -20,11 +20,13 @@ package com.avispa.microf.model.invoice.payment;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
+import com.avispa.ecm.util.json.MoneyDeserializer;
+import com.avispa.ecm.util.json.MoneySerializer;
 import com.avispa.microf.model.bankaccount.BankAccount;
-import com.avispa.microf.util.FormatUtils;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,7 +46,8 @@ public class Payment extends EcmObject {
     @Dictionary(name = "PaymentMethod")
     private String method;
 
-    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
+    @JsonDeserialize(using = MoneyDeserializer.class)
+    @JsonSerialize(using = MoneySerializer.class)
     @Column(precision=9, scale=2, nullable = false)
     private BigDecimal paidAmount;
 

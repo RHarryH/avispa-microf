@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.util;
+package com.avispa.ecm.util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,10 +33,10 @@ import java.util.Locale;
  */
 @Slf4j
 public class FormatUtils {
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
-    public static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
-    public static final String QUANTITY_DECIMAL_FORMAT = "#0.###";
-    public static final String PERCENT_DECIMAL_FORMAT = "#0.00";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
+    private static final String QUANTITY_DECIMAL_FORMAT = "#0.###";
+    private static final String PERCENT_DECIMAL_FORMAT = "#0.00";
 
     private FormatUtils() {
 
@@ -46,15 +46,35 @@ public class FormatUtils {
         return date.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
-    public static String format(BigDecimal value) {
-        return format(MONEY_DECIMAL_FORMAT, value);
+    public static String formatMoney(BigDecimal value) {
+        return format(value, MONEY_DECIMAL_FORMAT);
     }
 
-    public static String format(String pattern, BigDecimal value) {
+    public static String formatPercent(BigDecimal value) {
+        return format(value, PERCENT_DECIMAL_FORMAT);
+    }
+
+    public static String formatQuantity(BigDecimal value) {
+        return format(value, QUANTITY_DECIMAL_FORMAT);
+    }
+
+    public static String format(BigDecimal value, String pattern) {
         return getDecimalFormatter(pattern).format(value);
     }
 
-    public static BigDecimal parse(String pattern, String value) {
+    public static BigDecimal parseMoney(String value) {
+        return parse(value, MONEY_DECIMAL_FORMAT);
+    }
+
+    public static BigDecimal parsePercent(String value) {
+        return parse(value, PERCENT_DECIMAL_FORMAT);
+    }
+
+    public static BigDecimal parseQuantity(String value) {
+        return parse(value, QUANTITY_DECIMAL_FORMAT);
+    }
+
+    public static BigDecimal parse(String value, String pattern) {
         try {
             return (BigDecimal) getDecimalFormatter(pattern).parse(value);
         } catch (ParseException e) {
