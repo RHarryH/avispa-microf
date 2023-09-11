@@ -23,6 +23,10 @@ import com.avispa.ecm.model.document.DocumentService;
 import com.avispa.ecm.model.folder.Folder;
 import com.avispa.ecm.model.folder.FolderService;
 import com.avispa.ecm.model.zip.ZipService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -40,6 +44,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Directory", description = "Endpoints for operations related to folder hierarchy. Tightly related to the repository widget")
 @Slf4j
 public class DirectoryController {
 
@@ -49,6 +54,8 @@ public class DirectoryController {
     private final DirectoryNodeMapper directoryNodeMapper;
 
     @GetMapping(value = {"directory", "v1/directory"})
+    @Operation(summary = "Get details about folder hierarchy including documents.")
+    @ApiResponse(responseCode = "200", description = "List of directory nodes", content = @Content)
     public List<DirectoryNode> directory() {
         List<DirectoryNode> directoryNodes = new ArrayList<>();
 
@@ -74,6 +81,8 @@ public class DirectoryController {
 
     @GetMapping(value = {"directory/export", "v1/directory/export"}, produces = "application/zip")
     @CrossOrigin(exposedHeaders = HttpHeaders.CONTENT_DISPOSITION)
+    @Operation(summary = "Packs all the contents of the documents attached to folder hierarchy into zip file.")
+    @ApiResponse(responseCode = "200", description = "Zip has been generated", content = @Content)
     public ResponseEntity<Resource> exportStructure() {
         ByteArrayResource resource = new ByteArrayResource(zipService.getZippedStructure());
 

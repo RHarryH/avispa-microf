@@ -19,15 +19,17 @@
 package com.avispa.ecm.model.ui.widget.list;
 
 import com.avispa.ecm.model.configuration.EcmConfigRepository;
-import com.avispa.ecm.model.type.Type;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
 @Repository
 public interface ListWidgetRepository extends EcmConfigRepository<ListWidget> {
-    Optional<ListWidget> findByType(Type type);
+    @Query("select id from ListWidget where objectName=:objectName")
+    Optional<UUID> findIdByObjectName(String objectName);
 }

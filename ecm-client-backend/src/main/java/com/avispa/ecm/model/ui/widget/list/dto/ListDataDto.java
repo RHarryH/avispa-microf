@@ -18,8 +18,10 @@
 
 package com.avispa.ecm.model.ui.widget.list.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Map;
 import java.util.UUID;
@@ -29,6 +31,8 @@ import java.util.UUID;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class ListDataDto {
     private UUID id;
     private Map<String, Object> values;
