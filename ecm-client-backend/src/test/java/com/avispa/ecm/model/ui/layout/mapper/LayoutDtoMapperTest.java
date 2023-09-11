@@ -25,18 +25,23 @@ import com.avispa.ecm.model.ui.layout.Layout;
 import com.avispa.ecm.model.ui.layout.dto.LayoutDto;
 import com.avispa.ecm.model.ui.layout.dto.SectionDto;
 import com.avispa.ecm.model.ui.layout.dto.WidgetDto;
+import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Rafał Hiszpański
@@ -47,8 +52,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 )
 @Slf4j
 class LayoutDtoMapperTest {
+    public static final String CONFIGURATION_ID = "97ddd2fc-6cd4-4bfa-86bc-93d95e0a3a88";
+
     @Autowired
     private LayoutDtoMapper layoutDtoMapper;
+
+    @MockBean
+    private ListWidgetRepository listWidgetRepository;
 
     @Test
     void givenLayout_whenConvert_thenCorrectDtoCreated() {
@@ -57,8 +67,23 @@ class LayoutDtoMapperTest {
 
         layout.setContents(Set.of(createContent("configuration/content/layout-content.json")));
 
+        when(listWidgetRepository.findIdByObjectName("Bank Account List Widget")).thenReturn(Optional.of(UUID.fromString(CONFIGURATION_ID)));
+
         LayoutDto actualDto = layoutDtoMapper.convert(layout);
-        LayoutDto expectedDto = getExpectedLayoutDto();
+        LayoutDto expectedDto = getExpectedLayoutDto(CONFIGURATION_ID);
+
+        assertEquals(expectedDto, actualDto);
+    }
+
+    @Test
+    void givenLayoutAndMissingConfigInRepo_whenConvert_thenDtoWithEmptyConfigurationCreated() {
+        Layout layout = new Layout();
+        layout.setObjectName("Layout");
+
+        layout.setContents(Set.of(createContent("configuration/content/layout-content.json")));
+
+        LayoutDto actualDto = layoutDtoMapper.convert(layout);
+        LayoutDto expectedDto = getExpectedLayoutDto("");
 
         assertEquals(expectedDto, actualDto);
     }
@@ -82,7 +107,7 @@ class LayoutDtoMapperTest {
         return "";
     }
 
-    private static LayoutDto getExpectedLayoutDto() {
+    private static LayoutDto getExpectedLayoutDto(String config) {
         return LayoutDto.builder()
                 .sections(List.of(SectionDto.builder()
                         .location(SectionDto.SectionLocation.SIDEBAR)
@@ -94,7 +119,7 @@ class LayoutDtoMapperTest {
                         .widget(WidgetDto.builder()
                                 .label("Bank Account")
                                 .type(WidgetDto.WidgetType.LIST)
-                                .configuration("Bank Account List Widget")
+                                .configuration(config)
                                 .build())
                         .build()))
                 .build();

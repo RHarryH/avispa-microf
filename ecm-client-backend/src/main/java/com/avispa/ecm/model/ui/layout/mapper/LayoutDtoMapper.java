@@ -21,6 +21,8 @@ package com.avispa.ecm.model.ui.layout.mapper;
 import com.avispa.ecm.model.content.Content;
 import com.avispa.ecm.model.ui.layout.Layout;
 import com.avispa.ecm.model.ui.layout.dto.LayoutDto;
+import com.avispa.ecm.model.ui.layout.dto.WidgetDto;
+import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
@@ -39,6 +42,8 @@ import java.util.Optional;
 @Slf4j
 public class LayoutDtoMapper {
     private final ObjectMapper objectMapper;
+
+    private final ListWidgetRepository listWidgetRepository;
 
     public LayoutDto convert(Layout entity) {
         return getLayoutContent(entity.getPrimaryContent()).orElseThrow();
@@ -51,11 +56,31 @@ public class LayoutDtoMapper {
             }
 
             byte[] resource = Files.readAllBytes(Path.of(content.getFileStorePath()));
-            return Optional.of(objectMapper.readerFor(LayoutDto.class).withRootName("layout").readValue(resource));
+            LayoutDto dto = objectMapper.readerFor(LayoutDto.class).withRootName("layout").readValue(resource);
+            if(null != dto) {
+                convertConfigurationNameToUUID(dto);
+            }
+
+            return Optional.ofNullable(dto);
         } catch (IOException e) {
             log.error("Can't parse layout content from '{}'", content.getFileStorePath(), e);
         }
 
         return Optional.empty();
+    }
+
+    private void convertConfigurationNameToUUID(LayoutDto layoutDto) {
+        layoutDto.getSections().forEach(section -> section.getWidgets().forEach(widgetDto -> {
+            if (widgetDto.getType().equals(WidgetDto.WidgetType.LIST)) {
+                widgetDto.setConfiguration(
+                        getUUIDFromConfigurationName(widgetDto) // return empty string to prevent returning config name to frontend
+                );
+            }
+        }));
+    }
+
+    private String getUUIDFromConfigurationName(WidgetDto widgetDto) {
+        return listWidgetRepository.findIdByObjectName(widgetDto.getConfiguration())
+                .map(UUID::toString).orElse("");
     }
 }

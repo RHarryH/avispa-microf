@@ -26,6 +26,7 @@ import com.avispa.ecm.model.ui.layout.dto.LayoutDto;
 import com.avispa.ecm.model.ui.layout.dto.SectionDto;
 import com.avispa.ecm.model.ui.layout.dto.WidgetDto;
 import com.avispa.ecm.model.ui.layout.mapper.LayoutDtoMapper;
+import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -49,14 +51,19 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 class LayoutServiceTest {
+    public static final String CONFIGURATION_ID = "97ddd2fc-6cd4-4bfa-86bc-93d95e0a3a88";
+
     @Mock
     private EcmConfigRepository<Layout> layoutRepository;
+
+    @Mock
+    private ListWidgetRepository listWidgetRepository;
 
     private LayoutService layoutService;
 
     @BeforeEach
     void init() {
-        LayoutDtoMapper layoutDtoMapper = new LayoutDtoMapper(new EcmConfiguration().jackson2ObjectMapperBuilder().build());
+        LayoutDtoMapper layoutDtoMapper = new LayoutDtoMapper(new EcmConfiguration().jackson2ObjectMapperBuilder().build(), listWidgetRepository);
         layoutService = new LayoutService(layoutRepository, layoutDtoMapper);
     }
 
@@ -67,6 +74,7 @@ class LayoutServiceTest {
         ReflectionTestUtils.setField(layoutService, "layoutConfigName", "Layout");
 
         when(layoutRepository.findByObjectName("Layout")).thenReturn(Optional.of(layout));
+        when(listWidgetRepository.findIdByObjectName("Bank Account List Widget")).thenReturn(Optional.of(UUID.fromString(CONFIGURATION_ID)));
 
         LayoutDto actualDto = layoutService.getConfiguration();
         LayoutDto expectedDto = getExpectedLayoutDto();
@@ -114,7 +122,7 @@ class LayoutServiceTest {
                         .widget(WidgetDto.builder()
                                 .label("Bank Account")
                                 .type(WidgetDto.WidgetType.LIST)
-                                .configuration("Bank Account List Widget")
+                                .configuration(CONFIGURATION_ID)
                                 .build())
                         .build())
                 .build();

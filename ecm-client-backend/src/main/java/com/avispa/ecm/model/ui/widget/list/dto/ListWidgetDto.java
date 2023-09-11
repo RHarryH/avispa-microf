@@ -18,8 +18,11 @@
 
 package com.avispa.ecm.model.ui.widget.list.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -28,14 +31,17 @@ import java.util.List;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 public class ListWidgetDto {
     private String resourceId;
     private String typeName;
 
     private String caption;
     private String emptyMessage;
-    private boolean isDocument;
+    @JsonProperty("isDocument")
+    private boolean document;
 
     private List<String> headers;
-    private List<ListDataDto> dataList;
+    private List<ListDataDto> data;
 }
