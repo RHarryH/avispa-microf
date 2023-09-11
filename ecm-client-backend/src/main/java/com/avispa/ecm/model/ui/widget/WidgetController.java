@@ -24,14 +24,24 @@ import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
+import com.avispa.ecm.model.error.ResourceNotFoundException;
+import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
+import com.avispa.ecm.model.ui.widget.list.ListWidgetService;
+import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -47,19 +57,11 @@ import java.util.UUID;
 public class WidgetController {
 
     private final EcmObjectRepository<EcmObject> ecmObjectRepository;
+    private final ListWidgetRepository listWidgetRepository;
     private final PropertyPageMapper propertyPageMapper;
     private final ContextService contextService;
 
-    @GetMapping(value={"/properties-widget/{id}"})
-    public PropertiesWidgetDto getPropertiesWidget(@PathVariable UUID id) {
-        // convert to dto
-        // return null otherwise
-        return ecmObjectRepository.findById(id).flatMap(ecmObject ->
-                        contextService.getConfiguration(ecmObject, PropertyPage.class)
-                                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, ecmObject, true)))
-                .map(PropertiesWidgetDto::new)
-                .orElse(new PropertiesWidgetDto());
-    }
+    private final ListWidgetService listWidgetService;
 
     @Getter
     @NoArgsConstructor
@@ -71,5 +73,37 @@ public class WidgetController {
             this.objectFound = true;
             this.propertyPage = propertyPage;
         }
+    }
+
+    @GetMapping(value={"/properties-widget/{id}"})
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Returns property page data with all values filled in.")
+    @ApiResponse(responseCode = "200", description = "Property page data has been returned", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Property page configuration does not exist", content = @Content)
+    public PropertiesWidgetDto getPropertiesWidget(
+            @PathVariable
+            @Parameter(description = "id of the object for which the property page should be returned")
+            UUID id) {
+        // convert to dto
+        // return empty otherwise
+        return ecmObjectRepository.findById(id).map(ecmObject ->
+                        contextService.getConfiguration(ecmObject, PropertyPage.class)
+                                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, ecmObject, true))
+                                .orElseThrow(ResourceNotFoundException::new))
+                .map(PropertiesWidgetDto::new)
+                .orElse(new PropertiesWidgetDto());
+    }
+
+    @GetMapping("/list-widget/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Returns list data containing all the data required to render list widget.")
+    @ApiResponse(responseCode = "200", description = "List data has been returned", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Widget configuration does not exist", content = @Content)
+    public ListWidgetDto getListWidget(
+            @PathVariable
+            @Parameter(description = "id of the list widget configuration containing list details (like type name and its property names to be displayed)")
+            UUID id) {
+        var listWidget = listWidgetRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        return listWidgetService.getAllDataFrom(listWidget);
     }
 }
