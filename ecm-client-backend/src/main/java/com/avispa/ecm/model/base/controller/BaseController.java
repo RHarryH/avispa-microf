@@ -18,14 +18,15 @@
 
 package com.avispa.ecm.model.base.controller;
 
+import com.avispa.ecm.model.EcmEntityRepository;
+import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.base.BaseService;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.base.mapper.IEntityDtoMapper;
-import com.avispa.ecm.model.EcmEntityRepository;
-import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.ui.modal.context.EcmAppContext;
 import com.avispa.ecm.model.error.ErrorUtil;
+import com.avispa.ecm.model.ui.modal.context.EcmAppContext;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public abstract class BaseController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends EcmEntityRepository<T>, ? extends IEntityDtoMapper<T, D>>> implements IBaseController<D>, IBaseModalableController {
+    @Getter
     private final S service;
 
     private DtoService dtoService;
@@ -54,7 +56,7 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
         this.dtoService = dtoService;
     }
 
-    @PostMapping(value = "/add")
+    @PostMapping("/add")
     @ResponseBody // it will just return status 200 when everything will go fine
     @Override
     public void add(HttpServletRequest request) {
@@ -78,7 +80,7 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
         service.add(object);
     }
 
-    @PostMapping(value = "/update/{id}")
+    @PostMapping("/update/{id}")
     @ResponseBody
     @Override
     public void update(HttpServletRequest request, @PathVariable("id") UUID id) {
@@ -107,9 +109,5 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
     @Override
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
-    }
-
-    public S getService() {
-        return service;
     }
 }
