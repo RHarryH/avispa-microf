@@ -30,14 +30,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * @author Rafał Hiszpański
  */
 @SpringBootApplication(scanBasePackages = {"com.avispa.ecm", "com.avispa.microf"})
 @EntityScan(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use ECM entities
-@EnableJpaRepositories(basePackages = {"com.avispa.microf.model", "com.avispa.ecm.model"}) // required to use ECM repositories
 @PropertySource(value = "file:config/microf.properties", ignoreResourceNotFound = true)
 public class MicroFApplication {
 
