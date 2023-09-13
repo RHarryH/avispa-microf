@@ -35,6 +35,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1/directory")
 @Tag(name = "Directory", description = "Endpoints for operations related to folder hierarchy. Tightly related to the repository widget")
 @Slf4j
 public class DirectoryController {
@@ -53,7 +55,7 @@ public class DirectoryController {
     private final ZipService zipService;
     private final DirectoryNodeMapper directoryNodeMapper;
 
-    @GetMapping(value = {"directory", "v1/directory"})
+    @GetMapping("/")
     @Operation(summary = "Get details about folder hierarchy including documents.")
     @ApiResponse(responseCode = "200", description = "List of directory nodes", content = @Content)
     public List<DirectoryNode> directory() {
@@ -79,7 +81,7 @@ public class DirectoryController {
         }
     }
 
-    @GetMapping(value = {"directory/export", "v1/directory/export"}, produces = "application/zip")
+    @GetMapping(value = "/export", produces = "application/zip")
     @CrossOrigin(exposedHeaders = HttpHeaders.CONTENT_DISPOSITION)
     @Operation(summary = "Packs all the contents of the documents attached to folder hierarchy into zip file.")
     @ApiResponse(responseCode = "200", description = "Zip has been generated", content = @Content)
