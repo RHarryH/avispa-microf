@@ -55,7 +55,7 @@ public class DirectoryController {
     private final ZipService zipService;
     private final DirectoryNodeMapper directoryNodeMapper;
 
-    @GetMapping("/")
+    @GetMapping
     @Operation(summary = "Get details about folder hierarchy including documents.")
     @ApiResponse(responseCode = "200", description = "List of directory nodes", content = @Content)
     public List<DirectoryNode> directory() {

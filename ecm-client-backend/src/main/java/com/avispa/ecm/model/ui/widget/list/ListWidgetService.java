@@ -29,6 +29,7 @@ import com.avispa.ecm.model.ui.widget.list.dto.ListDataDto;
 import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
 import com.avispa.ecm.model.ui.widget.list.mapper.ListDataDtoMapper;
 import com.avispa.ecm.util.GenericService;
+import com.avispa.ecm.util.TypeNameUtils;
 import com.avispa.ecm.util.reflect.PropertyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,7 @@ public class ListWidgetService {
         ListWidgetDto listWidgetDto = new ListWidgetDto();
         listWidgetDto.setDocument(Document.class.isAssignableFrom(type.getEntityClass()));
         listWidgetDto.setCaption(listWidget.getCaption());
+        listWidgetDto.setTypeName(TypeNameUtils.convertTypeNameToEndpointType(type.getObjectName()));
         listWidgetDto.setEmptyMessage(listWidget.getEmptyMessage());
 
         DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
