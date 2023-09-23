@@ -35,7 +35,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
@@ -56,8 +55,7 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
         this.dtoService = dtoService;
     }
 
-    @PostMapping("/add")
-    @ResponseBody // it will just return status 200 when everything will go fine
+    @PostMapping
     @Override
     public void add(HttpServletRequest request) {
         D dto = dtoService.createEmptyDtoInstance(request);
@@ -80,8 +78,7 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
         service.add(object);
     }
 
-    @PostMapping("/update/{id}")
-    @ResponseBody
+    @PostMapping("/{id}")
     @Override
     public void update(HttpServletRequest request, @PathVariable("id") UUID id) {
         D dto = dtoService.createEmptyDtoInstance(request);
@@ -104,8 +101,7 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
         service.update(dto);
     }
 
-    @DeleteMapping("/delete/{id}")
-    @ResponseBody
+    @DeleteMapping("/{id}")
     @Override
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
