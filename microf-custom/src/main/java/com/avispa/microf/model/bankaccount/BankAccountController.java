@@ -18,24 +18,23 @@
 
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.microf.model.bankaccount.exception.BankAccountInUseException;
 import com.avispa.ecm.model.base.controller.BaseController;
+import com.avispa.microf.model.bankaccount.exception.BankAccountInUseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-@Controller
-@RequestMapping("/bank-account")
+@RestController
+@RequestMapping("/v1/bank-account")
 @Slf4j
 public class BankAccountController extends BaseController<BankAccount, BankAccountDto, BankAccountService> {
 
@@ -45,8 +44,7 @@ public class BankAccountController extends BaseController<BankAccount, BankAccou
     }
 
     @Override
-    @DeleteMapping("/delete/{id}")
-    @ResponseBody
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") UUID id) {
         try {
             super.delete(id);
