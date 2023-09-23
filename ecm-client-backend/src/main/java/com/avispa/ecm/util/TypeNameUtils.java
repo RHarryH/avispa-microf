@@ -32,4 +32,8 @@ public class TypeNameUtils {
     public static String convertResourceIdToTypeName(String resourceId) {
         return StringUtils.capitalize(resourceId.trim().toLowerCase(Locale.ROOT).replace("-", " "));
     }
+
+    public static String convertTypeNameToEndpointType(String typeName) {
+        return typeName.trim().toLowerCase(Locale.ROOT).replace(" ", "-");
+    }
 }
