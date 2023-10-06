@@ -18,10 +18,10 @@
 
 package com.avispa.microf.model.customer;
 
+import com.avispa.ecm.model.base.BaseService;
 import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
 import com.avispa.ecm.model.configuration.context.ContextService;
-import com.avispa.ecm.model.base.BaseService;
-import com.avispa.ecm.model.error.ResourceNotFoundException;
+import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
