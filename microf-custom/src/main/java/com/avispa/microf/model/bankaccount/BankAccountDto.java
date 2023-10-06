@@ -18,10 +18,11 @@
 
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.microf.util.validation.account.IBANConstraint;
 import com.avispa.microf.util.validation.account.NRBConstraint;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,6 +57,7 @@ public class BankAccountDto implements Dto {
      * Returns IBAN number in NRB form (without two first letters representing country)
      * @return
      */
+    @JsonIgnore
     public String getAccountNumberWithoutCountry() {
         return accountNumber.substring(2);
     }

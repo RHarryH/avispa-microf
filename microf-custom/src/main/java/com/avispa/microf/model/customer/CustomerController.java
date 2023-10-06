@@ -19,13 +19,14 @@
 package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.base.controller.BaseController;
-import com.avispa.microf.model.customer.exception.CustomerInUseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public class CustomerController extends BaseController<Customer, CustomerDto, Cu
         } catch(DataIntegrityViolationException e) {
             String errorMessage = String.format("Customer '%s' is in use.", getService().findById(id).getObjectName());
             log.error(errorMessage, e);
-            throw new CustomerInUseException(errorMessage);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
         }
     }
 }

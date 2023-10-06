@@ -16,13 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.customer.exception;
+package com.avispa.ecm.util.error;
 
-import com.avispa.ecm.util.api.exception.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.server.ResponseStatusException;
 
-public class CustomerInUseException extends ApiException {
-    public CustomerInUseException(String message) {
-        super(HttpStatus.BAD_REQUEST, message);
+/**
+ * @author Rafał Hiszpański
+ */
+@Slf4j
+public class ErrorUtil {
+
+    private ErrorUtil() {
+
+    }
+
+    public static void processErrors(HttpStatus status, BindingResult result) {
+        result.getFieldErrors()
+                .forEach(f -> log.error("{}: {}", f.getField(), f.getDefaultMessage()));
+
+        FieldError fe = result.getFieldError();
+        throw new ResponseStatusException(status, null != fe ? fe.getDefaultMessage() : "Unknown message error");
     }
 }

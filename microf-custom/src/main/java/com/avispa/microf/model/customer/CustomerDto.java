@@ -18,11 +18,10 @@
 
 package com.avispa.microf.model.customer;
 
+import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
-import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.microf.model.customer.address.AddressDto;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,7 +61,6 @@ public abstract class CustomerDto implements Dto {
     private String email;
 
     @NotNull(message = VM_ADDRESS_NOT_NULL)
-    @JsonUnwrapped
     @DisplayName("Address")
     private AddressDto address;
 }
