@@ -19,7 +19,7 @@
 package com.avispa.microf.model.bankaccount;
 
 import com.avispa.ecm.model.base.BaseService;
-import com.avispa.ecm.model.error.ResourceNotFoundException;
+import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

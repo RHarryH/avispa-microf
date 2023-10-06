@@ -20,7 +20,6 @@ package com.avispa.ecm.model.load;
 
 import com.avispa.ecm.model.configuration.load.ConfigurationLoadService;
 import com.avispa.ecm.model.zip.ZipService;
-import com.avispa.ecm.util.api.exception.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -58,14 +58,12 @@ public class ConfigurationLoadController {
             if(ZipService.isZipFile(file.getInputStream())) {
                 configurationLoadService.load(file.getInputStream(), override);
             } else {
-               /* throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "File is not a zip");*/
-                throw new ApiException(HttpStatus.BAD_REQUEST, "File is not a non-empty zip file");
+               throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "File is not a zip");
             }
         } catch (IOException e) {
-            /*throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Can't load the configuration", e);*/
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Can't load the configuration", e);
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Can't load the configuration", e);
         }
     }
 }

@@ -16,29 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.error;
+package com.avispa.ecm.util.error.exception;
 
-import com.avispa.ecm.util.api.exception.ApiException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- * @author Rafał Hiszpański
- */
-@Slf4j
-public class ErrorUtil {
-
-    private ErrorUtil() {
-
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException() {
+        super("Resource not found");
     }
 
-    public static void processErrors(HttpStatus status, BindingResult result) {
-        result.getFieldErrors()
-                .forEach(f -> log.error("{}: {}", f.getField(), f.getDefaultMessage()));
-
-        FieldError fe = result.getFieldError();
-        throw new ApiException(status, null != fe ? fe.getDefaultMessage() : "Unknown message error");
+    public ResourceNotFoundException(Class<?> clazz) {
+        super(clazz.getSimpleName() + " not found");
     }
 }

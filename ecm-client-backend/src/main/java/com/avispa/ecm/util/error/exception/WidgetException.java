@@ -16,18 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.error;
+package com.avispa.ecm.util.error.exception;
 
-import com.avispa.ecm.util.api.exception.ApiException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class ResourceNotFoundException extends ApiException {
-    public ResourceNotFoundException() {
-        super(HttpStatus.NOT_FOUND, "Resource not found");
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class WidgetException extends RuntimeException {
+    public WidgetException(String configuration) {
+        super("Widget can't be loaded because '" + configuration + "' configuration has been not found");
     }
-
-    public ResourceNotFoundException(Class<?> clazz) {
-        super(HttpStatus.NOT_FOUND, clazz.getSimpleName() + " not found");
-    }
-
 }
