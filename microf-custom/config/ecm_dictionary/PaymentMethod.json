@@ -10,14 +10,6 @@
 			{
 				"key": "BANK_TRANSFER",
 				"label": "przelew bankowy"
-			},
-			{
-				"key": "VAT_05",
-				"label": "5%"
-			},
-			{
-				"key": "VAT_00",
-				"label": "0%"
 			}
 		]
 	}
