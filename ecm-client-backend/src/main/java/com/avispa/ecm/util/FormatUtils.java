@@ -33,8 +33,9 @@ import java.util.Locale;
  */
 @Slf4j
 public class FormatUtils {
+    public static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
+
     private static final String DATE_FORMAT = "yyyy-MM-dd";
-    private static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
     private static final String QUANTITY_DECIMAL_FORMAT = "#0.###";
     private static final String PERCENT_DECIMAL_FORMAT = "#0.00";
 

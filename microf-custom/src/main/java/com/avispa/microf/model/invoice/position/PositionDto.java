@@ -18,15 +18,12 @@
 
 package com.avispa.microf.model.invoice.position;
 
-import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
-import com.avispa.ecm.util.json.MoneyDeserializer;
-import com.avispa.ecm.util.json.MoneySerializer;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
@@ -64,7 +61,7 @@ public class PositionDto implements Dto {
     @Size(max = 50, message = VM_POSITION_NAME_NO_LONGER)
     private String objectName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Digits(integer=5, fraction=3, message = VM_QUANTITY_OUT_OF_RANGE)
     @Positive(message = VM_QUANTITY_POSITIVE)
     private BigDecimal quantity = BigDecimal.ONE;
@@ -73,12 +70,12 @@ public class PositionDto implements Dto {
     @Dictionary(name = "Unit")
     private String unit;
 
-    @JsonDeserialize(using = MoneyDeserializer.class)
-    @JsonSerialize(using = MoneySerializer.class)
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     @Digits(integer=7, fraction=2, message = VM_UNIT_PRICE_OUT_OF_RANGE)
     @Positive(message = VM_UNIT_PRICE_POSITIVE)
     private BigDecimal unitPrice;
 
+    @NumberFormat(style = NumberFormat.Style.PERCENT)
     @Digits(integer=3, fraction=2, message = VM_DISCOUNT_OUT_OF_RANGE)
     @PositiveOrZero(message = VM_DISCOUNT_POSITIVE_OR_ZERO)
     @Max(value = 100, message = VM_DISCOUNT_NO_GREATER)
