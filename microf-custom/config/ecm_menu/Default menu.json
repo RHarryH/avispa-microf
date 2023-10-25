@@ -7,11 +7,11 @@
         "items": [
           {
             "label": "Add new",
-            "action": "invoice-add-button"
+            "action": "add/invoice"
           },
           {
             "label": "Clone",
-            "action": "invoice-clone-button"
+            "action": "clone/invoice"
           }
         ]
       },
@@ -20,7 +20,7 @@
         "items": [
           {
             "label": "Add new",
-            "action": "customer-add-button"
+            "action": "add/customer"
           }
         ]
       },
@@ -29,7 +29,7 @@
         "items": [
           {
             "label": "Add new",
-            "action": "bank-account-add-button"
+            "action": "add/bank-account"
           }
         ]
       }
