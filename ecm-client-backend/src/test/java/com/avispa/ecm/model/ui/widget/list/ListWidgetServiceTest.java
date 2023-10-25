@@ -93,7 +93,7 @@ class ListWidgetServiceTest {
     private ListWidgetDto getExpected() {
         ListWidgetDto listWidgetDto = new ListWidgetDto();
         listWidgetDto.setDocument(true);
-        listWidgetDto.setTypeName("document");
+        listWidgetDto.setResource("document");
         listWidgetDto.setCaption("caption");
         listWidgetDto.setEmptyMessage("empty");
         listWidgetDto.setHeaders(List.of("objectName"));

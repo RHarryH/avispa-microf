@@ -18,11 +18,11 @@
 
 package com.avispa.ecm.model.base.dto;
 
-import com.avispa.ecm.model.ui.modal.context.EcmAppContext;
-import com.avispa.ecm.util.GenericService;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
+import com.avispa.ecm.util.GenericService;
+import com.avispa.ecm.util.TypeNameUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -61,12 +61,13 @@ public class DtoService {
      */
     @SuppressWarnings("unchecked")
     public <D extends Dto> D createEmptyDtoInstance(HttpServletRequest request) {
-        Class<? extends EcmObject> entityClass = typeService.getType(request.getParameter("typeName")).getEntityClass();
+        String typeName = extractTypeName(request);
+        Class<? extends EcmObject> entityClass = typeService.getType(typeName).getEntityClass();
         String typeDiscriminatorName = typeService.getTypeDiscriminatorFromAnnotation(entityClass);
 
         Optional<DtoObject> dtoObject;
         if(StringUtils.isNotEmpty(typeDiscriminatorName)) {
-            String value = request.getParameter("object." + typeDiscriminatorName);
+            String value = request.getParameter(typeDiscriminatorName);
             dtoObject = dtoRepository.findByEntityClassAndDiscriminator(entityClass, value);
         } else {
             dtoObject = getDtoObject(entityClass);
@@ -75,6 +76,23 @@ public class DtoService {
         return (D) dtoObject
                 .map(d -> BeanUtils.instantiateClass(d.getDtoClass()))
                 .orElseThrow();
+    }
+
+    /**
+     * Extract type name from the URI
+     * the pattern for the url is "v1/<type_name>/<others>"
+     *
+     * @param request
+     * @return
+     */
+    private static String extractTypeName(HttpServletRequest request) {
+        var requestUri = request.getRequestURI();
+        var paths = requestUri.split("/");
+        if(paths.length < 2) {
+            throw new IllegalStateException("Cannot extract type from request path");
+        } else {
+            return TypeNameUtils.convertResourceNameToTypeName(paths[2]);
+        }
     }
 
     private Optional<DtoObject> getDtoObject(Class<? extends EcmObject> entityClass) {
@@ -91,11 +109,11 @@ public class DtoService {
         return dtoRepository.findByTypeAndDiscriminatorIsNull(type).orElseThrow();
     }
 
-    public Dto convertEntityToDto(EcmObject entity) {
-        return genericService.getService(entity.getClass()).getEntityDtoMapper().convertToDto(entity);
+    public Dto convertObjectToDto(EcmObject object) {
+        return genericService.getService(object.getClass()).getEntityDtoMapper().convertToDto(object);
     }
 
-    public <D extends Dto> BindingResult bindObjectToDto(HttpServletRequest request, EcmAppContext<D> context) {
+    public <D extends Dto> BindingResult bindObjectToDto(HttpServletRequest request, D context) {
         BindingResult result = null;
 
         try {
@@ -111,11 +129,8 @@ public class DtoService {
     private BindingResult bindObjectToDto(ServletRequest request, WebDataBinder binder) {
         PropertyValues propertyValues = new ServletRequestParameterPropertyValues(request);
 
-        // bind to the target object
-        binder.bind(propertyValues);
-
-        // validate the target object
-        binder.validate();
+        binder.bind(propertyValues); // bind to the target object
+        binder.validate(); // validate the target object
 
         // get BindingResult that includes any validation errors
         return binder.getBindingResult();

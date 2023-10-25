@@ -30,6 +30,11 @@ import java.util.UUID;
  */
 @Repository
 public interface ListWidgetRepository extends EcmConfigRepository<ListWidget> {
-    @Query("select id from ListWidget where objectName=:objectName")
-    Optional<UUID> findIdByObjectName(String objectName);
+    interface ListWidgetProjection {
+        UUID getId();
+        String getTypeName();
+    }
+
+    @Query("select lw.id as id, lw.type.objectName as typeName from ListWidget lw where lw.objectName=:objectName")
+    Optional<ListWidgetProjection> findIdAndTypeNameByObjectName(String objectName);
 }

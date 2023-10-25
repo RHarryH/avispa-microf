@@ -19,14 +19,15 @@
 package com.avispa.ecm.model.ui.propertypage;
 
 import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.EcmConfigRepository;
 import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
-import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
 import com.avispa.ecm.model.configuration.upsert.Upsert;
-import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
+import com.avispa.ecm.util.exception.EcmException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,21 +50,37 @@ public class PropertyPageService {
      * @param contextDto DTO object used as context for property page
      * @return
      */
-    public Optional<PropertyPageContent> getPropertyPage(EcmObject ecmObject, Dto contextDto) {
-        return contextService.getConfiguration(ecmObject, Upsert.class)
-                .map(Upsert::getPropertyPage)
-                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false));
+    public PropertyPageContent getPropertyPage(EcmObject ecmObject, Dto contextDto) {
+        return getPropertyPage(ecmObject, contextDto, false);
     }
 
+    public PropertyPageContent getPropertyPage(EcmObject ecmObject, Dto contextDto, boolean readonly) {
+        return contextService.getConfiguration(ecmObject, Upsert.class)
+                .map(Upsert::getPropertyPage)
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, readonly))
+                .orElseThrow(() -> new EcmException("Property page content can't be retrieved"));
+    }
+
+    /**
+     * Get property page from name only (like select source)
+     * @param name
+     * @param context
+     * @return
+     */
     public Optional<PropertyPageContent> getPropertyPage(String name, Object context) {
         return propertyPageRepository.findByObjectName(name)
                 .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false));
     }
 
-    public Table getTable(String tableName, Class<? extends EcmObject> ecmObjectClass, Class<? extends Dto> contextDtoClass) {
-        return contextService.getConfiguration(ecmObjectClass, Upsert.class)
-                .map(Upsert::getPropertyPage)
-                .map(propertyPage -> propertyPageMapper.getTable(propertyPage, tableName, contextDtoClass))
-                .orElse(null);
+    /**
+     * Get property page from context only
+     * @param ecmObject
+     * @param readonly
+     * @return
+     */
+    public PropertyPageContent getPropertyPage(EcmObject ecmObject, boolean readonly) {
+        return contextService.getConfiguration(ecmObject, PropertyPage.class)
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, ecmObject, readonly))
+                .orElseThrow(ResourceNotFoundException::new);
     }
 }

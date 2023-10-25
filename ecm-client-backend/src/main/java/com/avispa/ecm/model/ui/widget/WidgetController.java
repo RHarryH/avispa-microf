@@ -20,14 +20,12 @@ package com.avispa.ecm.model.ui.widget;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
-import com.avispa.ecm.model.configuration.context.ContextService;
-import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
-import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
-import com.avispa.ecm.model.error.ResourceNotFoundException;
+import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetService;
 import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
+import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -58,8 +56,7 @@ public class WidgetController {
 
     private final EcmObjectRepository<EcmObject> ecmObjectRepository;
     private final ListWidgetRepository listWidgetRepository;
-    private final PropertyPageMapper propertyPageMapper;
-    private final ContextService contextService;
+    private final PropertyPageService propertyPageService;
 
     private final ListWidgetService listWidgetService;
 
@@ -87,9 +84,7 @@ public class WidgetController {
         // convert to dto
         // return empty otherwise
         return ecmObjectRepository.findById(id).map(ecmObject ->
-                        contextService.getConfiguration(ecmObject, PropertyPage.class)
-                                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, ecmObject, true))
-                                .orElseThrow(ResourceNotFoundException::new))
+                        propertyPageService.getPropertyPage(ecmObject, true))
                 .map(PropertiesWidgetDto::new)
                 .orElse(new PropertiesWidgetDto());
     }

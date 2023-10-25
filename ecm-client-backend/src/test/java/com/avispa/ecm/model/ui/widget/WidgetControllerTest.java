@@ -23,10 +23,11 @@ import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
-import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
+import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
 import com.avispa.ecm.model.ui.widget.list.ListWidget;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetService;
+import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -59,7 +60,7 @@ class WidgetControllerTest {
     private EcmObjectRepository<EcmObject> ecmObjectRepository;
 
     @MockBean
-    private PropertyPageMapper propertyPageMapper;
+    private PropertyPageService propertyPageService;
 
     @MockBean
     private ContextService contextService;
@@ -77,7 +78,7 @@ class WidgetControllerTest {
 
         when(ecmObjectRepository.findById(objectId)).thenReturn(Optional.of(getDocument()));
         when(contextService.getConfiguration(any(EcmObject.class), eq(PropertyPage.class))).thenReturn(Optional.of(new PropertyPage()));
-        when(propertyPageMapper.convertToContent(any(), any(), eq(true))).thenReturn(sampleContent);
+        when(propertyPageService.getPropertyPage(any(), eq(true))).thenReturn(sampleContent);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/properties-widget/" + objectId))
                 .andExpect(status().is(200))
@@ -89,6 +90,7 @@ class WidgetControllerTest {
     void givenNonExitingPropertyPage_whenLoadPropertiesWidget_thenReturn404() throws Exception {
         UUID objectId = UUID.randomUUID();
 
+        when(propertyPageService.getPropertyPage(any(), eq(true))).thenThrow(new ResourceNotFoundException());
         when(ecmObjectRepository.findById(objectId)).thenReturn(Optional.of(getDocument()));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/properties-widget/" + objectId))
