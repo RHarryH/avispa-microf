@@ -35,7 +35,7 @@ import java.util.List;
 @ToString
 public class ListWidgetDto {
     private String resourceId;
-    private String typeName;
+    private String resource;
 
     private String caption;
     private String emptyMessage;

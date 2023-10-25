@@ -23,6 +23,8 @@ import com.avispa.ecm.model.ui.layout.Layout;
 import com.avispa.ecm.model.ui.layout.dto.LayoutDto;
 import com.avispa.ecm.model.ui.layout.dto.WidgetDto;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
+import com.avispa.ecm.util.TypeNameUtils;
+import com.avispa.ecm.util.error.exception.WidgetException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +34,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
@@ -72,15 +73,14 @@ public class LayoutDtoMapper {
     private void convertConfigurationNameToUUID(LayoutDto layoutDto) {
         layoutDto.getSections().forEach(section -> section.getWidgets().forEach(widgetDto -> {
             if (widgetDto.getType().equals(WidgetDto.WidgetType.LIST)) {
-                widgetDto.setConfiguration(
-                        getUUIDFromConfigurationName(widgetDto) // return empty string to prevent returning config name to frontend
-                );
+                var listWidget = getListWidgetFromConfigurationName(widgetDto.getConfiguration());
+                widgetDto.setConfiguration(listWidget.getId().toString());
+                widgetDto.setResource(TypeNameUtils.convertTypeNameToResourceName(listWidget.getTypeName()));
             }
         }));
     }
 
-    private String getUUIDFromConfigurationName(WidgetDto widgetDto) {
-        return listWidgetRepository.findIdByObjectName(widgetDto.getConfiguration())
-                .map(UUID::toString).orElse("");
+    private ListWidgetRepository.ListWidgetProjection getListWidgetFromConfigurationName(String configurationName) {
+        return listWidgetRepository.findIdAndTypeNameByObjectName(configurationName).orElseThrow(() -> new WidgetException(configurationName));
     }
 }

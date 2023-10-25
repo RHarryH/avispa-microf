@@ -42,5 +42,6 @@ public class WidgetDto {
     private String label;
     private WidgetType type;
     private boolean active;
+    private String resource;
     private String configuration;
 }

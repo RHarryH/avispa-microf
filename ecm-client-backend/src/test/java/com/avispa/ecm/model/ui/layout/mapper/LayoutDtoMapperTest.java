@@ -67,7 +67,17 @@ class LayoutDtoMapperTest {
 
         layout.setContents(Set.of(createContent("configuration/content/layout-content.json")));
 
-        when(listWidgetRepository.findIdByObjectName("Bank Account List Widget")).thenReturn(Optional.of(UUID.fromString(CONFIGURATION_ID)));
+        when(listWidgetRepository.findIdAndTypeNameByObjectName("Bank Account List Widget")).thenReturn(Optional.of(new ListWidgetRepository.ListWidgetProjection() {
+            @Override
+            public UUID getId() {
+                return UUID.fromString(CONFIGURATION_ID);
+            }
+
+            @Override
+            public String getTypeName() {
+                return "Bank account";
+            }
+        }));
 
         LayoutDto actualDto = layoutDtoMapper.convert(layout);
         LayoutDto expectedDto = getExpectedLayoutDto(CONFIGURATION_ID);
@@ -81,6 +91,17 @@ class LayoutDtoMapperTest {
         layout.setObjectName("Layout");
 
         layout.setContents(Set.of(createContent("configuration/content/layout-content.json")));
+        when(listWidgetRepository.findIdAndTypeNameByObjectName("Bank Account List Widget")).thenReturn(Optional.of(new ListWidgetRepository.ListWidgetProjection() {
+            @Override
+            public UUID getId() {
+                return UUID.fromString(CONFIGURATION_ID);
+            }
+
+            @Override
+            public String getTypeName() {
+                return "Bank account";
+            }
+        }));
 
         LayoutDto actualDto = layoutDtoMapper.convert(layout);
         LayoutDto expectedDto = getExpectedLayoutDto("");
@@ -120,6 +141,8 @@ class LayoutDtoMapperTest {
                                 .label("Bank Account")
                                 .type(WidgetDto.WidgetType.LIST)
                                 .configuration(config)
+                                .resource("bank-account")
+                                .configuration(CONFIGURATION_ID)
                                 .build())
                         .build()))
                 .build();
