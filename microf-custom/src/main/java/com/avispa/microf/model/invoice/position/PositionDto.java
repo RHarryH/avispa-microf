@@ -18,8 +18,8 @@
 
 package com.avispa.microf.model.invoice.position;
 
-import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.ecm.util.FormatUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -73,7 +73,7 @@ public class PositionDto implements Dto {
     @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     @Digits(integer=7, fraction=2, message = VM_UNIT_PRICE_OUT_OF_RANGE)
     @Positive(message = VM_UNIT_PRICE_POSITIVE)
-    private BigDecimal unitPrice;
+    private BigDecimal unitPrice = BigDecimal.ZERO;
 
     @NumberFormat(style = NumberFormat.Style.PERCENT)
     @Digits(integer=3, fraction=2, message = VM_DISCOUNT_OUT_OF_RANGE)
