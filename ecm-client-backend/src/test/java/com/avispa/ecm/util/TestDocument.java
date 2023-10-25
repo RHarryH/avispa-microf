@@ -1,5 +1,5 @@
 /*
- * Avispa μF - invoice generating software built on top of Avispa ECM
+ * Avispa ECM - a small framework for implementing basic ECM solution
  * Copyright (C) 2023 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,31 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.context;
+package com.avispa.ecm.util;
 
-import com.avispa.ecm.model.base.dto.Dto;
-import com.avispa.ecm.model.ui.modal.page.ModalPageType;
+import com.avispa.ecm.model.document.Document;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import java.time.LocalDate;
 
 /**
  * @author Rafał Hiszpański
  */
 @Getter
 @Setter
-public final class EcmAppContext<D extends Dto> {
-    private List<ModalPageType> pages;
-
-    @Valid private D object;
-
-    private String typeName;
-    private UUID sourceId;
-
-    public ModalPageType getPageType(int pageNumber) {
-        return pages.get(pageNumber);
-    }
+@Entity
+public class TestDocument extends Document {
+    @Column(name = "issue_date", columnDefinition = "DATE")
+    private LocalDate issueDate;
 }
