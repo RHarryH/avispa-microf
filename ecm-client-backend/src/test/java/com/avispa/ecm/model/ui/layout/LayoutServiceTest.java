@@ -74,7 +74,17 @@ class LayoutServiceTest {
         ReflectionTestUtils.setField(layoutService, "layoutConfigName", "Layout");
 
         when(layoutRepository.findByObjectName("Layout")).thenReturn(Optional.of(layout));
-        when(listWidgetRepository.findIdByObjectName("Bank Account List Widget")).thenReturn(Optional.of(UUID.fromString(CONFIGURATION_ID)));
+        when(listWidgetRepository.findIdAndTypeNameByObjectName("Bank Account List Widget")).thenReturn(Optional.of(new ListWidgetRepository.ListWidgetProjection() {
+            @Override
+            public UUID getId() {
+                return UUID.fromString(CONFIGURATION_ID);
+            }
+
+            @Override
+            public String getTypeName() {
+                return "Bank account";
+            }
+        }));
 
         LayoutDto actualDto = layoutService.getConfiguration();
         LayoutDto expectedDto = getExpectedLayoutDto();
@@ -123,6 +133,7 @@ class LayoutServiceTest {
                                 .label("Bank Account")
                                 .type(WidgetDto.WidgetType.LIST)
                                 .configuration(CONFIGURATION_ID)
+                                .resource("bank-account")
                                 .build())
                         .build())
                 .build();

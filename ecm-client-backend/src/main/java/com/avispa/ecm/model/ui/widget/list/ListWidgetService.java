@@ -58,7 +58,7 @@ public class ListWidgetService {
         ListWidgetDto listWidgetDto = new ListWidgetDto();
         listWidgetDto.setDocument(Document.class.isAssignableFrom(type.getEntityClass()));
         listWidgetDto.setCaption(listWidget.getCaption());
-        listWidgetDto.setTypeName(TypeNameUtils.convertTypeNameToEndpointType(type.getObjectName()));
+        listWidgetDto.setResource(TypeNameUtils.convertTypeNameToResourceName(type.getObjectName()));
         listWidgetDto.setEmptyMessage(listWidget.getEmptyMessage());
 
         DtoObject dtoObject = dtoService.getDtoObjectFromType(type);

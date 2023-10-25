@@ -24,8 +24,7 @@ import com.avispa.ecm.model.base.BaseService;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.base.mapper.IEntityDtoMapper;
-import com.avispa.ecm.model.error.ErrorUtil;
-import com.avispa.ecm.model.ui.modal.context.EcmAppContext;
+import com.avispa.ecm.util.error.ErrorUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,12 +59,9 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
     public void add(HttpServletRequest request) {
         D dto = dtoService.createEmptyDtoInstance(request);
 
-        EcmAppContext<D> context = new EcmAppContext<>();
-        context.setObject(dto);
+        BindingResult result = dtoService.bindObjectToDto(request, dto);
 
-        BindingResult result = dtoService.bindObjectToDto(request, context);
-
-        add(context.getObject(), result);
+        add(dto, result);
     }
 
     @Override
@@ -84,12 +80,9 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
         D dto = dtoService.createEmptyDtoInstance(request);
         dto.setId(id);
 
-        EcmAppContext<D> context = new EcmAppContext<>();
-        context.setObject(dto);
+        BindingResult result = dtoService.bindObjectToDto(request, dto);
 
-        BindingResult result = dtoService.bindObjectToDto(request, context);
-
-        update(context.getObject(), result);
+        update(dto, result);
     }
 
     @Override
