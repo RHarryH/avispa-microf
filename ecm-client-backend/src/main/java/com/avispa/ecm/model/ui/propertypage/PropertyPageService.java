@@ -26,12 +26,9 @@ import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
 import com.avispa.ecm.model.configuration.upsert.Upsert;
-import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
 import com.avispa.ecm.util.exception.EcmException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * @author Rafał Hiszpański
@@ -39,48 +36,49 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PropertyPageService {
+    private static final String MISSING_PROPERTY_PAGE_ERROR = "Property page content can't be retrieved";
+
     private final ContextService contextService;
     private final PropertyPageMapper propertyPageMapper;
     private final EcmConfigRepository<PropertyPage> propertyPageRepository;
 
     /**
-     * Gets the content of property page by finding upsert configuration matching provided ECM object
-     * and by filling the labels, combo boxes, radios and other components (if any) with data from the context DTO
-     * @param ecmObject ECM object which upsert configuration will be used
+     * Gets the content of property page by finding upsert configuration matching provided ECM entity type
+     * and by filling the labels, combo boxes, radios and other components (if any) with data from the context DTO.
+     * Returned page is always available to edit.
+     * @param entityClass ECM object which upsert configuration will be used
      * @param contextDto DTO object used as context for property page
-     * @return
+     * @return property page content with values
      */
-    public PropertyPageContent getPropertyPage(EcmObject ecmObject, Dto contextDto) {
-        return getPropertyPage(ecmObject, contextDto, false);
-    }
-
-    public PropertyPageContent getPropertyPage(EcmObject ecmObject, Dto contextDto, boolean readonly) {
-        return contextService.getConfiguration(ecmObject, Upsert.class)
+    public PropertyPageContent getPropertyPage(Class<? extends EcmObject> entityClass, Dto contextDto) {
+        return contextService.getConfiguration(entityClass, Upsert.class)
                 .map(Upsert::getPropertyPage)
-                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, readonly))
-                .orElseThrow(() -> new EcmException("Property page content can't be retrieved"));
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false))
+                .orElseThrow(() -> new EcmException(MISSING_PROPERTY_PAGE_ERROR));
     }
 
     /**
      * Get property page from name only (like select source)
-     * @param name
-     * @param context
+     * @param name property page name
+     * @param context context object used to fill property page with values
      * @return
      */
-    public Optional<PropertyPageContent> getPropertyPage(String name, Object context) {
+    public PropertyPageContent getPropertyPage(String name, Object context) {
         return propertyPageRepository.findByObjectName(name)
-                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false));
+                .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false))
+                .orElseThrow(() -> new EcmException(MISSING_PROPERTY_PAGE_ERROR));
     }
 
     /**
-     * Get property page from context only
-     * @param ecmObject
-     * @param readonly
-     * @return
+     * Get property page by matching it with provided object type. Same object is later used to extract the values.
+     * Useful for read operations when conversion to DTO is not required.
+     * @param ecmObject object, which type will be used to find matching property page in the context
+     * @param readonly when true, all controls should not be available for editing
+     * @return property page content with values
      */
     public PropertyPageContent getPropertyPage(EcmObject ecmObject, boolean readonly) {
         return contextService.getConfiguration(ecmObject, PropertyPage.class)
                 .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, ecmObject, readonly))
-                .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(() -> new EcmException(MISSING_PROPERTY_PAGE_ERROR));
     }
 }
