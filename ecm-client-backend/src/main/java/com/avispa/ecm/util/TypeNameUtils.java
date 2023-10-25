@@ -29,11 +29,11 @@ public class TypeNameUtils {
 
     private TypeNameUtils() {}
 
-    public static String convertResourceIdToTypeName(String resourceId) {
+    public static String convertResourceNameToTypeName(String resourceId) {
         return StringUtils.capitalize(resourceId.trim().toLowerCase(Locale.ROOT).replace("-", " "));
     }
 
-    public static String convertTypeNameToEndpointType(String typeName) {
+    public static String convertTypeNameToResourceName(String typeName) {
         return typeName.trim().toLowerCase(Locale.ROOT).replace(" ", "-");
     }
 }
