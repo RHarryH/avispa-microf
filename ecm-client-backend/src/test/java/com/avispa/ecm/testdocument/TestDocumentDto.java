@@ -16,13 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal;
+package com.avispa.ecm.testdocument;
+
+import com.avispa.ecm.model.base.dto.Dto;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-public enum ModalMode {
-    INSERT,
-    UPDATE,
-    CLONE
+@Getter
+@Setter
+public class TestDocumentDto implements Dto {
+    private UUID id;
+
+    private String objectName;
+    private String issueDate;
+    private boolean pdfRenditionAvailable;
 }

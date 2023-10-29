@@ -25,7 +25,7 @@ import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetService;
 import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
-import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
+import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

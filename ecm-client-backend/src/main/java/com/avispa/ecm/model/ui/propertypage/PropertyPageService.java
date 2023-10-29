@@ -26,7 +26,7 @@ import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
 import com.avispa.ecm.model.configuration.upsert.Upsert;
-import com.avispa.ecm.util.exception.EcmException;
+import com.avispa.ecm.util.exception.RepositoryCorruptionError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +54,7 @@ public class PropertyPageService {
         return contextService.getConfiguration(entityClass, Upsert.class)
                 .map(Upsert::getPropertyPage)
                 .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, contextDto, false))
-                .orElseThrow(() -> new EcmException(MISSING_PROPERTY_PAGE_ERROR));
+                .orElseThrow(() -> new RepositoryCorruptionError(MISSING_PROPERTY_PAGE_ERROR));
     }
 
     /**
@@ -66,7 +66,7 @@ public class PropertyPageService {
     public PropertyPageContent getPropertyPage(String name, Object context) {
         return propertyPageRepository.findByObjectName(name)
                 .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, context, false))
-                .orElseThrow(() -> new EcmException(MISSING_PROPERTY_PAGE_ERROR));
+                .orElseThrow(() -> new RepositoryCorruptionError(MISSING_PROPERTY_PAGE_ERROR));
     }
 
     /**
@@ -79,6 +79,6 @@ public class PropertyPageService {
     public PropertyPageContent getPropertyPage(EcmObject ecmObject, boolean readonly) {
         return contextService.getConfiguration(ecmObject, PropertyPage.class)
                 .map(propertyPage -> propertyPageMapper.convertToContent(propertyPage, ecmObject, readonly))
-                .orElseThrow(() -> new EcmException(MISSING_PROPERTY_PAGE_ERROR));
+                .orElseThrow(() -> new RepositoryCorruptionError(MISSING_PROPERTY_PAGE_ERROR));
     }
 }
