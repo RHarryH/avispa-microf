@@ -22,6 +22,8 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.mapper.IEntityDtoMapper;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 
@@ -33,16 +35,10 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 public abstract class BaseService<T extends EcmObject, D extends Dto, R extends EcmObjectRepository<T>, M extends IEntityDtoMapper<T, D>> implements IBaseService<T, D> {
+    @Getter(AccessLevel.PROTECTED)
     private final R repository;
+    @Getter
     private final M entityDtoMapper;
-
-    protected R getRepository() {
-        return repository;
-    }
-
-    public M getEntityDtoMapper() {
-        return entityDtoMapper;
-    }
 
     public List<D> findAll() {
         return repository

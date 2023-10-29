@@ -27,7 +27,7 @@ import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
 import com.avispa.ecm.model.ui.widget.list.ListWidget;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetService;
-import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
+import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

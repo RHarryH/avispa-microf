@@ -16,26 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.page;
-
-import com.avispa.ecm.model.ui.modal.button.ModalButton;
-import lombok.Value;
-
-import java.util.List;
+package com.avispa.ecm.model.ui.modal;
 
 /**
  * @author Rafał Hiszpański
  */
-@Value
-public class ModalPage {
-    ModalPageType type;
-    List<ModalButton> buttons;
-
-    public void addPreviousButton() {
-        this.buttons.add(0, ModalButton.createPrevious());
-    }
-
-    public void addNextButton() {
-        this.buttons.add(ModalButton.createNext());
-    }
+public enum ModalType {
+    ADD,
+    UPDATE,
+    CLONE
 }

@@ -20,7 +20,7 @@ package com.avispa.ecm.model.ui.widget.list.mapper;
 
 import com.avispa.ecm.model.configuration.dictionary.DictionaryService;
 import com.avispa.ecm.model.ui.widget.list.dto.ListDataDto;
-import com.avispa.ecm.util.TestDocumentDto;
+import com.avispa.ecm.testdocument.TestDocumentDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;

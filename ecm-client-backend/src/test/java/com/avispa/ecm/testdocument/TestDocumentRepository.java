@@ -1,5 +1,5 @@
 /*
- * Avispa ECM - a small framework for implementing basic ECM solution
+ * Avispa μF - invoice generating software built on top of Avispa ECM
  * Copyright (C) 2023 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,23 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.util;
+package com.avispa.ecm.testdocument;
 
-import com.avispa.ecm.model.base.dto.Dto;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.UUID;
+import com.avispa.ecm.model.EcmObjectRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Rafał Hiszpański
  */
-@Getter
-@Setter
-public class TestDocumentDto implements Dto {
-    private UUID id;
-
-    private String objectName;
-    private String issueDate;
-    private boolean pdfRenditionAvailable;
+@Repository
+public interface TestDocumentRepository extends EcmObjectRepository<TestDocument> {
 }

@@ -16,40 +16,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.bankaccount;
+package com.avispa.ecm.testdocument;
 
 import com.avispa.ecm.model.base.BaseService;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-/**
- * @author Rafał Hiszpański
- */
 @Component
 @Slf4j
-public class BankAccountService extends BaseService<BankAccount, BankAccountDto, BankAccountRepository, BankAccountMapper> {
+public class TestDocumentService extends BaseService<TestDocument, TestDocumentDto, TestDocumentRepository, TestDocumentMapper> {
 
     @Autowired
-    public BankAccountService(BankAccountRepository bankAccountRepository, BankAccountMapper entityDtoMapper) {
-        super(bankAccountRepository, entityDtoMapper);
+    public TestDocumentService(TestDocumentRepository testDocumentRepository, TestDocumentMapper entityDtoMapper) {
+        super(testDocumentRepository, entityDtoMapper);
     }
 
-    @Transactional
     @Override
-    public void add(BankAccount customer) {
-        getRepository().save(customer);
+    public void add(TestDocument testDocument) {
+        getRepository().save(testDocument);
     }
 
-    @Transactional
     @Override
-    public void update(BankAccountDto customerDto) {
-        BankAccount bankAccount = findById(customerDto.getId());
-        getEntityDtoMapper().updateEntityFromDto(customerDto, bankAccount);
+    public void update(TestDocumentDto testDocumentDto) {
+        TestDocument testDocument = findById(testDocumentDto.getId());
+        getEntityDtoMapper().updateEntityFromDto(testDocumentDto, testDocument);
     }
 
     @Override
@@ -58,8 +52,8 @@ public class BankAccountService extends BaseService<BankAccount, BankAccountDto,
     }
 
     @Override
-    public BankAccount findById(UUID id) {
+    public TestDocument findById(UUID id) {
         return getRepository().findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(BankAccount.class));
+                .orElseThrow(() -> new ResourceNotFoundException(TestDocument.class));
     }
 }

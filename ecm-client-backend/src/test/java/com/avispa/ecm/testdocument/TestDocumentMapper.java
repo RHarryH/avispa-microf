@@ -16,18 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.util.error.exception;
+package com.avispa.ecm.testdocument;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.avispa.ecm.model.base.mapper.IEntityDtoMapper;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException() {
-        super("Resource not found");
-    }
-
-    public ResourceNotFoundException(Class<?> clazz) {
-        super(clazz.getSimpleName() + " not found");
-    }
+/**
+ * @author Rafał Hiszpański
+ */
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface TestDocumentMapper extends IEntityDtoMapper<TestDocument, TestDocumentDto> {
 }

@@ -20,7 +20,7 @@ package com.avispa.microf.model.invoice.controller;
 
 import com.avispa.ecm.model.base.controller.BaseController;
 import com.avispa.ecm.model.content.ContentDto;
-import com.avispa.ecm.util.error.exception.ResourceNotFoundException;
+import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.service.InvoiceService;

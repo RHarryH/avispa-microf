@@ -19,33 +19,22 @@
 package com.avispa.ecm.model.ui.modal;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
+import org.springframework.http.HttpMethod;
 
 /**
  * @author Rafał Hiszpański
  */
+@Jacksonized
 @Builder
 @Getter
-public class ModalConfiguration {
-    private String id;
-    private String title;
-    private String action;
-    private String size;
-    private ModalMode mode;
-
-    public boolean isInsertionModal() {
-        return this.mode.equals(ModalMode.INSERT);
-    }
-
-    public boolean isUpdateModal() {
-        return this.mode.equals(ModalMode.UPDATE);
-    }
-
-    public boolean isCloneModal() {
-        return this.mode.equals(ModalMode.CLONE);
-    }
-
-    public static ModalConfigurationBuilder builder(ModalMode mode) {
-        return new ModalConfigurationBuilder().mode(mode);
-    }
+@EqualsAndHashCode
+public class Action {
+    private String endpoint;
+    private HttpMethod method;
+    private String successMessage;
+    private String errorMessage;
+    private String buttonValue;
 }

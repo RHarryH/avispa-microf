@@ -1,0 +1,11 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "text",
+        "label": "Object name",
+        "property": "objectName"
+      }
+    ]
+  }
+}

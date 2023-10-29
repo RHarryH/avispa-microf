@@ -1,5 +1,5 @@
 /*
- * Avispa ECM - a small framework for implementing basic ECM solution
+ * Avispa μF - invoice generating software built on top of Avispa ECM
  * Copyright (C) 2023 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,23 +16,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.util;
+package com.avispa.ecm.model.ui.modal;
 
-import com.avispa.ecm.model.document.Document;
+import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author Rafał Hiszpański
  */
+@Jacksonized
+@Builder
 @Getter
-@Setter
-@Entity
-public class TestDocument extends Document {
-    @Column(name = "issue_date", columnDefinition = "DATE")
-    private LocalDate issueDate;
+@EqualsAndHashCode
+@ToString
+public class ModalDto {
+    private ModalType type;
+    private String title;
+    //private String size; // TODO: controllable in the future?
+
+    private String resource;
+    private Action action;
+    private PropertyPageContent propertyPage;
+    private List<ModalPageDto> pages;
 }

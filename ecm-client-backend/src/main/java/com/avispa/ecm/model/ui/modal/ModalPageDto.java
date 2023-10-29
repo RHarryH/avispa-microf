@@ -16,15 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.button;
+package com.avispa.ecm.model.ui.modal;
+
+import com.avispa.ecm.model.ui.modal.page.ModalPageType;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
+
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-public enum ModalButtonType {
-    ACCEPT,
-    REJECT,
-    PREVIOUS,
-    NEXT,
-    RESET
+@Jacksonized
+@Builder
+@Getter
+@EqualsAndHashCode
+public class ModalPageDto {
+    private ModalPageType pageType;
+    private String name;
+    private UUID propertyPageConfig;
 }
