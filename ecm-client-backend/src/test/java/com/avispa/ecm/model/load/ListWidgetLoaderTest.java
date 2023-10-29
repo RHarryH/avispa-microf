@@ -21,7 +21,7 @@ package com.avispa.ecm.model.load;
 import com.avispa.ecm.model.document.Document;
 import com.avispa.ecm.model.load.dto.ListWidgetDto;
 import com.avispa.ecm.model.type.Type;
-import com.avispa.ecm.model.type.TypeRepository;
+import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.model.ui.widget.list.ListWidget;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ class ListWidgetLoaderTest {
     private ListWidgetRepository repository;
 
     @MockBean
-    private TypeRepository typeRepository;
+    private TypeService typeService;
 
     @Autowired
     private ListWidgetLoader loader;
@@ -72,7 +72,7 @@ class ListWidgetLoaderTest {
         type.setObjectName("Document");
         type.setEntityClass(Document.class);
 
-        when(typeRepository.findByTypeName("Document")).thenReturn(type);
+        when(typeService.getType("Document")).thenReturn(type);
         when(repository.findByObjectName(configName)).thenReturn(Optional.empty());
 
         loader.load(dto, true);
