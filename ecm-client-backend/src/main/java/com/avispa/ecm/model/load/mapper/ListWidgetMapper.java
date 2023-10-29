@@ -21,7 +21,7 @@ package com.avispa.ecm.model.load.mapper;
 import com.avispa.ecm.model.configuration.load.mapper.EcmConfigMapper;
 import com.avispa.ecm.model.load.dto.ListWidgetDto;
 import com.avispa.ecm.model.type.Type;
-import com.avispa.ecm.model.type.TypeRepository;
+import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.model.ui.widget.list.ListWidget;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class ListWidgetMapper implements EcmConfigMapper<ListWidget, ListWidgetDto> {
     @Autowired
-    private TypeRepository typeRepository;
+    private TypeService typeService;
 
     @Override
     @Mapping(source = "name", target = "objectName")
@@ -47,6 +47,6 @@ public abstract class ListWidgetMapper implements EcmConfigMapper<ListWidget, Li
     public abstract void updateEntityFromDto(ListWidgetDto dto, @MappingTarget ListWidget entity);
 
     protected Type typeNameToType(String typeName) {
-        return typeRepository.findByTypeName(typeName);
+        return typeService.getType(typeName);
     }
 }
