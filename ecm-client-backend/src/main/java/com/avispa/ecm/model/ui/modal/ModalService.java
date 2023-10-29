@@ -19,128 +19,94 @@
 package com.avispa.ecm.model.ui.modal;
 
 import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.EcmObjectService;
 import com.avispa.ecm.model.base.dto.Dto;
-import com.avispa.ecm.model.configuration.propertypage.content.control.Table;
-import com.avispa.ecm.model.type.TypeService;
-import com.avispa.ecm.model.ui.modal.context.EcmAppContext;
-import com.avispa.ecm.model.ui.modal.page.ModalPage;
-import com.avispa.ecm.model.ui.modal.page.ModalPageService;
+import com.avispa.ecm.model.base.dto.DtoObject;
+import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.ui.modal.page.ModalPageType;
 import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
+import com.avispa.ecm.util.TypeNameUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Locale;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-@Service
+@Component
 @RequiredArgsConstructor
-@Slf4j
 public class ModalService {
-    private final ModalPageService modalPageService;
     private final PropertyPageService propertyPageService;
-    private final TypeService typeService;
+    private final EcmObjectService ecmObjectService;
+    private final DtoService dtoService;
 
-    /**
-     * Returns modal instance. This version of method works with already existing DTOs. Useful for
-     * updates.
-     * @param modal modal configuration
-     * @param entity ECM object
-     * @param contextTypedDto DTO object
-     * @return
-     */
-    public ModelMap constructModal(ModalConfiguration modal, EcmObject entity, Dto contextTypedDto) {
-        ModelMap modelMap = new ModelMap();
-        List<ModalPage> modalPages = new ArrayList<>();
+    public ModalDto getAddModal(String resourceName) {
+        String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
 
-        EcmAppContext<Dto> context = new EcmAppContext<>();
-        context.setTypeName(typeService.getTypeName(entity.getClass()));
-        context.setObject(contextTypedDto);
+        // in these cases we're creating an empty instance of entity and dto so there is no need
+        // to check the discriminator
+        DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
 
-        if(modal.isCloneModal()) {
-            initCloneModal(modelMap, modalPages, context);
-        } else {
-            initUpsertModal(modal, modelMap, modalPages, entity, context);
-        }
+        // usage of Dto enables usage of default values, without that we can get empty values/table rows but the property
+        // page will display normally, generally speaking the need of Dto here has been significantly reduced
+        // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
+        Dto dto = BeanUtils.instantiateClass(dtoObject.getDtoClass());
 
-        addNavigationButtons(modalPages);
+        var propertyPageContent = propertyPageService.getPropertyPage(dtoObject.getType().getEntityClass(), dto);
 
-        context.setPages(modalPages.stream().map(ModalPage::getType).collect(Collectors.toList()));
-
-        modelMap.addAttribute("pages", modalPages);
-        modelMap.addAttribute("modal", modal);
-
-        modelMap.addAttribute("context", context);
-
-        return modelMap;
+        return ModalDto.builder()
+                .title("Add new " + typeName.toLowerCase(Locale.ROOT))
+                .type(ModalType.ADD)
+                .resource(resourceName)
+                .propertyPage(propertyPageContent)
+                .action(Action.builder()
+                        .endpoint(resourceName)
+                        .method(HttpMethod.POST)
+                        .successMessage(typeName + " added successfully!")
+                        .errorMessage(typeName + " adding failed!")
+                        .buttonValue("Add")
+                        .build())
+                .pages(List.of(ModalPageDto.builder()
+                        .name(ModalPageType.PROPERTIES.getName())
+                        .pageType(ModalPageType.PROPERTIES)
+                        .propertyPageConfig(propertyPageContent.getId())
+                        .build()))
+                .build();
     }
 
-    private void initCloneModal(ModelMap modelMap, List<ModalPage> modalPages, EcmAppContext<Dto> context) {
-        modalPages.add(modalPageService.createSourceModalPage());
-        modalPages.add(modalPageService.createInsertionModalPage());
+    public ModalDto getUpdateModal(String resourceName, UUID id) {
+        String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
 
-        modalPageService.createSelectSourcePropertyPage(modelMap, context);
-    }
+        EcmObject entity = ecmObjectService.getEcmObjectFrom(id, typeName);
+        // usage of Dto enables usage of default values, without that we can get empty values/table rows but the property
+        // page will display normally, generally speaking the need of Dto here has been significantly reduced
+        // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
+        Dto dto = dtoService.convertObjectToDto(entity);
 
-    private void initUpsertModal(ModalConfiguration modal, ModelMap modelMap, List<ModalPage> modalPages, EcmObject entity, EcmAppContext<Dto> context) {
-        if(modal.isUpdateModal()) {
-            modalPages.add(modalPageService.createUpdateModalPage());
-        } else {
-            modalPages.add(modalPageService.createInsertionModalPage());
-        }
+        var propertyPageContent = propertyPageService.getPropertyPage(entity.getClass(), dto);
 
-        modalPageService.createPropertiesPropertyPage(modelMap, entity, context);
-    }
-
-    private void addNavigationButtons(List<ModalPage> modalPages) {
-        if(modalPages.size() > 1) {
-            for (int i = 0; i < modalPages.size(); i++) {
-                ModalPage modalPage = modalPages.get(i);
-                if(i > 0) {
-                    modalPage.addPreviousButton();
-                }
-                if(i < modalPages.size() - 1) {
-                    modalPage.addNextButton();
-                }
-            }
-        }
-    }
-
-    public ModelMap loadPage(EcmAppContext<Dto> context, EcmObject entity, int pageNumber) {
-        ModelMap modelMap = new ModelMap();
-        ModalPageType pageType = context.getPageType(pageNumber);
-
-        switch(pageType) {
-            case SELECT_SOURCE:
-                modalPageService.createSelectSourcePropertyPage(modelMap, context);
-                break;
-            case PROPERTIES:
-                modalPageService.createPropertiesPropertyPage(modelMap, entity, context);
-                break;
-            default:
-                break;
-        }
-
-        modelMap.addAttribute("context", context);
-
-        return modelMap;
-    }
-
-    public ModelMap getTableTemplateRow(String tableName, Class<? extends EcmObject> entityClass, Class<? extends Dto> dtoClass) {
-        Table table = propertyPageService.getTable(tableName, entityClass, dtoClass);
-        ModelMap modelMap = new ModelMap();
-
-        modelMap.addAttribute("control", table);
-        modelMap.addAttribute("readonly", false);
-        modelMap.addAttribute("context",  BeanUtils.instantiateClass(table.getPropertyType()));
-
-        return modelMap;
+        return ModalDto.builder()
+                .title("Update " + typeName.toLowerCase(Locale.ROOT))
+                .type(ModalType.UPDATE)
+                .resource(resourceName)
+                .propertyPage(propertyPageContent)
+                .action(Action.builder()
+                        .endpoint(resourceName + "/" + id)
+                        .method(HttpMethod.POST)
+                        .successMessage(typeName + " updated successfully!")
+                        .errorMessage(typeName + " updating failed!")
+                        .buttonValue("Update")
+                        .build())
+                .pages(List.of(ModalPageDto.builder()
+                        .name(ModalPageType.PROPERTIES.getName())
+                        .pageType(ModalPageType.PROPERTIES)
+                        .propertyPageConfig(propertyPageContent.getId())
+                        .build()))
+                .build();
     }
 }

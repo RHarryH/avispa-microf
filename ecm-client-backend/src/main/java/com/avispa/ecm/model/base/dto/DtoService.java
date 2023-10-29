@@ -23,6 +23,7 @@ import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.util.GenericService;
 import com.avispa.ecm.util.TypeNameUtils;
+import com.avispa.ecm.util.exception.RepositoryCorruptionError;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -102,11 +103,13 @@ public class DtoService {
     }
 
     public DtoObject getDtoObjectFromTypeName(String typeName) {
-        return dtoRepository.findByTypeNameAndDiscriminatorIsNull(typeName).orElseThrow();
+        return dtoRepository.findByTypeNameAndDiscriminatorIsNull(typeName)
+                .orElseThrow(() -> new RepositoryCorruptionError("Can't find Dto object for " + typeName + " type"));
     }
 
     public DtoObject getDtoObjectFromType(Type type) {
-        return dtoRepository.findByTypeAndDiscriminatorIsNull(type).orElseThrow();
+        return dtoRepository.findByTypeAndDiscriminatorIsNull(type)
+                .orElseThrow(() -> new RepositoryCorruptionError("Can't find Dto object for " + type.getObjectName() + " type"));
     }
 
     public Dto convertObjectToDto(EcmObject object) {
