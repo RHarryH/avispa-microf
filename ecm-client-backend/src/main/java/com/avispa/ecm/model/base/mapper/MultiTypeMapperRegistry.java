@@ -30,18 +30,18 @@ import java.util.Map;
 @Scope("prototype")
 public class MultiTypeMapperRegistry {
 
-    private final Map<String, IEntityDtoMapper<? extends EcmObject, ? extends Dto>> registry = new HashMap<>();
+    private final Map<String, EntityDtoMapper<? extends EcmObject, ? extends Dto>> registry = new HashMap<>();
 
-    public void registerMapper(String discriminator, IEntityDtoMapper<? extends EcmObject, ? extends Dto> mapper) {
+    public void registerMapper(String discriminator, EntityDtoMapper<? extends EcmObject, ? extends Dto> mapper) {
         registry.put(discriminator, mapper);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends EcmObject, D extends Dto> IEntityDtoMapper<T, D> getMapper(String discriminator) {
+    public <T extends EcmObject, D extends Dto> EntityDtoMapper<T, D> getMapper(String discriminator) {
         if (!registry.containsKey(discriminator)) {
             throw new IllegalArgumentException("Missing registry entry for discriminator " + discriminator);
         }
 
-        return (IEntityDtoMapper<T, D>) registry.get(discriminator);
+        return (EntityDtoMapper<T, D>) registry.get(discriminator);
     }
 }

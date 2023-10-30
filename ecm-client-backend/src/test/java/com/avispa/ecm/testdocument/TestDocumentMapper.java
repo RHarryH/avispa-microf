@@ -18,7 +18,7 @@
 
 package com.avispa.ecm.testdocument;
 
-import com.avispa.ecm.model.base.mapper.IEntityDtoMapper;
+import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -27,5 +27,5 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
  * @author Rafał Hiszpański
  */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface TestDocumentMapper extends IEntityDtoMapper<TestDocument, TestDocumentDto> {
+public interface TestDocumentMapper extends EntityDtoMapper<TestDocument, TestDocumentDto> {
 }
