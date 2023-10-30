@@ -24,7 +24,7 @@ import com.avispa.microf.model.invoice.payment.PaymentMapper;
 import com.avispa.microf.model.invoice.position.Position;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import com.avispa.microf.model.invoice.position.PositionMapper;
-import com.avispa.ecm.model.base.mapper.IEntityDtoMapper;
+import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
 import com.google.common.collect.MoreCollectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -39,7 +39,7 @@ import java.util.UUID;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = {PositionMapper.class, PaymentMapper.class})
-public abstract class InvoiceMapper implements IEntityDtoMapper<Invoice, InvoiceDto> {
+public abstract class InvoiceMapper implements EntityDtoMapper<Invoice, InvoiceDto> {
     // not required when componentModel = "spring", can be autowired
     //InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
 
