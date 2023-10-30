@@ -28,7 +28,7 @@ import javax.annotation.PostConstruct;
 /**
  * @author Rafał Hiszpański
  */
-public abstract class MultiTypeEntityDtoMapper<T extends EcmObject, D extends Dto> implements IEntityDtoMapper<T, D> {
+public abstract class MultiTypeEntityDtoMapper<T extends EcmObject, D extends Dto> implements EntityDtoMapper<T, D> {
     @Autowired
     private MultiTypeMapperRegistry multiTypeMapperRegistry;
 
@@ -56,7 +56,7 @@ public abstract class MultiTypeEntityDtoMapper<T extends EcmObject, D extends Dt
         getActualMapper(getDiscriminator(dto)).updateEntityFromDto(dto, entity);
     }
 
-    private <A extends EcmObject, B extends Dto> IEntityDtoMapper<A, B> getActualMapper(String discriminator) {
+    private <A extends EcmObject, B extends Dto> EntityDtoMapper<A, B> getActualMapper(String discriminator) {
         return multiTypeMapperRegistry.getMapper(discriminator);
     }
 

@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Rafał Hiszpański
  */
 @Transactional
-public interface IEntityDtoMapper<T extends EcmObject, D extends Dto> {
+public interface EntityDtoMapper<T extends EcmObject, D extends Dto> {
     D convertToDto(T entity);
     T convertToEntity(D dto);
     void updateEntityFromDto(D dto, @MappingTarget T entity);

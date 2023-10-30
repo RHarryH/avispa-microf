@@ -23,7 +23,7 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.base.BaseService;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.dto.DtoService;
-import com.avispa.ecm.model.base.mapper.IEntityDtoMapper;
+import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
 import com.avispa.ecm.util.error.ErrorUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Slf4j
-public abstract class BaseController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends EcmEntityRepository<T>, ? extends IEntityDtoMapper<T, D>>> implements IBaseController<D>, IBaseModalableController {
+public abstract class BaseController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements IBaseController<D>, IBaseModalableController {
     @Getter
     private final S service;
 

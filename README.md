@@ -160,6 +160,44 @@ Available actuator endpoints:
 3. Paid amount date is available only if paid amount is greater than 0.00
 4. If paid amount is greater than the gross value then we have an excess payment what will be noted on the invoice
 
+## Extension to types
+
+Types logic from Avispa ECM is extended introducing concept of _validation types_. In fact, they are a typical DTOs
+which separates model from the user preventing from malicious manipulation of data, which is not intended to be changed.
+Validation types are additionally a validation layer by leveraging [JSR-303](https://beanvalidation.org/1.0/spec/)
+specification and a source of default values for objects.
+
+Validation types are not required if the type is not supposed to be configured via UI. Otherwise, a several steps are 
+required to fully register type. Please note that the proposed "framework", which will be described below does not 
+anticipate the read of the data as it is implemented by appropriate widgets with the use of Property Pages. Therefore, 
+by default only add, update and delete operations are supported, but it can be easily extended.
+
+### Adding validation type to existing type
+
+Validation type is represented by a class implementing `Dto` interface. It can contain any fields we need from the
+original object or custom ones, which can be later remapped to the actual object.
+
+Validation type has to be registered in dedicated `DTO_OBJECT` table and mapped to specific type. Multiple validation
+types can be assigned to single type. The validation type, which will be used for mapping will be determined by
+discriminator value set on the type and provided in `DTO_OBJECT.DISCRIMINATOR` column.
+
+### Registering custom type into ECM Client
+
+In order to register type in ECM Client following classes has to be created:
+
+- **Repository** extending or implementing `EcmObjectRepository` interface. It can contain additional custom methods. It is a typical [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/) repository.
+- **Mapper** which implements `EntityDtoMapper` interface in order to define mapping of properties between object and validation object. It is recommended to use [MapStruct](https://mapstruct.org/) library.
+- **Service** which extends `BaseService` class and is used to implement business logic
+- **Controller** extending `BaseController` class to create REST endpoints
+
+### Multiple validation types
+
+As was already mentioned, it is possible to use multiple validation types for single type with use of discriminator
+feature. Apart from annotating type with `@TypeDiscriminator` annotation and registering validation types in 
+`DTO_OBJECT` table it is required to create separate mappers for each validation type plus an "uber" mapper extending
+from `MultiTypeEntityDtoMapper` class instead of `EntityDtoMapper` interface. This class requires to implement
+`registerMappers` method to map discriminator values to concrete mappers.
+
 ## Known issues
 
 ### General
@@ -189,11 +227,3 @@ when working with DTOs in MicroF.
 5. Default values defined on DTO level will be inserted to the database even if we don't want to (for instance the field
    is invisible on the Property Page and wasn't sent to the server by frontend).
 6. Overall additional work needed to introduce new object
-
-#### Proposed solution
-
-1. Complete removal of DTOs
-2. Dictionaries, display names and default values can be moved to the extended Type object (in form of JSON Content or
-   database tables)
-3. Not sure what about validation - can annotation be still used on the object level or the validation should be written
-   manually?

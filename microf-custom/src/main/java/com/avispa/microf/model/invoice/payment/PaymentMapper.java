@@ -20,7 +20,7 @@ package com.avispa.microf.model.invoice.payment;
 
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.bankaccount.BankAccountRepository;
-import com.avispa.ecm.model.base.mapper.IEntityDtoMapper;
+import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
 import org.apache.logging.log4j.util.Strings;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -34,7 +34,7 @@ import java.util.UUID;
  * @author Rafał Hiszpański
  */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public abstract class PaymentMapper implements IEntityDtoMapper<Payment, PaymentDto> {
+public abstract class PaymentMapper implements EntityDtoMapper<Payment, PaymentDto> {
 
     @Autowired
     private BankAccountRepository bankAccountRepository;
