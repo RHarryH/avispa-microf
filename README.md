@@ -187,8 +187,8 @@ In order to register type in ECM Client following classes has to be created:
 
 - **Repository** extending or implementing `EcmObjectRepository` interface. It can contain additional custom methods. It is a typical [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/) repository.
 - **Mapper** which implements `EntityDtoMapper` interface in order to define mapping of properties between object and validation object. It is recommended to use [MapStruct](https://mapstruct.org/) library.
-- **Service** which extends `BaseService` class and is used to implement business logic
-- **Controller** extending `BaseController` class to create REST endpoints
+- **Service** which extends `BaseEcmService` class and is used to implement business logic
+- **Controller** extending `BaseEcmController` class to create custom REST endpoints
 
 ### Multiple validation types
 

@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.invoice.controller;
 
-import com.avispa.ecm.model.base.controller.BaseController;
+import com.avispa.ecm.model.base.controller.BaseEcmController;
 import com.avispa.ecm.model.content.ContentDto;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import com.avispa.microf.model.invoice.Invoice;
@@ -51,7 +51,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/v1/invoice")
-public class InvoiceController extends BaseController<Invoice, InvoiceDto, InvoiceService> {
+public class InvoiceController extends BaseEcmController<Invoice, InvoiceDto, InvoiceService> {
 
     public InvoiceController(InvoiceService service) {
         super(service);

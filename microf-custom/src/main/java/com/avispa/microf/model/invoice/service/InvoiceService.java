@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.invoice.service;
 
-import com.avispa.ecm.model.base.BaseService;
+import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.model.configuration.callable.autolink.Autolink;
 import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
 import com.avispa.ecm.model.configuration.context.ContextService;
@@ -57,7 +57,7 @@ import java.util.UUID;
  */
 @Component
 @Slf4j
-public class InvoiceService extends BaseService<Invoice, InvoiceDto, InvoiceRepository, InvoiceMapper> {
+public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceRepository, InvoiceMapper> {
     private final InvoiceDataConverter invoiceDataConverter;
 
     private final ContentService contentService;

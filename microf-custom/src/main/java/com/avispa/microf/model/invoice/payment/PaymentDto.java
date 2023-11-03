@@ -18,15 +18,17 @@
 
 package com.avispa.microf.model.invoice.payment;
 
+import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
-import com.avispa.ecm.model.base.dto.Dto;
-import com.avispa.ecm.util.FormatUtils;
+import com.avispa.ecm.util.json.MoneyDeserializer;
+import com.avispa.ecm.util.json.MoneySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Digits;
@@ -57,11 +59,12 @@ public class PaymentDto implements Dto {
     @DisplayName("Method")
     private String method = "BANK_TRANSFER";
 
-    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     @Digits(integer=7, fraction=2, message = VM_PAID_AMOUNT_IN_RANGE)
     @PositiveOrZero(message = VM_PAID_AMOUNT_POSITIVE_OR_ZERO)
     @NotNull(message = VM_PAID_AMOUNT_NOT_NULL)
     @DisplayName("Paid amount")
+    @JsonSerialize(using = MoneySerializer.class)
+    @JsonDeserialize(using = MoneyDeserializer.class)
     private BigDecimal paidAmount = BigDecimal.ZERO;
 
     @DisplayName("Paid amount date")

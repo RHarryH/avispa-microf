@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.ecm.model.base.controller.BaseController;
+import com.avispa.ecm.model.base.controller.BaseEcmController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -37,7 +37,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/bank-account")
 @Slf4j
-public class BankAccountController extends BaseController<BankAccount, BankAccountDto, BankAccountService> {
+public class BankAccountController extends BaseEcmController<BankAccount, BankAccountDto, BankAccountService> {
 
     @Autowired
     public BankAccountController(BankAccountService bankAccountService) {

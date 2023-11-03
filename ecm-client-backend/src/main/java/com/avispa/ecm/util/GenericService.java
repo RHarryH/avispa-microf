@@ -18,9 +18,9 @@
 
 package com.avispa.ecm.util;
 
-import com.avispa.ecm.model.base.BaseService;
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
+import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,19 +39,19 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class GenericService {
-    private final List<BaseService<? extends EcmObject, ? extends Dto, ? extends EcmObjectRepository<? extends EcmObject>, ?>> services;
+    private final List<BaseEcmService<? extends EcmObject, ? extends Dto, ? extends EcmObjectRepository<? extends EcmObject>, ?>> services;
 
     @SuppressWarnings("unchecked")
-    public BaseService<EcmObject, Dto, EcmObjectRepository<EcmObject>, EntityDtoMapper<EcmObject, Dto>> getService(Class<? extends EcmObject> entityClass) {
-        return (BaseService<EcmObject, Dto, EcmObjectRepository<EcmObject>, EntityDtoMapper<EcmObject, Dto>>) services.stream().filter(service -> {
+    public BaseEcmService<EcmObject, Dto, EcmObjectRepository<EcmObject>, EntityDtoMapper<EcmObject, Dto>> getService(Class<? extends EcmObject> entityClass) {
+        return (BaseEcmService<EcmObject, Dto, EcmObjectRepository<EcmObject>, EntityDtoMapper<EcmObject, Dto>>) services.stream().filter(service -> {
                     Class<?> serviceEntityClass = getServiceEntity(service.getClass());
                     return entityClass.equals(serviceEntityClass);
                 }).findFirst().orElseThrow();
     }
 
     private Class<?> getServiceEntity(Class<?> serviceClass) {
-        Map<TypeVariable<?>, Type> typeArgs  = TypeUtils.getTypeArguments(serviceClass, BaseService.class);
-        TypeVariable<?> argTypeParam =  BaseService.class.getTypeParameters()[0];
+        Map<TypeVariable<?>, Type> typeArgs  = TypeUtils.getTypeArguments(serviceClass, BaseEcmService.class);
+        TypeVariable<?> argTypeParam =  BaseEcmService.class.getTypeParameters()[0];
         java.lang.reflect.Type argType = typeArgs.get(argTypeParam);
         return TypeUtils.getRawType(argType, null);
     }
