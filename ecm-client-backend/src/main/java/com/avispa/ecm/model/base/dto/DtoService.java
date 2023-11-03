@@ -22,23 +22,20 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.util.GenericService;
-import com.avispa.ecm.util.TypeNameUtils;
+import com.avispa.ecm.util.error.EcmDtoValidator;
+import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.ecm.util.exception.RepositoryCorruptionError;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.PropertyValues;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.ServletRequestParameterPropertyValues;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  * @author Rafał Hiszpański
@@ -47,95 +44,103 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class DtoService {
+    private static final String DTO_OBJECT_NOT_FOUND = "Can't find Dto object for %s type";
+
     private final DtoRepository dtoRepository;
+    private final GenericService genericService;
     private final TypeService typeService;
 
-    private final WebDataBinderFactory dataBinderFactory;
-
-    private final GenericService genericService;
+    private final ObjectMapper objectMapper;
+    private final EcmDtoValidator validator;
 
     /**
-     * Extracts
-     * @param request
-     * @param <D>
+     * Converts JSON to Dto object based on the type name and discriminator value if exists. The Dto is validated
+     * against JSR-303 specification.
+     * @param reader source JSON
+     * @param typeName name of the type to which the JSON should be converted
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public <D extends Dto> D createEmptyDtoInstance(HttpServletRequest request) {
-        String typeName = extractTypeName(request);
+    public <D extends Dto> D parse(BufferedReader reader, String typeName) {
+        return parse(reader, typeName, null);
+    }
+
+    /**
+     * Converts JSON to Dto object based on the type name and discriminator value if exists. The Dto is validated
+     * against JSR-303 specification. It is possible to enrich the converted Dto with custom data.
+     * @param reader source JSON
+     * @param typeName name of the type to which the JSON should be converted
+     * @param enrichConsumer consumer for enriching the data
+     * @return
+     */
+    public <D extends Dto> D parse(BufferedReader reader, String typeName, Consumer<D> enrichConsumer) {
         Class<? extends EcmObject> entityClass = typeService.getType(typeName).getEntityClass();
-        String typeDiscriminatorName = typeService.getTypeDiscriminatorFromAnnotation(entityClass);
+        String typeDiscriminatorName = TypeService.getTypeDiscriminatorFromAnnotation(entityClass);
 
-        Optional<DtoObject> dtoObject;
-        if(StringUtils.isNotEmpty(typeDiscriminatorName)) {
-            String value = request.getParameter(typeDiscriminatorName);
-            dtoObject = dtoRepository.findByEntityClassAndDiscriminator(entityClass, value);
-        } else {
-            dtoObject = getDtoObject(entityClass);
+        // convert json to appropriate Dto
+        D dto = StringUtils.isNotEmpty(typeDiscriminatorName) ?
+                getDtoWithDiscriminator(reader, typeName, typeDiscriminatorName, entityClass) :
+                getDtoWithoutDiscriminator(reader, typeName, entityClass);
+
+        // enrich dto with additional details if required
+        if(null != enrichConsumer) {
+            enrichConsumer.accept(dto);
         }
 
-        return (D) dtoObject
-                .map(d -> BeanUtils.instantiateClass(d.getDtoClass()))
-                .orElseThrow();
+        // validate dto using JSR-303
+        validator.validate(dto);
+
+        return dto;
     }
 
-    /**
-     * Extract type name from the URI
-     * the pattern for the url is "v1/<type_name>/<others>"
-     *
-     * @param request
-     * @return
-     */
-    private static String extractTypeName(HttpServletRequest request) {
-        var requestUri = request.getRequestURI();
-        var paths = requestUri.split("/");
-        if(paths.length < 2) {
-            throw new IllegalStateException("Cannot extract type from request path");
-        } else {
-            return TypeNameUtils.convertResourceNameToTypeName(paths[2]);
+    @SuppressWarnings("unchecked")
+    private <D extends Dto> D getDtoWithDiscriminator(BufferedReader reader, String typeName, String typeDiscriminatorName, Class<? extends EcmObject> entityClass) {
+        try {
+            // convert json to tree
+            JsonNode node = objectMapper.readTree(reader);
+
+            // extract discriminator value
+            String value = node.findPath(typeDiscriminatorName).textValue();
+
+            return (D) dtoRepository
+                    .findByEntityClassAndDiscriminator(entityClass, value)
+                    .map(dtoObject -> {
+                        try {
+                            return objectMapper.treeToValue(node, dtoObject.getDtoClass());
+                        } catch (JsonProcessingException e) {
+                            throw new RepositoryCorruptionError("A", e);
+                        }
+                    })
+                    .orElseThrow(() -> new RepositoryCorruptionError(String.format(DTO_OBJECT_NOT_FOUND, typeName)));
+        } catch (IOException e) {
+            throw new EcmException("Cannot parse request data", e);
         }
     }
 
-    private Optional<DtoObject> getDtoObject(Class<? extends EcmObject> entityClass) {
-        Optional<DtoObject> dtoObject;
-        dtoObject = dtoRepository.findByEntityClassAndDiscriminatorIsNull(entityClass);
-        return dtoObject;
+    @SuppressWarnings("unchecked")
+    private <D extends Dto> D getDtoWithoutDiscriminator(BufferedReader reader, String typeName, Class<? extends EcmObject> entityClass) {
+        return  (D) dtoRepository
+                .findByEntityClassAndDiscriminatorIsNull(entityClass)
+                .map(dtoObject -> {
+                    try {
+                        return objectMapper.readValue(reader, dtoObject.getDtoClass());
+                    } catch (IOException e) {
+                        throw new RepositoryCorruptionError("A", e);
+                    }
+                })
+                .orElseThrow(() -> new RepositoryCorruptionError(String.format(DTO_OBJECT_NOT_FOUND, typeName)));
     }
 
     public DtoObject getDtoObjectFromTypeName(String typeName) {
         return dtoRepository.findByTypeNameAndDiscriminatorIsNull(typeName)
-                .orElseThrow(() -> new RepositoryCorruptionError("Can't find Dto object for " + typeName + " type"));
+                .orElseThrow(() -> new RepositoryCorruptionError(String.format(DTO_OBJECT_NOT_FOUND, typeName)));
     }
 
     public DtoObject getDtoObjectFromType(Type type) {
         return dtoRepository.findByTypeAndDiscriminatorIsNull(type)
-                .orElseThrow(() -> new RepositoryCorruptionError("Can't find Dto object for " + type.getObjectName() + " type"));
+                .orElseThrow(() -> new RepositoryCorruptionError(String.format(DTO_OBJECT_NOT_FOUND, type.getObjectName())));
     }
 
     public Dto convertObjectToDto(EcmObject object) {
         return genericService.getService(object.getClass()).getEntityDtoMapper().convertToDto(object);
-    }
-
-    public <D extends Dto> BindingResult bindObjectToDto(HttpServletRequest request, D context) {
-        BindingResult result = null;
-
-        try {
-            WebDataBinder binder = dataBinderFactory.createBinder(new ServletWebRequest(request), context, "context");
-            result = bindObjectToDto(request, binder);
-        } catch(Exception e) {
-            log.error("ERROR", e);
-        }
-
-        return result;
-    }
-
-    private BindingResult bindObjectToDto(ServletRequest request, WebDataBinder binder) {
-        PropertyValues propertyValues = new ServletRequestParameterPropertyValues(request);
-
-        binder.bind(propertyValues); // bind to the target object
-        binder.validate(); // validate the target object
-
-        // get BindingResult that includes any validation errors
-        return binder.getBindingResult();
     }
 }

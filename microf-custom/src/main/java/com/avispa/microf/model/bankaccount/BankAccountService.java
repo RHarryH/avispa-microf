@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.ecm.model.base.BaseService;
+import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import java.util.UUID;
  */
 @Component
 @Slf4j
-public class BankAccountService extends BaseService<BankAccount, BankAccountDto, BankAccountRepository, BankAccountMapper> {
+public class BankAccountService extends BaseEcmService<BankAccount, BankAccountDto, BankAccountRepository, BankAccountMapper> {
 
     @Autowired
     public BankAccountService(BankAccountRepository bankAccountRepository, BankAccountMapper entityDtoMapper) {

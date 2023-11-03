@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.customer;
 
-import com.avispa.ecm.model.base.controller.BaseController;
+import com.avispa.ecm.model.base.controller.BaseEcmController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -36,7 +36,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/customer")
 @Slf4j
-public class CustomerController extends BaseController<Customer, CustomerDto, CustomerService> {
+public class CustomerController extends BaseEcmController<Customer, CustomerDto, CustomerService> {
 
     public CustomerController(CustomerService service) {
         super(service);
