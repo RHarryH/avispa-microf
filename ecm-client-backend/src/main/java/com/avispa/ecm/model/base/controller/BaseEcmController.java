@@ -20,22 +20,22 @@ package com.avispa.ecm.model.base.controller;
 
 import com.avispa.ecm.model.EcmEntityRepository;
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.base.BaseService;
+import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
-import com.avispa.ecm.util.error.ErrorUtil;
+import com.avispa.ecm.util.TypeNameUtils;
+import com.avispa.ecm.util.exception.EcmException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -43,7 +43,7 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 @Slf4j
-public abstract class BaseController<T extends EcmObject, D extends Dto, S extends BaseService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements IBaseController<D>, IBaseModalableController {
+public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S extends BaseEcmService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements EcmController<D>, EcmModalableController {
     @Getter
     private final S service;
 
@@ -57,19 +57,16 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
     @PostMapping
     @Override
     public void add(HttpServletRequest request) {
-        D dto = dtoService.createEmptyDtoInstance(request);
-
-        BindingResult result = dtoService.bindObjectToDto(request, dto);
-
-        add(dto, result);
+        try {
+            D dto = dtoService.parse(request.getReader(), extractTypeName(request));
+            add(dto);
+        } catch (IOException e) {
+            throw new EcmException("Cannot get request data", e);
+        }
     }
 
     @Override
-    public void add(D dto, BindingResult result) {
-        if(result.hasErrors()) {
-            ErrorUtil.processErrors(HttpStatus.BAD_REQUEST, result);
-        }
-
+    public void add(D dto) {
         T object = service.getEntityDtoMapper().convertToEntity(dto);
         service.add(object);
     }
@@ -77,20 +74,18 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
     @PostMapping("/{id}")
     @Override
     public void update(HttpServletRequest request, @PathVariable("id") UUID id) {
-        D dto = dtoService.createEmptyDtoInstance(request);
-        dto.setId(id);
-
-        BindingResult result = dtoService.bindObjectToDto(request, dto);
-
-        update(dto, result);
+        try {
+            update(dtoService.parse(request.getReader(),
+                    extractTypeName(request),
+                    dto -> dto.setId(id)
+            ));
+        } catch (IOException e) {
+            throw new EcmException("Cannot get request data", e);
+        }
     }
 
     @Override
-    public void update(D dto, BindingResult result) {
-        if(result.hasErrors()) {
-            ErrorUtil.processErrors(HttpStatus.BAD_REQUEST, result);
-        }
-
+    public void update(D dto) {
         service.update(dto);
     }
 
@@ -98,5 +93,22 @@ public abstract class BaseController<T extends EcmObject, D extends Dto, S exten
     @Override
     public void delete(@PathVariable("id") UUID id) {
         service.delete(id);
+    }
+
+    /**
+     * Extract type name from the URI
+     * the pattern for the url is "v1/<type_name>/<others>"
+     *
+     * @param request
+     * @return
+     */
+    private static String extractTypeName(HttpServletRequest request) {
+        var requestUri = request.getRequestURI();
+        var paths = requestUri.split("/");
+        if(paths.length < 2) {
+            throw new IllegalStateException("Cannot extract type from request path");
+        } else {
+            return TypeNameUtils.convertResourceNameToTypeName(paths[2]);
+        }
     }
 }

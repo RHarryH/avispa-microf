@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * @author Rafał Hiszpański
  */
 @RequiredArgsConstructor
-public abstract class BaseService<T extends EcmObject, D extends Dto, R extends EcmObjectRepository<T>, M extends EntityDtoMapper<T, D>> implements IBaseService<T, D> {
+public abstract class BaseEcmService<T extends EcmObject, D extends Dto, R extends EcmObjectRepository<T>, M extends EntityDtoMapper<T, D>> implements EcmService<T, D> {
     @Getter(AccessLevel.PROTECTED)
     private final R repository;
     @Getter

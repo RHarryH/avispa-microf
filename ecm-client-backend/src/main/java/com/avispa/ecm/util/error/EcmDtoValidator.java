@@ -18,27 +18,33 @@
 
 package com.avispa.ecm.util.error;
 
+import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.util.exception.EcmException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.stereotype.Component;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Rafał Hiszpański
  */
 @Slf4j
-public class ErrorUtil {
+@Component
+@RequiredArgsConstructor
+public class EcmDtoValidator {
 
-    private ErrorUtil() {
+    private final Validator validator;
 
-    }
-
-    public static void processErrors(HttpStatus status, BindingResult result) {
-        result.getFieldErrors()
-                .forEach(f -> log.error("{}: {}", f.getField(), f.getDefaultMessage()));
-
-        FieldError fe = result.getFieldError();
-        throw new ResponseStatusException(status, null != fe ? fe.getDefaultMessage() : "Unknown message error");
+    public <D extends Dto> void validate(D dto) {
+        Set<ConstraintViolation<D>> violations = validator.validate(dto);
+        String errors = violations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(", "));
+        if(!errors.isEmpty()) {
+            log.error("Validation errors: {}", errors);
+            throw new EcmException("Validation errors: " + errors);
+        }
     }
 }

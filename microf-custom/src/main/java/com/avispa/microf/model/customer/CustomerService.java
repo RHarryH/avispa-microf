@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.customer;
 
-import com.avispa.ecm.model.base.BaseService;
+import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
 import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
@@ -33,7 +33,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
-public class CustomerService extends BaseService<Customer, CustomerDto, CustomerRepository, CustomerMapper> {
+public class CustomerService extends BaseEcmService<Customer, CustomerDto, CustomerRepository, CustomerMapper> {
     private final ContextService contextService;
 
     public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper,

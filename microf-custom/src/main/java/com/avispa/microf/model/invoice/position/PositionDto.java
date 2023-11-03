@@ -20,10 +20,16 @@ package com.avispa.microf.model.invoice.position;
 
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
-import com.avispa.ecm.util.FormatUtils;
+import com.avispa.ecm.util.json.MoneyDeserializer;
+import com.avispa.ecm.util.json.MoneySerializer;
+import com.avispa.ecm.util.json.PercentDeserializer;
+import com.avispa.ecm.util.json.PercentSerializer;
+import com.avispa.ecm.util.json.QuantityDeserializer;
+import com.avispa.ecm.util.json.QuantitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
@@ -61,24 +67,27 @@ public class PositionDto implements Dto {
     @Size(max = 50, message = VM_POSITION_NAME_NO_LONGER)
     private String objectName;
 
-    @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Digits(integer=5, fraction=3, message = VM_QUANTITY_OUT_OF_RANGE)
     @Positive(message = VM_QUANTITY_POSITIVE)
+    @JsonSerialize(using = QuantitySerializer.class)
+    @JsonDeserialize(using = QuantityDeserializer.class)
     private BigDecimal quantity = BigDecimal.ONE;
 
     @NotNull(message = VM_UNIT_NOT_NULL)
     @Dictionary(name = "Unit")
     private String unit;
 
-    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = FormatUtils.MONEY_DECIMAL_FORMAT)
     @Digits(integer=7, fraction=2, message = VM_UNIT_PRICE_OUT_OF_RANGE)
     @Positive(message = VM_UNIT_PRICE_POSITIVE)
+    @JsonSerialize(using = MoneySerializer.class)
+    @JsonDeserialize(using = MoneyDeserializer.class)
     private BigDecimal unitPrice = BigDecimal.ZERO;
 
-    @NumberFormat(style = NumberFormat.Style.PERCENT)
     @Digits(integer=3, fraction=2, message = VM_DISCOUNT_OUT_OF_RANGE)
     @PositiveOrZero(message = VM_DISCOUNT_POSITIVE_OR_ZERO)
     @Max(value = 100, message = VM_DISCOUNT_NO_GREATER)
+    @JsonSerialize(using = PercentSerializer.class)
+    @JsonDeserialize(using = PercentDeserializer.class)
     private BigDecimal discount = BigDecimal.ZERO;
 
     @NotNull(message = VM_VAT_RATE_NOT_NULL)

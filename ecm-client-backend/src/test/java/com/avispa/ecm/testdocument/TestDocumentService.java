@@ -18,7 +18,7 @@
 
 package com.avispa.ecm.testdocument;
 
-import com.avispa.ecm.model.base.BaseService;
+import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @Component
 @Slf4j
-public class TestDocumentService extends BaseService<TestDocument, TestDocumentDto, TestDocumentRepository, TestDocumentMapper> {
+public class TestDocumentService extends BaseEcmService<TestDocument, TestDocumentDto, TestDocumentRepository, TestDocumentMapper> {
 
     @Autowired
     public TestDocumentService(TestDocumentRepository testDocumentRepository, TestDocumentMapper entityDtoMapper) {
