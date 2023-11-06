@@ -18,19 +18,18 @@
 
 package com.avispa.ecm.util.json;
 
+import com.avispa.ecm.util.FormatUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 
 public class QuantityDeserializer extends JsonDeserializer<BigDecimal> {
-    private static final NumberDeserializers.BigDecimalDeserializer delegate = NumberDeserializers.BigDecimalDeserializer.instance;
 
     @Override
     public BigDecimal deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        return delegate.deserialize(jp, ctxt);
+        return FormatUtils.parseQuantity(jp.getValueAsString());
     }    
 }

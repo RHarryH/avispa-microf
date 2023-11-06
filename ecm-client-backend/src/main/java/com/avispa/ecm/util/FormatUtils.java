@@ -33,8 +33,7 @@ import java.util.Locale;
  */
 @Slf4j
 public class FormatUtils {
-    public static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
-
+    private static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String QUANTITY_DECIMAL_FORMAT = "#0.###";
     private static final String PERCENT_DECIMAL_FORMAT = "#0.00";
@@ -64,14 +63,20 @@ public class FormatUtils {
     }
 
     public static BigDecimal parseMoney(String value) {
+        // NOTE: in order to parse value to match the pattern you need to format parsed value and then
+        // parse it again. For now this is not done.
         return parse(value, MONEY_DECIMAL_FORMAT);
     }
 
     public static BigDecimal parsePercent(String value) {
+        // NOTE: in order to parse value to match the pattern you need to format parsed value and then
+        // parse it again. For now this is not done.
         return parse(value, PERCENT_DECIMAL_FORMAT);
     }
 
     public static BigDecimal parseQuantity(String value) {
+        // NOTE: in order to parse value to match the pattern you need to format parsed value and then
+        // parse it again. For now this is not done.
         return parse(value, QUANTITY_DECIMAL_FORMAT);
     }
 
@@ -86,7 +91,7 @@ public class FormatUtils {
     }
 
     private static DecimalFormat getDecimalFormatter(String pattern) {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pl"));
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
         DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
         decimalFormat.setParseBigDecimal(true);
 

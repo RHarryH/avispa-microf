@@ -16,11 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.util;
+package com.avispa.ecm.util.json;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,47 +36,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Rafał Hiszpański
  */
-class FormatUtilsTest {
+class BigDecimalSerializersTest {
+
     @ParameterizedTest
     @CsvSource(value = {"1.10,'1,10'", "1.2,'1,20'", "1.567,'1,57'", "1500,'1\u00A0500,00'"})
-    void formatMoney(BigDecimal input, String expected) {
-        assertThat(FormatUtils.formatMoney(input)).isEqualTo(expected);
+    void serializeMoney(BigDecimal input, String expected) {
+        serialize(input, expected, new MoneySerializer());
     }
 
     @ParameterizedTest
     @CsvSource(value = {"200,'200,00'", "2000.01,'2000,01'", "1.567,'1,57'"})
-    void formatPercent(BigDecimal input, String expected) {
-        assertThat(FormatUtils.formatPercent(input)).isEqualTo(expected);
+    void serializePercent(BigDecimal input, String expected) {
+        serialize(input, expected, new PercentSerializer());
     }
 
     @ParameterizedTest
     @CsvSource(value = {"200,'200'", "2000.01,'2000,01'", "2.00,'2'", "1.567,'1,567'", "1.5678,'1,568'"})
-    void formatQuantity(BigDecimal input, String expected) {
-        assertThat(FormatUtils.formatQuantity(input)).isEqualTo(expected);
+    void serializeQuantity(BigDecimal input, String expected) {
+        serialize(input, expected, new QuantitySerializer());
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"'1,10',1.10",
-            "'1,20',1.20",
-            "'1\u00A0500,00',1500.00"})
-    void parseMoney(String input, BigDecimal expected) {
-        assertThat(FormatUtils.parseMoney(input)).isEqualTo(expected);
-    }
+    @SneakyThrows
+    private static void serialize(BigDecimal input, String expected, JsonSerializer<BigDecimal> serializer) {
+        Writer jsonWriter = new StringWriter();
+        JsonGenerator jsonGenerator = new JsonFactory().createGenerator(jsonWriter);
+        SerializerProvider serializerProvider = new ObjectMapper().getSerializerProvider();
 
-    @ParameterizedTest
-    @CsvSource(value = {"'200,00',200.00",
-            "'2000,01',2000.01"})
-    void parsePercent(String input, BigDecimal expected) {
-        assertThat(FormatUtils.parsePercent(input)).isEqualTo(expected);
-    }
+        serializer.serialize(input, jsonGenerator, serializerProvider);
+        jsonGenerator.flush();
 
-    @ParameterizedTest
-    @CsvSource(value = {"'200',200",
-            "'12,00',12.00",
-            "'2000,01',2000.01",
-            "'1,567',1.567",
-            "'1,5678',1.5678"})
-    void parseQuantity(String input, BigDecimal expected) {
-        assertThat(FormatUtils.parseQuantity(input)).isEqualTo(expected);
+        assertThat(jsonWriter.toString()).hasToString("\"" + expected + "\"");
     }
 }
