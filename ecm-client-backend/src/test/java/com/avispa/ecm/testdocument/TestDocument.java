@@ -24,6 +24,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -35,4 +36,7 @@ import java.time.LocalDate;
 public class TestDocument extends Document {
     @Column(name = "issue_date", columnDefinition = "DATE")
     private LocalDate issueDate;
+
+    @Column(precision=9, scale=2)
+    private BigDecimal unitPrice;
 }

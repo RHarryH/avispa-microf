@@ -18,23 +18,18 @@
 
 package com.avispa.ecm.util.json;
 
+import com.avispa.ecm.util.FormatUtils;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 public class MoneySerializer extends JsonSerializer<BigDecimal> {
 
     @Override
     public void serialize(BigDecimal bigDecimal, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(new Locale("pl","PL"));
-        decimalFormat.setParseBigDecimal(true);
-
-        jsonGenerator.writeString(decimalFormat.format(bigDecimal));
+        jsonGenerator.writeString(FormatUtils.formatMoney(bigDecimal));
     }
 }

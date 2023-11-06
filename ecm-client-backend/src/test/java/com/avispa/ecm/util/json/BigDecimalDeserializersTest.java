@@ -16,8 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.util;
+package com.avispa.ecm.util.json;
 
+import com.avispa.ecm.testdocument.TestDocument;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -28,38 +34,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Rafał Hiszpański
  */
-class FormatUtilsTest {
-    @ParameterizedTest
-    @CsvSource(value = {"1.10,'1,10'", "1.2,'1,20'", "1.567,'1,57'", "1500,'1\u00A0500,00'"})
-    void formatMoney(BigDecimal input, String expected) {
-        assertThat(FormatUtils.formatMoney(input)).isEqualTo(expected);
-    }
+class BigDecimalDeserializersTest {
 
-    @ParameterizedTest
-    @CsvSource(value = {"200,'200,00'", "2000.01,'2000,01'", "1.567,'1,57'"})
-    void formatPercent(BigDecimal input, String expected) {
-        assertThat(FormatUtils.formatPercent(input)).isEqualTo(expected);
-    }
+    private ObjectMapper objectMapper;
 
-    @ParameterizedTest
-    @CsvSource(value = {"200,'200'", "2000.01,'2000,01'", "2.00,'2'", "1.567,'1,567'", "1.5678,'1,568'"})
-    void formatQuantity(BigDecimal input, String expected) {
-        assertThat(FormatUtils.formatQuantity(input)).isEqualTo(expected);
+    @BeforeEach
+    public void setup() {
+        objectMapper = new ObjectMapper();
     }
 
     @ParameterizedTest
     @CsvSource(value = {"'1,10',1.10",
             "'1,20',1.20",
             "'1\u00A0500,00',1500.00"})
-    void parseMoney(String input, BigDecimal expected) {
-        assertThat(FormatUtils.parseMoney(input)).isEqualTo(expected);
+    void deserializeMoney(String input, BigDecimal expected) {
+        deserialize(input, expected, new MoneyDeserializer());
     }
 
     @ParameterizedTest
     @CsvSource(value = {"'200,00',200.00",
             "'2000,01',2000.01"})
-    void parsePercent(String input, BigDecimal expected) {
-        assertThat(FormatUtils.parsePercent(input)).isEqualTo(expected);
+    void deserializePercent(String input, BigDecimal expected) {
+        deserialize(input, expected, new PercentDeserializer());
     }
 
     @ParameterizedTest
@@ -68,7 +64,18 @@ class FormatUtilsTest {
             "'2000,01',2000.01",
             "'1,567',1.567",
             "'1,5678',1.5678"})
-    void parseQuantity(String input, BigDecimal expected) {
-        assertThat(FormatUtils.parseQuantity(input)).isEqualTo(expected);
+    void deserializeQuantity(String input, BigDecimal expected) {
+        deserialize(input, expected, new QuantityDeserializer());
+    }
+
+    @SneakyThrows
+    private void deserialize(String input, BigDecimal expected, JsonDeserializer<BigDecimal> deserializer) {
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(BigDecimal.class, deserializer);
+        objectMapper.registerModule(module);
+
+        TestDocument testDocument = objectMapper.readValue("{\"unitPrice\": \"" + input + "\"}", TestDocument.class);
+
+        assertThat(testDocument.getUnitPrice()).isEqualTo(expected);
     }
 }
