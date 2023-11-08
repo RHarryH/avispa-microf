@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
@@ -37,10 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Rafał Hiszpański
  */
 @JsonTest
-@Import({MenuDtoMapperImpl.class,
-        MenuItemDtoMapperImpl.class,
-        EcmConfiguration.class} // required to load custom object mapper config
-)
+@ContextConfiguration(classes = {MenuDtoMapperImpl.class, MenuItemDtoMapperImpl.class,
+        EcmConfiguration.class}) // required to load custom object mapper config
 @Slf4j
 class MenuDtoMapperTest {
     @Autowired

@@ -18,24 +18,20 @@
 
 package com.avispa.ecm.testdocument;
 
-import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.model.document.Document;
+import com.avispa.ecm.model.type.TypeDiscriminator;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.util.UUID;
+import javax.persistence.Entity;
 
 /**
  * @author Rafał Hiszpański
  */
 @Getter
 @Setter
-public class TestDocumentDto implements Dto {
-    private UUID id;
-
-    private String objectName;
-    private String issueDate;
-    private BigDecimal unitPrice;
-
-    private boolean pdfRenditionAvailable;
+@Entity
+@TypeDiscriminator(name = "type")
+public class TestDocumentWithDiscriminator extends Document {
+    private String type;
 }

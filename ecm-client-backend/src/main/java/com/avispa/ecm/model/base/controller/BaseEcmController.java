@@ -58,7 +58,7 @@ public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S ex
     @Override
     public void add(HttpServletRequest request) {
         try {
-            D dto = dtoService.parse(request.getReader(), extractTypeName(request));
+            D dto = dtoService.convert(request.getReader(), extractTypeName(request));
             add(dto);
         } catch (IOException e) {
             throw new EcmException("Cannot get request data", e);
@@ -75,7 +75,7 @@ public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S ex
     @Override
     public void update(HttpServletRequest request, @PathVariable("id") UUID id) {
         try {
-            update(dtoService.parse(request.getReader(),
+            update(dtoService.convert(request.getReader(),
                     extractTypeName(request),
                     dto -> dto.setId(id)
             ));

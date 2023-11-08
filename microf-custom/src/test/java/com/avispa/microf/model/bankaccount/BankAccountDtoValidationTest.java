@@ -18,7 +18,6 @@
 
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.microf.model.bankaccount.BankAccountDto;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,7 +54,7 @@ class BankAccountDtoValidationTest {
 
     @Test
     void givenInvalidIBAN_whenValidate_thenFail() {
-        bankAccountDto.setAccountNumber(RandomStringUtils.randomAlphabetic(26));
+        bankAccountDto.setAccountNumber("021140200ABCD0300201355387");
         validate(bankAccountDto, Set.of("IBAN is invalid", "The number is not a valid NRB number"));
     }
 

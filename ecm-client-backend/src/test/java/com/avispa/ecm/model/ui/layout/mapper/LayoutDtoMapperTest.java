@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 import java.util.List;
@@ -47,9 +47,8 @@ import static org.mockito.Mockito.when;
  * @author Rafał Hiszpański
  */
 @JsonTest
-@Import({LayoutDtoMapper.class,
-        EcmConfiguration.class} // required to load custom object mapper config
-)
+@ContextConfiguration(classes = {LayoutDtoMapper.class,
+        EcmConfiguration.class}) // required to load custom object mapper config
 @Slf4j
 class LayoutDtoMapperTest {
     public static final String CONFIGURATION_ID = "97ddd2fc-6cd4-4bfa-86bc-93d95e0a3a88";
