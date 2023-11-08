@@ -22,7 +22,6 @@ import com.avispa.ecm.model.base.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -30,12 +29,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class TestDocumentDto implements Dto {
+public class TestDocumentADto implements Dto {
     private UUID id;
-
-    private String objectName;
-    private String issueDate;
-    private BigDecimal unitPrice;
-
-    private boolean pdfRenditionAvailable;
+    private String type;
 }
