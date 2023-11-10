@@ -18,16 +18,11 @@
 
 package com.avispa.ecm.model.ui.modal;
 
-import com.avispa.ecm.model.EcmObjectService;
-import com.avispa.ecm.model.base.dto.Dto;
-import com.avispa.ecm.model.base.dto.DtoObject;
-import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
-import com.avispa.ecm.model.type.Type;
+import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
+import com.avispa.ecm.model.ui.modal.page.ModalPageDto;
+import com.avispa.ecm.model.ui.modal.page.ModalPageService;
 import com.avispa.ecm.model.ui.modal.page.ModalPageType;
-import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
-import com.avispa.ecm.testdocument.TestDocument;
-import com.avispa.ecm.testdocument.TestDocumentDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,8 +34,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -48,33 +41,17 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(MockitoExtension.class)
 class ModalServiceTest {
-
     @Mock
-    private PropertyPageService propertyPageService;
-
-    @Mock
-    private EcmObjectService ecmObjectService;
-
-    @Mock
-    private DtoService dtoService;
+    private ModalPageService modalPageService;
 
     @InjectMocks
     private ModalService modalService;
 
     @Test
     void givenResourceName_whenGetAddModal_thenReturnDto() {
-        Type type = new Type();
-        type.setObjectName("Test document");
-        type.setEntityClass(TestDocument.class);
-
-        DtoObject dtoObject = new DtoObject();
-        dtoObject.setDtoClass(TestDocumentDto.class);
-        dtoObject.setType(type);
-
         PropertyPageContent propertyPageContent = new PropertyPageContent();
 
-        when(dtoService.getDtoObjectFromTypeName("Test document")).thenReturn(dtoObject);
-        when(propertyPageService.getPropertyPage(eq(type.getEntityClass()), any(Dto.class))).thenReturn(propertyPageContent);
+        when(modalPageService.loadPropertiesPage("Test document")).thenReturn(propertyPageContent);
 
         ModalDto actualModalDto = modalService.getAddModal("test-document");
         ModalDto expectedModalDto = getExpectedAddModalDto(propertyPageContent);
@@ -98,7 +75,6 @@ class ModalServiceTest {
                 .pages(List.of(ModalPageDto.builder()
                         .name(ModalPageType.PROPERTIES.getName())
                         .pageType(ModalPageType.PROPERTIES)
-                        .propertyPageConfig(propertyPageContent.getId())
                         .build()))
                 .build();
     }
@@ -106,16 +82,9 @@ class ModalServiceTest {
     @Test
     void givenResourceName_whenGetUpdateModal_thenReturnDto() {
         UUID randomUUID = UUID.randomUUID();
-
-        Type type = new Type();
-        type.setObjectName("Test document");
-        type.setEntityClass(TestDocument.class);
-
         PropertyPageContent propertyPageContent = new PropertyPageContent();
 
-        when(ecmObjectService.getEcmObjectFrom(randomUUID, "Test document")).thenReturn(new TestDocument());
-        when(dtoService.convertObjectToDto(any(TestDocument.class))).thenReturn(new TestDocumentDto());
-        when(propertyPageService.getPropertyPage(eq(type.getEntityClass()), any(Dto.class))).thenReturn(propertyPageContent);
+        when(modalPageService.loadPropertiesPage("Test document", randomUUID)).thenReturn(propertyPageContent);
 
         ModalDto actualModalDto = modalService.getUpdateModal("test-document", randomUUID);
         ModalDto expectedModalDto = getExpectedUpdateModalDto(randomUUID, propertyPageContent);
@@ -139,8 +108,58 @@ class ModalServiceTest {
                 .pages(List.of(ModalPageDto.builder()
                         .name(ModalPageType.PROPERTIES.getName())
                         .pageType(ModalPageType.PROPERTIES)
-                        .propertyPageConfig(propertyPageContent.getId())
                         .build()))
                 .build();
+    }
+
+    @Test
+    void givenResourceName_whenGetCloneModal_thenReturnDto() {
+        PropertyPageContent propertyPageContent = new PropertyPageContent();
+
+        when(modalPageService.loadSourcePage("Test document")).thenReturn(propertyPageContent);
+
+        ModalDto actualModalDto = modalService.getCloneModal("test-document");
+        ModalDto expectedModalDto = getExpectedCloneModalDto(propertyPageContent);
+
+        assertEquals(expectedModalDto, actualModalDto);
+    }
+
+    private static ModalDto getExpectedCloneModalDto(PropertyPageContent propertyPageContent) {
+        return ModalDto.builder()
+                .title("Clone existing test document")
+                .type(ModalType.CLONE)
+                .resource("test-document")
+                .propertyPage(propertyPageContent)
+                .action(Action.builder()
+                        .endpoint("test-document")
+                        .method(HttpMethod.POST)
+                        .successMessage("Test document cloned successfully!")
+                        .errorMessage("Test document cloning failed!")
+                        .buttonValue("Clone")
+                        .build())
+                .pages(List.of(ModalPageDto.builder()
+                        .name(ModalPageType.SELECT_SOURCE.getName())
+                        .pageType(ModalPageType.SELECT_SOURCE)
+                        .build(),
+                            ModalPageDto.builder()
+                        .name(ModalPageType.PROPERTIES.getName())
+                        .pageType(ModalPageType.PROPERTIES)
+                        .build()))
+                .build();
+    }
+
+    @Test
+    void givenResourceName_whenGetPage_thenReturnPropertyPage() {
+        PropertyPageContent propertyPageContent = new PropertyPageContent();
+
+        var pageContext = ModalPageEcmContext.builder()
+                .targetPageType(ModalPageType.PROPERTIES)
+                .build();
+
+        when(modalPageService.loadPage(pageContext, "Test document")).thenReturn(propertyPageContent);
+
+        PropertyPageContent actualPropertyPageContent = modalService.loadPage(pageContext, "test-document");
+
+        assertEquals(propertyPageContent, actualPropertyPageContent);
     }
 }

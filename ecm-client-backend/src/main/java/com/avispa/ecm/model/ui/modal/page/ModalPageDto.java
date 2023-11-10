@@ -16,17 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal;
+package com.avispa.ecm.model.ui.modal.page;
 
-import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
-import com.avispa.ecm.model.ui.modal.page.ModalPageDto;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
-
-import java.util.List;
 
 /**
  * @author Rafał Hiszpański
@@ -35,14 +30,7 @@ import java.util.List;
 @Builder
 @Getter
 @EqualsAndHashCode
-@ToString
-public class ModalDto {
-    private ModalType type;
-    private String title;
-    //private String size; // TODO: controllable in the future?
-
-    private String resource;
-    private Action action;
-    private PropertyPageContent propertyPage;
-    private List<ModalPageDto> pages;
+public class ModalPageDto {
+    private ModalPageType pageType;
+    private String name;
 }
