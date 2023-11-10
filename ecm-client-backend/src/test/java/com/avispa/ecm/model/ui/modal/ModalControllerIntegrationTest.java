@@ -29,6 +29,8 @@ import com.avispa.ecm.model.configuration.upsert.Upsert;
 import com.avispa.ecm.model.content.Content;
 import com.avispa.ecm.model.format.Format;
 import com.avispa.ecm.model.type.Type;
+import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
+import com.avispa.ecm.model.ui.modal.page.ModalPageType;
 import com.avispa.ecm.testdocument.TestDocument;
 import com.avispa.ecm.testdocument.TestDocumentDto;
 import lombok.extern.slf4j.Slf4j;
@@ -112,7 +114,7 @@ class ModalControllerIntegrationTest {
         Type type = createType();
         createDtoObject(type);
 
-        TestDocument testDocument = ecmObjectRepository.save( new TestDocument());
+        TestDocument testDocument = ecmObjectRepository.save(new TestDocument());
 
         ResponseEntity<ModalDto> response = this.restTemplate.getForEntity("http://localhost:" + port + "/v1/modal/update/test-document/" + testDocument.getId(), ModalDto.class);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
@@ -142,6 +144,32 @@ class ModalControllerIntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    @Test
+    void givenMissingPropertyPage_whenGetCloneModal_thenReturn500() {
+        ResponseEntity<ModalDto> response = this.restTemplate.getForEntity("http://localhost:" + port + "/v1/modal/clone/test-document", ModalDto.class);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    void givenFullData_whenGetCloneModal_thenReturn200() {
+        createPropertyPage("Select source property page", "testPropertyPage.json");
+
+        ResponseEntity<ModalDto> response = this.restTemplate.getForEntity("http://localhost:" + port + "/v1/modal/clone/test-document", ModalDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void givenFullData_whenLoadPage_thenReturn200() {
+        createPropertyPage("Select source property page", "testPropertyPage.json");
+
+        var context = ModalPageEcmContext.builder()
+                .targetPageType(ModalPageType.SELECT_SOURCE)
+                .build();
+
+        ResponseEntity<ModalDto> response = this.restTemplate.postForEntity("http://localhost:" + port + "/v1/modal/page/test-document", context, ModalDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
     private Type createType() {
         Type type = new Type();
         type.setObjectName("Test document");
@@ -151,18 +179,21 @@ class ModalControllerIntegrationTest {
         return type;
     }
 
-    private DtoObject createDtoObject(Type type) {
+    private void createDtoObject(Type type) {
         DtoObject dtoObject = new DtoObject();
         dtoObject.setDtoClass(TestDocumentDto.class);
         dtoObject.setType(type);
 
         ecmObjectRepository.save(dtoObject);
-        return dtoObject;
     }
 
     private PropertyPage createPropertyPage(String contentPath) {
-        PropertyPage propertyPage = new PropertyPage();
+        return createPropertyPage("Property page", contentPath);
+    }
 
+    private PropertyPage createPropertyPage(String propertyPageName, String contentPath) {
+        PropertyPage propertyPage = new PropertyPage();
+        propertyPage.setObjectName(propertyPageName);
         propertyPage = ecmConfigRepository.save(propertyPage);
 
         Content content = createContent(contentPath);

@@ -18,12 +18,14 @@
 
 package com.avispa.ecm.model.base.dto;
 
+import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContextInfo;
+
 import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-public interface Dto {
+public interface Dto extends ModalPageEcmContextInfo {
     String EMPTY_STRING_REGEX = "^$";
 
     UUID getId();
