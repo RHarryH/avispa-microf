@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal;
+package com.avispa.ecm.model.ui.modal.context;
 
-import com.avispa.ecm.model.ui.modal.page.ModalPageType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.UUID;
@@ -29,12 +29,12 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
-@Jacksonized
 @Builder
+@Jacksonized
 @Getter
+@Setter
 @EqualsAndHashCode
-public class ModalPageDto {
-    private ModalPageType pageType;
-    private String name;
-    private UUID propertyPageConfig;
+public class SourcePageContextInfo implements ModalPageEcmContextInfo {
+    private String typeName;
+    private UUID sourceId;
 }

@@ -19,6 +19,7 @@
 package com.avispa.ecm.model.ui.modal;
 
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
+import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,10 +28,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -50,16 +52,6 @@ public interface ModalOperations {
             @Parameter(description = "name of the resource, which is in fact an encoded type name")
             String resourceName);
 
-    @GetMapping("/clone/{resourceName}")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Gets details required to create modal for cloning existing objects of specific resource")
-    @ApiResponse(responseCode = "200", description = "Modal data has been returned", content = @Content)
-    @ApiResponse(responseCode = "500", description = "Missing configuration data or unspecified error", content = @Content)
-    ModalDto getCloneModal(
-            @PathVariable("resourceName")
-            @Parameter(description = "name of the resource, which is in fact an encoded type name")
-            String resourceName);
-
     @GetMapping("/update/{resourceName}/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Gets details required to create modal for updating existing objects of specific resource")
@@ -74,10 +66,23 @@ public interface ModalOperations {
             @Parameter(description = "id of the resource/object to update")
             UUID id);
 
-    @GetMapping("/page/{pageNumber}")
+    @GetMapping("/clone/{resourceName}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Gets details required to create modal for cloning existing objects of specific resource")
+    @ApiResponse(responseCode = "200", description = "Modal data has been returned", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Missing configuration data or unspecified error", content = @Content)
+    ModalDto getCloneModal(
+            @PathVariable("resourceName")
+            @Parameter(description = "name of the resource, which is in fact an encoded type name")
+            String resourceName);
+
+    @PostMapping("/page/{resourceName}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns new page for multi-page modal")
     @ApiResponse(responseCode = "200", description = "Property page data has been returned", content = @Content)
-    //@ApiResponse(responseCode = "500", description = "Missing configuration data or unspecified error", content = @Content)
-    PropertyPageContent loadPage(HttpServletRequest request, @PathVariable("pageNumber") int pageNumber);
+    @ApiResponse(responseCode = "500", description = "Missing configuration data or unspecified error", content = @Content)
+    PropertyPageContent loadPage(@RequestBody ModalPageEcmContext context,
+                                 @PathVariable("resourceName")
+                                 @Parameter(description = "name of the resource, which is in fact an encoded type name")
+                                 String resourceName);
 }

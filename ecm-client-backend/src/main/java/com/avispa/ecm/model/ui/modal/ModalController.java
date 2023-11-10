@@ -19,10 +19,10 @@
 package com.avispa.ecm.model.ui.modal;
 
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
+import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -39,19 +39,17 @@ public class ModalController implements ModalOperations {
     }
 
     @Override
-    public ModalDto getCloneModal(String resourceName) {
-        return null;
-        //PropertyPageContent propertyPageContent = propertyPageService.getPropertyPage("Select source property page", context)
-        //        .orElseThrow(() -> new EcmException("Property page content can't be retrieved"));
-    }
-
-    @Override
     public ModalDto getUpdateModal(String resourceName, UUID id) {
         return modalService.getUpdateModal(resourceName, id);
     }
 
     @Override
-    public PropertyPageContent loadPage(HttpServletRequest request, int pageNumber) {
-        return null;
+    public ModalDto getCloneModal(String resourceName) {
+        return modalService.getCloneModal(resourceName);
+    }
+
+    @Override
+    public PropertyPageContent loadPage(ModalPageEcmContext context, String resourceName) {
+        return modalService.loadPage(context, resourceName);
     }
 }

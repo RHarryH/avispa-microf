@@ -18,16 +18,14 @@
 
 package com.avispa.ecm.model.ui.modal;
 
-import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.EcmObjectService;
-import com.avispa.ecm.model.base.dto.Dto;
-import com.avispa.ecm.model.base.dto.DtoObject;
-import com.avispa.ecm.model.base.dto.DtoService;
+import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
+import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
+import com.avispa.ecm.model.ui.modal.page.ModalPageDto;
+import com.avispa.ecm.model.ui.modal.page.ModalPageService;
 import com.avispa.ecm.model.ui.modal.page.ModalPageType;
-import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
 import com.avispa.ecm.util.TypeNameUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
@@ -41,29 +39,16 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class ModalService {
-    private final PropertyPageService propertyPageService;
-    private final EcmObjectService ecmObjectService;
-    private final DtoService dtoService;
+    private final ModalPageService modalPageService;
 
     public ModalDto getAddModal(String resourceName) {
         String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
-
-        // in these cases we're creating an empty instance of entity and dto so there is no need
-        // to check the discriminator
-        DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
-
-        // usage of Dto enables usage of default values, without that we can get empty values/table rows but the property
-        // page will display normally, generally speaking the need of Dto here has been significantly reduced
-        // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
-        Dto dto = BeanUtils.instantiateClass(dtoObject.getDtoClass());
-
-        var propertyPageContent = propertyPageService.getPropertyPage(dtoObject.getType().getEntityClass(), dto);
 
         return ModalDto.builder()
                 .title("Add new " + typeName.toLowerCase(Locale.ROOT))
                 .type(ModalType.ADD)
                 .resource(resourceName)
-                .propertyPage(propertyPageContent)
+                .propertyPage(modalPageService.loadPropertiesPage(typeName))
                 .action(Action.builder()
                         .endpoint(resourceName)
                         .method(HttpMethod.POST)
@@ -74,7 +59,6 @@ public class ModalService {
                 .pages(List.of(ModalPageDto.builder()
                         .name(ModalPageType.PROPERTIES.getName())
                         .pageType(ModalPageType.PROPERTIES)
-                        .propertyPageConfig(propertyPageContent.getId())
                         .build()))
                 .build();
     }
@@ -82,19 +66,11 @@ public class ModalService {
     public ModalDto getUpdateModal(String resourceName, UUID id) {
         String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
 
-        EcmObject entity = ecmObjectService.getEcmObjectFrom(id, typeName);
-        // usage of Dto enables usage of default values, without that we can get empty values/table rows but the property
-        // page will display normally, generally speaking the need of Dto here has been significantly reduced
-        // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
-        Dto dto = dtoService.convertObjectToDto(entity);
-
-        var propertyPageContent = propertyPageService.getPropertyPage(entity.getClass(), dto);
-
         return ModalDto.builder()
                 .title("Update " + typeName.toLowerCase(Locale.ROOT))
                 .type(ModalType.UPDATE)
                 .resource(resourceName)
-                .propertyPage(propertyPageContent)
+                .propertyPage(modalPageService.loadPropertiesPage(typeName, id))
                 .action(Action.builder()
                         .endpoint(resourceName + "/" + id)
                         .method(HttpMethod.POST)
@@ -105,8 +81,40 @@ public class ModalService {
                 .pages(List.of(ModalPageDto.builder()
                         .name(ModalPageType.PROPERTIES.getName())
                         .pageType(ModalPageType.PROPERTIES)
-                        .propertyPageConfig(propertyPageContent.getId())
                         .build()))
                 .build();
+    }
+
+    public ModalDto getCloneModal(String resourceName) {
+        String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
+
+        return ModalDto.builder()
+                .title("Clone existing " + typeName.toLowerCase(Locale.ROOT))
+                .type(ModalType.CLONE)
+                .resource(resourceName)
+                .propertyPage(modalPageService.loadSourcePage(typeName))
+                .action(Action.builder()
+                        .endpoint(resourceName)
+                        .method(HttpMethod.POST)
+                        .successMessage(typeName + " cloned successfully!")
+                        .errorMessage(typeName + " cloning failed!")
+                        .buttonValue("Clone")
+                        .build())
+                .pages(List.of(
+                        ModalPageDto.builder()
+                                .name(ModalPageType.SELECT_SOURCE.getName())
+                                .pageType(ModalPageType.SELECT_SOURCE)
+                                .build(),
+                        ModalPageDto.builder()
+                                .name(ModalPageType.PROPERTIES.getName())
+                                .pageType(ModalPageType.PROPERTIES)
+                                .build()))
+                .build();
+    }
+
+    public PropertyPageContent loadPage(@NonNull ModalPageEcmContext context, String resourceName) {
+        String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
+
+        return modalPageService.loadPage(context, typeName);
     }
 }
