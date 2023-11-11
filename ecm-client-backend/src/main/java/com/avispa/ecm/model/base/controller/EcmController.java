@@ -19,6 +19,14 @@
 package com.avispa.ecm.model.base.controller;
 
 import com.avispa.ecm.model.base.dto.Dto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.UUID;
 
@@ -28,5 +36,16 @@ import java.util.UUID;
 interface EcmController<D extends Dto> {
     void add(D dto);
     void update(D dto);
-    void delete(UUID id);
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Deletes object of provided resource with specific id")
+    @ApiResponse(responseCode = "200", description = "Object was deleted", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Object was not found", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Missing configuration data or unspecified error", content = @Content)
+    void delete(
+            @PathVariable("id")
+            @Parameter(description = "id of the resource/object to update")
+            UUID id,
+            String resourceName);
 }

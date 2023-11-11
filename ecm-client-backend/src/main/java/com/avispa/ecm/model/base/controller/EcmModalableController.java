@@ -18,13 +18,34 @@
 
 package com.avispa.ecm.model.base.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
 interface EcmModalableController {
-    void add(HttpServletRequest request);
-    void update(HttpServletRequest request, UUID id);
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Inserts new object")
+    @ApiResponse(responseCode = "200", description = "Object was inserted", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Missing configuration data or unspecified error", content = @Content)
+    void add(@RequestBody JsonNode payload, String resourceName);
+
+    @PostMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Updates object with specific id")
+    @ApiResponse(responseCode = "200", description = "Object was updated", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Object was not found", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Missing configuration data or unspecified error", content = @Content)
+    void update(@RequestBody JsonNode payload, String resourceName, @PathVariable("id") UUID id);
 }

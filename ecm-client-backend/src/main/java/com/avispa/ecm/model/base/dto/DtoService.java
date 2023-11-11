@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.function.Consumer;
 
@@ -72,43 +71,13 @@ public class DtoService {
      * Converts JSON to Dto object based on the type name and discriminator value if exists. The Dto is validated
      * against JSR-303 specification.
      *
-     * @param reader   source JSON
+     * @param jsonNode source JSON in form of parsed tree
      * @param typeName name of the type to which the JSON should be converted
      * @return Dto object from the JSON
      * @param <D>
      */
-    public <D extends Dto> D convert(BufferedReader reader, String typeName) {
-        return convert(reader, typeName, null);
-    }
-
-    /**
-     * Converts JSON to Dto object based on the type name and discriminator value if exists. The Dto is validated
-     * against JSR-303 specification. It is possible to enrich the converted Dto with custom data.
-     *
-     * @param reader         source JSON
-     * @param typeName       name of the type to which the JSON should be converted
-     * @param enrichConsumer consumer for enriching the data
-     * @return Dto object from the JSON
-     * @param <D>
-     */
-    public <D extends Dto> D convert(BufferedReader reader, String typeName, Consumer<D> enrichConsumer) {
-        Type type = typeService.getType(typeName);
-        String typeDiscriminatorName = TypeService.getTypeDiscriminatorFromAnnotation(type.getEntityClass());
-
-        // convert json to appropriate Dto
-        D dto = StringUtils.isNotEmpty(typeDiscriminatorName) ?
-                getDtoWithDiscriminator(reader, type, typeDiscriminatorName) :
-                getDtoWithoutDiscriminator(reader, type);
-
-        // enrich dto with additional details if required
-        if (null != enrichConsumer) {
-            enrichConsumer.accept(dto);
-        }
-
-        // validate dto using JSR-303
-        validator.validate(dto);
-
-        return dto;
+    public <D extends Dto> D convert(JsonNode jsonNode, String typeName) {
+        return convert(jsonNode, typeName, null);
     }
 
     /**
@@ -120,7 +89,7 @@ public class DtoService {
      * @return Dto object from the JSON
      * @param <D>
      */
-    public <D extends Dto> D convert(JsonNode jsonNode, String typeName) {
+    public <D extends Dto> D convert(JsonNode jsonNode, String typeName, Consumer<D> enrichConsumer) {
         Type type = typeService.getType(typeName);
         Class<? extends EcmObject> entityClass = typeService.getType(typeName).getEntityClass();
         String typeDiscriminatorName = TypeService.getTypeDiscriminatorFromAnnotation(entityClass);
@@ -130,31 +99,15 @@ public class DtoService {
                 getDtoWithDiscriminator(jsonNode, type, typeDiscriminatorName) :
                 getDtoWithoutDiscriminator(jsonNode, type);
 
+        // enrich dto with additional details if required
+        if (null != enrichConsumer) {
+            enrichConsumer.accept(dto);
+        }
+
         // validate dto using JSR-303
         validator.validate(dto);
 
         return dto;
-    }
-
-    /**
-     * Finds discriminator field in provided JSON, determines Dto configuration and converts JSON to the Dto object
-     * pointed by the configuration.
-     *
-     * @param reader source JSON
-     * @param type type which the JSOn represents, it is used to determine Dto configuration
-     * @param typeDiscriminatorName name of type discriminator field
-     * @return Dto object from the JSON
-     * @param <D>
-     */
-    private <D extends Dto> D getDtoWithDiscriminator(BufferedReader reader, Type type, String typeDiscriminatorName) {
-        try {
-            // convert json to tree
-            JsonNode node = objectMapper.readTree(reader);
-
-            return getDtoWithDiscriminator(node, type, typeDiscriminatorName);
-        } catch (IOException e) {
-            throw new EcmException("Cannot parse request data", e);
-        }
     }
 
     /**
@@ -178,29 +131,6 @@ public class DtoService {
                     try {
                         return objectMapper.treeToValue(node, dtoObject.getDtoClass());
                     } catch (JsonProcessingException e) {
-                        throw new EcmException(CANT_PARSE_JSON, e);
-                    }
-                })
-                .orElseThrow(() -> new RepositoryCorruptionError(String.format(DTO_OBJECT_NOT_FOUND, type.getObjectName())));
-    }
-
-    /**
-     * Determines Dto configuration and converts JSON to the Dto object pointed by the configuration. Discriminator is
-     * not used so always the main Dto will be used.
-     *
-     * @param reader source JSON
-     * @param type type which the JSOn represents, it is used to determine Dto configuration
-     * @return Dto object from the JSON
-     * @param <D>
-     */
-    @SuppressWarnings("unchecked")
-    private <D extends Dto> D getDtoWithoutDiscriminator(BufferedReader reader, Type type) {
-        return (D) dtoRepository
-                .findByEntityClassAndDiscriminatorIsNull(type.getEntityClass())
-                .map(dtoObject -> {
-                    try {
-                        return objectMapper.readValue(reader, dtoObject.getDtoClass());
-                    } catch (IOException e) {
                         throw new EcmException(CANT_PARSE_JSON, e);
                     }
                 })
