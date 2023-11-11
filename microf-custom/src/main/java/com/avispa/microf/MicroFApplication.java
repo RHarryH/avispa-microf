@@ -23,6 +23,7 @@ import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.ContinuousCounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.MonthCounterStrategy;
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -57,6 +58,13 @@ public class MicroFApplication {
     @Bean
     public Version microfVersion(@Value("${spring.application.name}") String applicationName, @Value("${microf.version}") String number) {
         return new Version(applicationName, number);
+    }
+
+    @Bean
+    public GroupedOpenApi microfApi() {
+        String[] paths = {"com.avispa.microf.model"};
+        return GroupedOpenApi.builder().group("Avispa μF").packagesToScan(paths)
+                .build();
     }
 
     public static void main(String[] args) {

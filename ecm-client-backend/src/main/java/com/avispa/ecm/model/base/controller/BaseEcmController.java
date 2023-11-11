@@ -25,23 +25,21 @@ import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
 import com.avispa.ecm.util.TypeNameUtils;
-import com.avispa.ecm.util.exception.EcmException;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
 @RequiredArgsConstructor
+@RequestMapping("/v1/{resourceName}")
 @Slf4j
 public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S extends BaseEcmService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements EcmController<D>, EcmModalableController {
     @Getter
@@ -54,15 +52,11 @@ public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S ex
         this.dtoService = dtoService;
     }
 
-    @PostMapping
     @Override
-    public void add(HttpServletRequest request) {
-        try {
-            D dto = dtoService.convert(request.getReader(), extractTypeName(request));
-            add(dto);
-        } catch (IOException e) {
-            throw new EcmException("Cannot get request data", e);
-        }
+    public void add(JsonNode payload, @PathVariable String resourceName) {
+        String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
+        D dto = dtoService.convert(payload, typeName);
+        add(dto);
     }
 
     @Override
@@ -71,17 +65,13 @@ public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S ex
         service.add(object);
     }
 
-    @PostMapping("/{id}")
     @Override
-    public void update(HttpServletRequest request, @PathVariable("id") UUID id) {
-        try {
-            update(dtoService.convert(request.getReader(),
-                    extractTypeName(request),
-                    dto -> dto.setId(id)
-            ));
-        } catch (IOException e) {
-            throw new EcmException("Cannot get request data", e);
-        }
+    public void update(JsonNode payload, @PathVariable String resourceName, UUID id) {
+        String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
+        update(dtoService.convert(payload,
+                typeName,
+                dto -> dto.setId(id)
+        ));
     }
 
     @Override
@@ -89,26 +79,8 @@ public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S ex
         service.update(dto);
     }
 
-    @DeleteMapping("/{id}")
     @Override
-    public void delete(@PathVariable("id") UUID id) {
+    public void delete(UUID id, @PathVariable String resourceName) {
         service.delete(id);
-    }
-
-    /**
-     * Extract type name from the URI
-     * the pattern for the url is "v1/<type_name>/<others>"
-     *
-     * @param request
-     * @return
-     */
-    private static String extractTypeName(HttpServletRequest request) {
-        var requestUri = request.getRequestURI();
-        var paths = requestUri.split("/");
-        if(paths.length < 2) {
-            throw new IllegalStateException("Cannot extract type from request path");
-        } else {
-            return TypeNameUtils.convertResourceNameToTypeName(paths[2]);
-        }
     }
 }
