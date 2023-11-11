@@ -19,6 +19,7 @@
 package com.avispa.ecm.model.base.dto;
 
 import com.avispa.ecm.EcmConfiguration;
+import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.testdocument.TestDocument;
@@ -27,7 +28,6 @@ import com.avispa.ecm.testdocument.TestDocumentDto;
 import com.avispa.ecm.testdocument.TestDocumentWithDiscriminator;
 import com.avispa.ecm.util.GenericService;
 import com.avispa.ecm.util.error.EcmDtoValidator;
-import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.ecm.util.exception.RepositoryCorruptionError;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,9 +42,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.Validator;
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
@@ -88,69 +85,6 @@ class DtoServiceTest {
     }
 
     @Test
-    void givenTypeWithoutDiscriminatorAndDtoConfig_whenConvertJson_thenCorrectDtoIsReturned() {
-        Type type = createType();
-        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-        when(dtoRepository.findByEntityClassAndDiscriminatorIsNull(TestDocument.class)).thenReturn(Optional.of(createDtoObject(type)));
-
-        TestDocumentDto testDocumentDto = dtoService.convert(getInputJsonReader(), TEST_DOCUMENT_TYPE_NAME);
-
-        assertEquals("Test", testDocumentDto.getObjectName());
-        assertEquals(new BigDecimal("1.00"), testDocumentDto.getUnitPrice());
-    }
-
-    @Test
-    void givenTypeWithoutDiscriminatorAndDtoConfig_whenConvertIncorrectJson_thenExceptionIsThrown() {
-        Type type = createType();
-        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-        when(dtoRepository.findByEntityClassAndDiscriminatorIsNull(TestDocument.class)).thenReturn(Optional.of(createDtoObject(type)));
-
-        BufferedReader reader = getCorruptedInputJsonReader();
-        assertThrows(EcmException.class, () -> dtoService.convert(reader, TEST_DOCUMENT_TYPE_NAME));
-    }
-
-    @Test
-    void givenTypeWithoutDiscriminatorAndDtoConfig_whenConvertJsonWithEnrichment_thenObjectIsEnriched() {
-        Type type = createType();
-        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-        when(dtoRepository.findByEntityClassAndDiscriminatorIsNull(TestDocument.class)).thenReturn(Optional.of(createDtoObject(type)));
-
-        TestDocumentDto testDocumentDto = dtoService.convert(getInputJsonReader(), TEST_DOCUMENT_TYPE_NAME, dto -> dto.setId(UUID.randomUUID()));
-
-        assertNotNull(testDocumentDto.getId());
-    }
-
-    @Test
-    void givenTypeWithoutDiscriminatorWithoutDtoConfig_whenConvertJson_thenExceptionIsThrown() {
-        Type type = createType();
-        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-
-        BufferedReader reader = getInputJsonReader();
-        assertThrows(RepositoryCorruptionError.class, () -> dtoService.convert(reader, TEST_DOCUMENT_TYPE_NAME));
-    }
-
-    @Test
-    void givenTypeWithDiscriminatorAndDtoConfig_whenConvertJson_thenCorrectDtoIsReturned() {
-        Type type = createTypeWithDiscriminator();
-        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-        when(dtoRepository.findByEntityClassAndDiscriminator(TestDocumentWithDiscriminator.class, "A")).thenReturn(Optional.of(createDtoObject(type, "A", TestDocumentADto.class)));
-
-        TestDocumentADto testDocumentDto = dtoService.convert(getInputJsonReader(), TEST_DOCUMENT_TYPE_NAME);
-
-        assertEquals("A", testDocumentDto.getType());
-    }
-
-    @Test
-    void givenTypeWithUnknownDiscriminatorAndDtoConfig_whenConvertJson_thenExceptionIsThrown() {
-        Type type = createTypeWithDiscriminator();
-        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-        when(dtoRepository.findByEntityClassAndDiscriminator(TestDocumentWithDiscriminator.class, "C")).thenReturn(Optional.of(createDtoObject(type, "A", TestDocumentADto.class)));
-
-        BufferedReader reader = getInputJsonReader();
-        assertThrows(RepositoryCorruptionError.class, () -> dtoService.convert(reader, TEST_DOCUMENT_TYPE_NAME));
-    }
-
-    @Test
     void givenTypeWithoutDiscriminatorAndDtoConfig_whenConvertJsonTree_thenCorrectDtoIsReturned() {
         Type type = createType();
         when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
@@ -160,6 +94,26 @@ class DtoServiceTest {
 
         assertEquals("Test", testDocumentDto.getObjectName());
         assertEquals(new BigDecimal("1.00"), testDocumentDto.getUnitPrice());
+    }
+
+    @Test
+    void givenTypeWithoutDiscriminatorAndDtoConfig_whenConvertJsonWithEnrichment_thenObjectIsEnriched() {
+        Type type = createType();
+        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
+        when(dtoRepository.findByEntityClassAndDiscriminatorIsNull(TestDocument.class)).thenReturn(Optional.of(createDtoObject(type)));
+
+        TestDocumentDto testDocumentDto = dtoService.convert(getInputJsonTree(), TEST_DOCUMENT_TYPE_NAME, dto -> dto.setId(UUID.randomUUID()));
+
+        assertNotNull(testDocumentDto.getId());
+    }
+
+    @Test
+    void givenTypeWithoutDiscriminatorWithoutDtoConfig_whenConvertJson_thenExceptionIsThrown() {
+        Type type = createType();
+        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
+
+        var node = getInputJsonTree();
+        assertThrows(RepositoryCorruptionError.class, () -> dtoService.convert(node, TEST_DOCUMENT_TYPE_NAME));
     }
 
     @Test
@@ -173,27 +127,37 @@ class DtoServiceTest {
         assertEquals("A", testDocumentDto.getType());
     }
 
-    private Type createType() {
+    @Test
+    void givenTypeWithUnknownDiscriminatorAndDtoConfig_whenConvertJson_thenExceptionIsThrown() {
+        Type type = createTypeWithDiscriminator();
+        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
+        when(dtoRepository.findByEntityClassAndDiscriminator(TestDocumentWithDiscriminator.class, "C")).thenReturn(Optional.of(createDtoObject(type, "A", TestDocumentADto.class)));
+
+        var node = getInputJsonTree();
+        assertThrows(RepositoryCorruptionError.class, () -> dtoService.convert(node, TEST_DOCUMENT_TYPE_NAME));
+    }
+
+    private static Type createType() {
+        return createType(TEST_DOCUMENT_TYPE_NAME, TestDocument.class);
+    }
+
+    private static Type createTypeWithDiscriminator() {
+        return createType(TEST_DOCUMENT_WITH_DISCRIMINATOR_TYPE_NAME, TestDocumentWithDiscriminator.class);
+    }
+
+    private static Type createType(String typeName, Class<? extends EcmObject> typeClass) {
         Type type = new Type();
-        type.setObjectName(TEST_DOCUMENT_TYPE_NAME);
-        type.setEntityClass(TestDocument.class);
+        type.setObjectName(typeName);
+        type.setEntityClass(typeClass);
 
         return type;
     }
 
-    private Type createTypeWithDiscriminator() {
-        Type type = new Type();
-        type.setObjectName(TEST_DOCUMENT_WITH_DISCRIMINATOR_TYPE_NAME);
-        type.setEntityClass(TestDocumentWithDiscriminator.class);
-
-        return type;
-    }
-
-    private DtoObject createDtoObject(Type type) {
+    private static DtoObject createDtoObject(Type type) {
         return createDtoObject(type, null, TestDocumentDto.class);
     }
 
-    private DtoObject createDtoObject(Type type, String discriminatorValue, Class<? extends Dto> dtoClass) {
+    private static DtoObject createDtoObject(Type type, String discriminatorValue, Class<? extends Dto> dtoClass) {
         DtoObject dtoObject = new DtoObject();
         dtoObject.setDtoClass(dtoClass);
         dtoObject.setDiscriminator(discriminatorValue);
@@ -201,17 +165,6 @@ class DtoServiceTest {
 
         return dtoObject;
     }
-
-    private BufferedReader getInputJsonReader() {
-        Reader inputString = new StringReader(INPUT_JSON);
-        return new BufferedReader(inputString);
-    }
-
-    private BufferedReader getCorruptedInputJsonReader() {
-        Reader inputString = new StringReader("{");
-        return new BufferedReader(inputString);
-    }
-
     @SneakyThrows
     private JsonNode getInputJsonTree() {
         return objectMapper.readTree(INPUT_JSON);

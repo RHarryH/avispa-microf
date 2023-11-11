@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -51,6 +52,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/v1/invoice")
+@Tag(name = "Invoice", description = "Management of invoices - insertion, update, deletion and rendition generating")
 public class InvoiceController extends BaseEcmController<Invoice, InvoiceDto, InvoiceService> {
 
     public InvoiceController(InvoiceService service) {

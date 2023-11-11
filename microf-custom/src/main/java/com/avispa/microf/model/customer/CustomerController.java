@@ -19,11 +19,12 @@
 package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.base.controller.BaseEcmController;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,6 +37,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/customer")
 @Slf4j
+@Tag(name = "Customer", description = "Management of retail and corporate customers - insertion, update and deletion. The distinction is made by 'type' column.")
 public class CustomerController extends BaseEcmController<Customer, CustomerDto, CustomerService> {
 
     public CustomerController(CustomerService service) {
@@ -43,10 +45,10 @@ public class CustomerController extends BaseEcmController<Customer, CustomerDto,
     }
 
     @Override
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") UUID id) {
+    @ApiResponse(responseCode = "400", description = "Customer cannot be deleted because it is in use in invoices", content = @Content)
+    public void delete(UUID id, String resourceName) {
         try {
-            super.delete(id);
+            super.delete(id, resourceName);
         } catch(DataIntegrityViolationException e) {
             String errorMessage = String.format("Customer '%s' is in use.", getService().findById(id).getObjectName());
             log.error(errorMessage, e);

@@ -28,6 +28,7 @@ import com.avispa.ecm.util.Version;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -82,8 +83,15 @@ public class EcmClientConfiguration {
 	public OpenAPI ecmApi(Version ecmClientVersion) {
 		return new OpenAPI()
 				.info(new Info().title("Avispa ECM Backend")
-						.description("API for communication with Avispa ECM. It includes customization endpoints.")
+						.description("API for communication with Avispa ECM. It includes customization endpoints in dedicated groups.")
 						.version(ecmClientVersion.getNumber())
 						.license(new License().name("AGPL v3").url("https://www.gnu.org/licenses/agpl-3.0.txt")));
+	}
+
+	@Bean
+	public GroupedOpenApi ecmAndEcmBackendApi() {
+		String[] packagesToScan = {"com.avispa.ecm"};
+		return GroupedOpenApi.builder().group("Avispa ECM and Avispa ECM Backend").packagesToScan(packagesToScan)
+				.build();
 	}
 }
