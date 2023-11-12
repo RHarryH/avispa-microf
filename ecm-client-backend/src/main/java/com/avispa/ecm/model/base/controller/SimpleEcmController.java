@@ -16,22 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.testdocument;
+package com.avispa.ecm.model.base.controller;
 
-import com.avispa.ecm.model.document.Document;
-import com.avispa.ecm.model.type.TypeDiscriminator;
-import lombok.Getter;
-import lombok.Setter;
+import com.avispa.ecm.model.EcmEntityRepository;
+import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.base.BaseEcmService;
+import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
+import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-@Getter
-@Setter
-@Entity
-@TypeDiscriminator(name = "type")
-public class TestDocumentWithDiscriminator extends Document {
-    private String type;
+@RequiredArgsConstructor
+abstract class SimpleEcmController<T extends EcmObject, D extends Dto, S extends BaseEcmService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements EcmController<D> {
+    protected final S service;
+
+    @Override
+    public void delete(UUID id) {
+        service.delete(id);
+    }
 }

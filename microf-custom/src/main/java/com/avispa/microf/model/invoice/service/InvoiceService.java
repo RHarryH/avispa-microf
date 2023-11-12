@@ -92,9 +92,7 @@ public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceR
     }
 
     @Override
-    public void add(Invoice invoice) {
-        getRepository().save(invoice);
-
+    protected void add(Invoice invoice) {
         invoice.setSerialNumber(counterStrategy.getNextSerialNumber(invoice));
 
         contextService.applyMatchingConfigurations(invoice, List.of(Autoname.class, Autolink.class));
@@ -103,10 +101,7 @@ public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceR
     }
 
     @Override
-    public void update(InvoiceDto invoiceDto) {
-        Invoice invoice = findById(invoiceDto.getId());
-        getEntityDtoMapper().updateEntityFromDto(invoiceDto, invoice);
-
+    protected void update(Invoice invoice) {
         // delete old content and create new one
         contentService.deleteByRelatedEntity(invoice);
         generateContent(invoice);
@@ -141,18 +136,13 @@ public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceR
         }
     }
 
-    @Override
-    public void delete(UUID id) {
-        getRepository().delete(findById(id));
-    }
-
     public ContentDto getRendition(UUID id) {
         return contentMapper.convertToDto(contentService.findPdfRenditionByDocumentId(id));
     }
 
     @Override
     public Invoice findById(UUID id) {
-        return getRepository().findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Invoice.class));
     }
 }

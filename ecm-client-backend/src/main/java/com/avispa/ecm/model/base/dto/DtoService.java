@@ -34,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 /**
  * @author Rafał Hiszpański
@@ -68,16 +67,19 @@ public class DtoService {
     }
 
     /**
-     * Converts JSON to Dto object based on the type name and discriminator value if exists. The Dto is validated
+     * Converts Common Dto to concrete Dto object based on the extracted type and discriminator value. The Dto is validated
      * against JSR-303 specification.
      *
-     * @param jsonNode source JSON in form of parsed tree
-     * @param typeName name of the type to which the JSON should be converted
-     * @return Dto object from the JSON
+     * @param commonDto Common Dto
+     * @return concrete Dto object converted from Common Dto
      * @param <D>
      */
-    public <D extends Dto> D convert(JsonNode jsonNode, String typeName) {
-        return convert(jsonNode, typeName, null);
+    @SuppressWarnings("unchecked")
+    public <D extends Dto> D convertCommonToConcreteDto(Dto commonDto) {
+        return (D) dtoRepository.findByDtoClass(commonDto.getClass()).map(dtoObject ->
+            convert(objectMapper.valueToTree(commonDto),
+                    dtoObject.getType())
+        ).orElseThrow(() -> new EcmException("Can't find Dto configuration for " + commonDto.getClass() + " common type"));
     }
 
     /**
@@ -89,20 +91,28 @@ public class DtoService {
      * @return Dto object from the JSON
      * @param <D>
      */
-    public <D extends Dto> D convert(JsonNode jsonNode, String typeName, Consumer<D> enrichConsumer) {
+    public <D extends Dto> D convert(JsonNode jsonNode, String typeName) {
         Type type = typeService.getType(typeName);
-        Class<? extends EcmObject> entityClass = typeService.getType(typeName).getEntityClass();
+        return convert(jsonNode, type);
+    }
+
+    /**
+     * Converts JSON to Dto object based on the type name and discriminator value if exists. The Dto is validated
+     * against JSR-303 specification.
+     *
+     * @param jsonNode source JSON in form of parsed tree
+     * @param type type representing the data in Dto
+     * @return Dto object from the JSON
+     * @param <D>
+     */
+    public <D extends Dto> D convert(JsonNode jsonNode, Type type) {
+        Class<? extends EcmObject> entityClass = type.getEntityClass();
         String typeDiscriminatorName = TypeService.getTypeDiscriminatorFromAnnotation(entityClass);
 
         // convert json to appropriate Dto
         D dto = StringUtils.isNotEmpty(typeDiscriminatorName) ?
                 getDtoWithDiscriminator(jsonNode, type, typeDiscriminatorName) :
                 getDtoWithoutDiscriminator(jsonNode, type);
-
-        // enrich dto with additional details if required
-        if (null != enrichConsumer) {
-            enrichConsumer.accept(dto);
-        }
 
         // validate dto using JSR-303
         validator.validate(dto);

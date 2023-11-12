@@ -20,7 +20,6 @@ package com.avispa.ecm.model.base;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.base.dto.Dto;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,11 +28,9 @@ import java.util.UUID;
  * @author Rafał Hiszpański
  */
 interface EcmService<T extends EcmObject, D extends Dto> {
-    @Transactional
-    void add(T object);
+    void add(D dto);
 
-    @Transactional
-    void update(D dto);
+    void update(D dto, UUID id);
 
     void delete(UUID id);
 

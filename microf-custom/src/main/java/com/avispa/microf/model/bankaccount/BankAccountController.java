@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.bankaccount;
 
-import com.avispa.ecm.model.base.controller.BaseEcmController;
+import com.avispa.ecm.model.base.controller.BaseSimpleEcmController;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,7 +39,7 @@ import java.util.UUID;
 @RequestMapping("/v1/bank-account")
 @Tag(name = "Bank account", description = "Management of bank accounts - insertion, update and deletion")
 @Slf4j
-public class BankAccountController extends BaseEcmController<BankAccount, BankAccountDto, BankAccountService> {
+public class BankAccountController extends BaseSimpleEcmController<BankAccount, BankAccountDto, BankAccountService> {
 
     @Autowired
     public BankAccountController(BankAccountService bankAccountService) {
@@ -47,12 +47,22 @@ public class BankAccountController extends BaseEcmController<BankAccount, BankAc
     }
 
     @Override
+    protected void add(BankAccountDto dto) {
+        service.add(dto);
+    }
+
+    @Override
+    protected void update(UUID id, BankAccountDto dto) {
+        service.update(dto, id);
+    }
+
+    @Override
     @ApiResponse(responseCode = "400", description = "Bank account cannot be deleted because it is in use in invoices", content = @Content)
-    public void delete(UUID id, String resourceName) {
+    public void delete(UUID id) {
         try {
-            super.delete(id, resourceName);
+            super.delete(id);
         } catch(DataIntegrityViolationException e) {
-            String errorMessage = String.format("Bank account '%s' is in use.", getService().findById(id).getObjectName());
+            String errorMessage = String.format("Bank account '%s' is in use.", service.findById(id).getObjectName());
             log.error(errorMessage, e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
         }
