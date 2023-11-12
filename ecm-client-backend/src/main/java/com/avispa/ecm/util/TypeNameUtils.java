@@ -29,8 +29,8 @@ public class TypeNameUtils {
 
     private TypeNameUtils() {}
 
-    public static String convertResourceNameToTypeName(String resourceId) {
-        return StringUtils.capitalize(resourceId.trim().toLowerCase(Locale.ROOT).replace("-", " "));
+    public static String convertResourceNameToTypeName(String resourceType) {
+        return StringUtils.capitalize(resourceType.trim().toLowerCase(Locale.ROOT).replace("-", " "));
     }
 
     public static String convertTypeNameToResourceName(String typeName) {

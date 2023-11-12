@@ -24,12 +24,14 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +39,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Rafał Hiszpański
  */
 class BigDecimalSerializersTest {
+
+    @BeforeAll
+    public static void init() {
+        Locale.setDefault(new Locale("pl", "PL"));
+    }
 
     @ParameterizedTest
     @CsvSource(value = {"1.10,'1,10'", "1.2,'1,20'", "1.567,'1,57'", "1500,'1\u00A0500,00'"})

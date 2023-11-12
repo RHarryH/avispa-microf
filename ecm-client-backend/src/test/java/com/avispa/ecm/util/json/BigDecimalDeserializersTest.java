@@ -23,11 +23,13 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +39,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BigDecimalDeserializersTest {
 
     private ObjectMapper objectMapper;
+
+    @BeforeAll
+    public static void init() {
+        Locale.setDefault(new Locale("pl", "PL"));
+    }
 
     @BeforeEach
     public void setup() {
