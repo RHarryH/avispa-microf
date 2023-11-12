@@ -19,16 +19,16 @@
 package com.avispa.ecm.model.base.dto;
 
 import com.avispa.ecm.EcmConfiguration;
-import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
-import com.avispa.ecm.testdocument.TestDocument;
-import com.avispa.ecm.testdocument.TestDocumentADto;
-import com.avispa.ecm.testdocument.TestDocumentDto;
-import com.avispa.ecm.testdocument.TestDocumentWithDiscriminator;
+import com.avispa.ecm.testdocument.discriminator.TestDocumentADto;
+import com.avispa.ecm.testdocument.discriminator.TestDocumentCommonDto;
+import com.avispa.ecm.testdocument.discriminator.TestDocumentWithDiscriminator;
+import com.avispa.ecm.testdocument.simple.TestDocument;
+import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import com.avispa.ecm.util.GenericService;
 import com.avispa.ecm.util.error.EcmDtoValidator;
-import com.avispa.ecm.util.exception.RepositoryCorruptionError;
+import com.avispa.ecm.util.exception.EcmException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -44,10 +44,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import javax.validation.Validator;
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -97,26 +95,6 @@ class DtoServiceTest {
     }
 
     @Test
-    void givenTypeWithoutDiscriminatorAndDtoConfig_whenConvertJsonWithEnrichment_thenObjectIsEnriched() {
-        Type type = createType();
-        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-        when(dtoRepository.findByEntityClassAndDiscriminatorIsNull(TestDocument.class)).thenReturn(Optional.of(createDtoObject(type)));
-
-        TestDocumentDto testDocumentDto = dtoService.convert(getInputJsonTree(), TEST_DOCUMENT_TYPE_NAME, dto -> dto.setId(UUID.randomUUID()));
-
-        assertNotNull(testDocumentDto.getId());
-    }
-
-    @Test
-    void givenTypeWithoutDiscriminatorWithoutDtoConfig_whenConvertJson_thenExceptionIsThrown() {
-        Type type = createType();
-        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-
-        var node = getInputJsonTree();
-        assertThrows(RepositoryCorruptionError.class, () -> dtoService.convert(node, TEST_DOCUMENT_TYPE_NAME));
-    }
-
-    @Test
     void givenTypeWithDiscriminatorAndDtoConfig_whenConvertJsonTree_thenCorrectDtoIsReturned() {
         Type type = createTypeWithDiscriminator();
         when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
@@ -128,36 +106,50 @@ class DtoServiceTest {
     }
 
     @Test
-    void givenTypeWithUnknownDiscriminatorAndDtoConfig_whenConvertJson_thenExceptionIsThrown() {
+    void givenCommonDto_whenConvertCommonDto_thenCorrectDtoIsReturned() {
         Type type = createTypeWithDiscriminator();
         when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
-        when(dtoRepository.findByEntityClassAndDiscriminator(TestDocumentWithDiscriminator.class, "C")).thenReturn(Optional.of(createDtoObject(type, "A", TestDocumentADto.class)));
+        when(dtoRepository.findByDtoClass(TestDocumentCommonDto.class)).thenReturn(Optional.of(createDtoObject(type, "", TestDocumentCommonDto.class)));
+        when(dtoRepository.findByEntityClassAndDiscriminator(TestDocumentWithDiscriminator.class, "A")).thenReturn(Optional.of(createDtoObject(type, "A", TestDocumentADto.class)));
 
-        var node = getInputJsonTree();
-        assertThrows(RepositoryCorruptionError.class, () -> dtoService.convert(node, TEST_DOCUMENT_TYPE_NAME));
+        TestDocumentCommonDto testDocumentCommonDto = createTestDocumentCommonDto();
+
+        TestDocumentADto dto = dtoService.convertCommonToConcreteDto(testDocumentCommonDto);
+
+        assertEquals("Test", dto.getObjectName());
     }
 
-    private static Type createType() {
-        return createType(TEST_DOCUMENT_TYPE_NAME, TestDocument.class);
+    @Test
+    void givenCommonDtoWithMissingDtoConfiguration_whenConvertCommonDto_thenThrowException() {
+        Type type = createTypeWithDiscriminator();
+        when(typeService.getType(TEST_DOCUMENT_TYPE_NAME)).thenReturn(type);
+
+        TestDocumentCommonDto testDocumentCommonDto = createTestDocumentCommonDto();
+
+        assertThrows(EcmException.class, () -> dtoService.convertCommonToConcreteDto(testDocumentCommonDto));
     }
 
-    private static Type createTypeWithDiscriminator() {
-        return createType(TEST_DOCUMENT_WITH_DISCRIMINATOR_TYPE_NAME, TestDocumentWithDiscriminator.class);
-    }
-
-    private static Type createType(String typeName, Class<? extends EcmObject> typeClass) {
+    private Type createType() {
         Type type = new Type();
-        type.setObjectName(typeName);
-        type.setEntityClass(typeClass);
+        type.setObjectName(TEST_DOCUMENT_TYPE_NAME);
+        type.setEntityClass(TestDocument.class);
 
         return type;
     }
 
-    private static DtoObject createDtoObject(Type type) {
+    private Type createTypeWithDiscriminator() {
+        Type type = new Type();
+        type.setObjectName(TEST_DOCUMENT_WITH_DISCRIMINATOR_TYPE_NAME);
+        type.setEntityClass(TestDocumentWithDiscriminator.class);
+
+        return type;
+    }
+
+    private DtoObject createDtoObject(Type type) {
         return createDtoObject(type, null, TestDocumentDto.class);
     }
 
-    private static DtoObject createDtoObject(Type type, String discriminatorValue, Class<? extends Dto> dtoClass) {
+    private DtoObject createDtoObject(Type type, String discriminatorValue, Class<? extends Dto> dtoClass) {
         DtoObject dtoObject = new DtoObject();
         dtoObject.setDtoClass(dtoClass);
         dtoObject.setDiscriminator(discriminatorValue);
@@ -165,8 +157,17 @@ class DtoServiceTest {
 
         return dtoObject;
     }
+
     @SneakyThrows
     private JsonNode getInputJsonTree() {
         return objectMapper.readTree(INPUT_JSON);
+    }
+
+    private static TestDocumentCommonDto createTestDocumentCommonDto() {
+        TestDocumentCommonDto testDocumentCommonDto = new TestDocumentCommonDto();
+        testDocumentCommonDto.setType("A");
+        testDocumentCommonDto.setObjectName("Test");
+        testDocumentCommonDto.setUnitPrice(BigDecimal.ONE);
+        return testDocumentCommonDto;
     }
 }

@@ -22,12 +22,13 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -35,10 +36,38 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 public abstract class BaseEcmService<T extends EcmObject, D extends Dto, R extends EcmObjectRepository<T>, M extends EntityDtoMapper<T, D>> implements EcmService<T, D> {
-    @Getter(AccessLevel.PROTECTED)
-    private final R repository;
+    protected final R repository;
     @Getter
-    private final M entityDtoMapper;
+    protected final M entityDtoMapper;
+
+    @Override
+    @Transactional
+    public void add(D dto) {
+        T object = entityDtoMapper.convertToEntity(dto);
+        repository.save(object);
+        add(object);
+    }
+
+    protected void add(T object) {
+        // NOTE: nothing extra
+    }
+
+    @Override
+    @Transactional
+    public void update(D dto, UUID id) {
+        T object = findById(id);
+        entityDtoMapper.updateEntityFromDto(dto, object);
+        update(object);
+    }
+
+    protected void update(T object) {
+        // NOTE: nothing extra
+    }
+
+    @Override
+    public void delete(UUID id) {
+        repository.delete(findById(id));
+    }
 
     public List<D> findAll() {
         return repository

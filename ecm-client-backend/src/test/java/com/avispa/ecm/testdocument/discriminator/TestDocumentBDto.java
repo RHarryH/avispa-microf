@@ -16,26 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.base.dto;
+package com.avispa.ecm.testdocument.discriminator;
 
-import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContextInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.avispa.ecm.model.base.dto.Dto;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-public interface Dto extends ModalPageEcmContextInfo {
-    String EMPTY_STRING_REGEX = "^$";
+@Getter
+@Setter
+public class TestDocumentBDto implements Dto {
+    private UUID id;
+    private String type;
 
-    UUID getId();
-    void setId(UUID id);
-
-    default boolean isPdfRenditionAvailable() {
-        return false;
-    }
-
-    @JsonIgnore
-    default void setPdfRenditionAvailable(boolean pdfRenditionAvailable){}
+    private BigDecimal unitPrice;
 }

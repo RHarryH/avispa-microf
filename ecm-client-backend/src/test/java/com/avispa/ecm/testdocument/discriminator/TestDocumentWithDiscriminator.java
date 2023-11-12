@@ -16,26 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.base.dto;
+package com.avispa.ecm.testdocument.discriminator;
 
-import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContextInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.avispa.ecm.model.document.Document;
+import com.avispa.ecm.model.type.TypeDiscriminator;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.UUID;
+import javax.persistence.Entity;
 
 /**
  * @author Rafał Hiszpański
  */
-public interface Dto extends ModalPageEcmContextInfo {
-    String EMPTY_STRING_REGEX = "^$";
-
-    UUID getId();
-    void setId(UUID id);
-
-    default boolean isPdfRenditionAvailable() {
-        return false;
-    }
-
-    @JsonIgnore
-    default void setPdfRenditionAvailable(boolean pdfRenditionAvailable){}
+@Getter
+@Setter
+@Entity
+@TypeDiscriminator(name = "type")
+public class TestDocumentWithDiscriminator extends Document {
+    private String type;
 }

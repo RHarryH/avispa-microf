@@ -24,7 +24,6 @@ import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -42,31 +41,19 @@ public class CustomerService extends BaseEcmService<Customer, CustomerDto, Custo
         this.contextService = contextService;
     }
 
-    @Transactional
     @Override
-    public void add(Customer customer) {
-        getRepository().save(customer);
-
-        contextService.applyMatchingConfigurations(customer, Autoname.class);
-    }
-
-    @Transactional
-    @Override
-    public void update(CustomerDto customerDto) {
-        Customer customer = findById(customerDto.getId());
-        getEntityDtoMapper().updateEntityFromDto(customerDto, customer);
-
+    protected void add(Customer customer) {
         contextService.applyMatchingConfigurations(customer, Autoname.class);
     }
 
     @Override
-    public void delete(UUID id) {
-        getRepository().delete(findById(id));
+    protected void update(Customer customer) {
+        contextService.applyMatchingConfigurations(customer, Autoname.class);
     }
 
     @Override
     public Customer findById(UUID id) {
-        return getRepository().findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Customer.class));
     }
 }

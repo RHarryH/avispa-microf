@@ -18,10 +18,10 @@
 
 package com.avispa.microf.model.invoice;
 
+import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
-import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
-import com.avispa.ecm.model.base.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 

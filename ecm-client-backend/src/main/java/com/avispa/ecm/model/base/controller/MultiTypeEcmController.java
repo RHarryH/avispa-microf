@@ -16,26 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.base.dto;
+package com.avispa.ecm.model.base.controller;
 
-import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContextInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.avispa.ecm.model.EcmEntityRepository;
+import com.avispa.ecm.model.EcmObject;
+import com.avispa.ecm.model.base.BaseEcmService;
+import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-public interface Dto extends ModalPageEcmContextInfo {
-    String EMPTY_STRING_REGEX = "^$";
+@RequiredArgsConstructor
+abstract class MultiTypeEcmController<T extends EcmObject, C extends Dto, D extends Dto, S extends BaseEcmService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements EcmController<C> {
+    protected final S service;
 
-    UUID getId();
-    void setId(UUID id);
-
-    default boolean isPdfRenditionAvailable() {
-        return false;
+    @Override
+    public void delete(UUID id) {
+        service.delete(id);
     }
-
-    @JsonIgnore
-    default void setPdfRenditionAvailable(boolean pdfRenditionAvailable){}
 }

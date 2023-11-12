@@ -27,12 +27,12 @@ import com.avispa.ecm.model.format.Format;
 import com.avispa.ecm.model.format.FormatRepository;
 import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.ecm.util.exception.EcmException;
-import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.invoice.Invoice;
-import com.avispa.microf.model.invoice.payment.Payment;
-import com.avispa.microf.model.invoice.position.Position;
+import com.avispa.microf.model.invoice.InvoiceDto;
+import com.avispa.microf.model.invoice.payment.PaymentDto;
+import com.avispa.microf.model.invoice.position.PositionDto;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -48,6 +48,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -56,13 +57,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -100,6 +100,9 @@ class InvoiceServiceIntegrationTest {
     @MockBean
     private RenditionService renditionService;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @TestConfiguration
     static class InvoiceServiceIntegrationConfig {
         // overwrite default executor to force async methods to be run sync
@@ -122,12 +125,14 @@ class InvoiceServiceIntegrationTest {
     @Test
     void givenInvoice_whenAdded_thenContentsAreInDBAndFileStore() {
         int filesCount = getCount();
-        Invoice invoice = createInvoice();
+        InvoiceDto invoiceDto = createInvoice("Test 1");
         Template template = createValidTemplate();
         mockContextService(template);
 
-        invoiceService.add(invoice);
+        invoiceService.add(invoiceDto);
 
+        Invoice invoice = getInvoiceWithContents("Test 1");
+        assertNotNull(invoice);
         assertNotNull(invoiceService.findById(invoice.getId()));
         for(Content content : invoice.getContents()) {
             assertNotNull(ecmObjectRepository.findById(content.getId()));
@@ -135,55 +140,67 @@ class InvoiceServiceIntegrationTest {
         assertEquals(filesCount + invoice.getContents().size(), getCount());
     }
 
+    /**
+     * Workaround for LazyInitializationException
+     * @param objectName name of the invoice
+     * @return
+     */
+    private Invoice getInvoiceWithContents(String objectName) {
+        return entityManager.createQuery(
+                        "select i from Invoice i join fetch i.contents where i.objectName = :objectName",
+                        Invoice.class)
+                .setParameter("objectName", objectName)
+                .getSingleResult();
+    }
+
     @Test
     void givenCorruptedDB_whenAdded_thenBothOdtAndPdfDoesNotExist() {
         int filesCount = getCount();
-        Invoice invoice = createInvoice();
+        InvoiceDto invoiceDto = createInvoice("Test 2");
         Template template = createCorruptedTemplate();
         mockContextService(template);
 
-        assertThrows(EcmException.class, () -> invoiceService.add(invoice));
-        UUID invoiceId = invoice.getId();
-        assertThrows(ResourceNotFoundException.class, () -> invoiceService.findById(invoiceId));
-        assertNull(invoice.getContents());
+        assertThrows(EcmException.class, () -> invoiceService.add(invoiceDto));
+
+        assertFalse(ecmObjectRepository.findByObjectName("Test 2").isPresent());
+
         assertEquals(filesCount, getCount());
     }
 
-    private Invoice createInvoice() {
+    private InvoiceDto createInvoice(String invoiceName) {
         Customer customer = new Customer();
         customer.setType("CORPORATE");
-        ecmObjectRepository.save(customer);
-
-        Position position = new Position();
-        position.setPositionName("Position");
-        position.setQuantity(BigDecimal.ONE);
-        position.setUnit("HOUR");
-        position.setVatRate("VAT_05");
-        position.setUnitPrice(BigDecimal.TEN);
-        position.setDiscount(BigDecimal.ZERO);
+        customer = ecmObjectRepository.save(customer);
 
         BankAccount bankAccount = new BankAccount();
-        bankAccount.setId(UUID.randomUUID());
         bankAccount.setAccountNumber(RandomStringUtils.randomAlphanumeric(24));
         bankAccount.setBankName("test bank");
-        ecmObjectRepository.save(bankAccount);
+        bankAccount = ecmObjectRepository.save(bankAccount);
 
-        Payment payment = new Payment();
-        payment.setMethod("BANK_TRANSFER");
-        payment.setDeadline(14);
-        payment.setPaidAmount(BigDecimal.ZERO);
-        payment.setBankAccount(bankAccount);
+        PositionDto positionDto = new PositionDto();
+        positionDto.setObjectName("Position");
+        positionDto.setQuantity(BigDecimal.ONE);
+        positionDto.setUnit("HOUR");
+        positionDto.setVatRate("VAT_05");
+        positionDto.setUnitPrice(BigDecimal.TEN);
+        positionDto.setDiscount(BigDecimal.ZERO);
 
-        Invoice invoice = new Invoice();
-        invoice.setObjectName("Test");
-        invoice.setIssueDate(LocalDate.now());
-        invoice.setServiceDate(LocalDate.now());
-        invoice.setBuyer(customer);
-        invoice.setSeller(customer);
-        invoice.setPositions(List.of(position));
-        invoice.setPayment(payment);
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setMethod("BANK_TRANSFER");
+        paymentDto.setDeadline(14);
+        paymentDto.setPaidAmount(BigDecimal.ZERO);
+        paymentDto.setBankAccount(bankAccount.getId().toString());
 
-        return invoice;
+        InvoiceDto invoiceDto = new InvoiceDto();
+        invoiceDto.setObjectName(invoiceName);
+        invoiceDto.setIssueDate(LocalDate.now().toString());
+        invoiceDto.setServiceDate(LocalDate.now().toString());
+        invoiceDto.setBuyer(customer.getId().toString());
+        invoiceDto.setSeller(customer.getId().toString());
+        invoiceDto.setPositions(List.of(positionDto));
+        invoiceDto.setPayment(paymentDto);
+
+        return invoiceDto;
     }
 
     private int getCount() {

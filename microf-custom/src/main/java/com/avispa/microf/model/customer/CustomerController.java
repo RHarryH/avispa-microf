@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.customer;
 
-import com.avispa.ecm.model.base.controller.BaseEcmController;
+import com.avispa.ecm.model.base.controller.BaseMultiTypeEcmController;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,19 +38,28 @@ import java.util.UUID;
 @RequestMapping("/v1/customer")
 @Slf4j
 @Tag(name = "Customer", description = "Management of retail and corporate customers - insertion, update and deletion. The distinction is made by 'type' column.")
-public class CustomerController extends BaseEcmController<Customer, CustomerDto, CustomerService> {
-
+public class CustomerController extends BaseMultiTypeEcmController<Customer, CustomerCommonDto, CustomerDto, CustomerService> {
     public CustomerController(CustomerService service) {
         super(service);
     }
 
     @Override
+    protected void add(CustomerDto dto) {
+        service.add(dto);
+    }
+
+    @Override
+    protected void update(UUID id, CustomerDto dto) {
+        service.update(dto, id);
+    }
+
+    @Override
     @ApiResponse(responseCode = "400", description = "Customer cannot be deleted because it is in use in invoices", content = @Content)
-    public void delete(UUID id, String resourceName) {
+    public void delete(UUID id) {
         try {
-            super.delete(id, resourceName);
+            super.delete(id);
         } catch(DataIntegrityViolationException e) {
-            String errorMessage = String.format("Customer '%s' is in use.", getService().findById(id).getObjectName());
+            String errorMessage = String.format("Customer '%s' is in use.", service.findById(id).getObjectName());
             log.error(errorMessage, e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
         }

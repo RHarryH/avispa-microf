@@ -16,26 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.testdocument;
+package com.avispa.ecm.testdocument.simple;
 
-import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.model.document.Document;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
-import java.util.UUID;
+import java.time.LocalDate;
 
 /**
  * @author Rafał Hiszpański
  */
 @Getter
 @Setter
-public class TestDocumentDto implements Dto {
-    private UUID id;
+@Entity
+public class TestDocument extends Document {
+    @Column(name = "issue_date", columnDefinition = "DATE")
+    private LocalDate issueDate;
 
-    private String objectName;
-    private String issueDate;
+    @Column(precision=9, scale=2)
     private BigDecimal unitPrice;
-
-    private boolean pdfRenditionAvailable;
 }

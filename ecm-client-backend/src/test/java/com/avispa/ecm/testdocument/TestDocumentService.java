@@ -19,6 +19,8 @@
 package com.avispa.ecm.testdocument;
 
 import com.avispa.ecm.model.base.BaseEcmService;
+import com.avispa.ecm.testdocument.simple.TestDocument;
+import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,24 +38,8 @@ public class TestDocumentService extends BaseEcmService<TestDocument, TestDocume
     }
 
     @Override
-    public void add(TestDocument testDocument) {
-        getRepository().save(testDocument);
-    }
-
-    @Override
-    public void update(TestDocumentDto testDocumentDto) {
-        TestDocument testDocument = findById(testDocumentDto.getId());
-        getEntityDtoMapper().updateEntityFromDto(testDocumentDto, testDocument);
-    }
-
-    @Override
-    public void delete(UUID id) {
-        getRepository().delete(findById(id));
-    }
-
-    @Override
     public TestDocument findById(UUID id) {
-        return getRepository().findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(TestDocument.class));
     }
 }

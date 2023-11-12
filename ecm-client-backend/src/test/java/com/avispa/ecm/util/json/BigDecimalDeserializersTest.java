@@ -18,7 +18,7 @@
 
 package com.avispa.ecm.util.json;
 
-import com.avispa.ecm.testdocument.TestDocument;
+import com.avispa.ecm.testdocument.simple.TestDocument;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
