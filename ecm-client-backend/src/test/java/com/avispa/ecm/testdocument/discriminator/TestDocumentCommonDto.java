@@ -16,12 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.testdocument;
+package com.avispa.ecm.testdocument.discriminator;
 
 import com.avispa.ecm.model.base.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
@@ -29,7 +30,10 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class TestDocumentADto implements Dto {
+public class TestDocumentCommonDto implements Dto {
     private UUID id;
     private String type;
+
+    private String objectName;
+    private BigDecimal unitPrice;
 }

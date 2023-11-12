@@ -24,28 +24,22 @@ import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
-import com.avispa.ecm.util.TypeNameUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
 
 import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
-@RequiredArgsConstructor
-@RequestMapping("/v1/{resourceName}")
 @Slf4j
-public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S extends BaseEcmService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements EcmController<D>, EcmModalableController {
-    @Getter
-    private final S service;
-
+public abstract class BaseMultiTypeEcmController<T extends EcmObject, C extends Dto, D extends Dto, S extends BaseEcmService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> extends MultiTypeEcmController<T, C, D, S> {
     private DtoService dtoService;
+
+    protected BaseMultiTypeEcmController(S service) {
+        super(service);
+    }
 
     @Autowired
     public void setDtoService(DtoService dtoService) {
@@ -53,34 +47,16 @@ public abstract class BaseEcmController<T extends EcmObject, D extends Dto, S ex
     }
 
     @Override
-    public void add(JsonNode payload, @PathVariable String resourceName) {
-        String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
-        D dto = dtoService.convert(payload, typeName);
-        add(dto);
+    public void add(C commonDto, BindingResult bindingResult) {
+        add(dtoService.convertCommonToConcreteDto(commonDto));
     }
 
     @Override
-    public void add(D dto) {
-        T object = service.getEntityDtoMapper().convertToEntity(dto);
-        service.add(object);
+    public void update(UUID id, C commonDto, BindingResult bindingResult) {
+        update(id, dtoService.convertCommonToConcreteDto(commonDto));
     }
 
-    @Override
-    public void update(JsonNode payload, @PathVariable String resourceName, UUID id) {
-        String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
-        update(dtoService.convert(payload,
-                typeName,
-                dto -> dto.setId(id)
-        ));
-    }
+    protected abstract void add(D dto);
 
-    @Override
-    public void update(D dto) {
-        service.update(dto);
-    }
-
-    @Override
-    public void delete(UUID id, @PathVariable String resourceName) {
-        service.delete(id);
-    }
+    protected abstract void update(UUID id, D dto);
 }

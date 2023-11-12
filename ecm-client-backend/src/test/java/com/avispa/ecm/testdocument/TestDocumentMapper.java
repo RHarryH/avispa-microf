@@ -19,6 +19,8 @@
 package com.avispa.ecm.testdocument;
 
 import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
+import com.avispa.ecm.testdocument.simple.TestDocument;
+import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;

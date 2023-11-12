@@ -16,31 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.bankaccount;
+package com.avispa.ecm.util.error;
 
-import com.avispa.ecm.model.base.BaseEcmService;
-import com.avispa.ecm.util.exception.ResourceNotFoundException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.UUID;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * @author Rafał Hiszpański
  */
-@Component
 @Slf4j
-public class BankAccountService extends BaseEcmService<BankAccount, BankAccountDto, BankAccountRepository, BankAccountMapper> {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ValidationErrorUtil {
+    public static void processErrors(BindingResult result) {
+        if(result.hasErrors()) {
+            result.getFieldErrors()
+                    .forEach(f -> log.error("{}: {}", f.getField(), f.getDefaultMessage()));
 
-    @Autowired
-    public BankAccountService(BankAccountRepository bankAccountRepository, BankAccountMapper entityDtoMapper) {
-        super(bankAccountRepository, entityDtoMapper);
-    }
-
-    @Override
-    public BankAccount findById(UUID id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(BankAccount.class));
+            FieldError fe = result.getFieldError();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, null != fe ? fe.getDefaultMessage() : "Unknown message error");
+        }
     }
 }

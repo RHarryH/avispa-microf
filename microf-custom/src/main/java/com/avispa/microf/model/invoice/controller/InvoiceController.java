@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.invoice.controller;
 
-import com.avispa.ecm.model.base.controller.BaseEcmController;
+import com.avispa.ecm.model.base.controller.BaseSimpleEcmController;
 import com.avispa.ecm.model.content.ContentDto;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import com.avispa.microf.model.invoice.Invoice;
@@ -53,10 +53,20 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/invoice")
 @Tag(name = "Invoice", description = "Management of invoices - insertion, update, deletion and rendition generating")
-public class InvoiceController extends BaseEcmController<Invoice, InvoiceDto, InvoiceService> {
+public class InvoiceController extends BaseSimpleEcmController<Invoice, InvoiceDto, InvoiceService> {
 
     public InvoiceController(InvoiceService service) {
         super(service);
+    }
+
+    @Override
+    protected void add(InvoiceDto dto) {
+        service.add(dto);
+    }
+
+    @Override
+    protected void update(UUID id, InvoiceDto dto) {
+        service.update(dto, id);
     }
 
     @GetMapping(value = "/rendition/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
@@ -68,7 +78,7 @@ public class InvoiceController extends BaseEcmController<Invoice, InvoiceDto, In
             @PathVariable
             @Parameter(description = "id of the document")
             UUID id) throws IOException {
-        ContentDto contentDto = getService().getRendition(id);
+        ContentDto contentDto = service.getRendition(id);
         if(null == contentDto) {
             throw new ResourceNotFoundException();
         }

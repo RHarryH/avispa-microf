@@ -19,6 +19,7 @@
 package com.avispa.ecm.testdocument;
 
 import com.avispa.ecm.model.EcmObjectRepository;
+import com.avispa.ecm.testdocument.simple.TestDocument;
 import org.springframework.stereotype.Repository;
 
 /**

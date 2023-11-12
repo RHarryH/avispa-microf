@@ -57,4 +57,6 @@ public interface DtoRepository extends EcmEntityRepository<DtoObject> {
 
     @Query("select d from DtoObject d, Type t where d.type = t and t.objectName = :typeName and d.discriminator = :discriminator")
     Optional<DtoObject> findByTypeNameClassAndDiscriminator(String typeName, String discriminator);
+
+    Optional<DtoObject> findByDtoClass(Class<? extends Dto> dtoClass);
 }

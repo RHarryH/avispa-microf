@@ -26,7 +26,7 @@ import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.ui.widget.list.dto.ListDataDto;
 import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
 import com.avispa.ecm.model.ui.widget.list.mapper.ListDataDtoMapper;
-import com.avispa.ecm.testdocument.TestDocumentDto;
+import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import com.avispa.ecm.util.GenericService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
