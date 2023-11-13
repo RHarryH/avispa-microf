@@ -18,30 +18,21 @@
 
 package com.avispa.microf.model.customer.corporate;
 
+import com.avispa.ecm.model.base.dto.MultiTypeDto;
 import com.avispa.microf.model.customer.CustomerDto;
-import com.avispa.microf.util.validation.VATINConstraint;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.Valid;
 
 /**
  * @author Rafał Hiszpański
  */
 @Getter
 @Setter
-public class CorporateCustomerDto extends CustomerDto {
-    public static final String VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK = "Company name cannot be empty or blank";
-    public static final String VM_VIN_NOT_EMPTY = "VAT Identification Number cannot be empty";
-    public static final String VM_VIN_PATTERN_NOT_MATCH = "VAT Identification Number does not match specified pattern";
-
-    @NotBlank(message = VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK)
-    private String companyName;
-
-    @VATINConstraint
-    @Pattern(regexp = "\\d{3}-\\d{2}-\\d{2}-\\d{3}", message = VM_VIN_PATTERN_NOT_MATCH)
-    @NotEmpty(message = VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK)
-    private String vatIdentificationNumber;
+public class CorporateCustomerDto extends CustomerDto implements MultiTypeDto<CorporateCustomerDetailDto> {
+    @JsonUnwrapped
+    @Valid
+    private CorporateCustomerDetailDto details;
 }
