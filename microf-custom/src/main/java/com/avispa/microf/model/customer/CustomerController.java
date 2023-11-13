@@ -19,12 +19,17 @@
 package com.avispa.microf.model.customer;
 
 import com.avispa.ecm.model.base.controller.BaseMultiTypeEcmController;
+import com.avispa.microf.model.customer.corporate.CorporateCustomerDto;
+import com.avispa.microf.model.customer.retail.RetailCustomerDto;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,6 +46,18 @@ import java.util.UUID;
 public class CustomerController extends BaseMultiTypeEcmController<Customer, CustomerCommonDto, CustomerDto, CustomerService> {
     public CustomerController(CustomerService service) {
         super(service);
+    }
+
+    @Override
+    @RequestBody(content = @Content(schema = @Schema(oneOf = {RetailCustomerDto.class, CorporateCustomerDto.class})))
+    public void add(CustomerCommonDto commonDto, BindingResult bindingResult) {
+        super.add(commonDto, bindingResult);
+    }
+
+    @Override
+    @RequestBody(content = @Content(schema = @Schema(oneOf = {RetailCustomerDto.class, CorporateCustomerDto.class})))
+    public void update(UUID id, CustomerCommonDto commonDto, BindingResult bindingResult) {
+        super.update(id, commonDto, bindingResult);
     }
 
     @Override
