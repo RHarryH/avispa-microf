@@ -18,7 +18,6 @@
 
 package com.avispa.microf.model.customer;
 
-import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.microf.model.customer.corporate.CorporateCustomerDetailDto;
 import com.avispa.microf.model.customer.retail.RetailCustomerDetailDto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -30,7 +29,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CustomerCommonDto extends CustomerDto implements Dto {
+public class CustomerCommonDto extends CustomerDto {
     @JsonUnwrapped
     private RetailCustomerDetailDto retailDetails;
 
