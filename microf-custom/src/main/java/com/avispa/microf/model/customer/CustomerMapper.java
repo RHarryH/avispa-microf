@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.customer;
 
-import com.avispa.ecm.model.base.mapper.MultiTypeEntityDtoMapper;
+import com.avispa.ecm.model.base.mapper.MasterMultiTypeEntityDtoMapper;
 import com.avispa.ecm.model.base.mapper.MultiTypeMapperRegistry;
 import com.avispa.microf.model.customer.corporate.CorporateCustomerMapper;
 import com.avispa.microf.model.customer.retail.RetailCustomerMapper;
@@ -28,7 +28,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public abstract class CustomerMapper extends MultiTypeEntityDtoMapper<Customer, CustomerDto> {
+public abstract class CustomerMapper extends MasterMultiTypeEntityDtoMapper<Customer, CustomerDto> {
     @Autowired
     private CorporateCustomerMapper corporateCustomerMapper;
 

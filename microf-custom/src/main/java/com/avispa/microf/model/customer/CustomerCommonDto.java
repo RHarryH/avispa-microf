@@ -18,8 +18,10 @@
 
 package com.avispa.microf.model.customer;
 
-import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.microf.model.customer.corporate.CorporateCustomerDetailDto;
+import com.avispa.microf.model.customer.retail.RetailCustomerDetailDto;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,11 +31,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CustomerCommonDto extends CustomerDto implements Dto {
-    private String companyName;
+    @JsonUnwrapped
+    private RetailCustomerDetailDto retailDetails;
 
-    @DisplayName("VAT Identification Number")
-    private String vatIdentificationNumber;
-
-    private String firstName;
-    private String lastName;
+    @JsonUnwrapped
+    private CorporateCustomerDetailDto corporateDetails;
 }
