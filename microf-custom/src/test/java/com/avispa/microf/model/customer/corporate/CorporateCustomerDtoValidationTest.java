@@ -19,7 +19,6 @@
 package com.avispa.microf.model.customer.corporate;
 
 import com.avispa.microf.model.customer.address.AddressDto;
-import com.avispa.microf.model.customer.corporate.CorporateCustomerDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +35,12 @@ class CorporateCustomerDtoValidationTest {
     @BeforeEach
     void createDto() {
         customerDto = new CorporateCustomerDto();
-        customerDto.setCompanyName("First");
-        customerDto.setVatIdentificationNumber("111-11-11-111");
+
+        CorporateCustomerDetailDto customerDetailDto = new CorporateCustomerDetailDto();
+        customerDetailDto.setCompanyName("Company");
+        customerDetailDto.setVatIdentificationNumber("111-11-11-111");
+        customerDto.setDetails(customerDetailDto);
+
         customerDto.setEmail("email@mail.com");
         customerDto.setPhoneNumber("+48 123123123");
 
@@ -51,25 +54,25 @@ class CorporateCustomerDtoValidationTest {
 
     @Test
     void givenEmptyFirstName_whenValidate_thenFail() {
-        customerDto.setCompanyName("");
-        validate(customerDto, CorporateCustomerDto.VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK);
+        customerDto.getDetails().setCompanyName("");
+        validate(customerDto, CorporateCustomerDetailDto.VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenBlankFirstName_whenValidate_thenFail() {
-        customerDto.setCompanyName("   \n\t");
-        validate(customerDto, CorporateCustomerDto.VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK);
+        customerDto.getDetails().setCompanyName("   \n\t");
+        validate(customerDto, CorporateCustomerDetailDto.VM_COMPANY_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenIncorrectVIN_whenValidate_thenFail() {
-        customerDto.setVatIdentificationNumber("123-123-1");
-        validate(customerDto, Set.of(CorporateCustomerDto.VM_VIN_PATTERN_NOT_MATCH, "VAT Identification Number is invalid"));
+        customerDto.getDetails().setVatIdentificationNumber("123-123-1");
+        validate(customerDto, Set.of(CorporateCustomerDetailDto.VM_VIN_PATTERN_NOT_MATCH, "VAT Identification Number is invalid"));
     }
 
     @Test
     void givenIncorrectVINControlSum_whenValidate_thenFail() { // incorrect control sum
-        customerDto.setVatIdentificationNumber("111-11-11-112");
+        customerDto.getDetails().setVatIdentificationNumber("111-11-11-112");
         validate(customerDto, "VAT Identification Number is invalid");
     }
 }

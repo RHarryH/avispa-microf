@@ -20,7 +20,6 @@ package com.avispa.microf.model.customer.retail;
 
 import com.avispa.microf.model.customer.CustomerDto;
 import com.avispa.microf.model.customer.address.AddressDto;
-import com.avispa.microf.model.customer.retail.RetailCustomerDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,8 +36,12 @@ class RetailCustomerDtoValidationTest {
     @BeforeEach
     void createDto() {
         customerDto = new RetailCustomerDto();
-        customerDto.setFirstName("First");
-        customerDto.setLastName("Last");
+
+        RetailCustomerDetailDto customerDetailDto = new RetailCustomerDetailDto();
+        customerDetailDto.setFirstName("First");
+        customerDetailDto.setLastName("Last");
+        customerDto.setDetails(customerDetailDto);
+
         customerDto.setEmail("email@mail.com");
         customerDto.setPhoneNumber("+48 123123123");
 
@@ -52,26 +55,26 @@ class RetailCustomerDtoValidationTest {
 
     @Test
     void givenEmptyFirstName_whenValidate_thenFail() {
-        customerDto.setFirstName("");
-        validate(customerDto, RetailCustomerDto.VM_FIRST_NAME_NOT_EMPTY_NOR_BLANK);
+        customerDto.getDetails().setFirstName("");
+        validate(customerDto, RetailCustomerDetailDto.VM_FIRST_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenBlankFirstName_whenValidate_thenFail() {
-        customerDto.setFirstName("   \n\t");
-        validate(customerDto, RetailCustomerDto.VM_FIRST_NAME_NOT_EMPTY_NOR_BLANK);
+        customerDto.getDetails().setFirstName("   \n\t");
+        validate(customerDto, RetailCustomerDetailDto.VM_FIRST_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenEmptyLastName_whenValidate_thenFail() {
-        customerDto.setLastName("");
-        validate(customerDto, RetailCustomerDto.VM_LAST_NAME_NOT_EMPTY_NOR_BLANK);
+        customerDto.getDetails().setLastName("");
+        validate(customerDto, RetailCustomerDetailDto.VM_LAST_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test
     void givenBlankLastName_whenValidate_thenFail() {
-        customerDto.setLastName("   \n\t");
-        validate(customerDto, RetailCustomerDto.VM_LAST_NAME_NOT_EMPTY_NOR_BLANK);
+        customerDto.getDetails().setLastName("   \n\t");
+        validate(customerDto, RetailCustomerDetailDto.VM_LAST_NAME_NOT_EMPTY_NOR_BLANK);
     }
 
     @Test

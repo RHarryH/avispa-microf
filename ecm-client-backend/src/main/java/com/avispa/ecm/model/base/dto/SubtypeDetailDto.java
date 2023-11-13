@@ -16,16 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.customer.retail;
+package com.avispa.ecm.model.base.dto;
 
-import com.avispa.ecm.model.base.mapper.MultiTypeEntityDtoMapper;
-import com.avispa.microf.model.customer.Customer;
-import com.avispa.microf.model.customer.address.AddressMapper;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-    uses = AddressMapper.class)
-public interface RetailCustomerMapper extends MultiTypeEntityDtoMapper<Customer, RetailCustomerDto, RetailCustomerDetailDto> {
+/**
+ * @author Rafał Hiszpański
+ */
+public interface SubtypeDetailDto {
 }
