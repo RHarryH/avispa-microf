@@ -23,6 +23,8 @@ import com.avispa.ecm.model.load.dto.ListWidgetDto;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.model.ui.widget.list.ListWidget;
+import com.avispa.ecm.util.Generated;
+import org.mapstruct.AnnotateWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author Rafał Hiszpański
  */
+@AnnotateWith(Generated.class)
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class ListWidgetMapper implements EcmConfigMapper<ListWidget, ListWidgetDto> {
     @Autowired

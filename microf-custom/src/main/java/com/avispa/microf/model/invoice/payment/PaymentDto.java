@@ -23,6 +23,7 @@ import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.ecm.util.json.MoneyDeserializer;
 import com.avispa.ecm.util.json.MoneySerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
@@ -76,6 +77,7 @@ public class PaymentDto implements Dto {
 
     private String bankAccount;
 
+    @JsonIgnore
     @AssertTrue(message = VM_DATE_NOT_EMPTY)
     public boolean isDateOfPaidNotEmptyWhenPaidAmountGreaterThanZero() {
         if(null != paidAmount && paidAmount.compareTo(BigDecimal.ZERO) > 0) { // greater than zero
@@ -85,6 +87,7 @@ public class PaymentDto implements Dto {
         return true;
     }
 
+    @JsonIgnore
     @AssertTrue(message = VM_DEADLINE_AND_BANK_ACCOUNT_NOT_PRESENT)
     public boolean isDeadlineAndBankAccountArePresentWhenNonCashMethod() {
         if(null == method) {

@@ -16,12 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.load;
+package com.avispa.ecm.model.load.mapper;
 
 import com.avispa.ecm.model.configuration.load.mapper.EcmConfigMapper;
 import com.avispa.ecm.model.load.dto.MenuDto;
-import com.avispa.ecm.model.load.mapper.MenuItemMapper;
 import com.avispa.ecm.model.ui.menu.Menu;
+import com.avispa.ecm.util.Generated;
+import org.mapstruct.AnnotateWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -31,9 +32,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 /**
  * @author Rafał Hiszpański
  */
+@AnnotateWith(Generated.class)
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     uses = MenuItemMapper.class)
-interface MenuMapper extends EcmConfigMapper<Menu, MenuDto> {
+public interface MenuMapper extends EcmConfigMapper<Menu, MenuDto> {
     @Override
     @Mapping(source = "name", target = "objectName")
     Menu convertToEntity(MenuDto dto);

@@ -66,7 +66,7 @@ public abstract class BaseEcmService<T extends EcmObject, D extends Dto, R exten
 
     @Override
     public void delete(UUID id) {
-        repository.delete(findById(id));
+        repository.deleteById(id);
     }
 
     public List<D> findAll() {

@@ -22,6 +22,7 @@ import com.avispa.ecm.model.configuration.EcmConfigRepository;
 import com.avispa.ecm.model.configuration.load.GenericLoader;
 import com.avispa.ecm.model.content.ContentService;
 import com.avispa.ecm.model.load.dto.MenuDto;
+import com.avispa.ecm.model.load.mapper.MenuMapper;
 import com.avispa.ecm.model.ui.menu.Menu;
 import org.springframework.stereotype.Component;
 
