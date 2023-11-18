@@ -20,6 +20,8 @@ package com.avispa.ecm.model.ui.menu.mapper;
 
 import com.avispa.ecm.model.ui.menu.MenuItem;
 import com.avispa.ecm.model.ui.menu.dto.MenuItemDto;
+import com.avispa.ecm.util.Generated;
+import org.mapstruct.AnnotateWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -27,6 +29,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 /**
  * @author Rafał Hiszpański
  */
+@AnnotateWith(Generated.class)
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface MenuItemDtoMapper {
     MenuItemDto convert(MenuItem entity);
