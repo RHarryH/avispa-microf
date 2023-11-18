@@ -159,13 +159,14 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
-                    <execution>
+                    <!-- Use only if you want a xml report for this module, along with aggregate -->
+                    <!--<execution>
                         <id>report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
                         <phase>verify</phase>
-                    </execution>
+                    </execution>-->
                     <execution>
                         <id>report-aggregation</id>
                         <goals>

@@ -18,23 +18,22 @@
 
 package com.avispa.ecm.model.ui.application.mapper;
 
-import com.avispa.ecm.EcmConfiguration;
 import com.avispa.ecm.model.ui.application.Application;
 import com.avispa.ecm.model.ui.application.dto.ApplicationDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Rafał Hiszpański
  */
-@JsonTest
-@ContextConfiguration(classes = {ApplicationDtoMapperImpl.class,
-        EcmConfiguration.class}) // required to load custom object mapper config
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {ApplicationDtoMapperImpl.class})
 @Slf4j
 class ApplicationDtoMapperTest {
     @Autowired

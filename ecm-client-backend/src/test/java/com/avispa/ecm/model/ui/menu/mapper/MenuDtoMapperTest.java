@@ -18,16 +18,15 @@
 
 package com.avispa.ecm.model.ui.menu.mapper;
 
-import com.avispa.ecm.EcmConfiguration;
 import com.avispa.ecm.model.ui.menu.Menu;
 import com.avispa.ecm.model.ui.menu.MenuItem;
 import com.avispa.ecm.model.ui.menu.dto.MenuDto;
 import com.avispa.ecm.model.ui.menu.dto.MenuItemDto;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
@@ -36,10 +35,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Rafał Hiszpański
  */
-@JsonTest
-@ContextConfiguration(classes = {MenuDtoMapperImpl.class, MenuItemDtoMapperImpl.class,
-        EcmConfiguration.class}) // required to load custom object mapper config
-@Slf4j
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {MenuDtoMapperImpl.class, MenuItemDtoMapperImpl.class})
 class MenuDtoMapperTest {
     @Autowired
     private MenuDtoMapper menuDtoMapper;

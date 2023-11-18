@@ -19,8 +19,8 @@
 package com.avispa.ecm.model.base.mapper;
 
 import com.avispa.ecm.model.EcmObject;
-import com.avispa.ecm.model.base.dto.SubtypeDetailDto;
 import com.avispa.ecm.model.base.dto.MultiTypeDto;
+import com.avispa.ecm.model.base.dto.SubtypeDetailDto;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
@@ -29,8 +29,8 @@ import org.mapstruct.MappingTarget;
  */
 public interface MultiTypeEntityDtoMapper<T extends EcmObject, D extends MultiTypeDto<E>, E extends SubtypeDetailDto> extends EntityDtoMapper<T, D> {
     @Override
-    @Mapping(source = "dto", target = "details")
-    D convertToDto(T dto);
+    @Mapping(source = "entity", target = "details")
+    D convertToDto(T entity);
 
     E toDetailDto(T dto);
 

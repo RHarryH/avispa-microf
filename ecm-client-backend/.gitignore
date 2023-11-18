@@ -1,5 +1,4 @@
 target/
-src/main/java/com/avispa/ecm/Email.java
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

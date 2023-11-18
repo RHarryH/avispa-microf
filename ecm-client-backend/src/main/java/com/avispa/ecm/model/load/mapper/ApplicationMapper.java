@@ -21,6 +21,8 @@ package com.avispa.ecm.model.load.mapper;
 import com.avispa.ecm.model.configuration.load.mapper.EcmConfigMapper;
 import com.avispa.ecm.model.load.dto.ApplicationDto;
 import com.avispa.ecm.model.ui.application.Application;
+import com.avispa.ecm.util.Generated;
+import org.mapstruct.AnnotateWith;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -30,6 +32,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 /**
  * @author Rafał Hiszpański
  */
+@AnnotateWith(Generated.class)
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ApplicationMapper extends EcmConfigMapper<Application, ApplicationDto> {
     @Override
