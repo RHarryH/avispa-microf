@@ -152,14 +152,6 @@ Available actuator endpoints:
 - `actuator/health`
 - `actuator/info`
 
-## Payments logic
-
-1. Deadline is always required to provide no matter if paid amount is equal to gross value of whole invoice. This value
-   is calculated only on the backend side.
-2. Bank account is not required when cash payment method is provided
-3. Paid amount date is available only if paid amount is greater than 0.00
-4. If paid amount is greater than the gross value then we have an excess payment what will be noted on the invoice
-
 ## Extension to types
 
 Types logic from Avispa ECM is extended introducing concept of _validation types_. In fact, they are a typical DTOs
@@ -188,15 +180,41 @@ In order to register type in ECM Client following classes has to be created:
 - **Repository** extending or implementing `EcmObjectRepository` interface. It can contain additional custom methods. It is a typical [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/) repository.
 - **Mapper** which implements `EntityDtoMapper` interface in order to define mapping of properties between object and validation object. It is recommended to use [MapStruct](https://mapstruct.org/) library.
 - **Service** which extends `BaseEcmService` class and is used to implement business logic
-- **Controller** extending `BaseEcmController` class to create custom REST endpoints
+- **Controller** extending `SimpleEcmController` class to create custom REST endpoints
 
 ### Multiple validation types
 
 As was already mentioned, it is possible to use multiple validation types for single type with use of discriminator
-feature. Apart from annotating type with `@TypeDiscriminator` annotation and registering validation types in 
-`DTO_OBJECT` table it is required to create separate mappers for each validation type plus an "uber" mapper extending
-from `MultiTypeEntityDtoMapper` class instead of `EntityDtoMapper` interface. This class requires to implement
-`registerMappers` method to map discriminator values to concrete mappers.
+feature. Apart from annotating type with `@TypeDiscriminator` annotation and registering validation types in
+`DTO_OBJECT` table it is required to create separate mappers for each validation type.
+
+In addition, there is a different set of classes, which should be used for controller and mapper.
+
+For controller please use `MultiTypeEcmController` as a base, which in addition specifies so-called **Common Dto**.
+Common Dto represents a validation type with all properties available to all subtypes. It is used for example in
+property pages. It should be registered in `DTO_OBJECT` with null discriminator.
+
+For mapper it is required to use `MultiTypeEntityDtoMapper` and provide an implementation of
+`MasterMultiTypeEntityDtoMapper`, which registers mappers with use of `registerMappers` method to map discriminator
+values to concrete mappers.
+
+When creating multiple validation types it is recommended to follow below instructions:
+
+- Create base validation type implementing `Dto` interface containing all shared properties between all subtypes
+- For each subtype create classes implementing `SubtypeDetailDto` containing only subtype specific properties (detail
+  validation type)
+- Each subtype validation type should extend base validation type and implement `MultiTypeDto`. It should contain only
+  one field named `detail` of detail validation type. The field should be annotated with `@JsonUnwrapped` annotation.
+- Common validation type should just extend base validation type and include all details annotated with `@JsonUnwrapped`
+  annotation.
+
+## Payments logic
+
+1. Deadline is always required to provide no matter if paid amount is equal to gross value of whole invoice. This value
+   is calculated only on the backend side.
+2. Bank account is not required when cash payment method is provided
+3. Paid amount date is available only if paid amount is greater than 0.00
+4. If paid amount is greater than the gross value then we have an excess payment what will be noted on the invoice
 
 ## Known issues
 
