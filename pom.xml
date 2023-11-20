@@ -52,6 +52,7 @@
 		<mapstruct.version>1.6.0.Beta1</mapstruct.version>
 		<project.version>${project.version}</project.version>
 		<sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/microf-custom/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.skip>true</sonar.skip>
 	</properties>
 
 	<dependencyManagement>
@@ -63,6 +64,16 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<profiles>
+		<profile>
+			<id>sonar</id>
+
+			<properties>
+				<sonar.skip>false</sonar.skip>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -135,6 +146,11 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.11</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>3.10.0.2594</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
