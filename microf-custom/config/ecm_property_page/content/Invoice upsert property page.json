@@ -61,7 +61,11 @@
             "type": "money",
             "currency": "PLN",
             "label": "Unit price",
-            "property": "unitPrice"
+            "property": "unitPrice",
+            "customValidation": {
+              "function": "greaterThanZero",
+              "message": "Unit price must be greater than zero"
+            }
           },
           {
             "type": "number",
