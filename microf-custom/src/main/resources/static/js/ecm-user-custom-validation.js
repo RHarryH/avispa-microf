@@ -32,6 +32,7 @@ function NIPIsValid(nip) {
 
 function isNRB(nrb) {
     const weights = [3, 9, 7, 1, 3, 9, 7, 1];
+    nrb = nrb.replace(/\s/g, '');
 
     if(nrb.startsWith("PL")) {
         nrb = nrb.substring(2);
@@ -45,7 +46,7 @@ function isNRB(nrb) {
 
     function validateChecksum(sortCode) {
         let total = 0;
-        for(let i = 0; i < sortCode.length(); i++) { // without last digit
+        for (let i = 0; i < sortCode.length; i++) { // without last digit
             total += sortCode.charCodeAt(i) * weights[i];
         }
         return total % 10 === 0;
