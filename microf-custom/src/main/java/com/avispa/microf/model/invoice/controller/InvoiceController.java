@@ -77,18 +77,22 @@ public class InvoiceController extends BaseSimpleEcmController<Invoice, InvoiceD
     public ResponseEntity<Resource> download(
             @PathVariable
             @Parameter(description = "id of the document")
-            UUID id) throws IOException {
+            UUID id) {
         ContentDto contentDto = service.getRendition(id);
         if(null == contentDto) {
             throw new ResourceNotFoundException();
         }
 
-        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Path.of(contentDto.getPath())));
+        try {
+            ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Path.of(contentDto.getPath())));
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + contentDto.getName())
-                .contentLength(contentDto.getSize())
-                //.contentType(MediaType.APPLICATION_PDF)
-                .body(resource);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + contentDto.getName())
+                    .contentLength(contentDto.getSize())
+                    .body(resource);
+        } catch (IOException e) {
+            log.error("Can't find requested resource", e);
+            throw new ResourceNotFoundException();
+        }
     }
 }
