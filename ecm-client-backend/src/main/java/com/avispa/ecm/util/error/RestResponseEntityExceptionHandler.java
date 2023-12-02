@@ -19,8 +19,8 @@
 package com.avispa.ecm.util.error;
 
 
-import com.avispa.ecm.util.exception.EcmException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,12 +32,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestResponseEntityExceptionHandler
         extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(EcmException.class)
-    public void handleEcmException() {
-        // do nothing
-    }
-
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class, DataIntegrityViolationException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Unexpected issue has happened. Please contact with the administrator.")
     public void handleRuntimeException(RuntimeException e) {
         log.error("Generic runtime exception has been thrown", e);
