@@ -4,6 +4,12 @@ jobs:
   build_job: # job name
     runs-on: ubuntu-22.04
     steps:
+      - name: Use JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       # because Avispa ECM is not available now in any public Maven repository
       # it needs to be checked out and installed manually
       - name: Checkout of Avispa ECM

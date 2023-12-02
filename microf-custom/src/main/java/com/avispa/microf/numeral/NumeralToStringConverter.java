@@ -163,24 +163,21 @@ public final class NumeralToStringConverter {
 
             if(digit != 0) {
                 switch (j) {
-                    case 0:
-                        sb.append(HUNDREDS[digit]).append(" ");
-                        break;
-                    case 1:
+                    case 0 -> sb.append(HUNDREDS[digit]).append(" ");
+                    case 1 -> {
                         if (!hasTeens) {
                             sb.append(TENS[digit]).append(" ");
                         }
-                        break;
-                    case 2:
+                    }
+                    case 2 -> {
                         if (hasTeens) {
                             sb.append(TEENS[digit]);
                         } else {
                             sb.append(UNITS[digit]);
                         }
                         sb.append(" ");
-                        break;
-                    default:
-                        log.error("Unknown digit position");
+                    }
+                    default -> log.error("Unknown digit position");
                 }
             }
 
