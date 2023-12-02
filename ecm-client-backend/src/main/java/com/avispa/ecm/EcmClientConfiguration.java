@@ -84,7 +84,7 @@ public class EcmClientConfiguration {
 		return new OpenAPI()
 				.info(new Info().title("Avispa ECM Backend")
 						.description("API for communication with Avispa ECM. It includes customization endpoints in dedicated groups.")
-						.version(ecmClientVersion.getNumber())
+						.version(ecmClientVersion.number())
 						.license(new License().name("AGPL v3").url("https://www.gnu.org/licenses/agpl-3.0.txt")));
 	}
 

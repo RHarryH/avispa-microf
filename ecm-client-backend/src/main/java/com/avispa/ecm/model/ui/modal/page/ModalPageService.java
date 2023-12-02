@@ -56,14 +56,10 @@ public class ModalPageService {
         ModalPageType targetPageType = context.getTargetPageType();
         ModalPageEcmContextInfo contextInfo = extractContextInfo(context, typeName);
 
-        switch(targetPageType) {
-            case SELECT_SOURCE:
-                return loadSourcePage(typeName, contextInfo);
-            case PROPERTIES:
-                return loadPropertiesPage(typeName, contextInfo);
-            default:
-                throw new EcmException("Unknown page type: " + targetPageType);
-        }
+        return switch (targetPageType) {
+            case SELECT_SOURCE -> loadSourcePage(typeName, contextInfo);
+            case PROPERTIES -> loadPropertiesPage(typeName, contextInfo);
+        };
     }
 
     private ModalPageEcmContextInfo extractContextInfo(ModalPageEcmContext context, String typeName) {
@@ -117,8 +113,8 @@ public class ModalPageService {
     }
 
     private PropertyPageContent loadPropertiesPage(String typeName, ModalPageEcmContextInfo contextInfo) {
-        if (contextInfo instanceof SourcePageContextInfo && null != ((SourcePageContextInfo) contextInfo).getSourceId()) {
-            SourcePageContextInfo sourcePageContext = (SourcePageContextInfo) contextInfo;
+        if (contextInfo instanceof SourcePageContextInfo sourcePageContext &&
+                null != ((SourcePageContextInfo) contextInfo).getSourceId()) {
 
             EcmObject entity = ecmObjectService.getEcmObjectFrom(sourcePageContext.getSourceId(), typeName);
             // usage of Dto enables usage of default values, without that we can get empty values/table rows but the property

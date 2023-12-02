@@ -18,14 +18,8 @@
 
 package com.avispa.ecm.model.ui.application.dto;
 
-import lombok.Data;
-
 /**
  * @author Rafał Hiszpański
  */
-@Data
-public class ApplicationDto {
-    private final String fullName;
-    private final String shortName;
-    private final String description;
+public record ApplicationDto(String fullName, String shortName, String description) {
 }

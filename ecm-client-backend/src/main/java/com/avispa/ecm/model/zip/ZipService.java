@@ -66,8 +66,7 @@ public class ZipService {
             for(Folder root : rootFolders) {
                 List<EcmObject> objects = folderService.getAllFoldersAndLinkedObjects(root, true);
                 for(EcmObject object : objects) {
-                    if(object instanceof Document) {
-                        Document document = (Document)object;
+                    if (object instanceof Document document) {
                         Content content = document.getPrimaryContent();
                         String documentPath = Paths.get(document.getFolder().getPath().substring(1), content.getObjectName()).toString();
 

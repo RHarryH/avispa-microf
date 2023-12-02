@@ -25,7 +25,7 @@ services:
     image: avispa/microf:2.0.0
     restart: "no" #on-failure
     ports:
-      - 8080:8080
+      - '8080:8080'
       #- 5005:5005
     volumes:
       - ${WORKSPACE_PATH}/config/microf.docker.properties:/opt/microf/config/microf.properties:ro
