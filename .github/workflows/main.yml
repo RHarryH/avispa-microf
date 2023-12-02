@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.1
         with:
           name: jacoco-report
-          path: target/site/jacoco/
+          path: microf-custom/target/site/jacoco-aggregate/
 
   generate_badges:
     runs-on: ubuntu-22.04
@@ -42,7 +42,7 @@ jobs:
         uses: actions/download-artifact@v3.0.2
         with:
           name: jacoco-report
-          path: target/site/jacoco/
+          path: microf-custom/target/site/jacoco-aggregate/
 
       - name: Generate JaCoCo Badge
         uses: cicirello/jacoco-badge-generator@v2.9.0
