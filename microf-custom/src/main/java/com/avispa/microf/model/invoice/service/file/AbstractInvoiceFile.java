@@ -70,7 +70,7 @@ public abstract class AbstractInvoiceFile implements IInvoiceFile {
         variables.put("comments", invoiceData.getComments());
 
         variables.put("issuer_signature", issuerName);
-        variables.put("version", SpringContext.getBean("microfVersion", Version.class).getReleaseNumber());
+        variables.put("version", SpringContext.getBean("microfVersion", Version.class).releaseNumber());
 
         replacer.replaceVariables(variables);
     }
