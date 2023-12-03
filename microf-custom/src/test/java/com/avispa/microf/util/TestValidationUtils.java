@@ -19,11 +19,11 @@
 package com.avispa.microf.util;
 
 import com.avispa.ecm.model.base.dto.Dto;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;

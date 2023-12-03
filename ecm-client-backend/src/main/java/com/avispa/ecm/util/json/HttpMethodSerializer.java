@@ -16,23 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.util.validation;
+package com.avispa.ecm.util.json;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import org.springframework.http.HttpMethod;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.IOException;
 
-@Documented
-@Constraint(validatedBy = VATINConstraintValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface VATINConstraint {
-    String message() default "VAT Identification Number is invalid";
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+public class HttpMethodSerializer extends JsonSerializer<HttpMethod> {
+    @Override
+    public void serialize(HttpMethod value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        gen.writeString(value.name());
+    }
 }

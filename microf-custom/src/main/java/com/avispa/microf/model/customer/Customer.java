@@ -22,13 +22,12 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.type.TypeDiscriminator;
 import com.avispa.ecm.util.FormatUtils;
 import com.avispa.microf.model.customer.address.Address;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 
 /**
  * @author Rafał Hiszpański

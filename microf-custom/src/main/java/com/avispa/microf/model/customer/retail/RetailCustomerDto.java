@@ -21,10 +21,9 @@ package com.avispa.microf.model.customer.retail;
 import com.avispa.ecm.model.base.dto.MultiTypeDto;
 import com.avispa.microf.model.customer.CustomerDto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.validation.Valid;
 
 /**
  * @author Rafał Hiszpański

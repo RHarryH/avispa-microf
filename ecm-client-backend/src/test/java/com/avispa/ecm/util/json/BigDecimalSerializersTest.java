@@ -18,21 +18,14 @@
 
 package com.avispa.ecm.util.json;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.io.StringWriter;
-import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.Locale;
 
+import static com.avispa.ecm.util.json.SerializationTestUtils.serialize;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -48,30 +41,21 @@ class BigDecimalSerializersTest {
     @ParameterizedTest
     @CsvSource(value = {"1.10,'1,10'", "1.2,'1,20'", "1.567,'1,57'", "1500,'1\u00A0500,00'"})
     void serializeMoney(BigDecimal input, String expected) {
-        serialize(input, expected, new MoneySerializer());
+        String serialized = serialize(input, new MoneySerializer());
+        assertThat(serialized).hasToString("\"" + expected + "\"");
     }
 
     @ParameterizedTest
     @CsvSource(value = {"200,'200,00'", "2000.01,'2000,01'", "1.567,'1,57'"})
     void serializePercent(BigDecimal input, String expected) {
-        serialize(input, expected, new PercentSerializer());
+        String serialized = serialize(input, new PercentSerializer());
+        assertThat(serialized).hasToString("\"" + expected + "\"");
     }
 
     @ParameterizedTest
     @CsvSource(value = {"200,'200'", "2000.01,'2000,01'", "2.00,'2'", "1.567,'1,567'", "1.5678,'1,568'"})
     void serializeQuantity(BigDecimal input, String expected) {
-        serialize(input, expected, new QuantitySerializer());
-    }
-
-    @SneakyThrows
-    private static void serialize(BigDecimal input, String expected, JsonSerializer<BigDecimal> serializer) {
-        Writer jsonWriter = new StringWriter();
-        JsonGenerator jsonGenerator = new JsonFactory().createGenerator(jsonWriter);
-        SerializerProvider serializerProvider = new ObjectMapper().getSerializerProvider();
-
-        serializer.serialize(input, jsonGenerator, serializerProvider);
-        jsonGenerator.flush();
-
-        assertThat(jsonWriter.toString()).hasToString("\"" + expected + "\"");
+        String serialized = serialize(input, new QuantitySerializer());
+        assertThat(serialized).hasToString("\"" + expected + "\"");
     }
 }

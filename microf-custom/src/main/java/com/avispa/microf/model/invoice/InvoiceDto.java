@@ -22,13 +22,13 @@ import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

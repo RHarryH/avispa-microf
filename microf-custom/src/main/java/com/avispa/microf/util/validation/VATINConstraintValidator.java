@@ -18,10 +18,9 @@
 
 package com.avispa.microf.util.validation;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.apache.logging.log4j.util.Strings;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class VATINConstraintValidator implements ConstraintValidator<VATINConstraint, String> {
     @Override
