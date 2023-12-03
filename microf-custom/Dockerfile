@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11.0.19_7-jre-alpine
+FROM eclipse-temurin:17.0.9_9-jre-alpine
 
 MAINTAINER rafalhiszpanski.pl
 

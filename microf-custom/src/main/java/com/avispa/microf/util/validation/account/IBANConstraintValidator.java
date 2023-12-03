@@ -18,10 +18,9 @@
 
 package com.avispa.microf.util.validation.account;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.validator.routines.IBANValidator;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 /**
  * The IBAN consists of up to 34 alphanumeric characters, as follows:
