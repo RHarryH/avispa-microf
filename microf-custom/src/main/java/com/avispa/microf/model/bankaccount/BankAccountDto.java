@@ -23,10 +23,10 @@ import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.microf.util.validation.account.IBANConstraint;
 import com.avispa.microf.util.validation.account.NRBConstraint;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Size;
 import java.util.UUID;
 
 /**

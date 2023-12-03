@@ -19,11 +19,11 @@
 package com.avispa.microf.model.customer.address;
 
 import com.avispa.ecm.model.base.dto.Dto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import java.util.UUID;
 
 /**

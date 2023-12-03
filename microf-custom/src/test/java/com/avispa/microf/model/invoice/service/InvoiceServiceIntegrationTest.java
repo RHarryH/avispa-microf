@@ -33,6 +33,7 @@ import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
+import jakarta.persistence.EntityManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -48,7 +49,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import javax.persistence.EntityManager;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;

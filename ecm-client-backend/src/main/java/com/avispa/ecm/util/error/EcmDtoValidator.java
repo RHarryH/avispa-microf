@@ -20,12 +20,12 @@ package com.avispa.ecm.util.error;
 
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.util.exception.EcmException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.util.Set;
 import java.util.stream.Collectors;
 

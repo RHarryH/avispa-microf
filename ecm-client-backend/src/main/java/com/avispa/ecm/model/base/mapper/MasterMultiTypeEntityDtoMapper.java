@@ -20,10 +20,9 @@ package com.avispa.ecm.model.base.mapper;
 
 import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.base.dto.Dto;
+import jakarta.annotation.PostConstruct;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.PostConstruct;
 
 /**
  * @author Rafał Hiszpański

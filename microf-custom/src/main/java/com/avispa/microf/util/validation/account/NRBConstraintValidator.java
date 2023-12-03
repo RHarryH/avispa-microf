@@ -18,10 +18,9 @@
 
 package com.avispa.microf.util.validation.account;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 /**
  * BBAN (Basic Bank Account Number) is a country specific bank account number. For Poland it is named

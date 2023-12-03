@@ -18,6 +18,8 @@
 
 package com.avispa.ecm.model.ui.modal;
 
+import com.avispa.ecm.util.json.HttpMethodSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,6 +35,7 @@ import org.springframework.http.HttpMethod;
 @EqualsAndHashCode
 public class Action {
     private String endpoint;
+    @JsonSerialize(using = HttpMethodSerializer.class)
     private HttpMethod method;
     private String successMessage;
     private String errorMessage;

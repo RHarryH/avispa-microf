@@ -23,10 +23,10 @@ import com.avispa.ecm.model.EcmObject;
 import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 
-import javax.validation.Valid;
 import java.util.UUID;
 
 import static com.avispa.ecm.util.error.ValidationErrorUtil.processErrors;

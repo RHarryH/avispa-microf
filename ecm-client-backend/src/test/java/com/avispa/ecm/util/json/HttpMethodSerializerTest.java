@@ -16,23 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.util.validation;
+package com.avispa.ecm.util.json;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpMethod;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import static com.avispa.ecm.util.json.SerializationTestUtils.serialize;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Documented
-@Constraint(validatedBy = VATINConstraintValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface VATINConstraint {
-    String message() default "VAT Identification Number is invalid";
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+/**
+ * @author Rafał Hiszpański
+ */
+class HttpMethodSerializerTest {
+    @Test
+    @SneakyThrows
+    void givenHttpMethod_whenSerialize_thenConvertedToString() {
+        String serialized = serialize(HttpMethod.GET, new HttpMethodSerializer());
+        assertThat(serialized).hasToString("\"GET\"");
+    }
 }

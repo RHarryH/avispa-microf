@@ -20,13 +20,13 @@ package com.avispa.ecm.model.ui.widget.list;
 
 import com.avispa.ecm.model.configuration.EcmConfig;
 import com.avispa.ecm.model.type.Type;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderColumn;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
 import java.util.List;
 
 /**

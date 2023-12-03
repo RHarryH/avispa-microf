@@ -19,11 +19,11 @@
 package com.avispa.ecm.testdocument.simple;
 
 import com.avispa.ecm.model.document.Document;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

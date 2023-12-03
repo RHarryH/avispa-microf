@@ -19,10 +19,9 @@
 package com.avispa.microf.model.customer.retail;
 
 import com.avispa.ecm.model.base.dto.SubtypeDetailDto;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author Rafał Hiszpański
