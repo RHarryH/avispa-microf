@@ -24,6 +24,7 @@ import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.dto.DtoObject;
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
+import com.avispa.ecm.model.ui.modal.ModalType;
 import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
 import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContextInfo;
 import com.avispa.ecm.model.ui.modal.context.SourcePageContextInfo;
@@ -53,12 +54,13 @@ public class ModalPageService {
     private final ObjectMapper objectMapper;
 
     public PropertyPageContent loadPage(@NonNull ModalPageEcmContext context, String typeName) {
+        ModalType modalType = context.getModalType();
         ModalPageType targetPageType = context.getTargetPageType();
         ModalPageEcmContextInfo contextInfo = extractContextInfo(context, typeName);
 
         return switch (targetPageType) {
             case SELECT_SOURCE -> loadSourcePage(typeName, contextInfo);
-            case PROPERTIES -> loadPropertiesPage(typeName, contextInfo);
+            case PROPERTIES -> loadPropertiesPage(typeName, modalType, contextInfo);
         };
     }
 
@@ -99,20 +101,20 @@ public class ModalPageService {
                     .build();
         }
 
-        return propertyPageService.getPropertyPage("Select source property page", sourcePageContext);
+        return propertyPageService.getPropertyPage("Select source property page", sourcePageContext, false);
     }
 
-    public PropertyPageContent loadPropertiesPage(String typeName) {
-        return loadPropertiesPage(typeName, (ModalPageEcmContextInfo) null);
+    public PropertyPageContent loadPropertiesPage(String typeName, ModalType modalType) {
+        return loadPropertiesPage(typeName, modalType, (ModalPageEcmContextInfo) null);
     }
 
-    public PropertyPageContent loadPropertiesPage(String typeName, UUID id) {
-        return loadPropertiesPage(typeName, SourcePageContextInfo.builder()
+    public PropertyPageContent loadPropertiesPage(String typeName, ModalType modalType, UUID id) {
+        return loadPropertiesPage(typeName, modalType, SourcePageContextInfo.builder()
                 .sourceId(id)
                 .build());
     }
 
-    private PropertyPageContent loadPropertiesPage(String typeName, ModalPageEcmContextInfo contextInfo) {
+    private PropertyPageContent loadPropertiesPage(String typeName, ModalType modalType, ModalPageEcmContextInfo contextInfo) {
         if (contextInfo instanceof SourcePageContextInfo sourcePageContext &&
                 null != ((SourcePageContextInfo) contextInfo).getSourceId()) {
 
@@ -122,7 +124,7 @@ public class ModalPageService {
             // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
             Dto dto = dtoService.convertObjectToDto(entity);
 
-            return propertyPageService.getPropertyPage(entity.getClass(), dto);
+            return propertyPageService.getPropertyPage(entity.getClass(), dto, modalType == ModalType.UPDATE);
         } else {
             // in these cases we're creating an empty instance of entity and dto so there is no need
             // to check the discriminator
@@ -133,7 +135,7 @@ public class ModalPageService {
             // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
             Dto dto = BeanUtils.instantiateClass(dtoObject.getDtoClass());
 
-            return propertyPageService.getPropertyPage(dtoObject.getType().getEntityClass(), dto);
+            return propertyPageService.getPropertyPage(dtoObject.getType().getEntityClass(), dto, modalType == ModalType.UPDATE);
         }
     }
 }
