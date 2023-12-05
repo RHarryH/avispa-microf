@@ -83,8 +83,7 @@ public class WidgetController {
             UUID id) {
         // convert to dto
         // return empty otherwise
-        return ecmObjectRepository.findById(id).map(ecmObject ->
-                        propertyPageService.getPropertyPage(ecmObject, true))
+        return ecmObjectRepository.findById(id).map(propertyPageService::getReadonlyPropertyPage)
                 .map(PropertiesWidgetDto::new)
                 .orElse(new PropertiesWidgetDto());
     }
