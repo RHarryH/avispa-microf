@@ -44,11 +44,13 @@ public class ModalService {
     public ModalDto getAddModal(String resourceName) {
         String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
 
+        var modalType = ModalType.ADD;
+
         return ModalDto.builder()
                 .title("Add new " + typeName.toLowerCase(Locale.ROOT))
-                .type(ModalType.ADD)
+                .type(modalType)
                 .resource(resourceName)
-                .propertyPage(modalPageService.loadPropertiesPage(typeName))
+                .propertyPage(modalPageService.loadPropertiesPage(typeName, modalType))
                 .action(Action.builder()
                         .endpoint(resourceName)
                         .method(HttpMethod.POST)
@@ -66,11 +68,13 @@ public class ModalService {
     public ModalDto getUpdateModal(String resourceName, UUID id) {
         String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
 
+        var modalType = ModalType.UPDATE;
+
         return ModalDto.builder()
                 .title("Update " + typeName.toLowerCase(Locale.ROOT))
-                .type(ModalType.UPDATE)
+                .type(modalType)
                 .resource(resourceName)
-                .propertyPage(modalPageService.loadPropertiesPage(typeName, id))
+                .propertyPage(modalPageService.loadPropertiesPage(typeName, modalType, id))
                 .action(Action.builder()
                         .endpoint(resourceName + "/" + id)
                         .method(HttpMethod.POST)

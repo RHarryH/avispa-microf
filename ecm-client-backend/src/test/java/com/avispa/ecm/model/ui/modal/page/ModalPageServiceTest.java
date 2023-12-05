@@ -24,6 +24,7 @@ import com.avispa.ecm.model.base.dto.DtoObject;
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.type.Type;
+import com.avispa.ecm.model.ui.modal.ModalType;
 import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
 import com.avispa.ecm.model.ui.modal.context.SourcePageContextInfo;
 import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
@@ -72,7 +73,7 @@ class ModalPageServiceTest {
 
         verify(propertyPageService).getPropertyPage("Select source property page", SourcePageContextInfo.builder()
                 .typeName("Test document")
-                .build());
+                .build(), false);
     }
 
     @Test
@@ -87,9 +88,9 @@ class ModalPageServiceTest {
 
         when(dtoService.getDtoObjectFromTypeName("Test document")).thenReturn(dtoObject);
 
-        modalPageService.loadPropertiesPage("Test document");
+        modalPageService.loadPropertiesPage("Test document", ModalType.ADD);
 
-        verify(propertyPageService).getPropertyPage(eq(TestDocument.class), any(Dto.class));
+        verify(propertyPageService).getPropertyPage(eq(TestDocument.class), any(Dto.class), eq(false));
     }
 
     @Test
@@ -103,9 +104,9 @@ class ModalPageServiceTest {
         when(ecmObjectService.getEcmObjectFrom(id, "Test document")).thenReturn(new TestDocument());
         when(dtoService.convertObjectToDto(any(TestDocument.class))).thenReturn(new TestDocumentDto());
 
-        modalPageService.loadPropertiesPage("Test document", id);
+        modalPageService.loadPropertiesPage("Test document", ModalType.ADD, id);
 
-        verify(propertyPageService).getPropertyPage(eq(TestDocument.class), any(Dto.class));
+        verify(propertyPageService).getPropertyPage(eq(TestDocument.class), any(Dto.class), eq(false));
     }
 
     @Test
@@ -113,7 +114,7 @@ class ModalPageServiceTest {
         PropertyPageContent propertyPageContent = new PropertyPageContent();
         when(propertyPageService.getPropertyPage("Select source property page", SourcePageContextInfo.builder()
                 .typeName("Test document")
-                .build())).thenReturn(propertyPageContent);
+                .build(), false)).thenReturn(propertyPageContent);
         var context = ModalPageEcmContext.builder()
                 .targetPageType(ModalPageType.SELECT_SOURCE)
                 .build();
@@ -129,7 +130,7 @@ class ModalPageServiceTest {
         PropertyPageContent propertyPageContent = new PropertyPageContent();
         when(propertyPageService.getPropertyPage("Select source property page", SourcePageContextInfo.builder()
                 .typeName("Test document")
-                .build())).thenReturn(propertyPageContent);
+                .build(), false)).thenReturn(propertyPageContent);
 
         var context = ModalPageEcmContext.builder()
                 .sourcePageType(ModalPageType.SELECT_SOURCE)
@@ -155,7 +156,7 @@ class ModalPageServiceTest {
         PropertyPageContent propertyPageContent = new PropertyPageContent();
 
         when(dtoService.getDtoObjectFromTypeName("Test document")).thenReturn(dtoObject);
-        when(propertyPageService.getPropertyPage(eq(type.getEntityClass()), any(Dto.class))).thenReturn(propertyPageContent);
+        when(propertyPageService.getPropertyPage(eq(type.getEntityClass()), any(Dto.class), eq(false))).thenReturn(propertyPageContent);
 
         var context = ModalPageEcmContext.builder()
                 .targetPageType(ModalPageType.PROPERTIES)
@@ -197,13 +198,14 @@ class ModalPageServiceTest {
         var context = ModalPageEcmContext.builder()
                 .sourcePageType(ModalPageType.SELECT_SOURCE)
                 .targetPageType(ModalPageType.PROPERTIES)
+                .modalType(ModalType.UPDATE)
                 .contextInfo(contextInfo)
                 .build();
 
         when(ecmObjectService.getEcmObjectFrom(id, "Test document")).thenReturn(new TestDocument());
         when(dtoService.convertObjectToDto(any(TestDocument.class))).thenReturn(new TestDocumentDto());
         //when(dtoService.convert(contextInfo, "Test document")).thenReturn(new TestDocumentDto());
-        when(propertyPageService.getPropertyPage(eq(type.getEntityClass()), any(Dto.class))).thenReturn(propertyPageContent);
+        when(propertyPageService.getPropertyPage(eq(type.getEntityClass()), any(Dto.class), eq(true))).thenReturn(propertyPageContent);
 
         var actualPropertyPageContent = modalPageService.loadPage(context, "Test document");
 

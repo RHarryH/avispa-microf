@@ -78,7 +78,7 @@ class WidgetControllerTest {
 
         when(ecmObjectRepository.findById(objectId)).thenReturn(Optional.of(getDocument()));
         when(contextService.getConfiguration(any(EcmObject.class), eq(PropertyPage.class))).thenReturn(Optional.of(new PropertyPage()));
-        when(propertyPageService.getPropertyPage(any(), eq(true))).thenReturn(sampleContent);
+        when(propertyPageService.getReadonlyPropertyPage(any())).thenReturn(sampleContent);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/properties-widget/" + objectId))
                 .andExpect(status().is(200))
@@ -90,7 +90,7 @@ class WidgetControllerTest {
     void givenNonExitingPropertyPage_whenLoadPropertiesWidget_thenReturn404() throws Exception {
         UUID objectId = UUID.randomUUID();
 
-        when(propertyPageService.getPropertyPage(any(), eq(true))).thenThrow(new ResourceNotFoundException());
+        when(propertyPageService.getReadonlyPropertyPage(any())).thenThrow(new ResourceNotFoundException());
         when(ecmObjectRepository.findById(objectId)).thenReturn(Optional.of(getDocument()));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/properties-widget/" + objectId))

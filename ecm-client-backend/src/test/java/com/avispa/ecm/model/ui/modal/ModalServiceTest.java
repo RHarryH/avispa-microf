@@ -51,7 +51,7 @@ class ModalServiceTest {
     void givenResourceName_whenGetAddModal_thenReturnDto() {
         PropertyPageContent propertyPageContent = new PropertyPageContent();
 
-        when(modalPageService.loadPropertiesPage("Test document")).thenReturn(propertyPageContent);
+        when(modalPageService.loadPropertiesPage("Test document", ModalType.ADD)).thenReturn(propertyPageContent);
 
         ModalDto actualModalDto = modalService.getAddModal("test-document");
         ModalDto expectedModalDto = getExpectedAddModalDto(propertyPageContent);
@@ -84,7 +84,7 @@ class ModalServiceTest {
         UUID randomUUID = UUID.randomUUID();
         PropertyPageContent propertyPageContent = new PropertyPageContent();
 
-        when(modalPageService.loadPropertiesPage("Test document", randomUUID)).thenReturn(propertyPageContent);
+        when(modalPageService.loadPropertiesPage("Test document", ModalType.UPDATE, randomUUID)).thenReturn(propertyPageContent);
 
         ModalDto actualModalDto = modalService.getUpdateModal("test-document", randomUUID);
         ModalDto expectedModalDto = getExpectedUpdateModalDto(randomUUID, propertyPageContent);

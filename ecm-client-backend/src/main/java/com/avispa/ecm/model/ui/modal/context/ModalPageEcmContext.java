@@ -18,6 +18,7 @@
 
 package com.avispa.ecm.model.ui.modal.context;
 
+import com.avispa.ecm.model.ui.modal.ModalType;
 import com.avispa.ecm.model.ui.modal.page.ModalPageType;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Builder;
@@ -33,6 +34,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class ModalPageEcmContext {
+    private ModalType modalType;
     private ModalPageType sourcePageType;
     private ModalPageType targetPageType;
     private JsonNode contextInfo;

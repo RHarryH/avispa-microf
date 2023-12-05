@@ -23,6 +23,7 @@ import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapper;
+import com.avispa.ecm.model.configuration.propertypage.content.mapper.PropertyPageMapperConfigurer;
 import com.avispa.ecm.model.configuration.upsert.Upsert;
 import com.avispa.ecm.testdocument.simple.TestDocument;
 import com.avispa.ecm.testdocument.simple.TestDocumentDto;
@@ -66,10 +67,10 @@ class PropertyPageServiceTest {
 
         when(contextService.getConfiguration(TestDocument.class, Upsert.class))
                 .thenReturn(Optional.of(upsert));
-        when(propertyPageMapper.convertToContent(propertyPage, testDocumentDto, false))
+        when(propertyPageMapper.convertToContent(PropertyPageMapperConfigurer.insert(), propertyPage, testDocumentDto))
                 .thenReturn(propertyPageContent);
 
-        var result = propertyPageService.getPropertyPage(TestDocument.class, testDocumentDto);
+        var result = propertyPageService.getPropertyPage(TestDocument.class, testDocumentDto, false);
 
         assertEquals(propertyPageContent, result);
     }
@@ -82,10 +83,10 @@ class PropertyPageServiceTest {
 
         when(contextService.getConfiguration(testDocument, PropertyPage.class))
                 .thenReturn(Optional.of(propertyPage));
-        when(propertyPageMapper.convertToContent(propertyPage, testDocument, false))
+        when(propertyPageMapper.convertToContent(PropertyPageMapperConfigurer.readonly(), propertyPage, testDocument))
                 .thenReturn(propertyPageContent);
 
-        var result = propertyPageService.getPropertyPage(testDocument, false);
+        var result = propertyPageService.getReadonlyPropertyPage(testDocument);
 
         assertEquals(propertyPageContent, result);
     }
@@ -97,10 +98,10 @@ class PropertyPageServiceTest {
         PropertyPageContent propertyPageContent = new PropertyPageContent();
 
         when(propertyPageRepository.findByObjectName("Name")).thenReturn(Optional.of(propertyPage));
-        when(propertyPageMapper.convertToContent(propertyPage, testDocument, false))
+        when(propertyPageMapper.convertToContent(PropertyPageMapperConfigurer.edit(), propertyPage, testDocument))
                 .thenReturn(propertyPageContent);
 
-        var result = propertyPageService.getPropertyPage("Name", testDocument);
+        var result = propertyPageService.getPropertyPage("Name", testDocument, true);
 
         assertEquals(propertyPageContent, result);
     }
