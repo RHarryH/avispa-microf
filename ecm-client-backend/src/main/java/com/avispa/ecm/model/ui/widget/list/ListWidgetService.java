@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Rafał Hiszpański
@@ -64,7 +63,7 @@ public class ListWidgetService {
         DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
         List<String> filteredProperties = listWidget.getProperties().stream()
                 .filter(property -> PropertyUtils.hasField(dtoObject.getDtoClass(), property)) // exclude fields not present in the object
-                .collect(Collectors.toList());
+                .toList();
 
         listWidgetDto.setHeaders(getHeader(dtoObject, filteredProperties));
         listWidgetDto.setData(getData(type, filteredProperties));
@@ -83,7 +82,7 @@ public class ListWidgetService {
 
         return properties.stream()
                 .map(property -> displayService.getDisplayValueFromAnnotation(dtoObject.getDtoClass(), property))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -97,7 +96,7 @@ public class ListWidgetService {
 
         return dtoList.stream()
                 .map(dto -> listDataDtoMapper.convert(dto, properties))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<Dto> findAll(Class<? extends EcmObject> entityClass) {
