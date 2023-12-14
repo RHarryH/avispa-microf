@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Rafał Hiszpański
@@ -73,6 +72,6 @@ public abstract class BaseEcmService<T extends EcmObject, D extends Dto, R exten
         return repository
                 .findAll(Sort.by(Sort.Direction.ASC, "objectName")).stream()
                 .map(entityDtoMapper::convertToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

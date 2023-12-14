@@ -18,15 +18,14 @@
 
 package com.avispa.microf.model.invoice.service.file.data;
 
-import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
+import com.avispa.microf.model.invoice.Invoice;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -69,7 +68,7 @@ public class InvoiceData {
         this.issueDate = invoice.getIssueDate();
         this.serviceDate = invoice.getServiceDate();
 
-        this.positions = invoice.getPositions().stream().map(position -> new PositionData(position, unitDict, vatRateDict)).collect(Collectors.toList());
+        this.positions = invoice.getPositions().stream().map(position -> new PositionData(position, unitDict, vatRateDict)).toList();
 
         this.vatMatrix = generateVatMatrix();
 
@@ -97,7 +96,7 @@ public class InvoiceData {
                 .sorted(Map.Entry.comparingByKey())
                 .map(Map.Entry::getValue),
                         Stream.of(vatSum))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private VatRowData getVatRow(Map<String, VatRowData> vatMatrix, String vatRateLabel) {
