@@ -12,21 +12,24 @@ services:
       TZ: Europe/Warsaw
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    networks:
+      - backend
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "microf"]
-      interval: 30s
-      timeout: 60s
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 80s
+      start_period: 10s
+
   microf:
     build:
       context: ../microf-custom
       dockerfile: Dockerfile
-    image: avispa/microf:2.0.0
+    image: avispa/microf:2.1.0
     restart: "no" #on-failure
     ports:
       - '8080:8080'
-      #- 5005:5005
+      #- '5005:5005'
     volumes:
       - ${WORKSPACE_PATH}/config/microf.docker.properties:/opt/microf/config/microf.properties:ro
       - ${WORKSPACE_PATH}/config/microf-configuration.zip:/opt/microf/config/microf-configuration.zip:ro
@@ -39,8 +42,38 @@ services:
       DATASOURCE_USERNAME: ${DATABASE_USER}
       DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
       REMOTE_DEBUG: 0
-    links:
-      - postgresql
+    networks:
+      - frontend
+      - backend
     depends_on:
       postgresql:
         condition: service_healthy
+    healthcheck:
+      test: "wget --no-verbose --quiet --tries=1 -O - localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ../../avispa-ecm-client-frontend
+      dockerfile: prod.Dockerfile
+    image: avispa/ecm-client-frontend:1.0.0
+    restart: "no" #on-failure
+    ports:
+      - '80:80'
+    #  - '80:3000' # use with dev.Dockerfile
+    environment:
+      TZ: Europe/Warsaw
+    networks:
+      - frontend
+    depends_on:
+      microf:
+        condition: service_healthy
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

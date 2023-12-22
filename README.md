@@ -24,6 +24,7 @@ Two environments are available:
 | `avispa.ecm.client.configuration.application` | Name of the application configuration, which will be picked by the ECM Client. If not specified `avispa.ecm.client.name`, `avispa.ecm.client.short-name` and `avispa.ecm.client.description` values will be used |
 | `avispa.ecm.client.configuration.layout`      | Name of the layout configuration, which will be picked by the ECM Client                                                                                                                                         |
 | `avispa.ecm.client.configuration.menu`        | Name of the default menu configuration, which will be picked by the ECM Client                                                                                                                                   |
+| `avispa.ecm.client.cors.urls`                 | List of URLs representing CORS allowed origins                                                                                                                                                                   |
 
 In the final idea it should be the context responsibility to retrieve UI configurations. But because context operates
 now only on objects, `configuration` properties were introduced. With contexts it would use groups definitions but it
@@ -73,7 +74,7 @@ To build μF Docker image you can use following command:
 
 ```shell
 cd microf-custom
-docker build -t avispa/microf:latest -t avispa/microf:2.0.0 .
+docker build -t avispa/microf:latest -t avispa/microf:2.1.0 .
 ```
 
 The application should be available on port `8080`.
@@ -93,13 +94,18 @@ To always rebuild μF image use below command. Ensure the related container does
 docker compose --env-file=.prod.env up -d --no-deps --build microf
 ```
 
+To rebuild all images use below command
+
+```shell
+docker compose --env-file=.prod.env up -d --no-deps --build
+```
+
 #### Image details
 
 Image contains built-in LibreOffice with only Liberation fonts family supported to minimize the
 image's size. LibreOffice is required by `ecm` to perform conversion of documents to `pdf`.
 
-There are two build arguments. `MICROF_DIR` specifies internal path of μF. It is set to `/opt/microf` by default.
-`EXTRACTED_DIR` specifies location of extracted final jar. By default, it is `target/extracted` relative path.
+There is one build argument. `MICROF_DIR` specifies internal path of μF. It is set to `/opt/microf` by default.
 
 Additionally, there are several environment variables presented in the below table.
 
@@ -159,9 +165,9 @@ which separates model from the user preventing from malicious manipulation of da
 Validation types are additionally a validation layer by leveraging [JSR-303](https://beanvalidation.org/1.0/spec/)
 specification and a source of default values for objects.
 
-Validation types are not required if the type is not supposed to be configured via UI. Otherwise, a several steps are 
-required to fully register type. Please note that the proposed "framework", which will be described below does not 
-anticipate the read of the data as it is implemented by appropriate widgets with the use of Property Pages. Therefore, 
+Validation types are not required if the type is not supposed to be configured via UI. Otherwise, a several steps are
+required to fully register type. Please note that the proposed "framework", which will be described below does not
+anticipate the read of the data as it is implemented by appropriate widgets with the use of Property Pages. Therefore,
 by default only add, update and delete operations are supported, but it can be easily extended.
 
 ### Adding validation type to existing type
@@ -177,8 +183,10 @@ discriminator value set on the type and provided in `DTO_OBJECT.DISCRIMINATOR` c
 
 In order to register type in ECM Client following classes has to be created:
 
-- **Repository** extending or implementing `EcmObjectRepository` interface. It can contain additional custom methods. It is a typical [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/) repository.
-- **Mapper** which implements `EntityDtoMapper` interface in order to define mapping of properties between object and validation object. It is recommended to use [MapStruct](https://mapstruct.org/) library.
+- **Repository** extending or implementing `EcmObjectRepository` interface. It can contain additional custom methods. It
+  is a typical [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/) repository.
+- **Mapper** which implements `EntityDtoMapper` interface in order to define mapping of properties between object and
+  validation object. It is recommended to use [MapStruct](https://mapstruct.org/) library.
 - **Service** which extends `BaseEcmService` class and is used to implement business logic
 - **Controller** extending `SimpleEcmController` class to create custom REST endpoints
 
@@ -232,7 +240,7 @@ Initially the usage of Data Transfer Objects was a good idea. It was a good sepa
 between what is in the database and what we want to display in the UI. It was also separating
 validation, display names and dictionaries from the object definition.
 
-However when the tool started to become more generic application they got very
+However, when the tool started to become more generic application they got very
 troublesome. Below are some restrictions and things needed to be aware of
 when working with DTOs in MicroF.
 
@@ -245,3 +253,13 @@ when working with DTOs in MicroF.
 5. Default values defined on DTO level will be inserted to the database even if we don't want to (for instance the field
    is invisible on the Property Page and wasn't sent to the server by frontend).
 6. Overall additional work needed to introduce new object
+
+## Migration guide
+
+### 2.0.0 → 2.1.0
+
+1. Access PostgreSQL container console and connect to the db with `psql -U microf` command.
+2. Run `/ecm-client-backend/sql/03-schema-ecm-client-postgresql.sql` script to add missing tables.
+3. Run `/migration/2_0_0-2_1_0.sql` script to change the type of `id` columns for existing tables. This covers both ECM
+   and μF tables.
+4. Load `microf-configuration.zip` from Swagger without configuration override.

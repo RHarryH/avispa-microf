@@ -1,3 +1,9 @@
+FROM eclipse-temurin:17.0.9_9-jre-alpine AS builder
+WORKDIR microf
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} microf.jar
+RUN java -Djarmode=layertools -jar microf.jar extract
+
 FROM eclipse-temurin:17.0.9_9-jre-alpine
 
 MAINTAINER rafalhiszpanski.pl
@@ -7,7 +13,6 @@ ENV AVISPA_ECM_FILE_STORE_NAME="default-file-store"
 ENV REMOTE_DEBUG=0
 ENV REMOTE_DEBUG_PORT=5005
 ARG MICROF_DIR="/opt/microf"
-ARG EXTRACTED_DIR="target/extracted"
 
 WORKDIR ${MICROF_DIR}
 
@@ -23,8 +28,13 @@ USER microf
 
 VOLUME /tmp
 
+ENV LANG pl_PL.UTF-8
+ENV LANGUAGE pl_PL.UTF-8
+ENV LC_ALL pl_PL.UTF-8
+
 COPY docker-run.sh .
-COPY ${EXTRACTED_DIR}/BOOT-INF/lib lib
-COPY ${EXTRACTED_DIR}/META-INF META-INF
-COPY ${EXTRACTED_DIR}/BOOT-INF/classes .
+COPY --from=builder microf/dependencies/ ./
+COPY --from=builder microf/spring-boot-loader/ ./
+COPY --from=builder microf/snapshot-dependencies/ ./
+COPY --from=builder microf/application/ ./
 ENTRYPOINT ["sh", "docker-run.sh"]
