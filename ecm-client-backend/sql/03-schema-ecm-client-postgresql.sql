@@ -40,6 +40,14 @@ CREATE TABLE IF NOT EXISTS menu
     CONSTRAINT fk_menu_ecm_config_id FOREIGN KEY (id) REFERENCES ecm_config
 );
 
+CREATE TABLE IF NOT EXISTS menu_item
+(
+    action VARCHAR(255),
+    label  VARCHAR(255),
+    id     CHAR(36) NOT NULL PRIMARY KEY,
+    CONSTRAINT fk_menu_item_ecm_config_id FOREIGN KEY (id) REFERENCES ecm_config
+);
+
 CREATE TABLE IF NOT EXISTS menu_items
 (
     menu_id     CHAR(36) NOT NULL,
@@ -48,14 +56,6 @@ CREATE TABLE IF NOT EXISTS menu_items
     PRIMARY KEY (menu_id, items_order),
     CONSTRAINT fk_menu_items_menu_menu_id FOREIGN KEY (menu_id) REFERENCES menu,
     CONSTRAINT fk_menu_items_menu_item_items_id FOREIGN KEY (items_id) REFERENCES menu_item
-);
-
-CREATE TABLE IF NOT EXISTS menu_item
-(
-    action VARCHAR(255),
-    label  VARCHAR(255),
-    id CHAR(36) NOT NULL PRIMARY KEY,
-    CONSTRAINT fk_menu_item_ecm_config_id FOREIGN KEY (id) REFERENCES ecm_config
 );
 
 CREATE TABLE IF NOT EXISTS menu_item_items
