@@ -85,10 +85,10 @@ public class NRBConstraintValidator implements ConstraintValidator<NRBConstraint
 
         String sortCode = cleanNrb.substring(2, 10);
 
-        return validateChecksum(sortCode);
+        return validateSortCode(sortCode);
     }
 
-    private boolean validateChecksum(String sortCode) {
+    private boolean validateSortCode(String sortCode) {
         int total = 0;
         for(int i = 0; i < sortCode.length(); i++) { // without last digit
             total += Character.getNumericValue(sortCode.charAt(i)) * weights[i];
@@ -96,7 +96,7 @@ public class NRBConstraintValidator implements ConstraintValidator<NRBConstraint
         return total % 10 == 0;
     }
 
-    public int calculateChecksum(String sortCode) {
+    private int calculateSortCodeChecksum(String sortCode) {
         int total = 0;
         for(int i = 0; i < sortCode.length() - 1; i++) { // without last digit
             total += Character.getNumericValue(sortCode.charAt(i)) * weights[i];

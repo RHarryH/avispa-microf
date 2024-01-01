@@ -22,8 +22,8 @@
         "property": "accountNumber",
         "pattern": "PL \\d{2} \\d{4} \\d{4} \\d{4} \\d{4} \\d{4} \\d{4}",
         "customValidation": {
-          "function": "isNRB",
-          "message": "Provided account number is not a valid NRB number"
+          "function": "isIBAN",
+          "message": "Provided account number is not a valid IBAN number"
         }
       }
     ]
