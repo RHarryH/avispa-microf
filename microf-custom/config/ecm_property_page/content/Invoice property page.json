@@ -109,10 +109,12 @@
                 "type": "date",
                 "label": "Paid amount date",
                 "property": "payment.paidAmountDate",
-                "conditions": {
+                "constraints": {
                   "visibility": {
-                    "payment.paidAmount": {
-                      "$gt": 0
+                    "condition": {
+                      "payment.paidAmount": {
+                        "$gt": 0
+                      }
                     }
                   }
                 }
@@ -124,10 +126,12 @@
             "label": "Bank account",
             "property": "payment.bankAccount",
             "typeName": "Bank account",
-            "conditions": {
+            "constraints": {
               "visibility": {
-                "payment.method": {
-                  "$ne": "CASH"
+                "condition": {
+                  "payment.method": {
+                    "$ne": "CASH"
+                  }
                 }
               }
             }
