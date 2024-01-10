@@ -17,9 +17,11 @@
             "label": "Company name",
             "required": true,
             "property": "companyName",
-            "conditions": {
+            "constraints": {
               "requirement": {
-                "type": "CORPORATE"
+                "condition": {
+                  "type": "CORPORATE"
+                }
               }
             }
           },
@@ -33,16 +35,20 @@
               "function": "isValidNIP",
               "message": "VAT Identification Number is invalid"
             },
-            "conditions": {
+            "constraints": {
               "requirement": {
-                "type": "CORPORATE"
+                "condition": {
+                  "type": "CORPORATE"
+                }
               }
             }
           }
         ],
-        "conditions": {
+        "constraints": {
           "visibility": {
-            "type": "CORPORATE"
+            "condition": {
+              "type": "CORPORATE"
+            }
           }
         }
       },
@@ -58,9 +64,11 @@
                 "label": "First name",
                 "property": "firstName",
                 "required": true,
-                "conditions": {
+                "constraints": {
                   "requirement": {
-                    "type": "RETAIL"
+                    "condition": {
+                      "type": "RETAIL"
+                    }
                   }
                 }
               },
@@ -69,18 +77,22 @@
                 "label": "Last name",
                 "property": "lastName",
                 "required": true,
-                "conditions": {
+                "constraints": {
                   "requirement": {
-                    "type": "RETAIL"
+                    "condition": {
+                      "type": "RETAIL"
+                    }
                   }
                 }
               }
             ]
           }
         ],
-        "conditions": {
+        "constraints": {
           "visibility": {
-            "type": "RETAIL"
+            "condition": {
+              "type": "RETAIL"
+            }
           }
         }
       },
