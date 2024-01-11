@@ -28,6 +28,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -113,5 +115,19 @@ class BaseEcmServiceTest {
         when(mapper.convertToDto(entity)).thenReturn(dto);
 
         assertEquals(List.of(dto), service.findAll());
+    }
+
+    @Test
+    void whenFindAllWithPagination_thenReturnDtos() {
+        TestDocumentDto dto = new TestDocumentDto();
+        dto.setObjectName("Dto");
+
+        TestDocument entity = new TestDocument();
+        entity.setObjectName("Entity");
+
+        when(repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "creationDate")))).thenReturn(new PageImpl<>(List.of(entity)));
+        when(mapper.convertToDto(entity)).thenReturn(dto);
+
+        assertEquals(List.of(dto), service.findAll(1, 1));
     }
 }

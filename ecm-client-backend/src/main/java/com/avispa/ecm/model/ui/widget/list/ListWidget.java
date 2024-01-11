@@ -20,6 +20,7 @@ package com.avispa.ecm.model.ui.widget.list;
 
 import com.avispa.ecm.model.configuration.EcmConfig;
 import com.avispa.ecm.model.type.Type;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
@@ -45,4 +46,7 @@ public class ListWidget extends EcmConfig {
     @ElementCollection
     @OrderColumn
     private List<String> properties;
+
+    @Column(nullable = false, columnDefinition = "integer default 10")
+    private int itemsPerPage;
 }

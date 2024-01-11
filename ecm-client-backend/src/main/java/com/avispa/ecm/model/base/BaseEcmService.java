@@ -24,6 +24,8 @@ import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.base.mapper.EntityDtoMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,10 +70,26 @@ public abstract class BaseEcmService<T extends EcmObject, D extends Dto, R exten
         repository.deleteById(id);
     }
 
-    public List<D> findAll() {
+    public List<D> findAll(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, getSort());
         return repository
-                .findAll(Sort.by(Sort.Direction.ASC, "objectName")).stream()
+                .findAll(pageable).stream()
                 .map(entityDtoMapper::convertToDto)
                 .toList();
+    }
+
+    public List<D> findAll() {
+        return repository
+                .findAll(getSort()).stream()
+                .map(entityDtoMapper::convertToDto)
+                .toList();
+    }
+
+    private static Sort getSort() {
+        return Sort.by(Sort.Direction.ASC, "creationDate");
+    }
+
+    public long count() {
+        return repository.count();
     }
 }

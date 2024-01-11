@@ -31,6 +31,7 @@ import com.avispa.ecm.model.ui.widget.list.mapper.ListDataDtoMapper;
 import com.avispa.ecm.util.GenericService;
 import com.avispa.ecm.util.TypeNameUtils;
 import com.avispa.ecm.util.reflect.PropertyUtils;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,14 +52,20 @@ public class ListWidgetService {
 
     private final GenericService genericService;
 
-    public ListWidgetDto getAllDataFrom(ListWidget listWidget) {
+    public ListWidgetDto getAllDataFrom(ListWidget listWidget, int pageNumber) {
         Type type = listWidget.getType();
+
+        int pagesNumber = getPagesNumber(type.getEntityClass(), listWidget.getItemsPerPage());
+        if (pageNumber < 1 || pageNumber > pagesNumber) {
+            throw new ValidationException("Page number can't be greater than maximum number of pages. Provided: " + pageNumber + ", max: " + pagesNumber);
+        }
 
         ListWidgetDto listWidgetDto = new ListWidgetDto();
         listWidgetDto.setDocument(Document.class.isAssignableFrom(type.getEntityClass()));
         listWidgetDto.setCaption(listWidget.getCaption());
         listWidgetDto.setResource(TypeNameUtils.convertTypeNameToResourceName(type.getObjectName()));
         listWidgetDto.setEmptyMessage(listWidget.getEmptyMessage());
+        listWidgetDto.setPagesNum(pagesNumber);
 
         DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
         List<String> filteredProperties = listWidget.getProperties().stream()
@@ -66,9 +73,26 @@ public class ListWidgetService {
                 .toList();
 
         listWidgetDto.setHeaders(getHeader(dtoObject, filteredProperties));
-        listWidgetDto.setData(getData(type, filteredProperties));
+        listWidgetDto.setData(getData(type, pageNumber, listWidget.getItemsPerPage(), filteredProperties));
 
         return listWidgetDto;
+    }
+
+    /**
+     * Get number of pages
+     *
+     * @param typeClass    type for which the count of items will be made
+     * @param itemsPerPage how many items per page to display
+     * @return
+     */
+    private int getPagesNumber(Class<? extends EcmObject> typeClass, int itemsPerPage) {
+        if (itemsPerPage < 0) {
+            throw new ValidationException("Items per page must be greater than 0");
+        }
+
+        long count = count(typeClass);
+        log.debug("Found {} records, items per page: {}", count, itemsPerPage);
+        return Math.max((int) Math.ceil(count / (double) itemsPerPage), 1);
     }
 
     /**
@@ -79,7 +103,6 @@ public class ListWidgetService {
      * @return
      */
     private List<String> getHeader(DtoObject dtoObject, List<String> properties) {
-
         return properties.stream()
                 .map(property -> displayService.getDisplayValueFromAnnotation(dtoObject.getDtoClass(), property))
                 .toList();
@@ -91,15 +114,19 @@ public class ListWidgetService {
      * @param properties
      * @return
      */
-    private List<ListDataDto> getData(Type type, List<String> properties) {
-        List<Dto> dtoList = findAll(type.getEntityClass());
+    private List<ListDataDto> getData(Type type, int pageNumber, int itemsPerPage, List<String> properties) {
+        List<Dto> dtoList = findAll(type.getEntityClass(), pageNumber, itemsPerPage);
 
         return dtoList.stream()
                 .map(dto -> listDataDtoMapper.convert(dto, properties))
                 .toList();
     }
 
-    private List<Dto> findAll(Class<? extends EcmObject> entityClass) {
-        return genericService.getService(entityClass).findAll();
+    private long count(Class<? extends EcmObject> entityClass) {
+        return genericService.getService(entityClass).count();
+    }
+
+    private List<Dto> findAll(Class<? extends EcmObject> entityClass, int pageNumber, int itemsPerPages) {
+        return genericService.getService(entityClass).findAll(pageNumber, itemsPerPages);
     }
 }

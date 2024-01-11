@@ -31,6 +31,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -88,7 +91,7 @@ public class WidgetController {
                 .orElse(new PropertiesWidgetDto());
     }
 
-    @GetMapping("/list-widget/{id}")
+    @GetMapping("/list-widget/{id}/{pageNumber}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Returns list data containing all the data required to render list widget.")
     @ApiResponse(responseCode = "200", description = "List data has been returned", content = @Content)
@@ -96,8 +99,17 @@ public class WidgetController {
     public ListWidgetDto getListWidget(
             @PathVariable
             @Parameter(description = "id of the list widget configuration containing list details (like type name and its property names to be displayed)")
-            UUID id) {
+            UUID id,
+            @PathVariable
+            @Parameter(description = "number of page to load")
+            @Min(1)
+            int pageNumber) {
         var listWidget = listWidgetRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        return listWidgetService.getAllDataFrom(listWidget);
+
+        try {
+            return listWidgetService.getAllDataFrom(listWidget, pageNumber);
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 }
