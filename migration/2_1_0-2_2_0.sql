@@ -16,34 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.widget.list.dto;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.util.List;
-
-/**
- * @author Rafał Hiszpański
- */
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-public class ListWidgetDto {
-    private String resourceId;
-    private String resource;
-
-    private String caption;
-    private String emptyMessage;
-    @JsonProperty("isDocument")
-    private boolean document;
-
-    private int pagesNum;
-
-    private List<String> headers;
-    private List<ListDataDto> data;
-}
+-- Avispa ECM
+ALTER TABLE list_widget
+    ADD COLUMN items_per_page INTEGER DEFAULT 10;

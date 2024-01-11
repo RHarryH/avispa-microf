@@ -23,6 +23,8 @@ import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.configuration.context.ContextService;
 import com.avispa.ecm.model.configuration.propertypage.PropertyPage;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
+import com.avispa.ecm.model.document.Document;
+import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
 import com.avispa.ecm.model.ui.widget.list.ListWidget;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
@@ -113,17 +115,35 @@ class WidgetControllerTest {
 
         when(listWidgetRepository.findById(objectId)).thenReturn(Optional.of(listWidget));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/list-widget/" + objectId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/list-widget/" + objectId + "/1"))
                 .andExpect(status().is(200));
 
-        verify(listWidgetService).getAllDataFrom(any(ListWidget.class));
+        verify(listWidgetService).getAllDataFrom(any(ListWidget.class), eq(1));
+    }
+
+    @Test
+    void givenWidgetConfigAndWrongPage_whenLoadListWidget_thenReturn400() throws Exception {
+        UUID objectId = UUID.randomUUID();
+
+        Type type = new Type();
+        type.setObjectName("Document");
+        type.setEntityClass(Document.class);
+
+        ListWidget listWidget = new ListWidget();
+        listWidget.setType(type);
+        listWidget.setItemsPerPage(10);
+
+        when(listWidgetRepository.findById(objectId)).thenReturn(Optional.of(listWidget));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/list-widget/" + objectId + "/0"))
+                .andExpect(status().is(400));
     }
 
     @Test
     void givenNonExistingConfig_whenLoadListWidget_thenReturn404() throws Exception {
         UUID objectId = UUID.randomUUID();
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/list-widget/" + objectId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/widget/list-widget/" + objectId + "/1"))
                 .andExpect(status().is(404));
     }
 }

@@ -5,7 +5,6 @@
     "caption": "Invoices",
     "emptyMessage": "No Invoices Available",
     "properties": [
-      "serialNumber",
       "objectName",
       "issueDate",
       "serviceDate",

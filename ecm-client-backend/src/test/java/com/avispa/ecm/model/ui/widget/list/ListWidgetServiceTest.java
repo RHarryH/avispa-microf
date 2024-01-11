@@ -28,8 +28,11 @@ import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
 import com.avispa.ecm.model.ui.widget.list.mapper.ListDataDtoMapper;
 import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import com.avispa.ecm.util.GenericService;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.when;
 
@@ -72,6 +76,7 @@ class ListWidgetServiceTest {
         listWidget.setCaption("caption");
         listWidget.setProperties(List.of("objectName"));
         listWidget.setEmptyMessage("empty");
+        listWidget.setItemsPerPage(10);
 
         DtoObject dtoObject = new DtoObject();
         dtoObject.setType(type);
@@ -80,14 +85,68 @@ class ListWidgetServiceTest {
 
         TestDocumentDto dto = new TestDocumentDto();
         dto.setObjectName("Test doc");
-        when(genericService.getService(type.getEntityClass()).findAll()).thenReturn(List.of(dto));
+        when(genericService.getService(type.getEntityClass()).findAll(1, 10)).thenReturn(List.of(dto));
 
         when(displayService.getDisplayValueFromAnnotation(TestDocumentDto.class, "objectName")).thenAnswer(invocation -> invocation.getArguments()[1]);
         when(listDataDtoMapper.convert(dto, List.of("objectName"))).thenReturn(getListDataDto());
 
-        var actual = listWidgetService.getAllDataFrom(listWidget);
+        var actual = listWidgetService.getAllDataFrom(listWidget, 1);
 
         assertEquals(getExpected(), actual);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 2})
+    void givenPageNumberNotInRange_whenGetData_thenThrowException(int pageNumber) {
+        Type type = new Type();
+        type.setObjectName("Document");
+        type.setEntityClass(Document.class);
+
+        ListWidget listWidget = new ListWidget();
+        listWidget.setType(type);
+        listWidget.setItemsPerPage(10);
+
+        assertThrows(ValidationException.class, () -> listWidgetService.getAllDataFrom(listWidget, pageNumber));
+    }
+
+    @Test
+    void givenPagesNumberNotInRange_whenGetData_thenThrowException() {
+        Type type = new Type();
+        type.setObjectName("Document");
+        type.setEntityClass(Document.class);
+
+        ListWidget listWidget = new ListWidget();
+        listWidget.setType(type);
+        listWidget.setItemsPerPage(-20);
+
+        assertThrows(ValidationException.class, () -> listWidgetService.getAllDataFrom(listWidget, 1));
+    }
+
+    @Test
+    void givenDocuments_whenGetData_thenCorrectNumberOfPagesComputed() {
+        Type type = new Type();
+        type.setObjectName("Document");
+        type.setEntityClass(Document.class);
+
+        ListWidget listWidget = new ListWidget();
+        listWidget.setType(type);
+        listWidget.setProperties(List.of("objectName"));
+        listWidget.setItemsPerPage(3);
+
+        DtoObject dtoObject = new DtoObject();
+        dtoObject.setType(type);
+        dtoObject.setDtoClass(TestDocumentDto.class);
+        when(dtoService.getDtoObjectFromType(type)).thenReturn(dtoObject);
+
+        TestDocumentDto dto = new TestDocumentDto();
+        dto.setObjectName("Test doc");
+        when(genericService.getService(type.getEntityClass()).findAll(1, listWidget.getItemsPerPage())).thenReturn(List.of(dto));
+        when(genericService.getService(type.getEntityClass()).count()).thenReturn(10L);
+
+        // there are 10 items, and 3 items per page
+        // ceil(10/3)=ceil(3,3333...)=4
+        var listWidgetDto = listWidgetService.getAllDataFrom(listWidget, 1);
+        assertEquals(4, listWidgetDto.getPagesNum());
     }
 
     private ListWidgetDto getExpected() {
@@ -97,6 +156,7 @@ class ListWidgetServiceTest {
         listWidgetDto.setCaption("caption");
         listWidgetDto.setEmptyMessage("empty");
         listWidgetDto.setHeaders(List.of("objectName"));
+        listWidgetDto.setPagesNum(1);
 
         listWidgetDto.setData(List.of(getListDataDto()));
 

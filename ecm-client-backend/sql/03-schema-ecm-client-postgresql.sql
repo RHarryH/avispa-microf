@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS list_widget
     empty_message VARCHAR(255),
     id      CHAR(36) NOT NULL,
     type_id CHAR(36) NOT NULL,
+    items_per_page INTEGER NOT NULL DEFAULT 10,
     PRIMARY KEY (id),
     CONSTRAINT uk_list_widget_type_id UNIQUE (type_id),
     CONSTRAINT fk_list_widget_type_id FOREIGN KEY (type_id) REFERENCES type,

@@ -34,4 +34,6 @@ public class ListWidgetDto implements EcmConfigDto {
     private String caption;
     private String emptyMessage;
     private List<String> properties;
+
+    private int itemsPerPage = 10;
 }
