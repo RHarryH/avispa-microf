@@ -64,14 +64,30 @@ public class ModalPageService {
         };
     }
 
+    /**
+     * Extract context info from the modal context. Please note:
+     * - When loading next page then both source and target pages type should be provided and the context info is
+     * the context of current page.
+     * - When loading previous page the context of the current page is not needed and therefore the source page type is
+     * not required too. The context info must contain the target page type and the context info used to restore the
+     * context of the previous page.
+     *
+     * @param context
+     * @param typeName
+     * @return
+     */
     private ModalPageEcmContextInfo extractContextInfo(ModalPageEcmContext context, String typeName) {
         if (context.getContextInfo() != null) {
             try {
                 var contextInfoTree = context.getContextInfo();
 
-                if (context.getSourcePageType() == ModalPageType.SELECT_SOURCE) {
+                // if source page is not provided it means the user is moving to the previous page
+                ModalPageType pageType = context.getSourcePageType() != null ? context.getSourcePageType() :
+                        context.getTargetPageType();
+
+                if (pageType == ModalPageType.SELECT_SOURCE) {
                     return objectMapper.treeToValue(contextInfoTree, SourcePageContextInfo.class);
-                } else if (context.getSourcePageType() == ModalPageType.PROPERTIES) {
+                } else if (pageType == ModalPageType.PROPERTIES) {
                     return dtoService.convert(contextInfoTree, typeName);
                 } else {
                     throw new EcmException("When context is provided it is also expected to provide source page type");
@@ -95,6 +111,7 @@ public class ModalPageService {
         SourcePageContextInfo sourcePageContext;
         if(contextInfo instanceof SourcePageContextInfo) {
             sourcePageContext = (SourcePageContextInfo) contextInfo;
+            sourcePageContext.setTypeName(typeName); // enrich with type name (required for page restore)
         } else {
             sourcePageContext = SourcePageContextInfo.builder()
                     .typeName(typeName)

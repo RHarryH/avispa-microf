@@ -3,7 +3,7 @@
     "controls": [
       {
         "type": "label",
-        "expression": "'Properties of ' + $value('objectName') + ' folder'"
+        "expression": "Properties of $value('objectName') folder"
       },
       {
         "type": "separator"

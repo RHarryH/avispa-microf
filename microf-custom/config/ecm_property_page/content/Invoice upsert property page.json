@@ -8,14 +8,18 @@
             "type": "combo",
             "label": "Seller",
             "property": "seller",
-            "typeName": "Customer",
+            "dynamic": {
+              "typeName": "Customer"
+            },
             "required": true
           },
           {
             "type": "combo",
             "label": "Buyer",
             "property": "buyer",
-            "typeName": "Customer",
+            "dynamic": {
+              "typeName": "Customer"
+            },
             "required": true
           }
         ]
@@ -55,7 +59,9 @@
             "type": "combo",
             "label": "Unit",
             "property": "unit",
-            "sortByLabel": true
+            "dictionary": {
+              "sortByLabel": true
+            }
           },
           {
             "type": "money",
@@ -93,7 +99,9 @@
                 "type": "combo",
                 "label": "Method",
                 "property": "payment.method",
-                "sortByLabel": true,
+                "dictionary": {
+                  "sortByLabel": true
+                },
                 "required": true
               },
               {
@@ -122,14 +130,14 @@
                 "property": "payment.paidAmountDate",
                 "constraints": {
                   "visibility": {
-                    "condition": {
+                    "conditions": {
                       "payment.paidAmount": {
                         "$gt": 0
                       }
                     }
                   },
                   "requirement": {
-                    "condition": {
+                    "conditions": {
                       "payment.paidAmount": {
                         "$gt": 0
                       }
@@ -143,17 +151,19 @@
             "type": "combo",
             "label": "Bank account",
             "property": "payment.bankAccount",
-            "typeName": "Bank account",
+            "dynamic": {
+              "typeName": "Bank account"
+            },
             "constraints": {
               "visibility": {
-                "condition": {
+                "conditions": {
                   "payment.method": {
                     "$ne": "CASH"
                   }
                 }
               },
               "requirement": {
-                "condition": {
+                "conditions": {
                   "payment.method": {
                     "$ne": "CASH"
                   }
