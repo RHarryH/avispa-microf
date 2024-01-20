@@ -3,7 +3,7 @@
     "controls": [
       {
         "type": "label",
-        "expression": "'Properties of ' + $value('objectName') + ' document'"
+        "expression": "Properties of $value('objectName') document"
       },
       {
         "type": "separator"

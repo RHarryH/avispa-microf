@@ -2,10 +2,26 @@
   "propertyPage": {
     "controls": [
       {
+        "type": "text",
+        "label": "Object filter",
+        "property": "filter"
+      },
+      {
         "type": "combo",
         "label": "Object to clone",
         "property": "sourceId",
-        "typeNameExpression": "$value('typeName')",
+        "dynamic": {
+          "typeName": "$value('typeName')",
+          "qualification": {
+            "objectName": {
+              "$like": "%$value('filter')%"
+            },
+            "$orderBy": {
+              "creationDate": "desc"
+            },
+            "$limit": 5
+          }
+        },
         "required": true
       }
     ]

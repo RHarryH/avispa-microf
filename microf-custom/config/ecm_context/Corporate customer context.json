@@ -2,7 +2,9 @@
 	"context": {
 		"name": "Corporate customer context",
 		"type": "Customer",
-		"matchRule": "{ \"type\": \"CORPORATE\" }",
+		"matchRule": {
+			"type": "CORPORATE"
+		},
 		"importance": 4,
 		"configNames": [
 			"Corporate customer autonaming",

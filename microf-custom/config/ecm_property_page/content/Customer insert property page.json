@@ -6,7 +6,9 @@
         "label": "Customer type",
         "property": "type",
         "required": true,
-        "sortByLabel": true
+        "dictionary": {
+          "sortByLabel": true
+        }
       },
       {
         "type": "group",
@@ -19,7 +21,7 @@
             "property": "companyName",
             "constraints": {
               "requirement": {
-                "condition": {
+                "conditions": {
                   "type": "CORPORATE"
                 }
               }
@@ -37,7 +39,7 @@
             },
             "constraints": {
               "requirement": {
-                "condition": {
+                "conditions": {
                   "type": "CORPORATE"
                 }
               }
@@ -46,7 +48,7 @@
         ],
         "constraints": {
           "visibility": {
-            "condition": {
+            "conditions": {
               "type": "CORPORATE"
             }
           }
@@ -66,7 +68,7 @@
                 "required": true,
                 "constraints": {
                   "requirement": {
-                    "condition": {
+                    "conditions": {
                       "type": "RETAIL"
                     }
                   }
@@ -79,7 +81,7 @@
                 "required": true,
                 "constraints": {
                   "requirement": {
-                    "condition": {
+                    "conditions": {
                       "type": "RETAIL"
                     }
                   }
@@ -90,7 +92,7 @@
         ],
         "constraints": {
           "visibility": {
-            "condition": {
+            "conditions": {
               "type": "RETAIL"
             }
           }

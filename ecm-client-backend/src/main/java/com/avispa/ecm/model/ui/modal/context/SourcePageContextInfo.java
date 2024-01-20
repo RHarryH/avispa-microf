@@ -36,5 +36,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class SourcePageContextInfo implements ModalPageEcmContextInfo {
     private String typeName;
+    @Builder.Default
+    private String filter = "";
     private UUID sourceId;
 }
