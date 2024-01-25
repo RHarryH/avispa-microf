@@ -10,8 +10,8 @@
         "type": "combo",
         "label": "Object to clone",
         "property": "sourceId",
-        "dynamic": {
-          "typeName": "$value('typeName')",
+        "loadSettings": {
+          "type": "$value('typeName')",
           "qualification": {
             "objectName": {
               "$like": "%$value('filter')%"

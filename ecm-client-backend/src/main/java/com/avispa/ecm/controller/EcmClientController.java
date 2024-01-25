@@ -57,7 +57,7 @@ public class EcmClientController {
 
     @Getter
     @Builder
-    static class ClientDto {
+    public static class ClientDto {
         @JsonUnwrapped
         private ApplicationDto applicationDto;
         private LayoutDto layout;

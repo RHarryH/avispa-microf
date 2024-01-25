@@ -25,16 +25,16 @@
             "type": "combo",
             "label": "Seller",
             "property": "seller",
-            "dynamic": {
-              "typeName": "Customer"
+            "loadSettings": {
+              "type": "Customer"
             }
           },
           {
             "type": "combo",
             "label": "Buyer",
             "property": "buyer",
-            "dynamic": {
-              "typeName": "Customer"
+            "loadSettings": {
+              "type": "Customer"
             }
           }
         ]
@@ -58,8 +58,8 @@
             "type": "combo",
             "label": "Unit",
             "property": "unit",
-            "dictionary": {
-              "name": "Unit",
+            "loadSettings": {
+              "dictionary": "Unit",
               "sortByLabel": true
             }
           },
@@ -77,8 +77,8 @@
           {
             "type": "combo",
             "label": "VAT Rate",
-            "dictionary": {
-              "name": "VatRate"
+            "loadSettings": {
+              "dictionary": "VatRate"
             },
             "property": "vatRate"
           }
@@ -95,7 +95,7 @@
                 "type": "combo",
                 "label": "Method",
                 "property": "payment.method",
-                "dictionary": {
+                "loadSettings": {
                   "sortByLabel": true
                 }
               },
@@ -135,8 +135,8 @@
             "type": "combo",
             "label": "Bank account",
             "property": "payment.bankAccount",
-            "dynamic": {
-              "typeName": "Bank account"
+            "loadSettings": {
+              "type": "Bank account"
             },
             "constraints": {
               "visibility": {
