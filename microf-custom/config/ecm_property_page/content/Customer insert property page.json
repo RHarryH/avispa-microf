@@ -6,7 +6,7 @@
         "label": "Customer type",
         "property": "type",
         "required": true,
-        "dictionary": {
+        "loadSettings": {
           "sortByLabel": true
         }
       },
@@ -112,7 +112,7 @@
       },
       {
         "type": "label",
-        "expression": "'Customer address'"
+        "expression": "Customer address"
       },
       {
         "type": "text",
