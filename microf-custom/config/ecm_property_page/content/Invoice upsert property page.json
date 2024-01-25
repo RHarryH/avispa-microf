@@ -8,8 +8,8 @@
             "type": "combo",
             "label": "Seller",
             "property": "seller",
-            "dynamic": {
-              "typeName": "Customer"
+            "loadSettings": {
+              "type": "Customer"
             },
             "required": true
           },
@@ -17,8 +17,8 @@
             "type": "combo",
             "label": "Buyer",
             "property": "buyer",
-            "dynamic": {
-              "typeName": "Customer"
+            "loadSettings": {
+              "type": "Customer"
             },
             "required": true
           }
@@ -59,7 +59,7 @@
             "type": "combo",
             "label": "Unit",
             "property": "unit",
-            "dictionary": {
+            "loadSettings": {
               "sortByLabel": true
             }
           },
@@ -99,7 +99,7 @@
                 "type": "combo",
                 "label": "Method",
                 "property": "payment.method",
-                "dictionary": {
+                "loadSettings": {
                   "sortByLabel": true
                 },
                 "required": true
@@ -151,8 +151,8 @@
             "type": "combo",
             "label": "Bank account",
             "property": "payment.bankAccount",
-            "dynamic": {
-              "typeName": "Bank account"
+            "loadSettings": {
+              "type": "Bank account"
             },
             "constraints": {
               "visibility": {
