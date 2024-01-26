@@ -144,7 +144,7 @@ class ModalPageServiceTest {
     }
 
     @Test
-    void givenContextWithPropertiesAsNextPageAndWithoutContextInfo_whenLoadPage_thenReturnPropertiesPage() {
+    void givenContextWithPropertiesAsNextPageAndWithoutContextInfoAndDtoObject_whenLoadPage_thenReturnPropertiesPage() {
         Type type = new Type();
         type.setObjectName("Test document");
         type.setEntityClass(TestDocument.class);
@@ -204,7 +204,6 @@ class ModalPageServiceTest {
 
         when(ecmObjectService.getEcmObjectFrom(id, "Test document")).thenReturn(new TestDocument());
         when(dtoService.convertObjectToDto(any(TestDocument.class))).thenReturn(new TestDocumentDto());
-        //when(dtoService.convert(contextInfo, "Test document")).thenReturn(new TestDocumentDto());
         when(propertyPageService.getPropertyPage(eq(type.getEntityClass()), any(Dto.class), eq(true))).thenReturn(propertyPageContent);
 
         var actualPropertyPageContent = modalPageService.loadPage(context, "Test document");
