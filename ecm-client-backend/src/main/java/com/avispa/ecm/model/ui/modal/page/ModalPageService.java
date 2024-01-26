@@ -147,6 +147,10 @@ public class ModalPageService {
             // to check the discriminator
             DtoObject dtoObject = dtoService.getDtoObjectFromTypeName(typeName);
 
+            if (dtoObject == null) {
+                throw new EcmException("Dto object for '" + typeName + "' type was not found");
+            }
+
             // usage of Dto enables usage of default values, without that we can get empty values/table rows but the property
             // page will display normally, generally speaking the need of Dto here has been significantly reduced
             // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
