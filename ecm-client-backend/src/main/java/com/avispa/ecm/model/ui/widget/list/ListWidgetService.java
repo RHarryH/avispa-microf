@@ -30,7 +30,7 @@ import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
 import com.avispa.ecm.model.ui.widget.list.mapper.ListDataDtoMapper;
 import com.avispa.ecm.util.GenericService;
 import com.avispa.ecm.util.TypeNameUtils;
-import com.avispa.ecm.util.reflect.PropertyUtils;
+import com.avispa.ecm.util.reflect.EcmPropertyUtils;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +69,7 @@ public class ListWidgetService {
 
         DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
         List<String> filteredProperties = listWidget.getProperties().stream()
-                .filter(property -> PropertyUtils.hasField(dtoObject.getDtoClass(), property)) // exclude fields not present in the object
+                .filter(property -> null != EcmPropertyUtils.getField(dtoObject.getDtoClass(), property)) // exclude fields not present in the object
                 .toList();
 
         listWidgetDto.setHeaders(getHeader(dtoObject, filteredProperties));
