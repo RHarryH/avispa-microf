@@ -20,15 +20,18 @@ package com.avispa.ecm.model.ui.modal;
 
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
+import com.avispa.ecm.model.ui.modal.link.LinkDocumentService;
 import com.avispa.ecm.model.ui.modal.page.ModalPageDto;
 import com.avispa.ecm.model.ui.modal.page.ModalPageService;
 import com.avispa.ecm.model.ui.modal.page.ModalPageType;
 import com.avispa.ecm.util.TypeNameUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.jodconverter.core.util.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -40,17 +43,39 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ModalService {
     private final ModalPageService modalPageService;
+    private final LinkDocumentService linkDocumentService;
 
     public ModalDto getAddModal(String resourceName) {
         String typeName = TypeNameUtils.convertResourceNameToTypeName(resourceName);
 
         var modalType = ModalType.ADD;
 
+        List<ModalPageDto> pages = new ArrayList<>();
+
+        PropertyPageContent propertyPageContent;
+        var linkDocument = linkDocumentService.find(typeName);
+        if (linkDocument != null) {
+            pages.add(ModalPageDto.builder()
+                    .name(StringUtils.isEmpty(linkDocument.getTitle()) ? ModalPageType.LINK_DOCUMENT.getName() : linkDocument.getTitle())
+                    .pageType(ModalPageType.LINK_DOCUMENT)
+                    .build());
+
+            propertyPageContent = modalPageService.loadLinkDocumentPage(typeName);
+        } else {
+            propertyPageContent = modalPageService.loadPropertiesPage(typeName, modalType);
+        }
+
+        // add properties page
+        pages.add(ModalPageDto.builder()
+                .name(ModalPageType.PROPERTIES.getName())
+                .pageType(ModalPageType.PROPERTIES)
+                .build());
+
         return ModalDto.builder()
                 .title("Add new " + typeName.toLowerCase(Locale.ROOT))
                 .type(modalType)
                 .resource(resourceName)
-                .propertyPage(modalPageService.loadPropertiesPage(typeName, modalType))
+                .propertyPage(propertyPageContent)
                 .action(Action.builder()
                         .endpoint(resourceName)
                         .method(HttpMethod.POST)
@@ -58,10 +83,7 @@ public class ModalService {
                         .errorMessage(typeName + " adding failed!")
                         .buttonValue("Add")
                         .build())
-                .pages(List.of(ModalPageDto.builder()
-                        .name(ModalPageType.PROPERTIES.getName())
-                        .pageType(ModalPageType.PROPERTIES)
-                        .build()))
+                .pages(pages)
                 .build();
     }
 

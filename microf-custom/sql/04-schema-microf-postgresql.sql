@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS position (
 );
 
 CREATE TABLE IF NOT EXISTS invoice (
-    comments VARCHAR(255),
+                                       comments VARCHAR(200),
     issue_date DATE,
     serial_number INT,
     service_date DATE,
@@ -63,6 +63,22 @@ CREATE TABLE IF NOT EXISTS invoice (
     payment_id CHAR(36),
     seller_id  CHAR(36) NOT NULL,
     PRIMARY KEY (id),
+    CONSTRAINT fk_invoice_document_id FOREIGN KEY (id) REFERENCES document
+);
+
+CREATE TABLE IF NOT EXISTS correction_invoice
+(
+    comments            VARCHAR(200),
+    correction_reason   VARCHAR(200),
+    issue_date          DATE,
+    serial_number       INT,
+    service_date        DATE,
+    id                  CHAR(36) NOT NULL,
+    buyer_id            CHAR(36) NOT NULL,
+    payment_id          CHAR(36),
+    seller_id           CHAR(36) NOT NULL,
+    original_invoice_id CHAR(36) NOT NULL
+        PRIMARY KEY (id),
     CONSTRAINT fk_invoice_document_id FOREIGN KEY (id) REFERENCES document
 );
 

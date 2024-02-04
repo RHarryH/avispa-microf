@@ -16,22 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.page;
+package com.avispa.ecm.model.ui.modal.link.mapper;
 
-import lombok.Getter;
+import com.avispa.ecm.model.type.Type;
+import com.avispa.ecm.model.ui.modal.link.LinkDocument;
+import com.avispa.ecm.model.ui.modal.link.dto.LinkDocumentDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 /**
  * @author Rafał Hiszpański
  */
-@Getter
-public enum ModalPageType {
-    SELECT_SOURCE("Select source"),
-    LINK_DOCUMENT("Link document"),
-    PROPERTIES("Properties");
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public abstract class LinkDocumentDtoMapper {
+    public abstract LinkDocumentDto convert(LinkDocument entity);
 
-    private final String name;
-
-    ModalPageType(String name) {
-        this.name = name;
+    protected String typeToTypeName(Type type) {
+        return type.getObjectName();
     }
 }

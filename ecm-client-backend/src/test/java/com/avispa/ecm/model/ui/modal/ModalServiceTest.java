@@ -20,6 +20,8 @@ package com.avispa.ecm.model.ui.modal;
 
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
+import com.avispa.ecm.model.ui.modal.link.LinkDocumentService;
+import com.avispa.ecm.model.ui.modal.link.dto.LinkDocumentDto;
 import com.avispa.ecm.model.ui.modal.page.ModalPageDto;
 import com.avispa.ecm.model.ui.modal.page.ModalPageService;
 import com.avispa.ecm.model.ui.modal.page.ModalPageType;
@@ -44,6 +46,9 @@ class ModalServiceTest {
     @Mock
     private ModalPageService modalPageService;
 
+    @Mock
+    private LinkDocumentService linkDocumentService;
+
     @InjectMocks
     private ModalService modalService;
 
@@ -59,7 +64,44 @@ class ModalServiceTest {
         assertEquals(expectedModalDto, actualModalDto);
     }
 
+    @Test
+    void givenResourceNameAndLinkDocumentConfig_whenGetAddModal_thenReturnDto() {
+        PropertyPageContent propertyPageContent = new PropertyPageContent();
+
+        var linkDocumentDto = LinkDocumentDto.builder()
+                .title("Title")
+                .message("Message")
+                .build();
+
+        when(linkDocumentService.find("Test document")).thenReturn(linkDocumentDto);
+        when(modalPageService.loadLinkDocumentPage("Test document")).thenReturn(propertyPageContent);
+
+        ModalDto actualModalDto = modalService.getAddModal("test-document");
+        ModalDto expectedModalDto = getExpectedAddModalDtoWithLinkPage(propertyPageContent);
+
+        assertEquals(expectedModalDto, actualModalDto);
+    }
+
     private static ModalDto getExpectedAddModalDto(PropertyPageContent propertyPageContent) {
+        return getAddModalDto(propertyPageContent,
+                List.of(ModalPageDto.builder()
+                        .name(ModalPageType.PROPERTIES.getName())
+                        .pageType(ModalPageType.PROPERTIES)
+                        .build()));
+    }
+
+    private static ModalDto getExpectedAddModalDtoWithLinkPage(PropertyPageContent propertyPageContent) {
+        return getAddModalDto(propertyPageContent, List.of(ModalPageDto.builder()
+                        .name("Title")
+                        .pageType(ModalPageType.LINK_DOCUMENT)
+                        .build(),
+                ModalPageDto.builder()
+                        .name(ModalPageType.PROPERTIES.getName())
+                        .pageType(ModalPageType.PROPERTIES)
+                        .build()));
+    }
+
+    private static ModalDto getAddModalDto(PropertyPageContent propertyPageContent, List<ModalPageDto> pages) {
         return ModalDto.builder()
                 .title("Add new test document")
                 .type(ModalType.ADD)
@@ -72,10 +114,7 @@ class ModalServiceTest {
                         .errorMessage("Test document adding failed!")
                         .buttonValue("Add")
                         .build())
-                .pages(List.of(ModalPageDto.builder()
-                        .name(ModalPageType.PROPERTIES.getName())
-                        .pageType(ModalPageType.PROPERTIES)
-                        .build()))
+                .pages(pages)
                 .build();
     }
 

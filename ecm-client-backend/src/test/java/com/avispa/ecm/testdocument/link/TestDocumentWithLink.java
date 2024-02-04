@@ -16,22 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.page;
+package com.avispa.ecm.testdocument.link;
 
+import com.avispa.ecm.model.document.Document;
+import com.avispa.ecm.testdocument.simple.TestDocument;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
 
 /**
  * @author Rafał Hiszpański
  */
 @Getter
-public enum ModalPageType {
-    SELECT_SOURCE("Select source"),
-    LINK_DOCUMENT("Link document"),
-    PROPERTIES("Properties");
+@Setter
+@Entity
+public class TestDocumentWithLink extends Document {
+    @Column(name = "issue_date", columnDefinition = "DATE")
+    private LocalDate issueDate;
 
-    private final String name;
-
-    ModalPageType(String name) {
-        this.name = name;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    private TestDocument linkedDocument;
 }

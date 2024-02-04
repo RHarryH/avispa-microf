@@ -25,11 +25,15 @@ import com.avispa.ecm.model.base.dto.DtoObject;
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.ui.modal.ModalType;
+import com.avispa.ecm.model.ui.modal.context.LinkDocumentContextInfo;
 import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
 import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContextInfo;
 import com.avispa.ecm.model.ui.modal.context.SourcePageContextInfo;
+import com.avispa.ecm.model.ui.modal.link.LinkDocumentService;
+import com.avispa.ecm.model.ui.modal.link.dto.LinkDocumentDto;
 import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
 import com.avispa.ecm.util.exception.EcmException;
+import com.avispa.ecm.util.reflect.EcmPropertyUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
@@ -40,6 +44,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+import static com.avispa.ecm.model.ui.modal.ModalType.ADD;
+
 /**
  * @author Rafał Hiszpański
  */
@@ -49,6 +55,7 @@ import java.util.UUID;
 public class ModalPageService {
     private final PropertyPageService propertyPageService;
     private final EcmObjectService ecmObjectService;
+    private final LinkDocumentService linkDocumentService;
     private final DtoService dtoService;
 
     private final ObjectMapper objectMapper;
@@ -60,6 +67,7 @@ public class ModalPageService {
 
         return switch (targetPageType) {
             case SELECT_SOURCE -> loadSourcePage(typeName, contextInfo);
+            case LINK_DOCUMENT -> loadLinkDocumentPage(typeName, contextInfo);
             case PROPERTIES -> loadPropertiesPage(typeName, modalType, contextInfo);
         };
     }
@@ -87,6 +95,8 @@ public class ModalPageService {
 
                 if (pageType == ModalPageType.SELECT_SOURCE) {
                     return objectMapper.treeToValue(contextInfoTree, SourcePageContextInfo.class);
+                } else if (pageType == ModalPageType.LINK_DOCUMENT) {
+                    return objectMapper.treeToValue(contextInfoTree, LinkDocumentContextInfo.class);
                 } else if (pageType == ModalPageType.PROPERTIES) {
                     return dtoService.convert(contextInfoTree, typeName);
                 } else {
@@ -119,6 +129,34 @@ public class ModalPageService {
         }
 
         return propertyPageService.getPropertyPage("Select source property page", sourcePageContext, false);
+    }
+
+    /**
+     * Load configuration for linking documents
+     *
+     * @param typeName target type name (type which object will be created during the process of creation)
+     * @return
+     */
+    public PropertyPageContent loadLinkDocumentPage(@NonNull String typeName) {
+        return loadLinkDocumentPage(typeName, null);
+    }
+
+    private PropertyPageContent loadLinkDocumentPage(String typeName, ModalPageEcmContextInfo contextInfo) {
+        LinkDocumentDto linkDocumentDto = linkDocumentService.get(typeName);
+
+        LinkDocumentContextInfo linkDocumentContext;
+        if (contextInfo instanceof LinkDocumentContextInfo) {
+            linkDocumentContext = (LinkDocumentContextInfo) contextInfo;
+            linkDocumentContext.setLinkDocument(linkDocumentDto);
+            linkDocumentContext.setTypeName(typeName); // enrich with type name (required for page restore)
+        } else {
+            linkDocumentContext = LinkDocumentContextInfo.builder()
+                    .typeName(typeName)
+                    .linkDocument(linkDocumentDto)
+                    .build();
+        }
+
+        return propertyPageService.getPropertyPage("Link document property page", linkDocumentContext, false);
     }
 
     public PropertyPageContent loadPropertiesPage(String typeName, ModalType modalType) {
@@ -156,7 +194,35 @@ public class ModalPageService {
             // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
             Dto dto = BeanUtils.instantiateClass(dtoObject.getDtoClass());
 
+            if (modalType == ADD && contextInfo instanceof LinkDocumentContextInfo linkDocumentContext) {
+                linkDocuments(dto, typeName, linkDocumentContext);
+            }
+
             return propertyPageService.getPropertyPage(dtoObject.getType().getEntityClass(), dto, modalType == ModalType.UPDATE);
         }
+    }
+
+    /**
+     * Link existing document with the currently created document. This method finds link document configuration
+     * for the type of created document. Then it finds linked document in the repository, converts it to dto
+     * and applies to the property pointed by the link document configuration.
+     * <p>
+     * NOTE: the name of the property in the configuration requires to have the same name of the property in both
+     * entity and dto
+     *
+     * @param dto
+     * @param typeName
+     * @param linkDocumentContext
+     */
+    private void linkDocuments(Dto dto, String typeName, LinkDocumentContextInfo linkDocumentContext) {
+        LinkDocumentDto linkDocumentDto = linkDocumentService.get(typeName);
+
+        EcmObject linkedEntity = ecmObjectService.getEcmObjectFrom(linkDocumentContext.getSourceId(), linkDocumentDto.getType());
+        // usage of Dto enables usage of default values, without that we can get empty values/table rows but the property
+        // page will display normally, generally speaking the need of Dto here has been significantly reduced
+        // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
+        Dto linkedDto = dtoService.convertObjectToDto(linkedEntity);
+
+        EcmPropertyUtils.setProperty(dto, linkDocumentDto.getLinkProperty(), linkedDto);
     }
 }

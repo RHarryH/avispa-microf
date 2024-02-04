@@ -25,9 +25,14 @@ import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.configuration.propertypage.content.PropertyPageContent;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.ui.modal.ModalType;
+import com.avispa.ecm.model.ui.modal.context.LinkDocumentContextInfo;
 import com.avispa.ecm.model.ui.modal.context.ModalPageEcmContext;
 import com.avispa.ecm.model.ui.modal.context.SourcePageContextInfo;
+import com.avispa.ecm.model.ui.modal.link.LinkDocumentService;
+import com.avispa.ecm.model.ui.modal.link.dto.LinkDocumentDto;
 import com.avispa.ecm.model.ui.propertypage.PropertyPageService;
+import com.avispa.ecm.testdocument.link.TestDocumentWithLink;
+import com.avispa.ecm.testdocument.link.TestDocumentWithLinkDto;
 import com.avispa.ecm.testdocument.simple.TestDocument;
 import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import com.avispa.ecm.util.exception.EcmException;
@@ -36,15 +41,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -55,6 +63,7 @@ class ModalPageServiceTest {
 
     private PropertyPageService propertyPageService;
     private EcmObjectService ecmObjectService;
+    private LinkDocumentService linkDocumentService;
     private DtoService dtoService;
     private ModalPageService modalPageService;
 
@@ -62,9 +71,10 @@ class ModalPageServiceTest {
     void init() {
         propertyPageService = mock(PropertyPageService.class);
         ecmObjectService = mock(EcmObjectService.class);
+        linkDocumentService = mock(LinkDocumentService.class);
         dtoService = mock(DtoService.class);
 
-        modalPageService = new ModalPageService(propertyPageService, ecmObjectService, dtoService, objectMapper);
+        modalPageService = new ModalPageService(propertyPageService, ecmObjectService, linkDocumentService, dtoService, objectMapper);
     }
 
     @Test
@@ -74,6 +84,29 @@ class ModalPageServiceTest {
         verify(propertyPageService).getPropertyPage("Select source property page", SourcePageContextInfo.builder()
                 .typeName("Test document")
                 .build(), false);
+    }
+
+    @Test
+    void verifyLinkPropertyPageWasLoaded() {
+        var linkDocumentDto = LinkDocumentDto.builder()
+                .title("Title")
+                .message("Message")
+                .build();
+        when(linkDocumentService.get("Test document")).thenReturn(linkDocumentDto);
+
+        modalPageService.loadLinkDocumentPage("Test document");
+
+        verify(propertyPageService).getPropertyPage("Link document property page", LinkDocumentContextInfo.builder()
+                .typeName("Test document")
+                .linkDocument(linkDocumentDto)
+                .build(), false);
+    }
+
+    @Test
+    void whenLinkConfigNotFound_rethrowException() {
+        when(linkDocumentService.get("Test document")).thenThrow(EcmException.class);
+
+        assertThrows(EcmException.class, () -> modalPageService.loadLinkDocumentPage("Test document"));
     }
 
     @Test
@@ -208,6 +241,60 @@ class ModalPageServiceTest {
 
         var actualPropertyPageContent = modalPageService.loadPage(context, "Test document");
 
+        verifyNoInteractions(linkDocumentService);
         assertEquals(actualPropertyPageContent, propertyPageContent);
+    }
+
+    @Test
+    @SneakyThrows
+    void givenLinkToPropertiesTransition_whenLoadPage_thenReturnPropertiesPage() {
+        Type type = new Type();
+        type.setObjectName("Test document");
+        type.setEntityClass(TestDocument.class);
+
+        Type typeLink = new Type();
+        typeLink.setObjectName("Test document with link");
+        typeLink.setEntityClass(TestDocumentWithLink.class);
+
+        PropertyPageContent propertyPageContent = new PropertyPageContent();
+
+        LinkDocumentContextInfo contextInfo = LinkDocumentContextInfo.builder()
+                .sourceId(UUID.randomUUID())
+                .linkDocument(LinkDocumentDto.builder()
+                        .linkProperty("linkedDocument")
+                        .type("Test document")
+                        .build())
+                .build();
+
+        var context = ModalPageEcmContext.builder()
+                .sourcePageType(ModalPageType.LINK_DOCUMENT)
+                .targetPageType(ModalPageType.PROPERTIES)
+                .modalType(ModalType.ADD)
+                .contextInfo(objectMapper.valueToTree(contextInfo))
+                .build();
+
+        DtoObject dtoObject = new DtoObject();
+        dtoObject.setDtoClass(TestDocumentWithLinkDto.class);
+        dtoObject.setType(typeLink);
+
+        when(dtoService.getDtoObjectFromTypeName("Test document with link")).thenReturn(dtoObject);
+        when(ecmObjectService.getEcmObjectFrom(any(UUID.class), eq("Test document with link"))).thenReturn(new TestDocumentWithLink());
+        when(propertyPageService.getPropertyPage(eq(typeLink.getEntityClass()), any(Dto.class), eq(false))).thenReturn(propertyPageContent);
+
+        // mocks of linking
+        when(linkDocumentService.get("Test document with link")).thenReturn(LinkDocumentDto.builder()
+                .type("Test Document")
+                .linkProperty("linkedDocument")
+                .build());
+        when(ecmObjectService.getEcmObjectFrom(any(UUID.class), eq("Test Document"))).thenReturn(new TestDocument());
+        when(dtoService.convertObjectToDto(any(TestDocument.class))).thenReturn(new TestDocumentDto());
+
+        var actualPropertyPageContent = modalPageService.loadPage(context, "Test document with link");
+
+        var documentCaptor = ArgumentCaptor.forClass(TestDocumentWithLinkDto.class);
+        verify(propertyPageService).getPropertyPage(eq(TestDocumentWithLink.class), documentCaptor.capture(), eq(false));
+
+        assertEquals(actualPropertyPageContent, propertyPageContent);
+        assertNotNull(documentCaptor.getValue().getLinkedDocument());
     }
 }

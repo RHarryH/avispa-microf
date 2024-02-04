@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS application
 (
-    id CHAR(36) NOT NULL PRIMARY KEY,
-    full_name VARCHAR(255),
+    id         CHAR(36) NOT NULL PRIMARY KEY,
+    full_name  VARCHAR(255),
     short_name VARCHAR(255),
     description VARCHAR(255),
     CONSTRAINT fk_application_ecm_config_id FOREIGN KEY (id) REFERENCES ecm_config
@@ -9,11 +9,11 @@ CREATE TABLE IF NOT EXISTS application
 
 CREATE TABLE IF NOT EXISTS list_widget
 (
-    caption       VARCHAR(255),
-    empty_message VARCHAR(255),
-    id      CHAR(36) NOT NULL,
-    type_id CHAR(36) NOT NULL,
-    items_per_page INTEGER NOT NULL DEFAULT 10,
+    caption        VARCHAR(255),
+    empty_message  VARCHAR(255),
+    id             CHAR(36) NOT NULL,
+    type_id        CHAR(36) NOT NULL,
+    items_per_page INTEGER  NOT NULL DEFAULT 10,
     PRIMARY KEY (id),
     CONSTRAINT uk_list_widget_type_id UNIQUE (type_id),
     CONSTRAINT fk_list_widget_type_id FOREIGN KEY (type_id) REFERENCES type,
@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS list_widget
 
 CREATE TABLE IF NOT EXISTS list_widget_properties
 (
-    list_widget_id CHAR(36) NOT NULL,
+    list_widget_id   CHAR(36) NOT NULL,
     properties       VARCHAR(255),
-    properties_order INT          NOT NULL,
+    properties_order INT      NOT NULL,
     PRIMARY KEY (list_widget_id, properties_order),
     CONSTRAINT fk_list_widget_properties_list_widget_id FOREIGN KEY (list_widget_id) REFERENCES list_widget
 );
@@ -67,4 +67,14 @@ CREATE TABLE IF NOT EXISTS menu_item_items
     PRIMARY KEY (menu_item_id, items_order),
     CONSTRAINT fk_menu_item_items_menu_item_menu_item_id FOREIGN KEY (menu_item_id) REFERENCES menu_item,
     CONSTRAINT fk_menu_item_items_menu_item_items_id FOREIGN KEY (items_id) REFERENCES menu_item
+);
+
+CREATE TABLE IF NOT EXISTS link_document
+(
+    id      CHAR(36) NOT NULL PRIMARY KEY,
+    type_id CHAR(36) NOT NULL,
+    title   VARCHAR(50),
+    message VARCHAR(50),
+    CONSTRAINT uk_link_document_type_id UNIQUE (type_id),
+    CONSTRAINT fk_link_document_type_id FOREIGN KEY (type_id) REFERENCES type
 );

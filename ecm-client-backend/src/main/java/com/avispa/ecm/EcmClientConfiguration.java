@@ -22,6 +22,7 @@ import com.avispa.ecm.model.configuration.load.ConfigurationRegistry;
 import com.avispa.ecm.model.configuration.load.ConfigurationType;
 import com.avispa.ecm.model.load.dto.ApplicationDto;
 import com.avispa.ecm.model.load.dto.LayoutDto;
+import com.avispa.ecm.model.load.dto.LinkDocumentDto;
 import com.avispa.ecm.model.load.dto.ListWidgetDto;
 import com.avispa.ecm.model.load.dto.MenuDto;
 import com.avispa.ecm.util.Version;
@@ -42,16 +43,19 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.util.Locale;
 
+import static com.avispa.ecm.model.configuration.load.ConfigurationRegistry.ECM_CONTEXT;
+
 @Configuration
 public class EcmClientConfiguration {
 	@Bean
 	@Primary
 	public ConfigurationRegistry ecmAppConfigurationRegistry() {
 		var registry = new ConfigurationRegistry();
-		registry.registerNewConfigurationType(ConfigurationType.of("ecm_application", ApplicationDto.class, false));
-		registry.registerNewConfigurationType(ConfigurationType.of("ecm_list_widget", ListWidgetDto.class, false));
-		registry.registerNewConfigurationType(ConfigurationType.of("ecm_menu", MenuDto.class, false));
-		registry.registerNewConfigurationType(ConfigurationType.of("ecm_layout", LayoutDto.class, true));
+		registry.register(ConfigurationType.of("ecm_application", ApplicationDto.class, false));
+		registry.register(ConfigurationType.of("ecm_list_widget", ListWidgetDto.class, false));
+		registry.register(ConfigurationType.of("ecm_menu", MenuDto.class, false));
+		registry.register(ConfigurationType.of("ecm_layout", LayoutDto.class, true));
+		registry.register(ConfigurationType.of("ecm_link_document", LinkDocumentDto.class, false), ECM_CONTEXT);
 		return registry;
 	}
 

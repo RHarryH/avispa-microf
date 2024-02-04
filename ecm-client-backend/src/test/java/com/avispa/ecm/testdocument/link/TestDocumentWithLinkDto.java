@@ -16,22 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.page;
+package com.avispa.ecm.testdocument.link;
 
+import com.avispa.ecm.model.base.dto.Dto;
+import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.util.UUID;
 
 /**
  * @author Rafał Hiszpański
  */
 @Getter
-public enum ModalPageType {
-    SELECT_SOURCE("Select source"),
-    LINK_DOCUMENT("Link document"),
-    PROPERTIES("Properties");
+@Setter
+public class TestDocumentWithLinkDto implements Dto {
+    private UUID id;
 
-    private final String name;
-
-    ModalPageType(String name) {
-        this.name = name;
-    }
+    private String issueDate;
+    private TestDocumentDto linkedDocument;
 }
