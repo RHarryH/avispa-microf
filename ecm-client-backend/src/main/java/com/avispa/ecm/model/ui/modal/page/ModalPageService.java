@@ -132,27 +132,36 @@ public class ModalPageService {
     }
 
     /**
-     * Load configuration for linking documents
+     * Load property page for linking documents
      *
      * @param typeName target type name (type which object will be created during the process of creation)
+     * @param linkDocument link document configuration
      * @return
      */
-    public PropertyPageContent loadLinkDocumentPage(@NonNull String typeName) {
-        return loadLinkDocumentPage(typeName, null);
+    public PropertyPageContent loadLinkDocumentPage(@NonNull String typeName, LinkDocumentDto linkDocument) {
+        return loadLinkDocumentPage(typeName, linkDocument, null);
     }
 
-    private PropertyPageContent loadLinkDocumentPage(String typeName, ModalPageEcmContextInfo contextInfo) {
-        LinkDocumentDto linkDocumentDto = linkDocumentService.get(typeName);
+    /**
+     * Load property page for linking documents
+     *
+     * @param typeName target type name (type which object will be created during the process of creation)
+     * @param contextInfo context
+     * @return
+     */
+    public PropertyPageContent loadLinkDocumentPage(@NonNull String typeName, ModalPageEcmContextInfo contextInfo) {
+        return loadLinkDocumentPage(typeName, linkDocumentService.get(typeName), contextInfo);
+    }
 
+    private PropertyPageContent loadLinkDocumentPage(String typeName, LinkDocumentDto linkDocument, ModalPageEcmContextInfo contextInfo) {
         LinkDocumentContextInfo linkDocumentContext;
         if (contextInfo instanceof LinkDocumentContextInfo) {
             linkDocumentContext = (LinkDocumentContextInfo) contextInfo;
-            linkDocumentContext.setLinkDocument(linkDocumentDto);
             linkDocumentContext.setTypeName(typeName); // enrich with type name (required for page restore)
         } else {
             linkDocumentContext = LinkDocumentContextInfo.builder()
                     .typeName(typeName)
-                    .linkDocument(linkDocumentDto)
+                    .linkDocument(linkDocument)
                     .build();
         }
 
@@ -195,7 +204,14 @@ public class ModalPageService {
             Dto dto = BeanUtils.instantiateClass(dtoObject.getDtoClass());
 
             if (modalType == ADD && contextInfo instanceof LinkDocumentContextInfo linkDocumentContext) {
-                linkDocuments(dto, typeName, linkDocumentContext);
+                var linkedId = linkDocument(dto, typeName, linkDocumentContext);
+
+                var propertyPage = propertyPageService.getPropertyPage(dtoObject.getType().getEntityClass(), dto, false);
+
+                // add control storing id of linked document, so it can be retrieved after submit of the page
+                propertyPage.addHiddenControl(linkDocumentContext.getLinkDocument().getLinkProperty() + ".id", linkedId);
+
+                return propertyPage;
             }
 
             return propertyPageService.getPropertyPage(dtoObject.getType().getEntityClass(), dto, modalType == ModalType.UPDATE);
@@ -213,9 +229,12 @@ public class ModalPageService {
      * @param dto
      * @param typeName
      * @param linkDocumentContext
+     * @return id of linked document
      */
-    private void linkDocuments(Dto dto, String typeName, LinkDocumentContextInfo linkDocumentContext) {
+    private UUID linkDocument(Dto dto, String typeName, LinkDocumentContextInfo linkDocumentContext) {
         LinkDocumentDto linkDocumentDto = linkDocumentService.get(typeName);
+
+        linkDocumentContext.setLinkDocument(linkDocumentDto);
 
         EcmObject linkedEntity = ecmObjectService.getEcmObjectFrom(linkDocumentContext.getSourceId(), linkDocumentDto.getType());
         // usage of Dto enables usage of default values, without that we can get empty values/table rows but the property
@@ -224,5 +243,7 @@ public class ModalPageService {
         Dto linkedDto = dtoService.convertObjectToDto(linkedEntity);
 
         EcmPropertyUtils.setProperty(dto, linkDocumentDto.getLinkProperty(), linkedDto);
+
+        return linkedEntity.getId();
     }
 }

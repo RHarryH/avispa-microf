@@ -74,7 +74,7 @@ class ModalServiceTest {
                 .build();
 
         when(linkDocumentService.find("Test document")).thenReturn(linkDocumentDto);
-        when(modalPageService.loadLinkDocumentPage("Test document")).thenReturn(propertyPageContent);
+        when(modalPageService.loadLinkDocumentPage("Test document", linkDocumentDto)).thenReturn(propertyPageContent);
 
         ModalDto actualModalDto = modalService.getAddModal("test-document");
         ModalDto expectedModalDto = getExpectedAddModalDtoWithLinkPage(propertyPageContent);

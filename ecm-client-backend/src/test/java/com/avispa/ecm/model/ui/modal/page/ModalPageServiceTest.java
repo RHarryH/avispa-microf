@@ -46,6 +46,7 @@ import org.mockito.ArgumentCaptor;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -92,9 +93,8 @@ class ModalPageServiceTest {
                 .title("Title")
                 .message("Message")
                 .build();
-        when(linkDocumentService.get("Test document")).thenReturn(linkDocumentDto);
 
-        modalPageService.loadLinkDocumentPage("Test document");
+        modalPageService.loadLinkDocumentPage("Test document", linkDocumentDto);
 
         verify(propertyPageService).getPropertyPage("Link document property page", LinkDocumentContextInfo.builder()
                 .typeName("Test document")
@@ -104,9 +104,10 @@ class ModalPageServiceTest {
 
     @Test
     void whenLinkConfigNotFound_rethrowException() {
+        var linkDocumentContext = LinkDocumentContextInfo.builder().build();
         when(linkDocumentService.get("Test document")).thenThrow(EcmException.class);
 
-        assertThrows(EcmException.class, () -> modalPageService.loadLinkDocumentPage("Test document"));
+        assertThrows(EcmException.class, () -> modalPageService.loadLinkDocumentPage("Test document", linkDocumentContext));
     }
 
     @Test
@@ -295,6 +296,7 @@ class ModalPageServiceTest {
         verify(propertyPageService).getPropertyPage(eq(TestDocumentWithLink.class), documentCaptor.capture(), eq(false));
 
         assertEquals(actualPropertyPageContent, propertyPageContent);
+        assertFalse(propertyPageContent.getControls().isEmpty());
         assertNotNull(documentCaptor.getValue().getLinkedDocument());
     }
 }
