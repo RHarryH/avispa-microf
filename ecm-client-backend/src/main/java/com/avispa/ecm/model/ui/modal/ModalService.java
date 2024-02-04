@@ -60,7 +60,7 @@ public class ModalService {
                     .pageType(ModalPageType.LINK_DOCUMENT)
                     .build());
 
-            propertyPageContent = modalPageService.loadLinkDocumentPage(typeName);
+            propertyPageContent = modalPageService.loadLinkDocumentPage(typeName, linkDocument);
         } else {
             propertyPageContent = modalPageService.loadPropertiesPage(typeName, modalType);
         }
