@@ -16,22 +16,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.page;
+package com.avispa.ecm.model.ui.modal.link;
 
+import com.avispa.ecm.model.configuration.EcmConfig;
+import com.avispa.ecm.model.type.Type;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Rafał Hiszpański
  */
+@Entity
 @Getter
-public enum ModalPageType {
-    SELECT_SOURCE("Select source"),
-    LINK_DOCUMENT("Link document"),
-    PROPERTIES("Properties");
+@Setter
+public class LinkDocument extends EcmConfig {
+    private String linkProperty;
 
-    private final String name;
+    @OneToOne(optional = false)
+    private Type type;
 
-    ModalPageType(String name) {
-        this.name = name;
-    }
+    @Column(length = 50)
+    private String title;
+
+    @Column(length = 200)
+    private String message;
 }

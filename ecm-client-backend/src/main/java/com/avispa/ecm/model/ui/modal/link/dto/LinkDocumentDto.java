@@ -16,22 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.page;
+package com.avispa.ecm.model.ui.modal.link.dto;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * @author Rafał Hiszpański
  */
-@Getter
-public enum ModalPageType {
-    SELECT_SOURCE("Select source"),
-    LINK_DOCUMENT("Link document"),
-    PROPERTIES("Properties");
-
-    private final String name;
-
-    ModalPageType(String name) {
-        this.name = name;
-    }
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Jacksonized
+public class LinkDocumentDto {
+    private String linkProperty;
+    private String type;
+    private String title;
+    private String message;
 }

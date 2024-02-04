@@ -16,22 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.page;
+package com.avispa.ecm.model.load.dto;
 
-import lombok.Getter;
+import com.avispa.ecm.model.configuration.load.dto.EcmConfigDto;
+import lombok.Data;
 
 /**
  * @author Rafał Hiszpański
  */
-@Getter
-public enum ModalPageType {
-    SELECT_SOURCE("Select source"),
-    LINK_DOCUMENT("Link document"),
-    PROPERTIES("Properties");
+@Data
+public class LinkDocumentDto implements EcmConfigDto {
+    private String name;
 
-    private final String name;
-
-    ModalPageType(String name) {
-        this.name = name;
-    }
+    private String linkProperty;
+    private String type;
+    private String title;
+    private String message;
 }

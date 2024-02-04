@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "additionalProperties": false,
+  "description": "Schema for link document configuration",
+  "type": "object",
+  "properties": {
+    "linkDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "linkProperty": {
+          "type": "string",
+          "pattern": "^[a-zA-Z](?:[a-zA-Z\\d.]*[a-zA-Z\\d])?+$"
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ]
+    }
+  },
+  "required": [
+    "linkDocument"
+  ]
+}

@@ -16,22 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.ecm.model.ui.modal.page;
+package com.avispa.ecm.model.load;
 
-import lombok.Getter;
+import com.avispa.ecm.model.configuration.EcmConfigRepository;
+import com.avispa.ecm.model.configuration.load.GenericLoader;
+import com.avispa.ecm.model.content.ContentService;
+import com.avispa.ecm.model.load.dto.LinkDocumentDto;
+import com.avispa.ecm.model.load.mapper.LinkDocumentMapper;
+import com.avispa.ecm.model.ui.modal.link.LinkDocument;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Rafał Hiszpański
  */
-@Getter
-public enum ModalPageType {
-    SELECT_SOURCE("Select source"),
-    LINK_DOCUMENT("Link document"),
-    PROPERTIES("Properties");
-
-    private final String name;
-
-    ModalPageType(String name) {
-        this.name = name;
+@Component
+class LinkDocumentLoader extends GenericLoader<LinkDocument, LinkDocumentDto, LinkDocumentMapper> {
+    protected LinkDocumentLoader(EcmConfigRepository<LinkDocument> ecmConfigRepository, LinkDocumentMapper ecmConfigMapper, ContentService contentService) {
+        super(ecmConfigRepository, ecmConfigMapper, contentService);
     }
 }
