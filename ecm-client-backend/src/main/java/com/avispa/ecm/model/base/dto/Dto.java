@@ -38,4 +38,13 @@ public interface Dto extends ModalPageEcmContextInfo {
 
     @JsonIgnore
     default void setPdfRenditionAvailable(boolean pdfRenditionAvailable){}
+
+    /**
+     * Supplementary method to implement basic properties' inheritance. It allows to manipulate the properties after
+     * linking the document. In a target solution, inheritance would be a separate configuration element allowing to
+     * copy arbitrary properties from arbitrary documents/objects with the use of conditions.
+     */
+    default void inherit() {
+        // NO DEFAULT IMPLEMENTATION
+    }
 }
