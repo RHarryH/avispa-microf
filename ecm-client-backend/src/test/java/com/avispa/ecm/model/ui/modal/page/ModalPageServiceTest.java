@@ -43,6 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -258,6 +259,7 @@ class ModalPageServiceTest {
         typeLink.setEntityClass(TestDocumentWithLink.class);
 
         PropertyPageContent propertyPageContent = new PropertyPageContent();
+        propertyPageContent.setControls(new ArrayList<>());
 
         LinkDocumentContextInfo contextInfo = LinkDocumentContextInfo.builder()
                 .sourceId(UUID.randomUUID())
@@ -294,6 +296,7 @@ class ModalPageServiceTest {
 
         var documentCaptor = ArgumentCaptor.forClass(TestDocumentWithLinkDto.class);
         verify(propertyPageService).getPropertyPage(eq(TestDocumentWithLink.class), documentCaptor.capture(), eq(false));
+
 
         assertEquals(actualPropertyPageContent, propertyPageContent);
         assertFalse(propertyPageContent.getControls().isEmpty());

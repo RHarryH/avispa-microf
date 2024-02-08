@@ -244,6 +244,8 @@ public class ModalPageService {
 
         EcmPropertyUtils.setProperty(dto, linkDocumentDto.getLinkProperty(), linkedDto);
 
+        dto.inherit(); // run basic inheritance
+
         return linkedEntity.getId();
     }
 }
