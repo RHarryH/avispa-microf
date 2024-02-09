@@ -88,4 +88,17 @@ class DirectoryNodeMapperTest {
         assertEquals(nestedDocument.getId().toString(), directoryNode.getId());
         assertEquals("pdf", directoryNode.getType());
     }
+
+    @Test
+    void missingPrimaryContent() {
+        Document document = getDocument();
+        document.setContents(null); // clear content details
+
+        DirectoryNode directoryNode = mapper.convert(document);
+
+        assertEquals("#", directoryNode.getParent());
+        assertEquals("Document", directoryNode.getText());
+        assertEquals(document.getId().toString(), directoryNode.getId());
+        assertEquals("default", directoryNode.getType()); // default type
+    }
 }

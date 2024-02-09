@@ -49,6 +49,7 @@ public interface DirectoryNodeMapper {
 
     @Named("getType")
     default String getType(Document document) {
-        return document.getPrimaryContent().getFormat().getExtension();
+        var primaryContent = document.getPrimaryContent();
+        return null != primaryContent && null != primaryContent.getFormat() ? primaryContent.getFormat().getExtension() : "default";
     }
 }

@@ -41,7 +41,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -50,6 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -60,6 +63,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Rafał Hiszpański
  */
+@ExtendWith(MockitoExtension.class)
 class ModalPageServiceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -281,7 +285,6 @@ class ModalPageServiceTest {
         dtoObject.setType(typeLink);
 
         when(dtoService.getDtoObjectFromTypeName("Test document with link")).thenReturn(dtoObject);
-        when(ecmObjectService.getEcmObjectFrom(any(UUID.class), eq("Test document with link"))).thenReturn(new TestDocumentWithLink());
         when(propertyPageService.getPropertyPage(eq(typeLink.getEntityClass()), any(Dto.class), eq(false))).thenReturn(propertyPageContent);
 
         // mocks of linking
@@ -297,9 +300,45 @@ class ModalPageServiceTest {
         var documentCaptor = ArgumentCaptor.forClass(TestDocumentWithLinkDto.class);
         verify(propertyPageService).getPropertyPage(eq(TestDocumentWithLink.class), documentCaptor.capture(), eq(false));
 
-
         assertEquals(actualPropertyPageContent, propertyPageContent);
         assertFalse(propertyPageContent.getControls().isEmpty());
         assertNotNull(documentCaptor.getValue().getLinkedDocument());
+    }
+
+    @Test
+    @SneakyThrows
+    void givenContext_whenRevertingToLink_thenReturnLinkPage() {
+        Type type = new Type();
+        type.setObjectName("Test document");
+        type.setEntityClass(TestDocument.class);
+
+        Type typeLink = new Type();
+        typeLink.setObjectName("Test document with link");
+        typeLink.setEntityClass(TestDocumentWithLink.class);
+
+        PropertyPageContent propertyPageContent = new PropertyPageContent();
+        propertyPageContent.setControls(new ArrayList<>());
+
+        when(propertyPageService.getPropertyPage(eq("Link document property page"), any(LinkDocumentContextInfo.class), eq(false))).thenReturn(propertyPageContent);
+
+        // mocks of linking
+        when(linkDocumentService.get("Test document with link")).thenReturn(LinkDocumentDto.builder()
+                .type("Test Document")
+                .linkProperty("linkedDocument")
+                .build());
+
+        var context = ModalPageEcmContext.builder()
+                .targetPageType(ModalPageType.LINK_DOCUMENT)
+                .modalType(ModalType.ADD)
+                .build();
+
+        var actualPropertyPageContent = modalPageService.loadPage(context, "Test document with link");
+
+        var contextCaptor = ArgumentCaptor.forClass(LinkDocumentContextInfo.class);
+        verify(propertyPageService).getPropertyPage(eq("Link document property page"), contextCaptor.capture(), eq(false));
+
+        assertEquals(actualPropertyPageContent, propertyPageContent);
+        assertTrue(propertyPageContent.getControls().isEmpty());
+        assertNotNull(contextCaptor.getValue());
     }
 }
