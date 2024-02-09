@@ -158,6 +158,7 @@ public class ModalPageService {
         if (contextInfo instanceof LinkDocumentContextInfo) {
             linkDocumentContext = (LinkDocumentContextInfo) contextInfo;
             linkDocumentContext.setTypeName(typeName); // enrich with type name (required for page restore)
+            linkDocumentContext.setLinkDocument(linkDocument);
         } else {
             linkDocumentContext = LinkDocumentContextInfo.builder()
                     .typeName(typeName)
