@@ -26,6 +26,7 @@ import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.ui.widget.list.dto.ListDataDto;
 import com.avispa.ecm.model.ui.widget.list.dto.ListWidgetDto;
 import com.avispa.ecm.model.ui.widget.list.mapper.ListDataDtoMapper;
+import com.avispa.ecm.testdocument.simple.TestDocument;
 import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import com.avispa.ecm.util.GenericService;
 import jakarta.validation.ValidationException;
@@ -37,6 +38,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -68,13 +70,19 @@ class ListWidgetServiceTest {
     @Test
     void givenListWidget_whenGetAllData_thenDtoRetrieved() {
         Type type = new Type();
-        type.setObjectName("Document");
-        type.setEntityClass(Document.class);
+        type.setObjectName("Test document");
+        type.setEntityClass(TestDocument.class);
 
         ListWidget listWidget = new ListWidget();
         listWidget.setType(type);
         listWidget.setCaption("caption");
-        listWidget.setProperties(List.of("objectName"));
+        listWidget.setProperties(List.of(ListWidgetProperty.builder()
+                        .name("objectName")
+                        .build(),
+                ListWidgetProperty.builder()
+                        .label("Custom unit price")
+                        .name("unitPrice")
+                        .build()));
         listWidget.setEmptyMessage("empty");
         listWidget.setItemsPerPage(10);
 
@@ -84,15 +92,37 @@ class ListWidgetServiceTest {
         when(dtoService.getDtoObjectFromType(type)).thenReturn(dtoObject);
 
         TestDocumentDto dto = new TestDocumentDto();
+        dto.setUnitPrice(BigDecimal.TEN);
         dto.setObjectName("Test doc");
         when(genericService.getService(type.getEntityClass()).findAll(1, 10)).thenReturn(List.of(dto));
 
         when(displayService.getDisplayValueFromAnnotation(TestDocumentDto.class, "objectName")).thenAnswer(invocation -> invocation.getArguments()[1]);
-        when(listDataDtoMapper.convert(dto, List.of("objectName"))).thenReturn(getListDataDto());
+        when(listDataDtoMapper.convert(dto, List.of("objectName", "unitPrice"))).thenReturn(getListDataDto());
 
         var actual = listWidgetService.getAllDataFrom(listWidget, 1);
 
         assertEquals(getExpected(), actual);
+    }
+
+    private ListWidgetDto getExpected() {
+        ListWidgetDto listWidgetDto = new ListWidgetDto();
+        listWidgetDto.setDocument(true);
+        listWidgetDto.setResource("test-document");
+        listWidgetDto.setCaption("caption");
+        listWidgetDto.setEmptyMessage("empty");
+        listWidgetDto.setHeaders(List.of("objectName", "Custom unit price"));
+        listWidgetDto.setPagesNum(1);
+
+        listWidgetDto.setData(List.of(getListDataDto()));
+
+        return listWidgetDto;
+    }
+
+    private static ListDataDto getListDataDto() {
+        ListDataDto dataDto = new ListDataDto();
+        dataDto.setValues(Map.of("objectName", "Test doc"));
+        dataDto.setValues(Map.of("unitPrice", "10.00"));
+        return dataDto;
     }
 
     @ParameterizedTest
@@ -130,7 +160,9 @@ class ListWidgetServiceTest {
 
         ListWidget listWidget = new ListWidget();
         listWidget.setType(type);
-        listWidget.setProperties(List.of("objectName"));
+        listWidget.setProperties(List.of(ListWidgetProperty.builder()
+                .name("objectName")
+                .build()));
         listWidget.setItemsPerPage(3);
 
         DtoObject dtoObject = new DtoObject();
@@ -147,25 +179,5 @@ class ListWidgetServiceTest {
         // ceil(10/3)=ceil(3,3333...)=4
         var listWidgetDto = listWidgetService.getAllDataFrom(listWidget, 1);
         assertEquals(4, listWidgetDto.getPagesNum());
-    }
-
-    private ListWidgetDto getExpected() {
-        ListWidgetDto listWidgetDto = new ListWidgetDto();
-        listWidgetDto.setDocument(true);
-        listWidgetDto.setResource("document");
-        listWidgetDto.setCaption("caption");
-        listWidgetDto.setEmptyMessage("empty");
-        listWidgetDto.setHeaders(List.of("objectName"));
-        listWidgetDto.setPagesNum(1);
-
-        listWidgetDto.setData(List.of(getListDataDto()));
-
-        return listWidgetDto;
-    }
-
-    private static ListDataDto getListDataDto() {
-        ListDataDto dataDto = new ListDataDto();
-        dataDto.setValues(Map.of("objectName", "Test doc"));
-        return dataDto;
     }
 }

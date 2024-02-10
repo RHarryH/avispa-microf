@@ -12,6 +12,7 @@
           "minItems": 1,
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
               "location": {
                 "type": "string",

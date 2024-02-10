@@ -20,9 +20,10 @@ package com.avispa.ecm.model.ui.widget.list;
 
 import com.avispa.ecm.model.configuration.EcmConfig;
 import com.avispa.ecm.model.type.Type;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import lombok.Getter;
@@ -43,9 +44,10 @@ public class ListWidget extends EcmConfig {
     private String caption;
     private String emptyMessage;
 
-    @ElementCollection
-    @OrderColumn
-    private List<String> properties;
+    @OrderColumn(nullable = false)
+    @Column(nullable = false)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.PERSIST)
+    private List<ListWidgetProperty> properties;
 
     @Column(nullable = false, columnDefinition = "integer default 10")
     private int itemsPerPage;
