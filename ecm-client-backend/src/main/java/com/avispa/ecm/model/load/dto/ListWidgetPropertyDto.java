@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,21 +19,15 @@
 package com.avispa.ecm.model.load.dto;
 
 import com.avispa.ecm.model.configuration.load.dto.EcmConfigDto;
+import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @author Rafał Hiszpański
  */
 @Data
-public class ListWidgetDto implements EcmConfigDto {
+@Builder
+public class ListWidgetPropertyDto implements EcmConfigDto {
+    private String label;
     private String name;
-
-    private String type;
-    private String caption;
-    private String emptyMessage;
-    private List<ListWidgetPropertyDto> properties;
-
-    private int itemsPerPage = 10;
 }

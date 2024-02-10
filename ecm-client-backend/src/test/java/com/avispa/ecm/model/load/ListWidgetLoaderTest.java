@@ -20,9 +20,11 @@ package com.avispa.ecm.model.load;
 
 import com.avispa.ecm.model.document.Document;
 import com.avispa.ecm.model.load.dto.ListWidgetDto;
+import com.avispa.ecm.model.load.dto.ListWidgetPropertyDto;
 import com.avispa.ecm.model.type.Type;
 import com.avispa.ecm.model.type.TypeService;
 import com.avispa.ecm.model.ui.widget.list.ListWidget;
+import com.avispa.ecm.model.ui.widget.list.ListWidgetProperty;
 import com.avispa.ecm.model.ui.widget.list.ListWidgetRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -61,12 +63,20 @@ class ListWidgetLoaderTest {
     @Test
     void givenListWidgetDtoAndContent_whenLoad_thenProperMethodsInvoked() {
         final String configName = "Default list widget config";
+
+        var properties = List.of(ListWidgetPropertyDto.builder()
+                        .name("A")
+                        .build(),
+                ListWidgetPropertyDto.builder()
+                        .name("B")
+                        .build());
+
         ListWidgetDto dto = new ListWidgetDto();
         dto.setName(configName);
         dto.setCaption("Caption");
         dto.setType("Document");
         dto.setEmptyMessage("Empty message");
-        dto.setProperties(List.of("A", "B"));
+        dto.setProperties(properties);
 
         Type type = new Type();
         type.setObjectName("Document");
@@ -84,6 +94,14 @@ class ListWidgetLoaderTest {
         assertEquals("Caption", listWidget.getCaption());
         assertEquals(type, listWidget.getType());
         assertEquals("Empty message", listWidget.getEmptyMessage());
-        assertEquals(List.of("A", "B"), listWidget.getProperties());
+
+        var expectedProperties = List.of(ListWidgetProperty.builder()
+                        .name("A")
+                        .build(),
+                ListWidgetProperty.builder()
+                        .name("B")
+                        .build());
+
+        assertEquals(expectedProperties, listWidget.getProperties());
     }
 }

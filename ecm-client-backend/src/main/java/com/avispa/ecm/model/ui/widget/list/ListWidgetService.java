@@ -34,6 +34,7 @@ import com.avispa.ecm.util.reflect.EcmPropertyUtils;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,8 +69,8 @@ public class ListWidgetService {
         listWidgetDto.setPagesNum(pagesNumber);
 
         DtoObject dtoObject = dtoService.getDtoObjectFromType(type);
-        List<String> filteredProperties = listWidget.getProperties().stream()
-                .filter(property -> null != EcmPropertyUtils.getField(dtoObject.getDtoClass(), property)) // exclude fields not present in the object
+        List<ListWidgetProperty> filteredProperties = listWidget.getProperties().stream()
+                .filter(property -> null != EcmPropertyUtils.getField(dtoObject.getDtoClass(), property.getName())) // exclude fields not present in the object
                 .toList();
 
         listWidgetDto.setHeaders(getHeader(dtoObject, filteredProperties));
@@ -102,9 +103,15 @@ public class ListWidgetService {
      * @param properties list of properties which should be visible on the list widget
      * @return
      */
-    private List<String> getHeader(DtoObject dtoObject, List<String> properties) {
+    private List<String> getHeader(DtoObject dtoObject, List<ListWidgetProperty> properties) {
         return properties.stream()
-                .map(property -> displayService.getDisplayValueFromAnnotation(dtoObject.getDtoClass(), property))
+                .map(property -> {
+                    if (StringUtils.isNotEmpty(property.getLabel())) {
+                        return property.getLabel();
+                    } else {
+                        return displayService.getDisplayValueFromAnnotation(dtoObject.getDtoClass(), property.getName());
+                    }
+                })
                 .toList();
     }
 
@@ -114,11 +121,13 @@ public class ListWidgetService {
      * @param properties
      * @return
      */
-    private List<ListDataDto> getData(Type type, int pageNumber, int itemsPerPage, List<String> properties) {
+    private List<ListDataDto> getData(Type type, int pageNumber, int itemsPerPage, List<ListWidgetProperty> properties) {
         List<Dto> dtoList = findAll(type.getEntityClass(), pageNumber, itemsPerPage);
 
+        var propertiesNames = properties.stream().map(ListWidgetProperty::getName).toList();
+
         return dtoList.stream()
-                .map(dto -> listDataDtoMapper.convert(dto, properties))
+                .map(dto -> listDataDtoMapper.convert(dto, propertiesNames))
                 .toList();
     }
 
