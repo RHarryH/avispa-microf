@@ -6,12 +6,37 @@ DECLARE
 BEGIN
     INSERT INTO ecm_entity (id, object_name, version) VALUES (InvoiceTypeId, 'Invoice', 0);
     INSERT INTO ecm_object (id, creation_date, modification_date) VALUES (InvoiceTypeId, current_timestamp, current_timestamp);
-    INSERT INTO "type" (id, class_name) VALUES (InvoiceTypeId, 'com.avispa.microf.model.invoice.Invoice');
+    INSERT INTO "type" (id, class_name) VALUES (InvoiceTypeId, 'com.avispa.microf.model.invoice.type.vat.Invoice');
 
     INSERT INTO ecm_entity (id, object_name, version) VALUES (InvoiceDtoTypeId, 'Invoice DTO', 0);
     INSERT INTO ecm_object (id, creation_date, modification_date) VALUES (InvoiceDtoTypeId, current_timestamp, current_timestamp);
-    INSERT INTO dto_object (id, type_id, dto_name) VALUES (InvoiceDtoTypeId, InvoiceTypeId, 'com.avispa.microf.model.invoice.InvoiceDto');
-END $$;
+    INSERT INTO dto_object (id, type_id, dto_name)
+    VALUES (InvoiceDtoTypeId, InvoiceTypeId, 'com.avispa.microf.model.invoice.type.vat.InvoiceDto');
+END
+$$;
+
+-- add Correction Invoice type & Correction Invoice DTO type
+DO
+$$
+    DECLARE
+        CorrectionInvoiceTypeId    UUID := gen_random_uuid();
+        CorrectionInvoiceDtoTypeId UUID := gen_random_uuid();
+    BEGIN
+        INSERT INTO ecm_entity (id, object_name, version) VALUES (CorrectionInvoiceTypeId, 'Correction Invoice', 0);
+        INSERT INTO ecm_object (id, creation_date, modification_date)
+        VALUES (CorrectionInvoiceTypeId, current_timestamp, current_timestamp);
+        INSERT INTO "type" (id, class_name)
+        VALUES (CorrectionInvoiceTypeId, 'com.avispa.microf.model.invoice.type.correction.CorrectionInvoice');
+
+        INSERT INTO ecm_entity (id, object_name, version)
+        VALUES (CorrectionInvoiceDtoTypeId, 'Correction Invoice DTO', 0);
+        INSERT INTO ecm_object (id, creation_date, modification_date)
+        VALUES (CorrectionInvoiceDtoTypeId, current_timestamp, current_timestamp);
+        INSERT INTO dto_object (id, type_id, dto_name)
+        VALUES (CorrectionInvoiceDtoTypeId, CorrectionInvoiceTypeId,
+                'com.avispa.microf.model.invoice.type.correction.CorrectionInvoiceDto');
+    END
+$$;
 
 -- add Position type & Position DTO type
 DO $$

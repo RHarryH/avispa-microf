@@ -18,11 +18,11 @@
 
 package com.avispa.microf.model.invoice.service.file.data;
 
-import com.avispa.microf.model.invoice.Invoice;
-import com.avispa.microf.model.invoice.payment.PaymentDto;
-import com.avispa.microf.model.invoice.position.PositionDto;
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
 import com.avispa.ecm.model.configuration.dictionary.DictionaryService;
+import com.avispa.microf.model.invoice.payment.PaymentDto;
+import com.avispa.microf.model.invoice.position.PositionDto;
+import com.avispa.microf.model.invoice.type.vat.Invoice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

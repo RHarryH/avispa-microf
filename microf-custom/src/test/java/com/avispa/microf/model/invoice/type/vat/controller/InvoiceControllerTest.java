@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,12 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.invoice.controller;
+package com.avispa.microf.model.invoice.type.vat.controller;
 
 import com.avispa.ecm.model.base.dto.DtoService;
 import com.avispa.ecm.model.content.ContentDto;
-import com.avispa.microf.model.invoice.service.InvoiceService;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
+import com.avispa.microf.model.invoice.type.vat.service.InvoiceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

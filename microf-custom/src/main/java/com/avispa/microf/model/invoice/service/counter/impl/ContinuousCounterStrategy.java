@@ -18,9 +18,12 @@
 
 package com.avispa.microf.model.invoice.service.counter.impl;
 
-import com.avispa.microf.model.invoice.Invoice;
-import com.avispa.microf.model.invoice.InvoiceRepository;
+import com.avispa.microf.model.invoice.BaseInvoice;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -29,10 +32,22 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class ContinuousCounterStrategy implements CounterStrategy {
-    private final InvoiceRepository invoiceRepository;
+    private final EntityManager entityManager;
 
     @Override
-    public int getNextSerialNumber(Invoice invoice) {
-        return invoiceRepository.findMaxSerialNumber() + 1;
+    public int getNextSerialNumber(BaseInvoice invoice) {
+        return getMax() + 1;
+    }
+
+    private Integer getMax() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<BaseInvoice> queryRoot = criteriaQuery.from(BaseInvoice.class);
+
+        criteriaQuery = criteriaQuery.select(criteriaBuilder.coalesce(criteriaBuilder.max(queryRoot.get("serialNumber")), 0));
+
+        var query = entityManager.createQuery(criteriaQuery);
+
+        return query.getSingleResult();
     }
 }

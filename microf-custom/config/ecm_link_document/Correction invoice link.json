@@ -1,0 +1,9 @@
+{
+  "linkDocument": {
+    "name": "Correction invoice link",
+    "linkProperty": "originalInvoice",
+    "type": "Invoice",
+    "title": "Invoice to correct",
+    "message": "Provide invoice to correct"
+  }
+}

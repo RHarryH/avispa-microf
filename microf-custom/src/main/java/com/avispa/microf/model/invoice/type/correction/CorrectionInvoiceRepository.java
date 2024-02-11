@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,14 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.invoice.service.counter;
+package com.avispa.microf.model.invoice.type.correction;
 
-import com.avispa.microf.model.invoice.BaseInvoice;
+import com.avispa.ecm.model.EcmObjectRepository;
+import org.springframework.stereotype.Repository;
 
-/**
- * Handles invoice serial number auto incrementation
- * @author Rafał Hiszpański
- */
-public interface CounterStrategy {
-    int getNextSerialNumber(BaseInvoice invoice);
+@Repository
+public interface CorrectionInvoiceRepository extends EcmObjectRepository<CorrectionInvoice> {
 }

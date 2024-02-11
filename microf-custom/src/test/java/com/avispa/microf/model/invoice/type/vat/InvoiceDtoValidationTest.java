@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,9 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.invoice;
+package com.avispa.microf.model.invoice.type.vat;
 
-import com.avispa.microf.model.invoice.InvoiceDto;
 import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import org.apache.commons.lang3.RandomStringUtils;

@@ -5,9 +5,15 @@
     "caption": "Bank Accounts",
     "emptyMessage": "No Bank Accounts Available",
     "properties": [
-      "serialNumber",
-      "bankName",
-      "accountNumber"
+      {
+        "name": "serialNumber"
+      },
+      {
+        "name": "bankName"
+      },
+      {
+        "name": "accountNumber"
+      }
     ]
   }
 }

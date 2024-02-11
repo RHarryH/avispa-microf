@@ -28,6 +28,7 @@ import com.avispa.microf.model.invoice.service.file.data.VatRowData;
 import com.avispa.microf.model.invoice.service.file.variable.Variable;
 import com.avispa.microf.model.invoice.service.file.variable.VariableNameGenerator;
 import com.avispa.microf.model.invoice.service.replacer.ITemplateReplacer;
+import com.avispa.microf.model.invoice.service.replacer.InvoiceOdtReplacer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,10 +37,15 @@ import java.util.Map;
 /**
  * @author Rafał Hiszpański
  */
-public abstract class AbstractInvoiceFile implements IInvoiceFile {
+public class InvoiceFile extends OdfInvoiceFile {
     private static final String TOTAL_TEXT = "Ogółem";
 
     protected ITemplateReplacer replacer;
+
+    public InvoiceFile(String templatePath) {
+        super(templatePath);
+        this.replacer = new InvoiceOdtReplacer(this.invoice);
+    }
 
     @Override
     public void generate(InvoiceData invoiceData, String issuerName) {

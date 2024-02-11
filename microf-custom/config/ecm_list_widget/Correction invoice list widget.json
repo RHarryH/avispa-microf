@@ -1,0 +1,36 @@
+{
+  "listWidget": {
+    "name": "Correction invoice list widget",
+    "type": "Correction invoice",
+    "caption": "Correction Invoices",
+    "emptyMessage": "No Correction Invoices Available",
+    "properties": [
+      {
+        "name": "objectName"
+      },
+      {
+        "label": "Original Invoice Name",
+        "name": "originalInvoice.objectName"
+      },
+      {
+        "name": "issueDate"
+      },
+      {
+        "label": "Original Service Date",
+        "name": "originalInvoice.serviceDate"
+      },
+      {
+        "name": "originalInvoice.payment.method"
+      },
+      {
+        "name": "correctionReason"
+      },
+      {
+        "name": "comment"
+      },
+      {
+        "name": "pdfRenditionAvailable"
+      }
+    ]
+  }
+}

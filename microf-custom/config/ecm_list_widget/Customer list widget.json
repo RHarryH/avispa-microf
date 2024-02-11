@@ -5,11 +5,21 @@
     "caption": "Customers",
     "emptyMessage": "No Customers Available",
     "properties": [
-      "objectName",
-      "type",
-      "vatIdentificationNumber",
-      "email",
-      "address"
+      {
+        "name": "objectName"
+      },
+      {
+        "name": "type"
+      },
+      {
+        "name": "vatIdentificationNumber"
+      },
+      {
+        "name": "email"
+      },
+      {
+        "name": "address"
+      }
     ]
   }
 }

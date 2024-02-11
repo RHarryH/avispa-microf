@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,11 +20,9 @@ package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
-import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,11 +36,8 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-public class InvoiceDto implements Dto {
-    public static final String VM_SELLER_NOT_NULL = "Seller cannot be null";
-    public static final String VM_BUYER_NOT_NULL = "Buyer cannot be null";
+public abstract class BaseInvoiceDto implements Dto {
     public static final String VM_POSITIONS_NOT_EMPTY = "Positions list cannot be empty";
-    public static final String VM_PAYMENT_NOT_EMPTY = "Payment cannot be empty";
     public static final String VM_COMMENTS_NO_LONGER = "The comments cannot be longer than 200 characters";
 
     private UUID id;
@@ -53,25 +48,11 @@ public class InvoiceDto implements Dto {
     @DisplayName("Serial Number")
     private String serialNumber;
 
-    @NotNull(message = VM_SELLER_NOT_NULL)
-    @DisplayName("Seller")
-    private String seller;
-
-    @NotNull(message = VM_BUYER_NOT_NULL)
-    @DisplayName("Buyer")
-    private String buyer;
-
-    @DisplayName("Issue Name")
+    @DisplayName("Issue Date")
     private String issueDate;
-
-    @DisplayName("Service Date")
-    private String serviceDate;
 
     @NotEmpty(message = VM_POSITIONS_NOT_EMPTY)
     private List<@Valid PositionDto> positions = new ArrayList<>(1);
-
-    @NotNull(message = VM_PAYMENT_NOT_EMPTY)
-    private @Valid PaymentDto payment;
 
     @Size(max = 200, message = VM_COMMENTS_NO_LONGER)
     @DisplayName("Comments")
@@ -79,8 +60,7 @@ public class InvoiceDto implements Dto {
 
     private boolean pdfRenditionAvailable;
 
-    public InvoiceDto() {
+    protected BaseInvoiceDto() {
         this.positions.add(new PositionDto());
-        this.payment = new PaymentDto();
     }
 }

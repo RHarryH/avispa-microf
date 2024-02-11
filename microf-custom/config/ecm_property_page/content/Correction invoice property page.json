@@ -1,0 +1,180 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "label",
+        "expression": "Properties of $value('objectName') correction invoice"
+      },
+      {
+        "type": "separator"
+      },
+      {
+        "type": "text",
+        "label": "Original invoice",
+        "property": "originalInvoice.objectName"
+      },
+      {
+        "type": "columns",
+        "controls": [
+          {
+            "type": "combo",
+            "label": "Seller",
+            "property": "originalInvoice.seller",
+            "loadSettings": {
+              "type": "Customer"
+            }
+          },
+          {
+            "type": "combo",
+            "label": "Buyer",
+            "property": "originalInvoice.buyer",
+            "loadSettings": {
+              "type": "Customer"
+            }
+          }
+        ]
+      },
+      {
+        "type": "date",
+        "label": "Issue date",
+        "property": "issueDate"
+      },
+      {
+        "type": "date",
+        "label": "Service date",
+        "property": "originalInvoice.serviceDate"
+      },
+      {
+        "type": "table",
+        "label": "Positions",
+        "property": "positions",
+        "controls": [
+          {
+            "type": "text",
+            "label": "Name",
+            "property": "objectName"
+          },
+          {
+            "type": "text",
+            "label": "Quantity",
+            "property": "quantity"
+          },
+          {
+            "type": "combo",
+            "label": "Unit",
+            "property": "unit",
+            "loadSettings": {
+              "dictionary": "Unit",
+              "sortByLabel": true
+            }
+          },
+          {
+            "type": "money",
+            "currency": "PLN",
+            "label": "Unit price",
+            "property": "unitPrice"
+          },
+          {
+            "type": "text",
+            "label": "Discount",
+            "property": "discount"
+          },
+          {
+            "type": "combo",
+            "label": "VAT Rate",
+            "loadSettings": {
+              "dictionary": "VatRate"
+            },
+            "property": "vatRate"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "name": "Original payment",
+        "controls": [
+          {
+            "type": "columns",
+            "controls": [
+              {
+                "type": "combo",
+                "label": "Method",
+                "property": "originalInvoice.payment.method",
+                "loadSettings": {
+                  "sortByLabel": true
+                }
+              },
+              {
+                "type": "number",
+                "label": "Deadline (days)",
+                "property": "originalInvoice.payment.deadline"
+              }
+            ]
+          },
+          {
+            "type": "columns",
+            "controls": [
+              {
+                "type": "money",
+                "label": "Paid amount",
+                "currency": "PLN",
+                "property": "originalInvoice.payment.paidAmount"
+              },
+              {
+                "type": "date",
+                "label": "Paid amount date",
+                "property": "originalInvoice.payment.paidAmountDate",
+                "constraints": {
+                  "visibility": {
+                    "conditions": {
+                      "payment.paidAmount": {
+                        "$gt": 0
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "combo",
+            "label": "Bank account",
+            "property": "originalInvoice.payment.bankAccount",
+            "loadSettings": {
+              "type": "Bank account"
+            },
+            "constraints": {
+              "visibility": {
+                "conditions": {
+                  "payment.method": {
+                    "$ne": "CASH"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "label": "Correction reason",
+        "property": "correctionReason"
+      },
+      {
+        "type": "textarea",
+        "label": "Comments",
+        "property": "comments"
+      },
+      {
+        "type": "text",
+        "label": "Creation date",
+        "property": "creationDate"
+      },
+      {
+        "type": "text",
+        "label": "Modification date",
+        "property": "modificationDate"
+      }
+    ]
+  }
+}

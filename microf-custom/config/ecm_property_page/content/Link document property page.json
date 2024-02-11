@@ -3,7 +3,7 @@
     "controls": [
       {
         "type": "label",
-        "expression": "Provide invoice to clone"
+        "expression": "$value('linkDocument.message')"
       },
       {
         "type": "separator"
@@ -15,10 +15,10 @@
       },
       {
         "type": "combo",
-        "label": "Object to clone",
+        "label": "Object to link",
         "property": "sourceId",
         "loadSettings": {
-          "type": "$value('typeName')",
+          "type": "$value('linkDocument.type')",
           "qualification": {
             "objectName": {
               "$like": "%$value('filter')%"

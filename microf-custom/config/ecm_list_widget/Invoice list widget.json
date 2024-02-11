@@ -5,12 +5,24 @@
     "caption": "Invoices",
     "emptyMessage": "No Invoices Available",
     "properties": [
-      "objectName",
-      "issueDate",
-      "serviceDate",
-      "PaymentMethod",
-      "comments",
-      "pdfRenditionAvailable"
+      {
+        "name": "objectName"
+      },
+      {
+        "name": "issueDate"
+      },
+      {
+        "name": "serviceDate"
+      },
+      {
+        "name": "payment.method"
+      },
+      {
+        "name": "comment"
+      },
+      {
+        "name": "pdfRenditionAvailable"
+      }
     ]
   }
 }

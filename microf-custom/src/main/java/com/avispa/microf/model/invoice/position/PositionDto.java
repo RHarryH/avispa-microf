@@ -20,6 +20,7 @@ package com.avispa.microf.model.invoice.position;
 
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
+import com.avispa.ecm.util.BigDecimalUtils;
 import com.avispa.ecm.util.json.MoneyDeserializer;
 import com.avispa.ecm.util.json.MoneySerializer;
 import com.avispa.ecm.util.json.PercentDeserializer;
@@ -36,6 +37,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -48,6 +50,7 @@ import java.util.UUID;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class PositionDto implements Dto {
     public static final String VM_POSITION_NOT_EMPTY_NOR_BLANK = "Position name cannot be empty or blank";
     public static final String VM_POSITION_NAME_NO_LONGER = "Position name cannot be longer than 50 characters";
@@ -93,4 +96,18 @@ public class PositionDto implements Dto {
     @NotNull(message = VM_VAT_RATE_NOT_NULL)
     @Dictionary(name = "VatRate")
     private String vatRate;
+
+    /**
+     * Copy constructor
+     *
+     * @param positionDto
+     */
+    public PositionDto(PositionDto positionDto) {
+        this.objectName = positionDto.objectName;
+        this.quantity = BigDecimalUtils.clone(positionDto.quantity);
+        this.unit = positionDto.unit;
+        this.unitPrice = BigDecimalUtils.clone(positionDto.unitPrice);
+        this.discount = BigDecimalUtils.clone(positionDto.discount);
+        this.vatRate = positionDto.vatRate;
+    }
 }

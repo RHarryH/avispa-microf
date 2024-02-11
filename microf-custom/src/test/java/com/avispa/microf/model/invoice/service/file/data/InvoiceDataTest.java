@@ -18,14 +18,13 @@
 
 package com.avispa.microf.model.invoice.service.file.data;
 
-import com.avispa.microf.model.invoice.payment.Payment;
-import com.avispa.microf.model.invoice.position.Position;
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.customer.address.Address;
-import com.avispa.microf.model.invoice.Invoice;
-import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
+import com.avispa.microf.model.invoice.payment.Payment;
+import com.avispa.microf.model.invoice.position.Position;
+import com.avispa.microf.model.invoice.type.vat.Invoice;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
