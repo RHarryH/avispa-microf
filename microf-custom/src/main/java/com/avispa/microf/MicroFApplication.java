@@ -19,10 +19,10 @@
 package com.avispa.microf;
 
 import com.avispa.ecm.util.Version;
-import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.ContinuousCounterStrategy;
 import com.avispa.microf.model.invoice.service.counter.impl.MonthCounterStrategy;
+import jakarta.persistence.EntityManager;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,11 +45,11 @@ public class MicroFApplication {
 
     // Optionally can be realized with Spring interface Condition and @Conditional annotation
     @Bean
-    public CounterStrategy counterStrategy(@Autowired InvoiceRepository invoiceRepository) {
+    public CounterStrategy counterStrategy(@Autowired EntityManager entityManager) {
         if(counterStrategyName.equals("continuousCounterStrategy")) {
-            return new ContinuousCounterStrategy(invoiceRepository);
+            return new ContinuousCounterStrategy(entityManager);
         } else if(counterStrategyName.equals("monthCounterStrategy")) {
-            return new MonthCounterStrategy(invoiceRepository);
+            return new MonthCounterStrategy(entityManager);
         } else {
             throw new IllegalStateException(String.format("Unknown invoice counter strategy %s", counterStrategyName));
         }

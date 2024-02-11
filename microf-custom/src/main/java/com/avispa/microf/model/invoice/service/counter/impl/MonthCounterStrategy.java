@@ -18,9 +18,12 @@
 
 package com.avispa.microf.model.invoice.service.counter.impl;
 
-import com.avispa.microf.model.invoice.Invoice;
-import com.avispa.microf.model.invoice.InvoiceRepository;
+import com.avispa.microf.model.invoice.BaseInvoice;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -29,10 +32,24 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class MonthCounterStrategy implements CounterStrategy {
-    private final InvoiceRepository invoiceRepository;
+    private final EntityManager entityManager;
 
     @Override
-    public int getNextSerialNumber(Invoice invoice) {
-        return invoiceRepository.findMaxSerialNumberByMonth(invoice.getIssueDate().getMonthValue()) + 1;
+    public int getNextSerialNumber(BaseInvoice invoice) {
+        return getMax(invoice.getClass(), invoice.getIssueDate().getMonthValue()) + 1;
+    }
+
+    private Integer getMax(Class<? extends BaseInvoice> clazz, int month) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<? extends BaseInvoice> queryRoot = criteriaQuery.from(clazz);
+
+        criteriaQuery = criteriaQuery.select(criteriaBuilder.coalesce(criteriaBuilder.max(queryRoot.get("serialNumber")), 0));
+
+        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(criteriaBuilder.function("month", Integer.class, queryRoot.get("issueDate")), month));
+
+        var query = entityManager.createQuery(criteriaQuery);
+
+        return query.getSingleResult();
     }
 }

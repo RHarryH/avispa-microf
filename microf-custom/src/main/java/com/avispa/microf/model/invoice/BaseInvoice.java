@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,18 +18,35 @@
 
 package com.avispa.microf.model.invoice;
 
-import com.avispa.ecm.model.EcmObjectRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import com.avispa.ecm.model.document.Document;
+import com.avispa.microf.model.invoice.position.Position;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author Rafał Hiszpański
  */
-@Repository
-public interface InvoiceRepository extends EcmObjectRepository<Invoice> {
-    @Query("select coalesce(max(i.serialNumber), 0) from Invoice i")
-    int findMaxSerialNumber();
+@MappedSuperclass
+@Getter
+@Setter
+public class BaseInvoice extends Document {
+    @Column(name = "serial_number")
+    private Integer serialNumber;
 
-    @Query("select coalesce(max(i.serialNumber), 0) from Invoice i where month(i.issueDate) = ?1")
-    int findMaxSerialNumberByMonth(int month);
+    private LocalDate issueDate;
+
+    @OrderColumn
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Position> positions;
+
+    private String comments;
 }

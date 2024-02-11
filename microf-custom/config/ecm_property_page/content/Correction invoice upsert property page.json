@@ -1,0 +1,195 @@
+{
+  "propertyPage": {
+    "controls": [
+      {
+        "type": "text",
+        "label": "Original invoice",
+        "property": "originalInvoice.objectName",
+        "readonly": true
+      },
+      {
+        "type": "columns",
+        "controls": [
+          {
+            "type": "combo",
+            "label": "Seller",
+            "property": "originalInvoice.seller",
+            "loadSettings": {
+              "type": "Customer"
+            },
+            "readonly": true
+          },
+          {
+            "type": "combo",
+            "label": "Buyer",
+            "property": "originalInvoice.buyer",
+            "loadSettings": {
+              "type": "Customer"
+            },
+            "readonly": true
+          }
+        ]
+      },
+      {
+        "type": "date",
+        "label": "Issue date",
+        "property": "issueDate",
+        "required": true
+      },
+      {
+        "type": "date",
+        "label": "Service date",
+        "property": "originalInvoice.serviceDate",
+        "readonly": true
+      },
+      {
+        "type": "table",
+        "label": "Positions",
+        "fixed": true,
+        "property": "positions",
+        "controls": [
+          {
+            "type": "text",
+            "label": "Name",
+            "property": "objectName",
+            "maxLength": 50
+          },
+          {
+            "type": "number",
+            "label": "Quantity",
+            "property": "quantity",
+            "min": 0.001,
+            "max": 10000,
+            "step": 0.001
+          },
+          {
+            "type": "combo",
+            "label": "Unit",
+            "property": "unit",
+            "loadSettings": {
+              "sortByLabel": true
+            }
+          },
+          {
+            "type": "money",
+            "currency": "PLN",
+            "label": "Unit price",
+            "property": "unitPrice",
+            "customValidation": {
+              "function": "greaterThanZero",
+              "message": "Unit price must be greater than zero"
+            }
+          },
+          {
+            "type": "number",
+            "label": "Discount",
+            "property": "discount",
+            "min": 0,
+            "max": 100,
+            "step": 0.01
+          },
+          {
+            "type": "combo",
+            "label": "VAT Rate",
+            "property": "vatRate"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "name": "Original payment",
+        "controls": [
+          {
+            "type": "columns",
+            "controls": [
+              {
+                "type": "combo",
+                "label": "Method",
+                "property": "originalInvoice.payment.method",
+                "readonly": true
+              },
+              {
+                "type": "number",
+                "label": "Deadline (days)",
+                "property": "originalInvoice.payment.deadline",
+                "readonly": true
+              }
+            ]
+          },
+          {
+            "type": "columns",
+            "controls": [
+              {
+                "type": "money",
+                "label": "Paid amount",
+                "currency": "PLN",
+                "property": "originalInvoice.payment.paidAmount",
+                "readonly": true
+              },
+              {
+                "type": "date",
+                "label": "Paid amount date",
+                "property": "originalInvoice.payment.paidAmountDate",
+                "readonly": true,
+                "constraints": {
+                  "visibility": {
+                    "conditions": {
+                      "payment.paidAmount": {
+                        "$gt": 0
+                      }
+                    }
+                  },
+                  "requirement": {
+                    "conditions": {
+                      "payment.paidAmount": {
+                        "$gt": 0
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "combo",
+            "label": "Bank account",
+            "property": "originalInvoice.payment.bankAccount",
+            "loadSettings": {
+              "type": "Bank account"
+            },
+            "readonly": true,
+            "constraints": {
+              "visibility": {
+                "conditions": {
+                  "payment.method": {
+                    "$ne": "CASH"
+                  }
+                }
+              },
+              "requirement": {
+                "conditions": {
+                  "payment.method": {
+                    "$ne": "CASH"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "label": "Correction reason",
+        "property": "correctionReason",
+        "maxLength": 200,
+        "required": true
+      },
+      {
+        "type": "textarea",
+        "label": "Comments",
+        "property": "comments",
+        "maxLength": 200
+      }
+    ]
+  }
+}

@@ -20,9 +20,8 @@ package com.avispa.microf.model.invoice.service.file.data;
 
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
 import com.avispa.microf.model.bankaccount.BankAccount;
-import com.avispa.microf.model.invoice.Invoice;
 import com.avispa.microf.model.invoice.payment.Payment;
-import com.avispa.microf.model.invoice.service.file.data.PaymentData;
+import com.avispa.microf.model.invoice.type.vat.Invoice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

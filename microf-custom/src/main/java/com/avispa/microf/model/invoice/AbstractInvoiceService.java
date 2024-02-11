@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.invoice.service;
+package com.avispa.microf.model.invoice;
 
+import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.base.BaseEcmService;
 import com.avispa.ecm.model.configuration.callable.autolink.Autolink;
 import com.avispa.ecm.model.configuration.callable.autoname.Autoname;
@@ -32,19 +33,12 @@ import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import com.avispa.ecm.util.transaction.TransactionUtils;
-import com.avispa.microf.model.invoice.Invoice;
-import com.avispa.microf.model.invoice.InvoiceDto;
-import com.avispa.microf.model.invoice.InvoiceMapper;
-import com.avispa.microf.model.invoice.InvoiceRepository;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
 import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
-import com.avispa.microf.model.invoice.service.file.OdfInvoiceFile;
 import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
-import com.avispa.microf.model.invoice.service.file.data.InvoiceDataConverter;
+import com.avispa.microf.model.invoice.type.vat.Invoice;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -55,11 +49,8 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
-@Component
 @Slf4j
-public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceRepository, InvoiceMapper> {
-    private final InvoiceDataConverter invoiceDataConverter;
-
+public abstract class AbstractInvoiceService<I extends BaseInvoice, D extends BaseInvoiceDto, R extends EcmObjectRepository<I>, M extends AbstractInvoiceMapper<I, D>> extends BaseEcmService<I, D, R, M> {
     private final ContentService contentService;
     private final ContentMapper contentMapper;
 
@@ -72,17 +63,14 @@ public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceR
     @Value("${microf.issuer-name:John Doe}")
     private String issuerName;
 
-    @Autowired
-    public InvoiceService(InvoiceRepository invoiceRepository, InvoiceMapper invoiceMapper,
-                          InvoiceDataConverter invoiceDataConverter,
-                          ContentService contentService,
-                          ContentMapper contentMapper,
-                          RenditionService renditionService,
-                          FileStore fileStore,
-                          CounterStrategy counterStrategy,
-                          ContextService contextService) {
-        super(invoiceRepository, invoiceMapper);
-        this.invoiceDataConverter = invoiceDataConverter;
+    protected AbstractInvoiceService(R repository, M invoiceMapper,
+                                     ContentService contentService,
+                                     ContentMapper contentMapper,
+                                     RenditionService renditionService,
+                                     FileStore fileStore,
+                                     CounterStrategy counterStrategy,
+                                     ContextService contextService) {
+        super(repository, invoiceMapper);
         this.contentService = contentService;
         this.contentMapper = contentMapper;
         this.renditionService = renditionService;
@@ -92,7 +80,7 @@ public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceR
     }
 
     @Override
-    protected void add(Invoice invoice) {
+    protected void add(I invoice) {
         invoice.setSerialNumber(counterStrategy.getNextSerialNumber(invoice));
 
         contextService.applyMatchingConfigurations(invoice, List.of(Autoname.class, Autolink.class));
@@ -101,14 +89,14 @@ public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceR
     }
 
     @Override
-    protected void update(Invoice invoice) {
+    protected void update(I invoice) {
         // delete old content and create new one
         contentService.deleteByRelatedEntity(invoice);
         generateContent(invoice);
     }
 
-    private void generateContent(Invoice invoice) {
-        InvoiceData invoiceData = invoiceDataConverter.convert(invoice);
+    private void generateContent(I invoice) {
+        InvoiceData invoiceData = getInvoiceData(invoice);
 
         Template template = contextService.getConfiguration(invoice, Template.class).
                 orElseThrow(() -> new EcmException("Document template for '" + invoice.getId() + "' document couldn't be found"));
@@ -118,7 +106,7 @@ public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceR
             throw new EcmException("Template " + template.getObjectName() + " does not have any content file assigned");
         }
 
-        try (IInvoiceFile invoiceFile = new OdfInvoiceFile(templateContent.getFileStorePath())) {
+        try (IInvoiceFile invoiceFile = getInvoiceFile(templateContent.getFileStorePath())) {
             invoiceFile.generate(invoiceData, issuerName);
 
             // save file in the file store and create content object
@@ -141,8 +129,12 @@ public class InvoiceService extends BaseEcmService<Invoice, InvoiceDto, InvoiceR
     }
 
     @Override
-    public Invoice findById(UUID id) {
+    public I findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Invoice.class));
     }
+
+    protected abstract InvoiceData getInvoiceData(I invoice);
+
+    protected abstract IInvoiceFile getInvoiceFile(String templatePath);
 }

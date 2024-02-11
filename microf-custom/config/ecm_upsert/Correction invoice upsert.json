@@ -1,0 +1,6 @@
+{
+  "upsert": {
+    "name": "Correction invoice upsert",
+    "propertyPage": "Correction invoice upsert property page"
+  }
+}

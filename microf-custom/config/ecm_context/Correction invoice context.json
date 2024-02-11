@@ -1,0 +1,15 @@
+{
+  "context": {
+    "name": "Correction invoice context",
+    "type": "Correction Invoice",
+    "importance": 2,
+    "configNames": [
+      "Correction invoice autonaming",
+      "Invoice autolinking",
+      "VAT Correction invoice template",
+      "Correction invoice property page",
+      "Correction invoice upsert",
+      "Correction invoice link"
+    ]
+  }
+}

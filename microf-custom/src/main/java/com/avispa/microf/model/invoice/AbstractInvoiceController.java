@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,19 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.invoice.controller;
+package com.avispa.microf.model.invoice;
 
+import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.ecm.model.base.controller.BaseSimpleEcmController;
 import com.avispa.ecm.model.content.ContentDto;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
-import com.avispa.microf.model.invoice.Invoice;
-import com.avispa.microf.model.invoice.InvoiceDto;
-import com.avispa.microf.model.invoice.service.InvoiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -38,8 +35,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,22 +45,19 @@ import java.util.UUID;
  * @author Rafał Hiszpański
  */
 @Slf4j
-@RestController
-@RequestMapping("/v1/invoice")
-@Tag(name = "Invoice", description = "Management of invoices - insertion, update, deletion and rendition generating")
-public class InvoiceController extends BaseSimpleEcmController<Invoice, InvoiceDto, InvoiceService> {
+public abstract class AbstractInvoiceController<I extends BaseInvoice, D extends BaseInvoiceDto, S extends AbstractInvoiceService<I, D, ? extends EcmObjectRepository<I>, ? extends AbstractInvoiceMapper<I, D>>> extends BaseSimpleEcmController<I, D, S> {
 
-    public InvoiceController(InvoiceService service) {
+    protected AbstractInvoiceController(S service) {
         super(service);
     }
 
     @Override
-    protected void add(InvoiceDto dto) {
+    protected void add(D dto) {
         service.add(dto);
     }
 
     @Override
-    protected void update(UUID id, InvoiceDto dto) {
+    protected void update(UUID id, D dto) {
         service.update(dto, id);
     }
 

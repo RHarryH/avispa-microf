@@ -2,13 +2,34 @@
 SET @InvoiceTypeId=random_uuid();
 insert into ecm_entity (id, object_name, version) values (@InvoiceTypeId, 'Invoice', 0);
 insert into ecm_object (id, creation_date, modification_date) values (@InvoiceTypeId, current_timestamp, current_timestamp);
-insert into type (id, class_name) values (@InvoiceTypeId, 'com.avispa.microf.model.invoice.Invoice');
+insert into type (id, class_name)
+values (@InvoiceTypeId, 'com.avispa.microf.model.invoice.type.vat.Invoice');
 
 -- add Invoice DTO type
 SET @InvoiceDtoTypeId=random_uuid();
 insert into ecm_entity (id, object_name, version) values (@InvoiceDtoTypeId, 'Invoice DTO', 0);
 insert into ecm_object (id, creation_date, modification_date) values (@InvoiceDtoTypeId, current_timestamp, current_timestamp);
-insert into dto_object (id, type_id, dto_name) values (@InvoiceDtoTypeId, @InvoiceTypeId, 'com.avispa.microf.model.invoice.InvoiceDto');
+insert into dto_object (id, type_id, dto_name)
+values (@InvoiceDtoTypeId, @InvoiceTypeId, 'com.avispa.microf.model.invoice.type.vat.InvoiceDto');
+
+-- add Correction Invoice type
+SET @CorrectionInvoiceTypeId=random_uuid();
+insert into ecm_entity (id, object_name, version)
+values (@CorrectionInvoiceTypeId, 'Correction Invoice', 0);
+insert into ecm_object (id, creation_date, modification_date)
+values (@CorrectionInvoiceTypeId, current_timestamp, current_timestamp);
+insert into type (id, class_name)
+values (@CorrectionInvoiceTypeId, 'com.avispa.microf.model.invoice.type.correction.CorrectionInvoice');
+
+-- add Correction Invoice DTO type
+SET @CorrectionInvoiceDtoTypeId=random_uuid();
+insert into ecm_entity (id, object_name, version)
+values (@CorrectionInvoiceDtoTypeId, 'Correction Invoice DTO', 0);
+insert into ecm_object (id, creation_date, modification_date)
+values (@CorrectionInvoiceDtoTypeId, current_timestamp, current_timestamp);
+insert into dto_object (id, type_id, dto_name)
+values (@CorrectionInvoiceDtoTypeId, @CorrectionInvoiceTypeId,
+        'com.avispa.microf.model.invoice.type.correction.CorrectionInvoiceDto');
 
 -- add Position type
 SET @PositionTypeId=random_uuid();

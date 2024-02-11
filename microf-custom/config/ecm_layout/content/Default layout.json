@@ -25,6 +25,11 @@
             "configuration":  "Invoice list widget"
           },
           {
+            "label": "Correction invoices",
+            "type": "list",
+            "configuration": "Correction invoice list widget"
+          },
+          {
             "label": "Customers",
             "type": "list",
             "configuration": "Customer list widget"
