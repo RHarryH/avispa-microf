@@ -43,7 +43,11 @@ class FormatUtilsTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"200,'200,00'", "2000.01,'2000,01'", "1.567,'1,57'"})
+    @CsvSource(value = {
+            "200,'200'",
+            "2000.01,'2000'",
+            "1.567,'2'" // halve up rounding, should be additionally handled by validation to avoid that
+    })
     void formatPercent(BigDecimal input, String expected) {
         assertThat(FormatUtils.formatPercent(input)).isEqualTo(expected);
     }
