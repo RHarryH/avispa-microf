@@ -33,10 +33,10 @@ import java.util.Locale;
  */
 @Slf4j
 public class FormatUtils {
-    private static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String MONEY_DECIMAL_FORMAT = "#,##0.00";
     private static final String QUANTITY_DECIMAL_FORMAT = "#0.###";
-    private static final String PERCENT_DECIMAL_FORMAT = "#0.00";
+    private static final String PERCENT_DECIMAL_FORMAT = "#0";
 
     private FormatUtils() {
 
@@ -60,6 +60,10 @@ public class FormatUtils {
 
     public static String format(BigDecimal value, String pattern) {
         return getDecimalFormatter(pattern).format(value);
+    }
+
+    public static String format(BigDecimal value, String pattern, Locale locale) {
+        return getDecimalFormatter(pattern, locale).format(value);
     }
 
     public static BigDecimal parseMoney(String value) {
@@ -91,7 +95,24 @@ public class FormatUtils {
     }
 
     private static DecimalFormat getDecimalFormatter(String pattern) {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        DecimalFormat decimalFormat = new DecimalFormat(pattern); // uses default locale
+        decimalFormat.setParseBigDecimal(true);
+
+        return decimalFormat;
+    }
+
+    public static BigDecimal parse(String value, String pattern, Locale locale) {
+        try {
+            return (BigDecimal) getDecimalFormatter(pattern, locale).parse(value);
+        } catch (ParseException e) {
+            log.error("Can't parse {} number as BigDecimal", value);
+        }
+
+        return null;
+    }
+
+    private static DecimalFormat getDecimalFormatter(String pattern, Locale locale) {
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
         DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
         decimalFormat.setParseBigDecimal(true);
 
@@ -99,6 +120,6 @@ public class FormatUtils {
     }
 
     public static String getNewLine() {
-        return System.getProperty("line.separator");
+        return System.lineSeparator();
     }
 }

@@ -189,7 +189,12 @@ public class ModalPageService {
             // note: when switching to EcmObject there is a need to provide @Dictionary annotation to all combo fields
             Dto dto = dtoService.convertObjectToDto(entity);
 
-            return propertyPageService.getPropertyPage(entity.getClass(), dto, modalType == ModalType.UPDATE);
+            var propertyPage = propertyPageService.getPropertyPage(entity.getClass(), dto, modalType == ModalType.UPDATE);
+
+            // add id of linked object if any
+            addLinkedDocument(typeName, modalType, entity, propertyPage);
+
+            return propertyPage;
         } else {
             // in these cases we're creating an empty instance of entity and dto so there is no need
             // to check the discriminator
@@ -216,6 +221,28 @@ public class ModalPageService {
             }
 
             return propertyPageService.getPropertyPage(dtoObject.getType().getEntityClass(), dto, modalType == ModalType.UPDATE);
+        }
+    }
+
+    /**
+     * Add linked document id if such link exists. This method should be used only for non-ADD mode when the linked
+     * document already exists.
+     *
+     * @param typeName     name of the type for whch link configuration should be found
+     * @param modalType    modal type
+     * @param entity       object containing linked document
+     * @param propertyPage property page to which hidden control should be added
+     */
+    private void addLinkedDocument(String typeName, ModalType modalType, EcmObject entity, PropertyPageContent propertyPage) {
+        if (modalType != ADD) { // we should not be in ADD type but check it anyway
+            LinkDocumentDto linkDocumentDto = linkDocumentService.find(typeName);
+            if (linkDocumentDto != null) {
+                var property = EcmPropertyUtils.getProperty(entity, linkDocumentDto.getLinkProperty());
+                if (property instanceof EcmObject ecmObject) {
+                    // add control storing id of linked document, so it can be retrieved after submit of the page
+                    propertyPage.addHiddenControl(linkDocumentDto.getLinkProperty() + ".id", ecmObject.getId());
+                }
+            }
         }
     }
 
