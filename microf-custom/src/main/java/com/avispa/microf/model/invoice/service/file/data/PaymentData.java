@@ -22,7 +22,6 @@ import com.avispa.ecm.model.configuration.dictionary.Dictionary;
 import com.avispa.ecm.util.FormatUtils;
 import com.avispa.microf.model.bankaccount.BankAccount;
 import com.avispa.microf.model.invoice.payment.Payment;
-import com.avispa.microf.model.invoice.type.vat.Invoice;
 import com.avispa.microf.numeral.NumeralToStringConverter;
 import lombok.Getter;
 import lombok.NonNull;
@@ -47,17 +46,26 @@ public class PaymentData {
     private String bankName = "-";
     private String bankAccountNumber = "-";
 
-    public static PaymentData of(Invoice invoice, BigDecimal grossValue, Dictionary paymentTypeDict) {
-        return new PaymentData(invoice.getPayment(), invoice.getIssueDate(), grossValue, paymentTypeDict);
+    /**
+     * Get new payment data from the payment and additional info
+     *
+     * @param payment         payment
+     * @param issueDate       issue date
+     * @param grossValue      gross value
+     * @param paymentTypeDict payment type dictionary
+     * @return
+     */
+    public static PaymentData of(Payment payment, LocalDate issueDate, BigDecimal grossValue, Dictionary paymentTypeDict) {
+        return new PaymentData(payment, issueDate, grossValue, paymentTypeDict);
     }
 
     private PaymentData(@NonNull Payment payment, LocalDate issueDate, BigDecimal grossValue, Dictionary paymentTypeDict) {
         this.paidAmount = payment.getPaidAmount();
-        if(payment.getPaidAmount().compareTo(BigDecimal.ZERO) > 0) { // only if paid amount is greater than zero
+        if (this.paidAmount.compareTo(BigDecimal.ZERO) > 0) { // only if paid amount is greater than zero
             this.paidAmountDate = FormatUtils.format(payment.getPaidAmountDate());
         }
 
-        this.amount = getAmount(payment, grossValue);
+        this.amount = getAmount(grossValue, this.paidAmount);
         this.status = determineStatus();
 
         setMethod(payment, issueDate, paymentTypeDict);
@@ -65,8 +73,8 @@ public class PaymentData {
         this.amountInWords = getAmountInWords(this.amount);
     }
 
-    private BigDecimal getAmount(Payment payment, BigDecimal grossValue) {
-        return grossValue.subtract(payment.getPaidAmount());
+    private BigDecimal getAmount(BigDecimal grossValue, BigDecimal paidAmount) {
+        return grossValue.subtract(paidAmount);
     }
 
     private String determineStatus() {

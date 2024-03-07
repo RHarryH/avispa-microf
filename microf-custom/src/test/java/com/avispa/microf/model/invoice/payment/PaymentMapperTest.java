@@ -55,13 +55,13 @@ class PaymentMapperTest {
         Payment payment = getSampleEntity();
         PaymentDto convertedDto = mapper.convertToDto(payment);
 
-        assertAll(() -> {
-            assertEquals("BANK_TRANSFER", convertedDto.getMethod());
-            assertEquals(BigDecimal.ONE, convertedDto.getPaidAmount());
-            assertEquals("2022-11-12", convertedDto.getPaidAmountDate());
-            assertEquals(10, convertedDto.getDeadline());
-            assertEquals(ACCOUNT_ID, convertedDto.getBankAccount());
-        });
+        assertAll(
+                () -> assertEquals("BANK_TRANSFER", convertedDto.getMethod()),
+                () -> assertEquals(BigDecimal.ONE, convertedDto.getPaidAmount()),
+                () -> assertEquals("2022-11-12", convertedDto.getPaidAmountDate()),
+                () -> assertEquals(10, convertedDto.getDeadline()),
+                () -> assertEquals(ACCOUNT_ID, convertedDto.getBankAccount())
+        );
     }
 
     @Test
@@ -70,13 +70,13 @@ class PaymentMapperTest {
         BankAccount bankAccount = mockAndGetBankAccount();
         Payment convertedEntity = mapper.convertToEntity(paymentDto);
 
-        assertAll(() -> {
-            assertEquals("CASH", convertedEntity.getMethod());
-            assertEquals(BigDecimal.TEN, convertedEntity.getPaidAmount());
-            assertEquals(LocalDate.of(2022, 11, 11), convertedEntity.getPaidAmountDate());
-            assertEquals(15, convertedEntity.getDeadline());
-            assertEquals(bankAccount, convertedEntity.getBankAccount());
-        });
+        assertAll(
+                () -> assertEquals("CASH", convertedEntity.getMethod()),
+                () -> assertEquals(BigDecimal.TEN, convertedEntity.getPaidAmount()),
+                () -> assertEquals(LocalDate.of(2022, 11, 11), convertedEntity.getPaidAmountDate()),
+                () -> assertEquals(15, convertedEntity.getDeadline()),
+                () -> assertEquals(bankAccount, convertedEntity.getBankAccount())
+        );
     }
 
     @Test
@@ -87,14 +87,14 @@ class PaymentMapperTest {
 
         mapper.updateEntityFromDto(paymentDto, payment);
 
-        assertAll(() -> {
-            assertEquals("Payment entity", payment.getObjectName());
-            assertEquals("CASH", payment.getMethod());
-            assertEquals(BigDecimal.TEN, payment.getPaidAmount());
-            assertEquals(LocalDate.of(2022, 11, 11), payment.getPaidAmountDate());
-            assertEquals(15, payment.getDeadline());
-            assertEquals(bankAccount, payment.getBankAccount());
-        });
+        assertAll(
+                () -> assertEquals("Payment entity", payment.getObjectName()),
+                () -> assertEquals("CASH", payment.getMethod()),
+                () -> assertEquals(BigDecimal.TEN, payment.getPaidAmount()),
+                () -> assertEquals(LocalDate.of(2022, 11, 11), payment.getPaidAmountDate()),
+                () -> assertEquals(15, payment.getDeadline()),
+                () -> assertEquals(bankAccount, payment.getBankAccount())
+        );
     }
 
     @Test
@@ -105,13 +105,13 @@ class PaymentMapperTest {
 
         mapper.updateEntityFromDto(paymentDto, payment);
 
-        assertAll(() -> {
-            assertEquals("CASH", payment.getMethod());
-            assertEquals(BigDecimal.TEN, payment.getPaidAmount());
-            assertEquals(LocalDate.of(2022, 11, 11), payment.getPaidAmountDate());
-            assertEquals(15, payment.getDeadline());
-            assertEquals(bankAccount, payment.getBankAccount());
-        });
+        assertAll(
+                () -> assertEquals("CASH", payment.getMethod()),
+                () -> assertEquals(BigDecimal.TEN, payment.getPaidAmount()),
+                () -> assertEquals(LocalDate.of(2022, 11, 11), payment.getPaidAmountDate()),
+                () -> assertEquals(15, payment.getDeadline()),
+                () -> assertEquals(bankAccount, payment.getBankAccount())
+        );
     }
 
     @Test
@@ -119,14 +119,14 @@ class PaymentMapperTest {
         Payment payment = getSampleEntity();
         mapper.updateEntityFromDto(null, payment);
 
-        assertAll(() -> {
-            assertEquals("Payment entity", payment.getObjectName());
-            assertEquals("BANK_TRANSFER", payment.getMethod());
-            assertEquals(BigDecimal.ONE, payment.getPaidAmount());
-            assertEquals(LocalDate.of(2022, 11, 12), payment.getPaidAmountDate());
-            assertEquals(10, payment.getDeadline());
-            assertEquals(ACCOUNT_ID, payment.getBankAccount().getId().toString());
-        });
+        assertAll(
+                () -> assertEquals("Payment entity", payment.getObjectName()),
+                () -> assertEquals("BANK_TRANSFER", payment.getMethod()),
+                () -> assertEquals(BigDecimal.ONE, payment.getPaidAmount()),
+                () -> assertEquals(LocalDate.of(2022, 11, 12), payment.getPaidAmountDate()),
+                () -> assertEquals(10, payment.getDeadline()),
+                () -> assertEquals(ACCOUNT_ID, payment.getBankAccount().getId().toString())
+        );
     }
 
     private Payment getSampleEntity() {

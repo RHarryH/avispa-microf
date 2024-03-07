@@ -34,8 +34,9 @@ import com.avispa.ecm.util.exception.EcmException;
 import com.avispa.ecm.util.exception.ResourceNotFoundException;
 import com.avispa.ecm.util.transaction.TransactionUtils;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
-import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
-import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
+import com.avispa.microf.model.invoice.service.file.DocumentFile;
+import com.avispa.microf.model.invoice.service.file.data.BaseInvoiceData;
+import com.avispa.microf.model.invoice.service.file.data.FileData;
 import com.avispa.microf.model.invoice.type.vat.Invoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -96,7 +97,7 @@ public abstract class AbstractInvoiceService<I extends BaseInvoice, D extends Ba
     }
 
     private void generateContent(I invoice) {
-        InvoiceData invoiceData = getInvoiceData(invoice);
+        BaseInvoiceData invoiceData = getInvoiceData(invoice);
 
         Template template = contextService.getConfiguration(invoice, Template.class).
                 orElseThrow(() -> new EcmException("Document template for '" + invoice.getId() + "' document couldn't be found"));
@@ -106,7 +107,7 @@ public abstract class AbstractInvoiceService<I extends BaseInvoice, D extends Ba
             throw new EcmException("Template " + template.getObjectName() + " does not have any content file assigned");
         }
 
-        try (IInvoiceFile invoiceFile = getInvoiceFile(templateContent.getFileStorePath())) {
+        try (var invoiceFile = getInvoiceFile(templateContent.getFileStorePath())) {
             invoiceFile.generate(invoiceData, issuerName);
 
             // save file in the file store and create content object
@@ -134,7 +135,7 @@ public abstract class AbstractInvoiceService<I extends BaseInvoice, D extends Ba
                 .orElseThrow(() -> new ResourceNotFoundException(Invoice.class));
     }
 
-    protected abstract InvoiceData getInvoiceData(I invoice);
+    protected abstract BaseInvoiceData getInvoiceData(I invoice);
 
-    protected abstract IInvoiceFile getInvoiceFile(String templatePath);
+    protected abstract <T extends FileData> DocumentFile<T> getInvoiceFile(String templatePath);
 }

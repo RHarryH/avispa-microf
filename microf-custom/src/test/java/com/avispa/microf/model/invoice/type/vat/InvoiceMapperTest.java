@@ -69,14 +69,14 @@ class InvoiceMapperTest {
         Invoice invoice = getSampleEntity();
         InvoiceDto convertedDto = mapper.convertToDto(invoice);
 
-        assertAll(() -> {
-            assertEquals("F/16", convertedDto.getObjectName());
-            assertEquals(CUSTOMER_ID, convertedDto.getSeller());
-            assertEquals(CUSTOMER_ID, convertedDto.getBuyer());
-            assertEquals("2011-11-10", convertedDto.getIssueDate());
-            assertEquals("2011-11-10", convertedDto.getServiceDate());
-            assertEquals("Test comment", convertedDto.getComments());
-        });
+        assertAll(
+                () -> assertEquals("F/16", convertedDto.getObjectName()),
+                () -> assertEquals(CUSTOMER_ID, convertedDto.getSeller()),
+                () -> assertEquals(CUSTOMER_ID, convertedDto.getBuyer()),
+                () -> assertEquals("2011-11-10", convertedDto.getIssueDate()),
+                () -> assertEquals("2011-11-10", convertedDto.getServiceDate()),
+                () -> assertEquals("Test comment", convertedDto.getComments())
+        );
     }
 
     @Test
@@ -85,14 +85,14 @@ class InvoiceMapperTest {
         Customer customer = mockAndGetCustomer();
         Invoice convertedEntity = mapper.convertToEntity(invoiceDto);
 
-        assertAll(() -> {
-            assertEquals("F/32", convertedEntity.getObjectName());
-            assertEquals(customer, convertedEntity.getSeller());
-            assertEquals(customer, convertedEntity.getBuyer());
-            assertEquals(LocalDate.of(2011, 11, 11), convertedEntity.getIssueDate());
-            assertEquals(LocalDate.of(2011, 11, 11), convertedEntity.getServiceDate());
-            assertEquals("Test DTO comment", convertedEntity.getComments());
-        });
+        assertAll(
+                () -> assertEquals("F/32", convertedEntity.getObjectName()),
+                () -> assertEquals(customer, convertedEntity.getSeller()),
+                () -> assertEquals(customer, convertedEntity.getBuyer()),
+                () -> assertEquals(LocalDate.of(2011, 11, 11), convertedEntity.getIssueDate()),
+                () -> assertEquals(LocalDate.of(2011, 11, 11), convertedEntity.getServiceDate()),
+                () -> assertEquals("Test DTO comment", convertedEntity.getComments())
+        );
     }
 
     @Test
@@ -103,14 +103,14 @@ class InvoiceMapperTest {
 
         mapper.updateEntityFromDto(invoiceDto, invoice);
 
-        assertAll(() -> {
-            assertEquals("F/32", invoice.getObjectName());
-            assertEquals(customer, invoice.getSeller());
-            assertEquals(customer, invoice.getBuyer());
-            assertEquals(LocalDate.of(2011, 11, 11), invoice.getIssueDate());
-            assertEquals(LocalDate.of(2011, 11, 11), invoice.getServiceDate());
-            assertEquals("Test DTO comment", invoice.getComments());
-        });
+        assertAll(
+                () -> assertEquals("F/32", invoice.getObjectName()),
+                () -> assertEquals(customer, invoice.getSeller()),
+                () -> assertEquals(customer, invoice.getBuyer()),
+                () -> assertEquals(LocalDate.of(2011, 11, 11), invoice.getIssueDate()),
+                () -> assertEquals(LocalDate.of(2011, 11, 11), invoice.getServiceDate()),
+                () -> assertEquals("Test DTO comment", invoice.getComments())
+        );
     }
 
     @Test
@@ -121,14 +121,14 @@ class InvoiceMapperTest {
 
         mapper.updateEntityFromDto(invoiceDto, invoice);
 
-        assertAll(() -> {
-            assertEquals("F/32", invoice.getObjectName());
-            assertEquals(customer, invoice.getSeller());
-            assertEquals(customer, invoice.getBuyer());
-            assertEquals(LocalDate.of(2011, 11, 11), invoice.getIssueDate());
-            assertEquals(LocalDate.of(2011, 11, 11), invoice.getServiceDate());
-            assertEquals("Test DTO comment", invoice.getComments());
-        });
+        assertAll(
+                () -> assertEquals("F/32", invoice.getObjectName()),
+                () -> assertEquals(customer, invoice.getSeller()),
+                () -> assertEquals(customer, invoice.getBuyer()),
+                () -> assertEquals(LocalDate.of(2011, 11, 11), invoice.getIssueDate()),
+                () -> assertEquals(LocalDate.of(2011, 11, 11), invoice.getServiceDate()),
+                () -> assertEquals("Test DTO comment", invoice.getComments())
+        );
     }
 
     @Test
@@ -138,14 +138,14 @@ class InvoiceMapperTest {
 
         mapper.updateEntityFromDto(null, invoice);
 
-        assertAll(() -> {
-            assertEquals("F/16", invoice.getObjectName());
-            assertEquals(customer, invoice.getSeller());
-            assertEquals(customer, invoice.getBuyer());
-            assertEquals(LocalDate.of(2011, 11, 10), invoice.getIssueDate());
-            assertEquals(LocalDate.of(2011, 11, 10), invoice.getServiceDate());
-            assertEquals("Test comment", invoice.getComments());
-        });
+        assertAll(
+                () -> assertEquals("F/16", invoice.getObjectName()),
+                () -> assertEquals(customer, invoice.getSeller()),
+                () -> assertEquals(customer, invoice.getBuyer()),
+                () -> assertEquals(LocalDate.of(2011, 11, 10), invoice.getIssueDate()),
+                () -> assertEquals(LocalDate.of(2011, 11, 10), invoice.getServiceDate()),
+                () -> assertEquals("Test comment", invoice.getComments())
+        );
     }
 
     private Invoice getSampleEntity() {

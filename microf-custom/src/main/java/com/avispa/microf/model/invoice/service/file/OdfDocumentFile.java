@@ -19,6 +19,7 @@
 package com.avispa.microf.model.invoice.service.file;
 
 import com.avispa.ecm.util.exception.EcmException;
+import com.avispa.microf.model.invoice.service.file.data.FileData;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +33,14 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
-public abstract class OdfInvoiceFile implements IInvoiceFile {
-    private static final Logger log = LoggerFactory.getLogger(OdfInvoiceFile.class);
+public abstract class OdfDocumentFile<T extends FileData> implements DocumentFile<T> {
+    private static final Logger log = LoggerFactory.getLogger(OdfDocumentFile.class);
 
-    protected final OdfTextDocument invoice;
+    protected final OdfTextDocument textDocument;
 
-    protected OdfInvoiceFile(String templatePath) {
+    protected OdfDocumentFile(String templatePath) {
         try {
-            this.invoice = OdfTextDocument.loadDocument(new File(templatePath));
+            this.textDocument = OdfTextDocument.loadDocument(new File(templatePath));
         } catch (Exception e) {
             log.error("Unable to load document", e);
             throw new EcmException("Unable to load document");
@@ -51,7 +52,7 @@ public abstract class OdfInvoiceFile implements IInvoiceFile {
         Path fileStorePath = Paths.get(path, UUID.randomUUID().toString());
 
         try(FileOutputStream out = new FileOutputStream(fileStorePath.toString())) {
-            invoice.save(out);
+            textDocument.save(out);
         } catch(Exception e) {
             log.error("Unable to save document", e);
         }
@@ -66,8 +67,8 @@ public abstract class OdfInvoiceFile implements IInvoiceFile {
 
     @Override
     public void close() {
-        if(null != invoice) {
-            invoice.close();
+        if (null != textDocument) {
+            textDocument.close();
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,35 +19,16 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
-import com.avispa.microf.model.invoice.type.vat.Invoice;
-import lombok.Getter;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Stream;
 
 /**
  * @author Rafał Hiszpański
  */
-@Getter
-public class InvoiceData {
-    private final String invoiceName;
-    private final String seller;
-    private final String buyer;
-
-    private final LocalDate issueDate;
-    private final LocalDate serviceDate;
-
-    private final List<PositionData> positions;
-    private final List<VatRowData> vatMatrix;
-
-    private final PaymentData payment;
-
-    private final String comments;
-
-    public InvoiceData(Invoice invoice, Dictionary unitDict, Dictionary vatRateDict, Dictionary paymentMethodDict) {
+public abstract class BaseInvoiceData implements FileData {
+    protected BaseInvoiceData(Dictionary unitDict, Dictionary vatRateDict, Dictionary paymentMethodDict) {
         if(unitDict.isEmpty()) {
             throw new IllegalArgumentException("Dictionary for units cannot be empty");
         }
@@ -59,27 +40,11 @@ public class InvoiceData {
         if(paymentMethodDict.isEmpty()) {
             throw new IllegalArgumentException("Dictionary for payment methods cannot be empty");
         }
-
-        this.invoiceName = invoice.getObjectName();
-
-        this.seller = invoice.getSeller().format();
-        this.buyer = invoice.getBuyer().format();
-
-        this.issueDate = invoice.getIssueDate();
-        this.serviceDate = invoice.getServiceDate();
-
-        this.positions = invoice.getPositions().stream().map(position -> new PositionData(position, unitDict, vatRateDict)).toList();
-
-        this.vatMatrix = generateVatMatrix();
-
-        this.payment = PaymentData.of(invoice, getVatSum().getGrossValue(), paymentMethodDict);
-
-        this.comments = invoice.getComments();
     }
 
-    private List<VatRowData> generateVatMatrix() {
+    protected VatMatrix generateVatMatrix(List<PositionData> positions) {
         Map<String, VatRowData> vatMatrixMap = new TreeMap<>();
-        for(PositionData position : this.positions) {
+        for (PositionData position : positions) {
             String vatRateLabel = position.getVatRateLabel();
             VatRowData vatRowData = getVatRow(vatMatrixMap, vatRateLabel);
 
@@ -91,15 +56,10 @@ public class InvoiceData {
 
         VatRowData vatSum = getVatSum(vatMatrixMap);
 
-        return Stream.concat(
-                vatMatrixMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(Map.Entry::getValue),
-                        Stream.of(vatSum))
-                .toList();
+        return new VatMatrix(vatMatrixMap, vatSum);
     }
 
-    private VatRowData getVatRow(Map<String, VatRowData> vatMatrix, String vatRateLabel) {
+    protected VatRowData getVatRow(Map<String, VatRowData> vatMatrix, String vatRateLabel) {
         VatRowData vatRowData;
 
         if(vatMatrix.containsKey(vatRateLabel)) {
@@ -111,7 +71,7 @@ public class InvoiceData {
         return vatRowData;
     }
 
-    private VatRowData getVatSum(Map<String, VatRowData> vatMatrixMap) {
+    protected VatRowData getVatSum(Map<String, VatRowData> vatMatrixMap) {
         VatRowData vatSum = new VatRowData();
 
         for(VatRowData vatRowData : vatMatrixMap.values()) {
@@ -122,9 +82,5 @@ public class InvoiceData {
         }
 
         return vatSum;
-    }
-
-    public VatRowData getVatSum() {
-        return vatMatrix.get(vatMatrix.size() - 1);
     }
 }

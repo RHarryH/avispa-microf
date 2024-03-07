@@ -47,15 +47,15 @@ class CorporateCustomerMapperTest {
         CorporateCustomerDto convertedDto = mapper.convertToDto(customer);
 
         AddressDto address = convertedDto.getAddress();
-        assertAll(() -> {
-            assertEquals("Customer", convertedDto.getDetails().getCompanyName());
-            assertEquals("222-11-11-111", convertedDto.getDetails().getVatIdentificationNumber());
-            assertEquals("old@mail.com", convertedDto.getEmail());
-            assertEquals("+48 456456456", convertedDto.getPhoneNumber());
-            assertEquals("Old Street", address.getStreet());
-            assertEquals("Old Place", address.getPlace());
-            assertEquals("67-890", address.getZipCode());
-        });
+        assertAll(
+                () -> assertEquals("Customer", convertedDto.getDetails().getCompanyName()),
+                () -> assertEquals("222-11-11-111", convertedDto.getDetails().getVatIdentificationNumber()),
+                () -> assertEquals("old@mail.com", convertedDto.getEmail()),
+                () -> assertEquals("+48 456456456", convertedDto.getPhoneNumber()),
+                () -> assertEquals("Old Street", address.getStreet()),
+                () -> assertEquals("Old Place", address.getPlace()),
+                () -> assertEquals("67-890", address.getZipCode())
+        );
     }
 
     @Test
@@ -64,17 +64,17 @@ class CorporateCustomerMapperTest {
         Customer convertedEntity = mapper.convertToEntity(customerDto);
 
         Address address = convertedEntity.getAddress();
-        assertAll(() -> {
-            assertNull(convertedEntity.getFirstName());
-            assertNull(convertedEntity.getLastName());
-            assertEquals("Company", convertedEntity.getCompanyName());
-            assertEquals("111-11-11-111", convertedEntity.getVatIdentificationNumber());
-            assertEquals("email@mail.com", convertedEntity.getEmail());
-            assertEquals("+48 123123123", convertedEntity.getPhoneNumber());
-            assertEquals("Street", address.getStreet());
-            assertEquals("Place", address.getPlace());
-            assertEquals("12-235", address.getZipCode());
-        });
+        assertAll(
+                () -> assertNull(convertedEntity.getFirstName()),
+                () -> assertNull(convertedEntity.getLastName()),
+                () -> assertEquals("Company", convertedEntity.getCompanyName()),
+                () -> assertEquals("111-11-11-111", convertedEntity.getVatIdentificationNumber()),
+                () -> assertEquals("email@mail.com", convertedEntity.getEmail()),
+                () -> assertEquals("+48 123123123", convertedEntity.getPhoneNumber()),
+                () -> assertEquals("Street", address.getStreet()),
+                () -> assertEquals("Place", address.getPlace()),
+                () -> assertEquals("12-235", address.getZipCode())
+        );
     }
 
     @Test
@@ -84,17 +84,17 @@ class CorporateCustomerMapperTest {
         mapper.updateEntityFromDto(customerDto, customer);
 
         Address address = customer.getAddress();
-        assertAll(() -> {
-            assertNull(customer.getFirstName());
-            assertNull(customer.getLastName());
-            assertEquals("Company", customer.getCompanyName());
-            assertEquals("111-11-11-111", customer.getVatIdentificationNumber());
-            assertEquals("email@mail.com", customer.getEmail());
-            assertEquals("+48 123123123", customer.getPhoneNumber());
-            assertEquals("Street", address.getStreet());
-            assertEquals("Place", address.getPlace());
-            assertEquals("12-235", address.getZipCode());
-        });
+        assertAll(
+                () -> assertNull(customer.getFirstName()),
+                () -> assertNull(customer.getLastName()),
+                () -> assertEquals("Company", customer.getCompanyName()),
+                () -> assertEquals("111-11-11-111", customer.getVatIdentificationNumber()),
+                () -> assertEquals("email@mail.com", customer.getEmail()),
+                () -> assertEquals("+48 123123123", customer.getPhoneNumber()),
+                () -> assertEquals("Street", address.getStreet()),
+                () -> assertEquals("Place", address.getPlace()),
+                () -> assertEquals("12-235", address.getZipCode())
+        );
     }
 
     @Test
@@ -104,17 +104,17 @@ class CorporateCustomerMapperTest {
         mapper.updateEntityFromDto(customerDto, customer);
 
         Address address = customer.getAddress();
-        assertAll(() -> {
-            assertNull(customer.getFirstName());
-            assertNull(customer.getLastName());
-            assertEquals("Company", customer.getCompanyName());
-            assertEquals("111-11-11-111", customer.getVatIdentificationNumber());
-            assertEquals("email@mail.com", customer.getEmail());
-            assertEquals("+48 123123123", customer.getPhoneNumber());
-            assertEquals("Street", address.getStreet());
-            assertEquals("Place", address.getPlace());
-            assertEquals("12-235", address.getZipCode());
-        });
+        assertAll(
+                () -> assertNull(customer.getFirstName()),
+                () -> assertNull(customer.getLastName()),
+                () -> assertEquals("Company", customer.getCompanyName()),
+                () -> assertEquals("111-11-11-111", customer.getVatIdentificationNumber()),
+                () -> assertEquals("email@mail.com", customer.getEmail()),
+                () -> assertEquals("+48 123123123", customer.getPhoneNumber()),
+                () -> assertEquals("Street", address.getStreet()),
+                () -> assertEquals("Place", address.getPlace()),
+                () -> assertEquals("12-235", address.getZipCode())
+        );
     }
 
     @Test
@@ -123,17 +123,17 @@ class CorporateCustomerMapperTest {
         mapper.updateEntityFromDto(null, customer);
 
         Address address = customer.getAddress();
-        assertAll(() -> {
-            assertNull(customer.getFirstName());
-            assertNull(customer.getLastName());
-            assertEquals("Customer", customer.getCompanyName());
-            assertEquals("222-11-11-111", customer.getVatIdentificationNumber());
-            assertEquals("old@mail.com", customer.getEmail());
-            assertEquals("+48 456456456", customer.getPhoneNumber());
-            assertEquals("Old Street", address.getStreet());
-            assertEquals("Old Place", address.getPlace());
-            assertEquals("67-890", address.getZipCode());
-        });
+        assertAll(
+                () -> assertNull(customer.getFirstName()),
+                () -> assertNull(customer.getLastName()),
+                () -> assertEquals("Customer", customer.getCompanyName()),
+                () -> assertEquals("222-11-11-111", customer.getVatIdentificationNumber()),
+                () -> assertEquals("old@mail.com", customer.getEmail()),
+                () -> assertEquals("+48 456456456", customer.getPhoneNumber()),
+                () -> assertEquals("Old Street", address.getStreet()),
+                () -> assertEquals("Old Place", address.getPlace()),
+                () -> assertEquals("67-890", address.getZipCode())
+        );
     }
 
     private Customer getSampleEntity() {

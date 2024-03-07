@@ -23,6 +23,6 @@ import java.util.Map;
 /**
  * @author Rafał Hiszpański
  */
-public interface ITemplateReplacer {
+public interface TemplateReplacer {
     void replaceVariables(Map<String, String> variables);
 }

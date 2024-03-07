@@ -46,7 +46,7 @@ class BigDecimalSerializersTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"200,'200,00'", "2000.01,'2000,01'", "1.567,'1,57'"})
+    @CsvSource(value = {"200,'200'", "2000.01,'2000'", "1.567,'2'"})
     void serializePercent(BigDecimal input, String expected) {
         String serialized = serialize(input, new PercentSerializer());
         assertThat(serialized).hasToString("\"" + expected + "\"");

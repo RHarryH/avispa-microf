@@ -19,15 +19,8 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
-import com.avispa.ecm.util.json.MoneyDeserializer;
-import com.avispa.ecm.util.json.MoneySerializer;
-import com.avispa.ecm.util.json.PercentDeserializer;
-import com.avispa.ecm.util.json.PercentSerializer;
-import com.avispa.ecm.util.json.QuantityDeserializer;
-import com.avispa.ecm.util.json.QuantitySerializer;
 import com.avispa.microf.model.invoice.position.Position;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -36,41 +29,19 @@ import java.math.BigDecimal;
  * @author Rafał Hiszpański
  */
 @Getter
+@EqualsAndHashCode
 public class PositionData {
     private final String positionName;
 
-    @JsonDeserialize(using = QuantityDeserializer.class)
-    @JsonSerialize(using = QuantitySerializer.class)
     private final BigDecimal quantity;
-
     private final String unit;
-
-    @JsonDeserialize(using = MoneyDeserializer.class)
-    @JsonSerialize(using = MoneySerializer.class)
     private final BigDecimal unitPrice;
-
-    @JsonDeserialize(using = PercentDeserializer.class)
-    @JsonSerialize(using = PercentSerializer.class)
     private final BigDecimal discount;
 
-    @JsonDeserialize(using = MoneyDeserializer.class)
-    @JsonSerialize(using = MoneySerializer.class)
-    private BigDecimal price;
-
-    @JsonDeserialize(using = MoneyDeserializer.class)
-    @JsonSerialize(using = MoneySerializer.class)
-    private BigDecimal netValue;
-
-    @JsonDeserialize(using = MoneyDeserializer.class)
-    @JsonSerialize(using = MoneySerializer.class)
-    private BigDecimal vat;
-
-    @JsonDeserialize(using = MoneyDeserializer.class)
-    @JsonSerialize(using = MoneySerializer.class)
-    private BigDecimal grossValue;
-
-    @JsonDeserialize(using = MoneyDeserializer.class)
-    @JsonSerialize(using = MoneySerializer.class)
+    private final BigDecimal price;
+    private final BigDecimal netValue;
+    private final BigDecimal vat;
+    private final BigDecimal grossValue;
     private final BigDecimal vatRate;
 
     private final String vatRateLabel;
@@ -87,14 +58,32 @@ public class PositionData {
         this.vatRate = new BigDecimal(vatRateDict.getColumnValue(position.getVatRate(), "rate"));
         this.vatRateLabel = vatRateDict.getLabel(position.getVatRate());
 
-        setPrice();
-        setNetValue();
-        setVat();
-        setGrossValue();
+        this.price = calculatePrice();
+        this.netValue = calculateNetValue();
+        this.vat = calculateVat();
+        this.grossValue = calculateGrossValue();
     }
 
-    private void setPrice() {
-        this.price = this.unitPrice.subtract(getDiscountValue());
+    public PositionData(PositionData original, PositionData correction) {
+        this.positionName = correction.getPositionName();
+
+        this.quantity = correction.getQuantity().subtract(original.getQuantity());
+        this.unit = correction.getUnit();
+
+        this.unitPrice = correction.getUnitPrice().subtract(original.getUnitPrice());
+        this.discount = correction.getDiscount().subtract(original.getDiscount());
+
+        this.vatRate = correction.getVatRate();
+        this.vatRateLabel = correction.getVatRateLabel();
+
+        this.price = correction.calculatePrice().subtract(original.calculatePrice());
+        this.netValue = correction.calculateNetValue().subtract(original.calculateNetValue());
+        this.vat = correction.calculateVat().subtract(original.calculateVat());
+        this.grossValue = correction.calculateGrossValue().subtract(original.calculateGrossValue());
+    }
+
+    private BigDecimal calculatePrice() {
+        return this.unitPrice.subtract(getDiscountValue());
     }
 
     /**
@@ -105,15 +94,50 @@ public class PositionData {
         return this.unitPrice.multiply(this.discount.scaleByPowerOfTen(-2));
     }
 
-    private void setNetValue() {
-        this.netValue = this.price.multiply(this.quantity);
+    private BigDecimal calculateNetValue() {
+        return this.price.multiply(this.quantity);
     }
 
-    private void setVat() {
-        this.vat = this.netValue.multiply(this.vatRate);
+    private BigDecimal calculateVat() {
+        return this.netValue.multiply(this.vatRate);
     }
 
-    private void setGrossValue() {
-        this.grossValue = this.netValue.add(this.vat);
+    private BigDecimal calculateGrossValue() {
+        return this.netValue.add(this.vat);
+    }
+
+    @EqualsAndHashCode.Include(replaces = "quantity")
+    private BigDecimal quantityStripped() {
+        return this.quantity.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include(replaces = "unitPrice")
+    private BigDecimal unitPriceStripped() {
+        return this.unitPrice.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include(replaces = "discount")
+    private BigDecimal discountStripped() {
+        return this.discount.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include(replaces = "price")
+    private BigDecimal priceStripped() {
+        return this.price.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include(replaces = "netValue")
+    private BigDecimal netValueStripped() {
+        return this.netValue.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include(replaces = "vat")
+    private BigDecimal vatStripped() {
+        return this.vat.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include(replaces = "grossValue")
+    private BigDecimal grossValueStripped() {
+        return this.grossValue.stripTrailingZeros();
     }
 }

@@ -26,12 +26,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @ControllerAdvice
 @Slf4j
 public class RestResponseEntityExceptionHandler
         /*extends ResponseEntityExceptionHandler*/ {
 
-    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class, DataIntegrityViolationException.class})
+    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class, DataIntegrityViolationException.class, SQLIntegrityConstraintViolationException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Unexpected issue has happened. Please contact with the administrator.")
     public void handleRuntimeException(RuntimeException e) {
         log.error("Generic runtime exception has been thrown", e);

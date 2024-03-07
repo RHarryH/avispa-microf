@@ -21,14 +21,6 @@ package com.avispa.microf.model.invoice.position;
 import com.avispa.ecm.model.base.dto.Dto;
 import com.avispa.ecm.model.configuration.dictionary.annotation.Dictionary;
 import com.avispa.ecm.util.BigDecimalUtils;
-import com.avispa.ecm.util.json.MoneyDeserializer;
-import com.avispa.ecm.util.json.MoneySerializer;
-import com.avispa.ecm.util.json.PercentDeserializer;
-import com.avispa.ecm.util.json.PercentSerializer;
-import com.avispa.ecm.util.json.QuantityDeserializer;
-import com.avispa.ecm.util.json.QuantitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -36,6 +28,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -51,6 +44,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class PositionDto implements Dto {
     public static final String VM_POSITION_NOT_EMPTY_NOR_BLANK = "Position name cannot be empty or blank";
     public static final String VM_POSITION_NAME_NO_LONGER = "Position name cannot be longer than 50 characters";
@@ -64,6 +58,7 @@ public class PositionDto implements Dto {
     public static final String VM_DISCOUNT_NO_GREATER = "Discount cannot be greater than 100%";
     public static final String VM_VAT_RATE_NOT_NULL = "VAT rate cannot be null";
 
+    @EqualsAndHashCode.Exclude
     private UUID id;
 
     @NotBlank(message = VM_POSITION_NOT_EMPTY_NOR_BLANK)
@@ -72,8 +67,6 @@ public class PositionDto implements Dto {
 
     @Digits(integer=5, fraction=3, message = VM_QUANTITY_OUT_OF_RANGE)
     @Positive(message = VM_QUANTITY_POSITIVE)
-    @JsonSerialize(using = QuantitySerializer.class)
-    @JsonDeserialize(using = QuantityDeserializer.class)
     private BigDecimal quantity = BigDecimal.ONE;
 
     @NotNull(message = VM_UNIT_NOT_NULL)
@@ -82,15 +75,11 @@ public class PositionDto implements Dto {
 
     @Digits(integer=7, fraction=2, message = VM_UNIT_PRICE_OUT_OF_RANGE)
     @Positive(message = VM_UNIT_PRICE_POSITIVE)
-    @JsonSerialize(using = MoneySerializer.class)
-    @JsonDeserialize(using = MoneyDeserializer.class)
     private BigDecimal unitPrice = BigDecimal.ZERO;
 
-    @Digits(integer=3, fraction=2, message = VM_DISCOUNT_OUT_OF_RANGE)
+    @Digits(integer = 3, fraction = 0, message = VM_DISCOUNT_OUT_OF_RANGE)
     @PositiveOrZero(message = VM_DISCOUNT_POSITIVE_OR_ZERO)
     @Max(value = 100, message = VM_DISCOUNT_NO_GREATER)
-    @JsonSerialize(using = PercentSerializer.class)
-    @JsonDeserialize(using = PercentDeserializer.class)
     private BigDecimal discount = BigDecimal.ZERO;
 
     @NotNull(message = VM_VAT_RATE_NOT_NULL)
@@ -109,5 +98,20 @@ public class PositionDto implements Dto {
         this.unitPrice = BigDecimalUtils.clone(positionDto.unitPrice);
         this.discount = BigDecimalUtils.clone(positionDto.discount);
         this.vatRate = positionDto.vatRate;
+    }
+
+    @EqualsAndHashCode.Include(replaces = "quantity")
+    private BigDecimal quantityStripped() {
+        return this.quantity.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include(replaces = "unitPrice")
+    private BigDecimal unitPriceStripped() {
+        return this.unitPrice.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include(replaces = "discount")
+    private BigDecimal discountStripped() {
+        return this.discount.stripTrailingZeros();
     }
 }

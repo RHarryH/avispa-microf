@@ -19,12 +19,14 @@
 package com.avispa.microf.model.invoice;
 
 import com.avispa.ecm.model.document.Document;
+import com.avispa.microf.model.invoice.payment.Payment;
 import com.avispa.microf.model.invoice.position.Position;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +49,9 @@ public class BaseInvoice extends Document {
     @OrderColumn
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Position> positions;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Payment payment;
 
     private String comments;
 }

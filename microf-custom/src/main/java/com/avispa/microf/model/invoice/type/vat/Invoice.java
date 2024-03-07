@@ -20,11 +20,8 @@ package com.avispa.microf.model.invoice.type.vat;
 
 import com.avispa.microf.model.customer.Customer;
 import com.avispa.microf.model.invoice.BaseInvoice;
-import com.avispa.microf.model.invoice.payment.Payment;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,7 +41,4 @@ public class Invoice extends BaseInvoice {
     private Customer buyer;
 
     private LocalDate serviceDate;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private Payment payment;
 }

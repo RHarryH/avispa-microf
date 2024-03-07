@@ -19,3 +19,7 @@
 -- Avispa ECM
 ALTER TABLE list_widget
     ADD COLUMN items_per_page INTEGER DEFAULT 10;
+
+-- Avispa μF
+ALTER TABLE position
+    ALTER COLUMN discount TYPE NUMERIC(3);

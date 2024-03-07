@@ -19,6 +19,7 @@
 package com.avispa.microf.model.invoice.service.file.data;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -28,11 +29,16 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class VatRowData {
     private String vatRate;
     private BigDecimal netValue = BigDecimal.ZERO;
     private BigDecimal vat = BigDecimal.ZERO;
     private BigDecimal grossValue = BigDecimal.ZERO;
+
+    public VatRowData(String vatRate) {
+        this.vatRate = vatRate;
+    }
 
     public void accumulate(BigDecimal netValue, BigDecimal vat, BigDecimal grossValue) {
         accumulateNetValue(netValue);

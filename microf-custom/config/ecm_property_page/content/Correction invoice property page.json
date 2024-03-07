@@ -91,7 +91,7 @@
       },
       {
         "type": "group",
-        "name": "Original payment",
+        "name": "Payment",
         "controls": [
           {
             "type": "columns",
@@ -118,12 +118,12 @@
                 "type": "money",
                 "label": "Paid amount",
                 "currency": "PLN",
-                "property": "originalInvoice.payment.paidAmount"
+                "property": "payment.paidAmount"
               },
               {
                 "type": "date",
                 "label": "Paid amount date",
-                "property": "originalInvoice.payment.paidAmountDate",
+                "property": "payment.paidAmountDate",
                 "constraints": {
                   "visibility": {
                     "conditions": {

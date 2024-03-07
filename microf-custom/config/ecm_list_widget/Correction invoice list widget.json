@@ -13,17 +13,17 @@
         "name": "originalInvoice.objectName"
       },
       {
+        "name": "correctionReason"
+      },
+      {
         "name": "issueDate"
       },
       {
-        "label": "Original Service Date",
+        "label": "Service Date",
         "name": "originalInvoice.serviceDate"
       },
       {
         "name": "originalInvoice.payment.method"
-      },
-      {
-        "name": "correctionReason"
       },
       {
         "name": "comment"

@@ -2,7 +2,7 @@
   "context": {
     "name": "Correction invoice context",
     "type": "Correction Invoice",
-    "importance": 2,
+    "importance": 3,
     "configNames": [
       "Correction invoice autonaming",
       "Invoice autolinking",
