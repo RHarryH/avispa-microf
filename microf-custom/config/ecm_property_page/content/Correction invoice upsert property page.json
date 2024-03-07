@@ -86,7 +86,7 @@
             "property": "discount",
             "min": 0,
             "max": 100,
-            "step": 0.01
+            "step": 1
           },
           {
             "type": "combo",
@@ -97,7 +97,7 @@
       },
       {
         "type": "group",
-        "name": "Original payment",
+        "name": "Payment",
         "controls": [
           {
             "type": "columns",
@@ -123,14 +123,12 @@
                 "type": "money",
                 "label": "Paid amount",
                 "currency": "PLN",
-                "property": "originalInvoice.payment.paidAmount",
-                "readonly": true
+                "property": "payment.paidAmount"
               },
               {
                 "type": "date",
                 "label": "Paid amount date",
-                "property": "originalInvoice.payment.paidAmountDate",
-                "readonly": true,
+                "property": "payment.paidAmountDate",
                 "constraints": {
                   "visibility": {
                     "conditions": {

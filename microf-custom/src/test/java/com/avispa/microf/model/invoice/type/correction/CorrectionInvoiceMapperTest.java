@@ -18,6 +18,9 @@
 
 package com.avispa.microf.model.invoice.type.correction;
 
+import com.avispa.microf.model.invoice.payment.PaidAmountDto;
+import com.avispa.microf.model.invoice.payment.Payment;
+import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionMapperImpl;
 import com.avispa.microf.model.invoice.type.vat.Invoice;
 import com.avispa.microf.model.invoice.type.vat.InvoiceDto;
@@ -30,6 +33,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -68,12 +74,12 @@ class CorrectionInvoiceMapperTest {
         CorrectionInvoice correctionInvoice = getSampleEntity();
         CorrectionInvoiceDto convertedDto = mapper.convertToDto(correctionInvoice);
 
-        assertAll(() -> {
-            assertEquals("FK/1", convertedDto.getObjectName());
-            assertEquals("Reason", convertedDto.getCorrectionReason());
-            assertNotNull(convertedDto.getOriginalInvoice());
-            assertEquals(invocieDto.getObjectName(), convertedDto.getOriginalInvoice().getObjectName());
-        });
+        assertAll(
+                () -> assertEquals("FK/1", convertedDto.getObjectName()),
+                () -> assertEquals("Reason", convertedDto.getCorrectionReason()),
+                () -> assertNotNull(convertedDto.getOriginalInvoice()),
+                () -> assertEquals(invocieDto.getObjectName(), convertedDto.getOriginalInvoice().getObjectName())
+        );
     }
 
     @Test
@@ -82,12 +88,13 @@ class CorrectionInvoiceMapperTest {
         Invoice invoice = mockAndGetInvoice();
         CorrectionInvoice convertedEntity = mapper.convertToEntity(correctionInvoiceDto);
 
-        assertAll(() -> {
-            assertEquals("FK/2", convertedEntity.getObjectName());
-            assertEquals("Reason DTO", convertedEntity.getCorrectionReason());
-            assertNotNull(convertedEntity.getOriginalInvoice());
-            assertEquals(invoice.getObjectName(), convertedEntity.getOriginalInvoice().getObjectName());
-        });
+        assertAll(
+                () -> assertEquals("FK/2", convertedEntity.getObjectName()),
+                () -> assertEquals("Reason DTO", convertedEntity.getCorrectionReason()),
+                () -> assertEquals("CASH", convertedEntity.getPayment().getMethod()),
+                () -> assertNotNull(convertedEntity.getOriginalInvoice()),
+                () -> assertEquals(invoice.getObjectName(), convertedEntity.getOriginalInvoice().getObjectName())
+        );
     }
 
     @Test
@@ -99,12 +106,14 @@ class CorrectionInvoiceMapperTest {
 
         verifyNoInteractions(invoiceRepository);
 
-        assertAll(() -> {
-            assertEquals("FK/2", correctionInvoice.getObjectName());
-            assertEquals("Reason DTO", correctionInvoice.getCorrectionReason());
-            assertNotNull(correctionInvoice.getOriginalInvoice());
-            assertEquals("F/16", correctionInvoice.getOriginalInvoice().getObjectName());
-        });
+        assertAll(
+                () -> assertEquals("FK/2", correctionInvoice.getObjectName()),
+                () -> assertEquals("Reason DTO", correctionInvoice.getCorrectionReason()),
+                () -> assertEquals(BigDecimal.ONE, correctionInvoice.getPayment().getPaidAmount()),
+                () -> assertEquals(LocalDate.of(2024, Month.MARCH, 1), correctionInvoice.getPayment().getPaidAmountDate()),
+                () -> assertNotNull(correctionInvoice.getOriginalInvoice()),
+                () -> assertEquals("F/16", correctionInvoice.getOriginalInvoice().getObjectName())
+        );
     }
 
     @Test
@@ -116,11 +125,11 @@ class CorrectionInvoiceMapperTest {
 
         verifyNoInteractions(invoiceRepository);
 
-        assertAll(() -> {
-            assertEquals("FK/2", correctionInvoice.getObjectName());
-            assertEquals("Reason DTO", correctionInvoice.getCorrectionReason());
-            assertNull(correctionInvoice.getOriginalInvoice());
-        });
+        assertAll(
+                () -> assertEquals("FK/2", correctionInvoice.getObjectName()),
+                () -> assertEquals("Reason DTO", correctionInvoice.getCorrectionReason()),
+                () -> assertNull(correctionInvoice.getOriginalInvoice())
+        );
     }
 
     @Test
@@ -131,12 +140,12 @@ class CorrectionInvoiceMapperTest {
 
         verifyNoInteractions(invoiceRepository);
 
-        assertAll(() -> {
-            assertEquals("FK/1", correctionInvoice.getObjectName());
-            assertEquals("Reason", correctionInvoice.getCorrectionReason());
-            assertNotNull(correctionInvoice.getOriginalInvoice());
-            assertEquals("F/16", correctionInvoice.getOriginalInvoice().getObjectName());
-        });
+        assertAll(
+                () -> assertEquals("FK/1", correctionInvoice.getObjectName()),
+                () -> assertEquals("Reason", correctionInvoice.getCorrectionReason()),
+                () -> assertNotNull(correctionInvoice.getOriginalInvoice()),
+                () -> assertEquals("F/16", correctionInvoice.getOriginalInvoice().getObjectName())
+        );
     }
 
     private CorrectionInvoice getSampleEntity() {
@@ -151,6 +160,12 @@ class CorrectionInvoiceMapperTest {
         invoice.setObjectName("F/16");
         invoice.setComments("Test comment");
 
+        Payment payment = new Payment();
+        payment.setMethod("CASH");
+        payment.setDeadline(14);
+
+        invoice.setPayment(payment);
+
         correctionInvoice.setOriginalInvoice(invoice);
 
         return correctionInvoice;
@@ -163,10 +178,22 @@ class CorrectionInvoiceMapperTest {
         correctionInvoiceDto.setObjectName("FK/2");
         correctionInvoiceDto.setCorrectionReason("Reason DTO");
 
+        PaidAmountDto paidAmountDto = new PaidAmountDto();
+        paidAmountDto.setPaidAmount(BigDecimal.ONE);
+        paidAmountDto.setPaidAmountDate("2024-03-01");
+
+        correctionInvoiceDto.setPayment(paidAmountDto);
+
         InvoiceDto invoiceDto = new InvoiceDto();
         invoiceDto.setId(ORIGINAL_INVOICE_ID);
         invoiceDto.setObjectName("F/32");
         invoiceDto.setComments("Test DTO comment");
+
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setMethod("CASH");
+        paymentDto.setDeadline(14);
+
+        invoiceDto.setPayment(paymentDto);
 
         correctionInvoiceDto.setOriginalInvoice(invoiceDto);
 
@@ -178,6 +205,13 @@ class CorrectionInvoiceMapperTest {
         invoice.setId(ORIGINAL_INVOICE_ID);
         invoice.setObjectName("F/32");
         invoice.setComments("Test comment");
+
+        Payment payment = new Payment();
+        payment.setMethod("CASH");
+        payment.setDeadline(14);
+
+        invoice.setPayment(payment);
+
         when(invoiceRepository.getReferenceById(ORIGINAL_INVOICE_ID)).thenReturn(invoice);
 
         return invoice;

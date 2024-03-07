@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS payment
 
 CREATE TABLE IF NOT EXISTS position
 (
-    discount NUMERIC(5, 2),
+    discount NUMERIC(3),
     quantity NUMERIC(8, 3),
     unit VARCHAR(255),
     unit_price NUMERIC(9, 2),

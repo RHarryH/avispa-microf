@@ -25,13 +25,13 @@ import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.microf.model.invoice.AbstractInvoiceService;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
-import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
-import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
-import com.avispa.microf.model.invoice.service.file.data.InvoiceDataConverter;
 import com.avispa.microf.model.invoice.type.correction.CorrectionInvoice;
 import com.avispa.microf.model.invoice.type.correction.CorrectionInvoiceDto;
 import com.avispa.microf.model.invoice.type.correction.CorrectionInvoiceMapper;
 import com.avispa.microf.model.invoice.type.correction.CorrectionInvoiceRepository;
+import com.avispa.microf.model.invoice.type.correction.service.file.CorrectionInvoiceFile;
+import com.avispa.microf.model.invoice.type.correction.service.file.data.CorrectionInvoiceData;
+import com.avispa.microf.model.invoice.type.correction.service.file.data.CorrectionInvoiceDataConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,28 +42,40 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class CorrectionInvoiceService extends AbstractInvoiceService<CorrectionInvoice, CorrectionInvoiceDto, CorrectionInvoiceRepository, CorrectionInvoiceMapper> {
-    private final InvoiceDataConverter invoiceDataConverter;
+    private final CorrectionInvoiceDataConverter correctionInvoiceDataConverter;
+
+    private final CorrectionInvoiceValidator validator;
 
     @Autowired
-    public CorrectionInvoiceService(CorrectionInvoiceRepository repository, CorrectionInvoiceMapper invoiceMapper,
-                                    InvoiceDataConverter invoiceDataConverter,
+    public CorrectionInvoiceService(CorrectionInvoiceRepository repository, CorrectionInvoiceMapper correctionInvoiceMapper,
+                                    CorrectionInvoiceDataConverter correctionInvoiceDataConverter,
+                                    CorrectionInvoiceValidator validator,
                                     ContentService contentService,
                                     ContentMapper contentMapper,
                                     RenditionService renditionService,
                                     FileStore fileStore,
                                     CounterStrategy counterStrategy,
                                     ContextService contextService) {
-        super(repository, invoiceMapper, contentService, contentMapper, renditionService, fileStore, counterStrategy, contextService);
-        this.invoiceDataConverter = invoiceDataConverter;
+        super(repository, correctionInvoiceMapper, contentService, contentMapper, renditionService, fileStore, counterStrategy, contextService);
+        this.correctionInvoiceDataConverter = correctionInvoiceDataConverter;
+        this.validator = validator;
     }
 
     @Override
-    protected InvoiceData getInvoiceData(CorrectionInvoice invoice) {
-        return null; //TODO
+    public void add(CorrectionInvoice entity) {
+        validator.validate(entity);
+
+        super.add(entity);
     }
 
     @Override
-    protected IInvoiceFile getInvoiceFile(String templatePath) {
-        return null; //TODO
+    protected CorrectionInvoiceData getInvoiceData(CorrectionInvoice invoice) {
+        return correctionInvoiceDataConverter.convert(invoice);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected CorrectionInvoiceFile getInvoiceFile(String templatePath) {
+        return new CorrectionInvoiceFile(templatePath);
     }
 }

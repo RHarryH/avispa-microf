@@ -52,7 +52,7 @@ public class Position extends EcmObject {
     private BigDecimal unitPrice;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @Column(precision=5, scale=2)
+    @Column(precision = 3)
     private BigDecimal discount;
 
     private String vatRate;

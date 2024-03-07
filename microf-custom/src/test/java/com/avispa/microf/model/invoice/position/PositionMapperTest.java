@@ -37,14 +37,14 @@ class PositionMapperTest {
         Position position = getSampleEntity();
         PositionDto convertedDto = mapper.convertToDto(position);
 
-        assertAll(() -> {
-            assertEquals("Position", convertedDto.getObjectName());
-            assertEquals(BigDecimal.ONE, convertedDto.getQuantity());
-            assertEquals("HOUR", convertedDto.getUnit());
-            assertEquals(BigDecimal.ONE, convertedDto.getUnitPrice());
-            assertEquals(BigDecimal.ZERO, convertedDto.getDiscount());
-            assertEquals("VAT_23", convertedDto.getVatRate());
-        });
+        assertAll(
+                () -> assertEquals("Position", convertedDto.getObjectName()),
+                () -> assertEquals(BigDecimal.ONE, convertedDto.getQuantity()),
+                () -> assertEquals("HOUR", convertedDto.getUnit()),
+                () -> assertEquals(BigDecimal.ONE, convertedDto.getUnitPrice()),
+                () -> assertEquals(BigDecimal.ZERO, convertedDto.getDiscount()),
+                () -> assertEquals("VAT_23", convertedDto.getVatRate())
+        );
     }
 
     @Test
@@ -52,14 +52,14 @@ class PositionMapperTest {
         PositionDto positionDto = getSampleDto();
         Position convertedEntity = mapper.convertToEntity(positionDto);
 
-        assertAll(() -> {
-            assertEquals("Position DTO", convertedEntity.getObjectName());
-            assertEquals(BigDecimal.TEN, convertedEntity.getQuantity());
-            assertEquals("PIECE", convertedEntity.getUnit());
-            assertEquals(BigDecimal.TEN, convertedEntity.getUnitPrice());
-            assertEquals(BigDecimal.ONE, convertedEntity.getDiscount());
-            assertEquals("VAT_00", convertedEntity.getVatRate());
-        });
+        assertAll(
+                () -> assertEquals("Position DTO", convertedEntity.getObjectName()),
+                () -> assertEquals(BigDecimal.TEN, convertedEntity.getQuantity()),
+                () -> assertEquals("PIECE", convertedEntity.getUnit()),
+                () -> assertEquals(BigDecimal.TEN, convertedEntity.getUnitPrice()),
+                () -> assertEquals(BigDecimal.ONE, convertedEntity.getDiscount()),
+                () -> assertEquals("VAT_00", convertedEntity.getVatRate())
+        );
     }
 
     @Test
@@ -68,14 +68,14 @@ class PositionMapperTest {
         PositionDto positionDto = getSampleDto();
         mapper.updateEntityFromDto(positionDto, position);
 
-        assertAll(() -> {
-            assertEquals("Position DTO", position.getObjectName());
-            assertEquals(BigDecimal.TEN, position.getQuantity());
-            assertEquals("PIECE", position.getUnit());
-            assertEquals(BigDecimal.TEN, position.getUnitPrice());
-            assertEquals(BigDecimal.ONE, position.getDiscount());
-            assertEquals("VAT_00", position.getVatRate());
-        });
+        assertAll(
+                () -> assertEquals("Position DTO", position.getObjectName()),
+                () -> assertEquals(BigDecimal.TEN, position.getQuantity()),
+                () -> assertEquals("PIECE", position.getUnit()),
+                () -> assertEquals(BigDecimal.TEN, position.getUnitPrice()),
+                () -> assertEquals(BigDecimal.ONE, position.getDiscount()),
+                () -> assertEquals("VAT_00", position.getVatRate())
+        );
     }
 
     @Test
@@ -84,14 +84,14 @@ class PositionMapperTest {
         PositionDto positionDto = getSampleDto();
         mapper.updateEntityFromDto(positionDto, position);
 
-        assertAll(() -> {
-            assertEquals("Position DTO", position.getObjectName());
-            assertEquals(BigDecimal.TEN, position.getQuantity());
-            assertEquals("PIECE", position.getUnit());
-            assertEquals(BigDecimal.TEN, position.getUnitPrice());
-            assertEquals(BigDecimal.ONE, position.getDiscount());
-            assertEquals("VAT_00", position.getVatRate());
-        });
+        assertAll(
+                () -> assertEquals("Position DTO", position.getObjectName()),
+                () -> assertEquals(BigDecimal.TEN, position.getQuantity()),
+                () -> assertEquals("PIECE", position.getUnit()),
+                () -> assertEquals(BigDecimal.TEN, position.getUnitPrice()),
+                () -> assertEquals(BigDecimal.ONE, position.getDiscount()),
+                () -> assertEquals("VAT_00", position.getVatRate())
+        );
     }
 
     @Test
@@ -99,14 +99,14 @@ class PositionMapperTest {
         Position position = getSampleEntity();
         mapper.updateEntityFromDto(null, position);
 
-        assertAll(() -> {
-            assertEquals("Position", position.getObjectName());
-            assertEquals(BigDecimal.ONE, position.getQuantity());
-            assertEquals("HOUR", position.getUnit());
-            assertEquals(BigDecimal.ONE, position.getUnitPrice());
-            assertEquals(BigDecimal.ZERO, position.getDiscount());
-            assertEquals("VAT_23", position.getVatRate());
-        });
+        assertAll(
+                () -> assertEquals("Position", position.getObjectName()),
+                () -> assertEquals(BigDecimal.ONE, position.getQuantity()),
+                () -> assertEquals("HOUR", position.getUnit()),
+                () -> assertEquals(BigDecimal.ONE, position.getUnitPrice()),
+                () -> assertEquals(BigDecimal.ZERO, position.getDiscount()),
+                () -> assertEquals("VAT_23", position.getVatRate())
+        );
     }
 
     private Position getSampleEntity() {

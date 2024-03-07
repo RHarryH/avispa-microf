@@ -29,6 +29,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -40,7 +41,16 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Payment extends EcmObject {
+
+    public Payment(Payment payment, BigDecimal paidAmount, LocalDate paidAmountDate) {
+        this.method = payment.method;
+        this.paidAmount = paidAmount;
+        this.paidAmountDate = paidAmountDate;
+        this.deadline = payment.deadline;
+        this.bankAccount = payment.bankAccount;
+    }
 
     @Column(nullable = false)
     @Dictionary(name = "PaymentMethod")

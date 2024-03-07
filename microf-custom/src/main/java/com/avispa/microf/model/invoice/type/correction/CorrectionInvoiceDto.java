@@ -20,8 +20,10 @@ package com.avispa.microf.model.invoice.type.correction;
 
 import com.avispa.ecm.model.configuration.display.annotation.DisplayName;
 import com.avispa.microf.model.invoice.BaseInvoiceDto;
+import com.avispa.microf.model.invoice.payment.PaidAmountDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
 import com.avispa.microf.model.invoice.type.vat.InvoiceDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,12 +43,17 @@ public class CorrectionInvoiceDto extends BaseInvoiceDto {
 
     private InvoiceDto originalInvoice;
 
+    private @Valid PaidAmountDto payment = new PaidAmountDto();
+
     /**
-     * Copy positions from original invoice
+     * Copy positions and comments from original invoice
      */
     @Override
     public void inherit() {
         this.setPositions(originalInvoice.getPositions().stream().map(PositionDto::new).toList());
+
+        this.payment.setPaidAmount(originalInvoice.getPayment().getPaidAmount());
+        this.payment.setPaidAmountDate(originalInvoice.getPayment().getPaidAmountDate());
 
         if (StringUtils.isNotEmpty(originalInvoice.getComments())) {
             this.setComments("Oryginalny komentarz: " + originalInvoice.getComments());

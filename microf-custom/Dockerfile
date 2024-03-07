@@ -6,7 +6,7 @@ RUN java -Djarmode=layertools -jar microf.jar extract
 
 FROM eclipse-temurin:17.0.9_9-jre-alpine
 
-MAINTAINER rafalhiszpanski.pl
+LABEL org.opencontainers.image.authors="rafalhiszpanski.pl"
 
 ENV AVISPA_ECM_FILE_STORE_PATH="/home/microf/default-file-store"
 ENV AVISPA_ECM_FILE_STORE_NAME="default-file-store"

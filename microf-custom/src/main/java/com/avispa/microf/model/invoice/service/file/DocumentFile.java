@@ -18,7 +18,7 @@
 
 package com.avispa.microf.model.invoice.service.file;
 
-import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
+import com.avispa.microf.model.invoice.service.file.data.FileData;
 
 import java.io.Closeable;
 import java.nio.file.Path;
@@ -26,9 +26,9 @@ import java.nio.file.Path;
 /**
  * @author Rafał Hiszpański
  */
-public interface IInvoiceFile extends Closeable {
+public interface DocumentFile<T extends FileData> extends Closeable {
 
-    void generate(InvoiceData invoiceData, String issuerName);
+    void generate(T context, String issuerName);
 
     Path save(String path);
 

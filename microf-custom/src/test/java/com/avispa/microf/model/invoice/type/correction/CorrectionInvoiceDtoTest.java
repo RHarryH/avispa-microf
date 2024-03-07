@@ -25,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 import static com.avispa.microf.util.TestValidationUtils.getCurrentDate;
@@ -54,21 +53,9 @@ class CorrectionInvoiceDtoTest {
     }
 
     @Test
-    void givenEmptyPositions_whenValidate_thenFail() {
-        correctionInvoiceDto.setPositions(Collections.emptyList());
-        validate(correctionInvoiceDto, InvoiceDto.VM_POSITIONS_NOT_EMPTY);
-    }
-
-    @Test
     void givenCorrectionReasonExceedMaxLength_whenValidate_thenFail() {
         correctionInvoiceDto.setCorrectionReason(RandomStringUtils.randomAlphabetic(201));
         validate(correctionInvoiceDto, CorrectionInvoiceDto.VM_CORRECTION_REASON_NO_LONGER);
-    }
-
-    @Test
-    void givenCommentsExceedMaxLength_whenValidate_thenFail() {
-        correctionInvoiceDto.setComments(RandomStringUtils.randomAlphabetic(201));
-        validate(correctionInvoiceDto, InvoiceDto.VM_COMMENTS_NO_LONGER);
     }
 
     @Test
@@ -88,11 +75,13 @@ class CorrectionInvoiceDtoTest {
         correctionInvoiceDto.inherit();
 
         // then
-        assertAll(() -> {
-            assertEquals("Oryginalny komentarz: Original comment", correctionInvoiceDto.getComments());
-            assertFalse(correctionInvoiceDto.getPositions().isEmpty());
-            PositionDto actualPositionDto = correctionInvoiceDto.getPositions().get(0);
-            assertEquals("Original name", actualPositionDto.getObjectName());
-        });
+        assertAll(
+                () -> assertEquals("Oryginalny komentarz: Original comment", correctionInvoiceDto.getComments()),
+                () -> assertFalse(correctionInvoiceDto.getPositions().isEmpty()),
+                () -> {
+                    PositionDto actualPositionDto = correctionInvoiceDto.getPositions().get(0);
+                    assertEquals("Original name", actualPositionDto.getObjectName());
+                }
+        );
     }
 }

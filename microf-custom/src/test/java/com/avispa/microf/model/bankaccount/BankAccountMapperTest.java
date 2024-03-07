@@ -35,11 +35,11 @@ class BankAccountMapperTest {
         BankAccount bankAccount = getSampleEntity();
         BankAccountDto convertedDto = mapper.convertToDto(bankAccount);
 
-        assertAll(() -> {
-            assertEquals("Bank entity", convertedDto.getObjectName());
-            assertEquals("Bank", convertedDto.getBankName());
-            assertEquals("PL 12 3456 7890 1234 5678", convertedDto.getAccountNumber());
-        });
+        assertAll(
+                () -> assertEquals("Bank entity", convertedDto.getObjectName()),
+                () -> assertEquals("Bank", convertedDto.getBankName()),
+                () -> assertEquals("PL 12 3456 7890 1234 5678", convertedDto.getAccountNumber())
+        );
     }
 
     @Test
@@ -47,11 +47,11 @@ class BankAccountMapperTest {
         BankAccountDto bankAccountDto = getSampleDto();
         BankAccount convertedEntity = mapper.convertToEntity(bankAccountDto);
 
-        assertAll(() -> {
-            assertEquals("Bank DTO", convertedEntity.getObjectName());
-            assertEquals("DTO Bank", convertedEntity.getBankName());
-            assertEquals("PL123456789012345678", convertedEntity.getAccountNumber());
-        });
+        assertAll(
+                () -> assertEquals("Bank DTO", convertedEntity.getObjectName()),
+                () -> assertEquals("DTO Bank", convertedEntity.getBankName()),
+                () -> assertEquals("PL123456789012345678", convertedEntity.getAccountNumber())
+        );
     }
 
     @Test
@@ -60,11 +60,11 @@ class BankAccountMapperTest {
         BankAccountDto bankAccountDto = getSampleDto();
         mapper.updateEntityFromDto(bankAccountDto, bankAccount);
 
-        assertAll(() -> {
-            assertEquals("Bank DTO", bankAccount.getObjectName());
-            assertEquals("DTO Bank", bankAccount.getBankName());
-            assertEquals("PL123456789012345678", bankAccount.getAccountNumber());
-        });
+        assertAll(
+                () -> assertEquals("Bank DTO", bankAccount.getObjectName()),
+                () -> assertEquals("DTO Bank", bankAccount.getBankName()),
+                () -> assertEquals("PL123456789012345678", bankAccount.getAccountNumber())
+        );
     }
 
     @Test
@@ -73,11 +73,11 @@ class BankAccountMapperTest {
         BankAccountDto bankAccountDto = getSampleDto();
         mapper.updateEntityFromDto(bankAccountDto, bankAccount);
 
-        assertAll(() -> {
-            assertEquals("Bank DTO", bankAccount.getObjectName());
-            assertEquals("DTO Bank", bankAccount.getBankName());
-            assertEquals("PL123456789012345678", bankAccount.getAccountNumber());
-        });
+        assertAll(
+                () -> assertEquals("Bank DTO", bankAccount.getObjectName()),
+                () -> assertEquals("DTO Bank", bankAccount.getBankName()),
+                () -> assertEquals("PL123456789012345678", bankAccount.getAccountNumber())
+        );
     }
 
     @Test
@@ -85,11 +85,11 @@ class BankAccountMapperTest {
         BankAccount bankAccount = getSampleEntity();
         mapper.updateEntityFromDto(null, bankAccount);
 
-        assertAll(() -> {
-            assertEquals("Bank entity", bankAccount.getObjectName());
-            assertEquals("Bank", bankAccount.getBankName());
-            assertEquals("PL123456789012345678", bankAccount.getAccountNumber());
-        });
+        assertAll(
+                () -> assertEquals("Bank entity", bankAccount.getObjectName()),
+                () -> assertEquals("Bank", bankAccount.getBankName()),
+                () -> assertEquals("PL123456789012345678", bankAccount.getAccountNumber())
+        );
     }
 
     private static BankAccount getSampleEntity() {

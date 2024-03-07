@@ -52,10 +52,5 @@ public class InvoiceDto extends BaseInvoiceDto {
     private String serviceDate;
 
     @NotNull(message = VM_PAYMENT_NOT_EMPTY)
-    private @Valid PaymentDto payment;
-
-    public InvoiceDto() {
-        super();
-        this.payment = new PaymentDto();
-    }
+    private @Valid PaymentDto payment = new PaymentDto();
 }

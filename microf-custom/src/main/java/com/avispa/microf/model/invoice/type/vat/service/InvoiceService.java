@@ -25,14 +25,13 @@ import com.avispa.ecm.model.filestore.FileStore;
 import com.avispa.ecm.service.rendition.RenditionService;
 import com.avispa.microf.model.invoice.AbstractInvoiceService;
 import com.avispa.microf.model.invoice.service.counter.CounterStrategy;
-import com.avispa.microf.model.invoice.service.file.IInvoiceFile;
-import com.avispa.microf.model.invoice.service.file.InvoiceFile;
-import com.avispa.microf.model.invoice.service.file.data.InvoiceData;
-import com.avispa.microf.model.invoice.service.file.data.InvoiceDataConverter;
 import com.avispa.microf.model.invoice.type.vat.Invoice;
 import com.avispa.microf.model.invoice.type.vat.InvoiceDto;
 import com.avispa.microf.model.invoice.type.vat.InvoiceMapper;
 import com.avispa.microf.model.invoice.type.vat.InvoiceRepository;
+import com.avispa.microf.model.invoice.type.vat.service.file.InvoiceFile;
+import com.avispa.microf.model.invoice.type.vat.service.file.data.InvoiceData;
+import com.avispa.microf.model.invoice.type.vat.service.file.data.InvoiceDataConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -64,7 +63,8 @@ public class InvoiceService extends AbstractInvoiceService<Invoice, InvoiceDto, 
     }
 
     @Override
-    protected IInvoiceFile getInvoiceFile(String templatePath) {
+    @SuppressWarnings("unchecked")
+    protected InvoiceFile getInvoiceFile(String templatePath) {
         return new InvoiceFile(templatePath);
     }
 }

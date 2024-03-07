@@ -79,7 +79,7 @@ class PaymentDataTest {
 
         when(invoice.getPayment()).thenReturn(payment);
 
-        PaymentData paymentData = PaymentData.of(invoice, BigDecimal.TEN, paymentTypeDict);
+        PaymentData paymentData = PaymentData.of(invoice.getPayment(), invoice.getIssueDate(), BigDecimal.TEN, paymentTypeDict);
 
         assertEquals("DO ZAPŁATY", paymentData.getStatus());
         assertEquals(CASH_LABEL, paymentData.getMethod());
@@ -100,7 +100,7 @@ class PaymentDataTest {
 
         when(invoice.getPayment()).thenReturn(payment);
 
-        PaymentData paymentData = PaymentData.of(invoice, BigDecimal.TEN, paymentTypeDict);
+        PaymentData paymentData = PaymentData.of(invoice.getPayment(), invoice.getIssueDate(), BigDecimal.TEN, paymentTypeDict);
 
         assertEquals("DO ZAPŁATY", paymentData.getStatus());
         assertEquals(BANK_TRANSFER_LABEL, paymentData.getMethod());
@@ -121,7 +121,7 @@ class PaymentDataTest {
 
         when(invoice.getPayment()).thenReturn(payment);
 
-        PaymentData paymentData = PaymentData.of(invoice, BigDecimal.TEN, paymentTypeDict);
+        PaymentData paymentData = PaymentData.of(invoice.getPayment(), invoice.getIssueDate(), BigDecimal.TEN, paymentTypeDict);
 
         assertEquals("DO ZAPŁATY", paymentData.getStatus());
         assertEquals(CASH_LABEL, paymentData.getMethod());
@@ -142,7 +142,7 @@ class PaymentDataTest {
 
         when(invoice.getPayment()).thenReturn(payment);
 
-        PaymentData paymentData = PaymentData.of(invoice, BigDecimal.TEN, paymentTypeDict);
+        PaymentData paymentData = PaymentData.of(invoice.getPayment(), invoice.getIssueDate(), BigDecimal.TEN, paymentTypeDict);
 
         assertEquals("DO ZAPŁATY", paymentData.getStatus());
         assertEquals(BANK_TRANSFER_LABEL, paymentData.getMethod());
@@ -164,7 +164,7 @@ class PaymentDataTest {
 
         when(invoice.getPayment()).thenReturn(payment);
 
-        PaymentData paymentData = PaymentData.of(invoice, BigDecimal.TEN, paymentTypeDict);
+        PaymentData paymentData = PaymentData.of(invoice.getPayment(), invoice.getIssueDate(), BigDecimal.TEN, paymentTypeDict);
 
         assertEquals("DO ZAPŁATY", paymentData.getStatus());
         assertEquals(CASH_LABEL, paymentData.getMethod());
@@ -186,7 +186,7 @@ class PaymentDataTest {
 
         when(invoice.getPayment()).thenReturn(payment);
 
-        PaymentData paymentData = PaymentData.of(invoice, BigDecimal.TEN, paymentTypeDict);
+        PaymentData paymentData = PaymentData.of(invoice.getPayment(), invoice.getIssueDate(), BigDecimal.TEN, paymentTypeDict);
 
         assertEquals("NADPŁATA", paymentData.getStatus());
         assertEquals(CASH_LABEL, paymentData.getMethod());
@@ -208,7 +208,7 @@ class PaymentDataTest {
 
         when(invoice.getPayment()).thenReturn(payment);
 
-        PaymentData paymentData = PaymentData.of(invoice, BigDecimal.TEN, paymentTypeDict);
+        PaymentData paymentData = PaymentData.of(invoice.getPayment(), invoice.getIssueDate(), BigDecimal.TEN, paymentTypeDict);
 
         assertEquals("DO ZAPŁATY", paymentData.getStatus());
         assertEquals(BANK_TRANSFER_LABEL, paymentData.getMethod());

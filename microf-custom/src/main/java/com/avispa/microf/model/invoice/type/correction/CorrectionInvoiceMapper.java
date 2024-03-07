@@ -18,12 +18,15 @@
 
 package com.avispa.microf.model.invoice.type.correction;
 
-import com.avispa.ecm.model.EcmObjectRepository;
 import com.avispa.microf.model.invoice.AbstractInvoiceMapper;
+import com.avispa.microf.model.invoice.payment.Payment;
 import com.avispa.microf.model.invoice.position.PositionMapper;
 import com.avispa.microf.model.invoice.type.vat.Invoice;
 import com.avispa.microf.model.invoice.type.vat.InvoiceDto;
 import com.avispa.microf.model.invoice.type.vat.InvoiceMapper;
+import com.avispa.microf.model.invoice.type.vat.InvoiceRepository;
+import org.apache.logging.log4j.util.Strings;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -32,14 +35,25 @@ import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         uses = {InvoiceMapper.class, PositionMapper.class})
 public abstract class CorrectionInvoiceMapper extends AbstractInvoiceMapper<CorrectionInvoice, CorrectionInvoiceDto> {
-
     @Autowired
-    private EcmObjectRepository<Invoice> invoiceRepository;
+    private InvoiceRepository invoiceRepository;
+
+    @AfterMapping
+    public void createNewPayment(CorrectionInvoiceDto source, @MappingTarget CorrectionInvoice target) {
+        if (target.getOriginalInvoice() != null) {
+            target.setPayment(new Payment(target.getOriginalInvoice().getPayment(),
+                    source.getPayment().getPaidAmount(),
+                    stringToLocalDate(source.getPayment().getPaidAmountDate())));
+        }
+    }
 
     @Override
+    @Mapping(target = "payment", ignore = true)
     @Mapping(target = "originalInvoice", qualifiedByName = "originalInvoiceToInvoice")
     public abstract CorrectionInvoice convertToEntity(CorrectionInvoiceDto dto);
 
@@ -57,5 +71,9 @@ public abstract class CorrectionInvoiceMapper extends AbstractInvoiceMapper<Corr
     @Named("originalInvoiceToInvoice")
     protected Invoice originalInvoiceIdToInvoice(InvoiceDto invoiceDto) {
         return invoiceRepository.getReferenceById(invoiceDto.getId());
+    }
+
+    protected LocalDate stringToLocalDate(String date) {
+        return Strings.isBlank(date) ? null : LocalDate.parse(date);
     }
 }

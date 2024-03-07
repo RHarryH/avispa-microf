@@ -18,7 +18,6 @@
 
 package com.avispa.microf.model.invoice.position;
 
-import com.avispa.microf.model.invoice.position.PositionDto;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static com.avispa.microf.util.TestValidationUtils.validate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Rafał Hiszpański
@@ -40,6 +40,8 @@ class PositionDtoValidationTest {
         positionDto.setUnit("HOUR");
         positionDto.setVatRate("VAT_08");
         positionDto.setUnitPrice(BigDecimal.ONE);
+        positionDto.setDiscount(BigDecimal.TEN);
+        positionDto.setQuantity(BigDecimal.ONE);
     }
 
     @Test
@@ -94,5 +96,21 @@ class PositionDtoValidationTest {
     void givenNullVatRate_whenValidate_thenFail() {
         positionDto.setVatRate(null);
         validate(positionDto, PositionDto.VM_VAT_RATE_NOT_NULL);
+    }
+
+    @Test
+    void equalityTest() {
+        PositionDto expected = new PositionDto();
+        expected.setObjectName("Name");
+        expected.setUnit("HOUR");
+        expected.setVatRate("VAT_08");
+
+        // normally these numbers would not be equal to ONE, TEN and ZERO from BigDecimal but thanks to
+        // Lomboks annotation trailing zeroes are stripped
+        expected.setUnitPrice(new BigDecimal("1.0000"));
+        expected.setDiscount(new BigDecimal("10.000"));
+        expected.setQuantity(new BigDecimal("1.00000"));
+
+        assertEquals(expected, positionDto);
     }
 }

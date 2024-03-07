@@ -1,6 +1,6 @@
 /*
  * Avispa μF - invoice generating software built on top of Avispa ECM
- * Copyright (C) 2023 Rafał Hiszpański
+ * Copyright (C) 2024 Rafał Hiszpański
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.avispa.microf.model.invoice.service.file.data;
+package com.avispa.microf.model.invoice.type.correction.service.file.data;
 
 import com.avispa.ecm.model.configuration.dictionary.Dictionary;
 import com.avispa.ecm.model.configuration.dictionary.DictionaryService;
 import com.avispa.microf.model.invoice.payment.PaymentDto;
 import com.avispa.microf.model.invoice.position.PositionDto;
-import com.avispa.microf.model.invoice.type.vat.Invoice;
+import com.avispa.microf.model.invoice.type.correction.CorrectionInvoice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +31,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class InvoiceDataConverter {
+public class CorrectionInvoiceDataConverter {
     private final DictionaryService dictionaryService;
 
-    public InvoiceData convert(Invoice invoice) {
+    public CorrectionInvoiceData convert(CorrectionInvoice invoice) {
         Dictionary unitDict = dictionaryService.getDictionary(PositionDto.class, "unit");
         Dictionary vatRateDict = dictionaryService.getDictionary(PositionDto.class, "vatRate");
         Dictionary paymentMethodDict = dictionaryService.getDictionary(PaymentDto.class, "method");
 
-        return new InvoiceData(invoice, unitDict, vatRateDict, paymentMethodDict);
+        return new CorrectionInvoiceData(invoice, unitDict, vatRateDict, paymentMethodDict);
     }
 }

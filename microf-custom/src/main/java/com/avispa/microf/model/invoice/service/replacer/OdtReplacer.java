@@ -19,14 +19,16 @@
 package com.avispa.microf.model.invoice.service.replacer;
 
 import com.avispa.microf.model.invoice.service.file.variable.VariableNameGenerator;
+import com.avispa.microf.model.invoice.service.replacer.merge.CellMergeService;
+import com.avispa.microf.model.invoice.service.replacer.merge.MergeRegion;
+import lombok.extern.slf4j.Slf4j;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.doc.table.OdfTable;
 import org.odftoolkit.odfdom.dom.OdfContentDom;
 import org.odftoolkit.odfdom.dom.OdfStylesDom;
 import org.odftoolkit.odfdom.dom.element.table.TableTableElement;
 import org.odftoolkit.odfdom.dom.element.text.TextVariableSetElement;
 import org.odftoolkit.odfdom.pkg.OdfElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -35,17 +37,15 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author Rafał Hiszpański
  */
-public class OdtReplacer extends AbstractReplacer {
-    private static final Logger log = LoggerFactory.getLogger(OdtReplacer.class);
-
-    private final OdfTextDocument document;
+@Slf4j
+public class OdtReplacer implements TemplateReplacer {
+    private final CellMergeService cellMergeService = new CellMergeService();
+    protected final OdfTextDocument document;
 
     public OdtReplacer(OdfTextDocument document) {
         this.document = document;
@@ -108,46 +108,72 @@ public class OdtReplacer extends AbstractReplacer {
         }
     }
 
+    protected final void processTable(String tableName, Map<String, String> variables, String variablePrefix, boolean mergerWithSameName) {
+        OdfTable table = document.getTableByName(tableName);
+
+        if (null == table) {
+            log.warn("Table with name '{}' was not found", tableName);
+            return;
+        }
+
+        processTable(table, variables, variablePrefix, mergerWithSameName);
+    }
+
     /**
      * Creates rows in the table and populates it with values from variables. Variable names
      * are generated using {@see com.avispa.ecm.model.invoice.service.file.variable.VariableNameGenerator}.
-     * @param table table element
-     * @param variables list of variables
+     *
+     * @param table          table element
+     * @param variables      list of variables
      * @param variablePrefix prefix used for array variables
-     * @param cellsNum number of cells in row table
+     * @param mergeSameCells true if cells in first column should be merged if contain the same value
      */
-    protected final void processTable(TableTableElement table, Map<String, String> variables, String variablePrefix, int cellsNum) {
+    private void processTable(OdfTable table, Map<String, String> variables, String variablePrefix, boolean mergeSameCells) {
         String sizeVariableName = variablePrefix + "_size";
-        List<Node> rows = createRows(table, Integer.parseInt(variables.get(sizeVariableName)));
 
-        for(int row = 0; row < rows.size(); row++) {
-            Node rowNode = rows.get(row);
+        int cols = table.getColumnCount();
+        int rows = Integer.parseInt(variables.get(sizeVariableName));
 
-            for(int cell = 0; cell < cellsNum; cell++) {
-                String variableName = VariableNameGenerator.generateArrayVariableName(variablePrefix, row, cell);
-                setCellContent(rowNode, cell, variables.get(variableName));
+        createRows(table, rows - 1); // does not count template row
+
+        for (int col = 0; col < cols; col++) {
+            MergeRegion region = MergeRegion.start();
+
+            for (int row = 1; row <= rows; row++) {  // skip header
+                var cell = table.getCellByPosition(col, row);
+
+                String variableName = VariableNameGenerator.generateArrayVariableName(variablePrefix, row - 1, col); // variables are number from 0
+                String value = variables.get(variableName);
+                if (col == 0 && mergeSameCells) { // only for first column
+                    region = cellMergeService.checkMergeRegion(table.getCellByPosition(col, row - 1), value, region);
+                }
+
+                setCellContent(cell.getOdfElement(), value);
             }
+
+            cellMergeService.addRegion(region); // add current region
         }
+
+        cellMergeService.applyMerges(table);
     }
 
-    private List<Node> createRows(TableTableElement table, int dataSize) {
-        List<Node> rows = new ArrayList<>(dataSize);
-
-        // TODO: there is a bug with getLastChildElement() - fix when update provided
-        // there should be at least one template row containing style proper for rest of the
-        // rows
-        OdfElement templateRow = (OdfElement) table.getLastChild();
-        rows.add(templateRow);
-        for(int j = 1; j < dataSize; j++) { // there is n-1 rows created (template row excluded)
+    /**
+     * Creates missing row by cloning the template row
+     *
+     * @param table
+     * @param dataSize
+     */
+    private void createRows(OdfTable table, int dataSize) {
+        TableTableElement tableElement = table.getOdfElement();
+        // there should be at least one template row containing style proper for rest of the rows
+        OdfElement templateRow = tableElement.getLastChildElement();
+        for (int j = 0; j < dataSize; j++) {
             OdfElement row = templateRow.cloneElement();
-            rows.add(row);
-            table.appendChild(row);
+            tableElement.appendChild(row);
         }
-        return rows;
     }
 
-    private void setCellContent(Node row, int index, String content) {
-        Node cell = row.getChildNodes().item(index);
+    private void setCellContent(Node cell, String content) {
         cell.getFirstChild().setTextContent(content);
     }
 }
