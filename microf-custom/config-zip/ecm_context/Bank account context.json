@@ -1,0 +1,10 @@
+{
+  "context": {
+    "name": "Bank account context",
+    "type": "Bank account",
+    "importance": 5,
+    "configNames": [
+      "Bank account upsert"
+    ]
+  }
+}

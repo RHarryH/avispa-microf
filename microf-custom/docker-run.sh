@@ -7,8 +7,9 @@ else
 fi
 
 exec java -Dspring.profiles.active=prod \
-  -Dspring.datasource.user=${DATASOURCE_USERNAME} \
+  -Dspring.config.additional-location=file:/opt/ecm-client/config/microf.properties \
+  -Dspring.datasource.username=${DATASOURCE_USERNAME} \
   -Dspring.datasource.password=${DATASOURCE_PASSWORD} \
   -Davispa.ecm.file-store.path=${AVISPA_ECM_FILE_STORE_PATH} \
   -Davispa.ecm.file-store.name=${AVISPA_ECM_FILE_STORE_NAME} \
-  -cp "/opt/microf:/opt/microf/lib/*" org.springframework.boot.loader.launch.JarLauncher
+  org.springframework.boot.loader.launch.JarLauncher

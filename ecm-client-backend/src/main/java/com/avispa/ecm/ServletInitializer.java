@@ -25,7 +25,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(EcmClientConfiguration.class);
+		return application.sources(EcmClientApplication.class);
 	}
 
 }

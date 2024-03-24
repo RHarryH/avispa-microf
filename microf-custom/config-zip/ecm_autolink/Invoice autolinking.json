@@ -1,0 +1,11 @@
+{
+  "autolink": {
+    "name": "Invoice autolinking",
+    "defaultValue": "Unknown",
+    "rules": [
+      "Invoices",
+      "$datevalue('issueDate', 'yyyy')",
+      "$datevalue('issueDate', 'MM')"
+    ]
+  }
+}

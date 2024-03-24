@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="ECM Client Application" type="SpringBootApplicationConfigurationType"
+                   factoryName="Spring Boot">
+        <option name="ACTIVE_PROFILES" value="dev"/>
+        <option name="ALTERNATIVE_JRE_PATH" value="temurin-17"/>
+        <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true"/>
+        <module name="ecm-client-backend"/>
+        <option name="SPRING_BOOT_MAIN_CLASS" value="com.avispa.ecm.EcmClientApplication"/>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
+</component>

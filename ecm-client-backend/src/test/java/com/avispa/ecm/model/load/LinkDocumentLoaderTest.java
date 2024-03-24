@@ -42,7 +42,6 @@ import static org.mockito.Mockito.when;
  * @author Rafał Hiszpański
  */
 @SpringBootTest
-@ActiveProfiles("test")
 class LinkDocumentLoaderTest {
 
     @MockBean

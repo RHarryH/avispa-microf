@@ -42,8 +42,12 @@
 	</developers>
 
     <modules>
+		<module>ecm-client-backend-api</module>
+		<module>ecm-client-backend-test</module>
+		<module>ecm-client-backend-api-impl</module>
 		<module>ecm-client-backend</module>
 		<module>microf-custom</module>
+		<module>aggregate-report</module>
 	</modules>
 
     <properties>
@@ -51,16 +55,43 @@
 		<java.version>17</java.version>
 		<mapstruct.version>1.6.0.Beta1</mapstruct.version>
 		<project.version>${project.version}</project.version>
-		<sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/microf-custom/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${maven.multiModuleProjectDirectory}/aggregate-report/target/site/jacoco-aggregate/jacoco.xml
+		</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.skip>true</sonar.skip>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<artifactId>ecm</artifactId>
 				<groupId>com.avispa</groupId>
-				<version>2.2.0-SNAPSHOT</version>
+				<artifactId>ecm</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.avispa</groupId>
+				<artifactId>ecm-client-backend</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.avispa</groupId>
+				<artifactId>ecm-client-backend-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.avispa</groupId>
+				<artifactId>ecm-client-backend-api-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.avispa</groupId>
+				<artifactId>ecm-client-backend-test</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.avispa.microf</groupId>
+				<artifactId>microf-custom</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -118,7 +149,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -128,14 +159,6 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>false</filtering>
-			</resource>
-			<!-- enables variables replacement for application.properties file only -->
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>**/*application.properties</include>
-				</includes>
 			</resource>
 		</resources>
 

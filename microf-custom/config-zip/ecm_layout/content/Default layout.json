@@ -1,0 +1,46 @@
+{
+  "layout": {
+    "sections": [
+      {
+        "location": "sidebar",
+        "widgets": [
+          {
+            "label": "Repository",
+            "active": true,
+            "type": "repository"
+          }
+        ]
+      },
+      {
+        "location": "center",
+        "widgets": [
+          {
+            "label": "Properties",
+            "type": "properties"
+          },
+          {
+            "label": "Invoices",
+            "active": true,
+            "type": "list",
+            "configuration": "Invoice list widget"
+          },
+          {
+            "label": "Correction invoices",
+            "type": "list",
+            "configuration": "Correction invoice list widget"
+          },
+          {
+            "label": "Customers",
+            "type": "list",
+            "configuration": "Customer list widget"
+          },
+          {
+            "label": "Bank Accounts",
+            "type": "list",
+            "configuration": "Bank account list widget"
+          }
+        ]
+      }
+    ]
+  }
+}

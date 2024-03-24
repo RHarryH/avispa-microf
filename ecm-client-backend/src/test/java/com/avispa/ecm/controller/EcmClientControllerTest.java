@@ -35,6 +35,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -50,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Rafał Hiszpański
  */
-@WebMvcTest(EcmClientController.class)
+@WebMvcTest(value = EcmClientController.class, properties = "spring.main.allow-bean-definition-overriding=true")
 class EcmClientControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -68,7 +69,7 @@ class EcmClientControllerTest {
     @TestConfiguration
     public static class TestVersion {
         @Bean
-        public Version testVersion() {
+        public Version ecmClientVersion() {
             return getVersion();
         }
     }

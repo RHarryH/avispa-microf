@@ -1,0 +1,16 @@
+{
+  "dictionary": {
+    "name": "PaymentMethod",
+    "description": "Payment method",
+    "values": [
+      {
+        "key": "CASH",
+        "label": "gotówka"
+      },
+      {
+        "key": "BANK_TRANSFER",
+        "label": "przelew bankowy"
+      }
+    ]
+  }
+}

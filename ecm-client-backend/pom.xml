@@ -48,6 +48,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.avispa</groupId>
+            <artifactId>ecm-client-backend-api-impl</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
@@ -58,9 +63,32 @@
             <artifactId>wro4j-spring-boot-starter</artifactId>
             <version>0.12.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.avispa</groupId>
+            <artifactId>ecm-client-backend-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <!-- disable variables replacement for other files -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <!-- enables variables replacement for ecm-client.properties file only -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/ecm-client.properties</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <finalName>ecm-client-backend</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -84,6 +112,18 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
