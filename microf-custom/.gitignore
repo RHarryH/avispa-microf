@@ -1,4 +1,8 @@
 target/
+.prod.env
+/config/
+!/config/microf.docker.template.properties
+sql/06-avispa-*.sql
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

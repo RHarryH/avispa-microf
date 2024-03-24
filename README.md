@@ -73,8 +73,8 @@ can appear in the properties file.
 To build μF Docker image you can use following command:
 
 ```shell
-cd microf-custom
-docker build -t avispa/microf:latest -t avispa/microf:2.1.0 .
+cd ecm-client-backend
+docker build -t avispa/ecm-client-backend:latest -t avispa/ecm-client-backend:2.2.0 .
 ```
 
 The application should be available on port `8080`.
@@ -88,10 +88,10 @@ cd docker
 docker compose --env-file=.prod.env up -d
 ```
 
-To always rebuild μF image use below command. Ensure the related container does not exist.
+To always rebuild ECM Client image use below command. Ensure the related container does not exist.
 
 ```shell
-docker compose --env-file=.prod.env up -d --no-deps --build microf
+docker compose --env-file=.prod.env up -d --no-deps --build ecm-client
 ```
 
 To rebuild all images use below command

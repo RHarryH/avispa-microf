@@ -1,8 +1,0 @@
-{
-	"context": {
-		"name": "Folder context",
-		"type": "Folder",
-		"importance": 0,
-		"configNames": ["Folder property page"]
-	}
-}

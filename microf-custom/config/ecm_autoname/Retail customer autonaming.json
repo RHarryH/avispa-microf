@@ -1,7 +1,0 @@
-{
-	"autoname": {
-		"name": "Retail customer autonaming",
-		"rule": "$value('firstName') $value('lastName')",
-		"propertyName": "objectName"
-	}
-}

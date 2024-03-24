@@ -1,0 +1,7 @@
+{
+  "autoname": {
+    "name": "Invoice autonaming",
+    "rule": "F/$datevalue('issueDate', 'yyyy/MM')/$pad($value('serialNumber'), '3')",
+    "propertyName": "objectName"
+  }
+}

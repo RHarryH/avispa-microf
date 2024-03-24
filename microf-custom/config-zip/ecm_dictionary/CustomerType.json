@@ -1,0 +1,16 @@
+{
+  "dictionary": {
+    "name": "CustomerType",
+    "description": "Type of the customer",
+    "values": [
+      {
+        "key": "RETAIL",
+        "label": "Detaliczny"
+      },
+      {
+        "key": "CORPORATE",
+        "label": "Korporacyjny"
+      }
+    ]
+  }
+}

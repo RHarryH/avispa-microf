@@ -39,7 +39,6 @@ import static org.mockito.Mockito.when;
  * @author Rafał Hiszpański
  */
 @SpringBootTest
-@ActiveProfiles("test")
 class ApplicationLoaderTest {
 
     @MockBean(name = "applicationRepository")

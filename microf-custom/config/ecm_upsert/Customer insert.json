@@ -1,6 +1,0 @@
-{
-	"upsert": {
-		"name": "Customer insert",
-		"propertyPage": "Customer insert property page"
-	}
-}

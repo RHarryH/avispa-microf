@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MicroF Application" type="SpringBootApplicationConfigurationType"
+                 factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev"/>
+    <module name="microf-custom"/>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.avispa.ecm.EcmClientApplication"/>
+    <option name="VM_PARAMETERS" value="-Dspring.config.additional-location=file:config/microf.properties"/>
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/microf-custom"/>
+    <method v="2">
+      <option name="Make" enabled="true"/>
+    </method>
+  </configuration>
+</component>

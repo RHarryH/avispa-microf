@@ -1,7 +1,0 @@
-{
-	"autoname": {
-		"name": "Corporate customer autonaming",
-		"rule": "$value('companyName')",
-		"propertyName": "objectName"
-	}
-}

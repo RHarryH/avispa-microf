@@ -23,10 +23,19 @@ CREATE TABLE IF NOT EXISTS list_widget
 CREATE TABLE IF NOT EXISTS list_widget_properties
 (
     list_widget_id   CHAR(36) NOT NULL,
-    properties       VARCHAR(255),
     properties_order INT      NOT NULL,
+    properties_id CHAR(36) NOT NULL,
     PRIMARY KEY (list_widget_id, properties_order),
+    CONSTRAINT uk_list_widget_properties_properties_id UNIQUE (properties_id),
     CONSTRAINT fk_list_widget_properties_list_widget_id FOREIGN KEY (list_widget_id) REFERENCES list_widget
+);
+
+CREATE TABLE IF NOT EXISTS list_widget_property
+(
+    id    CHAR(36) NOT NULL,
+    label VARCHAR(255),
+    name  VARCHAR(255),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS layout
@@ -71,10 +80,11 @@ CREATE TABLE IF NOT EXISTS menu_item_items
 
 CREATE TABLE IF NOT EXISTS link_document
 (
-    id      CHAR(36) NOT NULL PRIMARY KEY,
-    type_id CHAR(36) NOT NULL,
-    title   VARCHAR(50),
-    message VARCHAR(50),
+    id            CHAR(36)     NOT NULL PRIMARY KEY,
+    link_property VARCHAR(255) NOT NULL,
+    type_id       CHAR(36)     NOT NULL,
+    title         VARCHAR(50),
+    message       VARCHAR(50),
     CONSTRAINT uk_link_document_type_id UNIQUE (type_id),
     CONSTRAINT fk_link_document_type_id FOREIGN KEY (type_id) REFERENCES type
 );

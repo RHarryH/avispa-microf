@@ -1,0 +1,10 @@
+{
+  "context": {
+    "name": "Document context",
+    "type": "Document",
+    "importance": 1,
+    "configNames": [
+      "Document property page"
+    ]
+  }
+}

@@ -33,6 +33,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LinkDocument extends EcmConfig {
+    @Column(nullable = false)
     private String linkProperty;
 
     @OneToOne(optional = false)

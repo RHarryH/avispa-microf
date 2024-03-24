@@ -1,0 +1,107 @@
+/*
+ * Avispa μF - invoice generating software built on top of Avispa ECM
+ * Copyright (C) 2023 Rafał Hiszpański
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package com.avispa.ecm.util;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.math.BigDecimal;
+import java.util.Locale;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * @author Rafał Hiszpański
+ */
+class FormatUtilsTest {
+    private static final String TEST_PATTERN = "#,##0.00";
+    @BeforeAll
+    public static void init() {
+        Locale.setDefault(new Locale("pl", "PL"));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"1.10,'1,10'", "1.2,'1,20'", "1.567,'1,57'", "1500,'1\u00A0500,00'"})
+    void formatMoney(BigDecimal input, String expected) {
+        assertThat(FormatUtils.formatMoney(input)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "200,'200'",
+            "2000.01,'2000'",
+            "1.567,'2'" // halve up rounding, should be additionally handled by validation to avoid that
+    })
+    void formatPercent(BigDecimal input, String expected) {
+        assertThat(FormatUtils.formatPercent(input)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"200,'200'", "2000.01,'2000,01'", "2.00,'2'", "1.567,'1,567'", "1.5678,'1,568'"})
+    void formatQuantity(BigDecimal input, String expected) {
+        assertThat(FormatUtils.formatQuantity(input)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"'1,10',1.10",
+            "'1,20',1.20",
+            "'1\u00A0500,00',1500.00"})
+    void parseMoney(String input, BigDecimal expected) {
+        assertThat(FormatUtils.parseMoney(input)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"'200,00',200.00",
+            "'2000,01',2000.01"})
+    void parsePercent(String input, BigDecimal expected) {
+        assertThat(FormatUtils.parsePercent(input)).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"'200',200",
+            "'12,00',12.00",
+            "'2000,01',2000.01",
+            "'1,567',1.567",
+            "'1,5678',1.5678"})
+    void parseQuantity(String input, BigDecimal expected) {
+        assertThat(FormatUtils.parseQuantity(input)).isEqualTo(expected);
+    }
+
+    @Test
+    void formatLocale() {
+        var value = new BigDecimal("1000");
+        assertAll(
+                () -> assertEquals("1,000.00", FormatUtils.format(value, TEST_PATTERN, Locale.ENGLISH)),
+                () -> assertEquals("1\u00A0000,00", FormatUtils.format(value, TEST_PATTERN, Locale.getDefault()))
+        );
+    }
+
+    @Test
+    void parseLocale() {
+        var value = new BigDecimal("1000.00");
+        assertAll(
+                () -> assertEquals(value, FormatUtils.parse("1,000.00", TEST_PATTERN, Locale.ENGLISH)),
+                () -> assertEquals(value, FormatUtils.parse("1\u00A0000,00", TEST_PATTERN, Locale.getDefault()))
+        );
+    }
+}

@@ -1,0 +1,76 @@
+version: "3.9"
+name: ecm-client
+services:
+  postgresql:
+    image: postgres:${POSTGRESQL_VERSION}
+    restart: always
+    volumes:
+      - ${WORKSPACE_PATH}/docker/data:/var/lib/postgresql/data
+      - ${WORKSPACE_PATH}/docker/sql:/docker-entrypoint-initdb.d/:ro
+    command: postgres -c listen_addresses='*'
+    environment:
+      TZ: Europe/Warsaw
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "ecm-client" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  ecm-client:
+    build:
+      dockerfile: Dockerfile
+    image: avispa/ecm-client-backend:2.2.0
+    restart: "no" #on-failure
+    ports:
+      - '8080:8080'
+      #- '5005:5005'
+    volumes:
+      - ${WORKSPACE_PATH}/docker/logs:/opt/ecm-client/logs
+      - ${WORKSPACE_PATH}/docker/repository:${FILE_STORE_PATH}
+    environment:
+      TZ: Europe/Warsaw
+      AVISPA_ECM_FILE_STORE_PATH: ${FILE_STORE_PATH}
+      AVISPA_ECM_FILE_STORE_NAME: ${FILE_STORE_NAME}
+      DATASOURCE_USERNAME: ${DATABASE_USER}
+      DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      REMOTE_DEBUG: 0
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    healthcheck:
+      test: "wget --no-verbose --quiet --tries=1 -O - localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ../../avispa-ecm-client-frontend
+      dockerfile: prod.Dockerfile
+    image: avispa/ecm-client-frontend:1.1.0
+    restart: "no" #on-failure
+    ports:
+      - '80:80'
+    #  - '80:3000' # use with dev.Dockerfile
+    environment:
+      TZ: Europe/Warsaw
+    networks:
+      - frontend
+    depends_on:
+      ecm-client:
+        condition: service_healthy
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

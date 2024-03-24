@@ -30,8 +30,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 @ControllerAdvice
 @Slf4j
-public class RestResponseEntityExceptionHandler
-        /*extends ResponseEntityExceptionHandler*/ {
+public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class, DataIntegrityViolationException.class, SQLIntegrityConstraintViolationException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Unexpected issue has happened. Please contact with the administrator.")
