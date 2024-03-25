@@ -82,7 +82,7 @@ public class InvoiceUtils {
         return invoice;
     }
 
-    private static Customer getCustomer() {
+    public static Customer getCustomer() {
         Address address = new Address();
         address.setObjectName("A");
         address.setPlace("Kielce");
