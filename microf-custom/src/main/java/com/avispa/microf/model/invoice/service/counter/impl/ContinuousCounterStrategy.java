@@ -36,15 +36,15 @@ public class ContinuousCounterStrategy implements CounterStrategy {
 
     @Override
     public int getNextSerialNumber(BaseInvoice invoice) {
-        return getMax() + 1;
+        return (int) (getMax(invoice.getClass()) + 1);
     }
 
-    private Integer getMax() {
+    private Long getMax(Class<? extends BaseInvoice> clazz) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
-        Root<BaseInvoice> queryRoot = criteriaQuery.from(BaseInvoice.class);
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<? extends BaseInvoice> queryRoot = criteriaQuery.from(clazz);
 
-        criteriaQuery = criteriaQuery.select(criteriaBuilder.coalesce(criteriaBuilder.max(queryRoot.get("serialNumber")), 0));
+        criteriaQuery = criteriaQuery.select(criteriaBuilder.count(queryRoot));
 
         var query = entityManager.createQuery(criteriaQuery);
 

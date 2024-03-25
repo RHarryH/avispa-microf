@@ -25,6 +25,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import org.hibernate.query.sqm.TemporalUnit;
+
+import java.time.LocalDate;
 
 /**
  * This strategy resets counter every month based on the invoice service date
@@ -36,17 +40,19 @@ public class MonthCounterStrategy implements CounterStrategy {
 
     @Override
     public int getNextSerialNumber(BaseInvoice invoice) {
-        return getMax(invoice.getClass(), invoice.getIssueDate().getMonthValue()) + 1;
+        return getMax(invoice.getClass(), invoice.getIssueDate()) + 1;
     }
 
-    private Integer getMax(Class<? extends BaseInvoice> clazz, int month) {
+    private Integer getMax(Class<? extends BaseInvoice> clazz, LocalDate date) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
         Root<? extends BaseInvoice> queryRoot = criteriaQuery.from(clazz);
 
         criteriaQuery = criteriaQuery.select(criteriaBuilder.coalesce(criteriaBuilder.max(queryRoot.get("serialNumber")), 0));
-
-        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal(criteriaBuilder.function("month", Integer.class, queryRoot.get("issueDate")), month));
+        criteriaQuery = criteriaQuery.where(criteriaBuilder.equal
+                (((HibernateCriteriaBuilder) criteriaBuilder).truncate(queryRoot.get("issueDate"), TemporalUnit.MONTH),
+                        LocalDate.of(date.getYear(), date.getMonthValue(), 1))
+        );
 
         var query = entityManager.createQuery(criteriaQuery);
 
