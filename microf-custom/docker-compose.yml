@@ -24,7 +24,7 @@ services:
   microf:
     build:
       dockerfile: Dockerfile
-    image: avispa/microf-custom:2.2.0
+    image: avispa/microf:2.2.0
     restart: "no" #on-failure
     ports:
       - '8080:8080'

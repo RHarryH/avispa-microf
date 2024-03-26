@@ -25,6 +25,11 @@ import com.avispa.ecm.model.load.dto.LayoutDto;
 import com.avispa.ecm.model.load.dto.LinkDocumentDto;
 import com.avispa.ecm.model.load.dto.ListWidgetDto;
 import com.avispa.ecm.model.load.dto.MenuDto;
+import com.avispa.ecm.model.ui.application.Application;
+import com.avispa.ecm.model.ui.layout.Layout;
+import com.avispa.ecm.model.ui.menu.Menu;
+import com.avispa.ecm.model.ui.modal.link.LinkDocument;
+import com.avispa.ecm.model.ui.widget.list.ListWidget;
 import com.avispa.ecm.util.Version;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -62,11 +67,11 @@ public class EcmClientApplication {
     @Primary
     public ConfigurationRegistry ecmAppConfigurationRegistry() {
         var registry = new ConfigurationRegistry();
-        registry.register(ConfigurationType.of("ecm_application", ApplicationDto.class, false));
-        registry.register(ConfigurationType.of("ecm_list_widget", ListWidgetDto.class, false));
-        registry.register(ConfigurationType.of("ecm_menu", MenuDto.class, false));
-        registry.register(ConfigurationType.of("ecm_layout", LayoutDto.class, true));
-        registry.register(ConfigurationType.of("ecm_link_document", LinkDocumentDto.class, false), ECM_CONTEXT);
+        registry.register(ConfigurationType.of("ecm_application", Application.class, ApplicationDto.class, false));
+        registry.register(ConfigurationType.of("ecm_list_widget", ListWidget.class, ListWidgetDto.class, false));
+        registry.register(ConfigurationType.of("ecm_menu", Menu.class, MenuDto.class, false));
+        registry.register(ConfigurationType.of("ecm_layout", Layout.class, LayoutDto.class, true));
+        registry.register(ConfigurationType.of("ecm_link_document", LinkDocument.class, LinkDocumentDto.class, false), ECM_CONTEXT);
         return registry;
     }
 
