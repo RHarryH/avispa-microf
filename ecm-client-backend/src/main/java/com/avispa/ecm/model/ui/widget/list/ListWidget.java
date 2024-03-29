@@ -46,7 +46,7 @@ public class ListWidget extends EcmConfig {
 
     @OrderColumn(nullable = false)
     @Column(nullable = false)
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @OneToMany(orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ListWidgetProperty> properties;
 
     @Column(nullable = false, columnDefinition = "integer default 10")
