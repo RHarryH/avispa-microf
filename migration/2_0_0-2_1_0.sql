@@ -80,6 +80,11 @@ ALTER TABLE upsert
 ALTER TABLE upsert
     ALTER COLUMN property_page_id TYPE CHAR(36);
 
+ALTER TABLE list_widget_config
+    RENAME TO list_widget;
+ALTER TABLE list_widget_config_properties
+    RENAME TO list_widget_properties;
+
 -- Avispa μF
 ALTER TABLE address
     ALTER COLUMN id TYPE CHAR(36);
