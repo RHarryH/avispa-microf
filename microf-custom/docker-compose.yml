@@ -30,8 +30,8 @@ services:
       - '8080:8080'
       #- '5005:5005'
     volumes:
-      - ${WORKSPACE_PATH}/config/microf.docker.properties:/opt/ecm-client/config/microf.properties:ro
-      - ${WORKSPACE_PATH}/config/microf-configuration.zip:/opt/ecm-client/config/microf-configuration.zip:ro
+      - ${WORKSPACE_PATH}/microf-custom/config/microf.docker.properties:/opt/ecm-client/config/microf.properties:ro
+      - ${WORKSPACE_PATH}/microf-custom/config/microf-configuration.zip:/opt/ecm-client/config/microf-configuration.zip:ro
       - ${WORKSPACE_PATH}/docker/logs:/opt/ecm-client/logs
       - ${WORKSPACE_PATH}/docker/repository:${FILE_STORE_PATH}
     environment:
