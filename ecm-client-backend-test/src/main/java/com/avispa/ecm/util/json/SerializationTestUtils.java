@@ -23,6 +23,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.io.StringWriter;
@@ -31,6 +33,7 @@ import java.io.Writer;
 /**
  * @author Rafał Hiszpański
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SerializationTestUtils {
     @SneakyThrows
     public static <T> String serialize(T input, JsonSerializer<T> serializer) {

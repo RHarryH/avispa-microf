@@ -19,9 +19,6 @@
 package com.avispa.ecm.testdocument.multi;
 
 import com.avispa.ecm.model.base.dto.Dto;
-import com.avispa.ecm.model.document.Document;
-import com.avispa.ecm.model.type.TypeDiscriminator;
-import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 

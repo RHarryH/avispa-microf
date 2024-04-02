@@ -8,6 +8,7 @@ services:
       - ${WORKSPACE_PATH}/docker/data:/var/lib/postgresql/data
       - ${WORKSPACE_PATH}/docker/sql:/docker-entrypoint-initdb.d/:ro
     command: postgres -c listen_addresses='*'
+    env_file: .prod.env
     environment:
       TZ: Europe/Warsaw
       POSTGRES_USER: ${DATABASE_USER}
@@ -32,6 +33,7 @@ services:
     volumes:
       - ${WORKSPACE_PATH}/docker/logs:/opt/ecm-client/logs
       - ${WORKSPACE_PATH}/docker/repository:${FILE_STORE_PATH}
+    env_file: .prod.env
     environment:
       TZ: Europe/Warsaw
       AVISPA_ECM_FILE_STORE_PATH: ${FILE_STORE_PATH}
@@ -61,6 +63,7 @@ services:
     ports:
       - '80:80'
     #  - '80:3000' # use with dev.Dockerfile
+    env_file: .prod.env
     environment:
       TZ: Europe/Warsaw
     networks:

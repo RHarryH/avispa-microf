@@ -18,7 +18,6 @@
 
 package com.avispa.ecm.testdocument.multi;
 
-import com.avispa.ecm.testdocument.simple.TestDocumentDto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Getter;
 import lombok.Setter;
