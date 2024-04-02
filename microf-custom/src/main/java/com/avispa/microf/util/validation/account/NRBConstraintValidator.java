@@ -96,6 +96,7 @@ public class NRBConstraintValidator implements ConstraintValidator<NRBConstraint
         return total % 10 == 0;
     }
 
+    @SuppressWarnings("unused")
     private int calculateSortCodeChecksum(String sortCode) {
         int total = 0;
         for(int i = 0; i < sortCode.length() - 1; i++) { // without last digit

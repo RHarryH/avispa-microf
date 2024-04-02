@@ -5,6 +5,8 @@ import com.avispa.ecm.model.document.Document;
 import com.avispa.ecm.model.folder.Folder;
 import com.avispa.ecm.model.folder.FolderService;
 import com.avispa.ecm.model.format.Format;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 import java.util.UUID;
@@ -12,6 +14,7 @@ import java.util.UUID;
 /**
  * @author Rafał Hiszpański
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FolderCreationUtils {
     public static Folder getRoot() {
         Folder root = new Folder();
