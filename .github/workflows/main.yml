@@ -10,16 +10,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # because Avispa ECM is not available now in any public Maven repository
-      # it needs to be checked out and installed manually
-      - name: Checkout of Avispa ECM
-        uses: actions/checkout@v3.2.0
-        with:
-          repository: RHarryH/avispa-ecm
-
-      - name: Installment of Avispa ECM into Maven repository
-        run: mvn -B -DskipTests install
-
       # here the actual build starts
       - name: Standard Checkout
         uses: actions/checkout@v3.2.0
