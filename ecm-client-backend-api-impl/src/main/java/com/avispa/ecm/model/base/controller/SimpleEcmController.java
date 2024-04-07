@@ -31,7 +31,7 @@ import java.util.UUID;
  * @author Rafał Hiszpański
  */
 @RequiredArgsConstructor
-abstract class SimpleEcmController<T extends EcmObject, D extends Dto, S extends BaseEcmService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements EcmController<D> {
+public abstract class SimpleEcmController<T extends EcmObject, D extends Dto, S extends BaseEcmService<T, D, ? extends EcmEntityRepository<T>, ? extends EntityDtoMapper<T, D>>> implements EcmController<D> {
     protected final S service;
 
     @Override
