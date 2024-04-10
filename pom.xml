@@ -85,6 +85,7 @@
 			${maven.multiModuleProjectDirectory}/aggregate-report/target/site/jacoco-aggregate/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.skip>true</sonar.skip>
+		<ecm.version>2.2.0</ecm.version>
 	</properties>
 
 	<dependencyManagement>
@@ -92,7 +93,7 @@
 			<dependency>
 				<groupId>com.avispa</groupId>
 				<artifactId>ecm</artifactId>
-				<version>${project.version}</version>
+				<version>${ecm.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.avispa</groupId>
