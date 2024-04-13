@@ -259,7 +259,7 @@ when working with DTOs in MicroF.
 ### 2.0.0 → 2.1.0
 
 1. Access PostgreSQL container console and connect to the db with `psql -U microf` command.
-2. Run `/ecm-client-backend/sql/03-schema-ecm-client-postgresql.sql` script to add missing tables.
-3. Run `/migration/2_0_0-2_1_0.sql` script to change the type of `id` columns for existing tables. This covers both ECM
+2. Run `/migration/2_0_0-2_1_0.sql` script to change the type of `id` columns for existing tables. This covers both ECM
    and μF tables.
+3. Run `/ecm-client-backend/sql/03-schema-ecm-client-postgresql.sql` script to add missing tables.
 4. Load `microf-configuration.zip` from Swagger without configuration override.

@@ -28,7 +28,7 @@
 	</parent>
 	<groupId>com.avispa</groupId>
 	<artifactId>microf</artifactId>
-	<version>2.1.0</version>
+	<version>2.1.1</version>
 	<packaging>pom</packaging>
 	<name>Avispa μF</name>
 	<description>Simple application for invoice creation and taxes calculation</description>
@@ -40,6 +40,19 @@
 			<name>Rafał Hiszpański</name>
 		</developer>
 	</developers>
+
+	<repositories>
+		<repository>
+			<id>avispa-repository-release</id>
+			<name>Avispa Repository Release</name>
+			<url>https://repository.rafalhiszpanski.pl/releases</url>
+		</repository>
+		<repository>
+			<id>avispa-repository-snapshot</id>
+			<name>Avispa Repository Snapshot</name>
+			<url>https://repository.rafalhiszpanski.pl/snapshots</url>
+		</repository>
+	</repositories>
 
     <modules>
 		<module>ecm-client-backend</module>
