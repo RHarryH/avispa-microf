@@ -41,6 +41,19 @@
 		</developer>
 	</developers>
 
+	<distributionManagement>
+		<repository>
+			<id>avispa-repository-release</id>
+			<name>Avispa Repository Release</name>
+			<url>https://repository.rafalhiszpanski.pl/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>avispa-repository-snapshot</id>
+			<name>Avispa Repository Snapshot</name>
+			<url>https://repository.rafalhiszpanski.pl/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<repositories>
 		<repository>
 			<id>avispa-repository-release</id>
