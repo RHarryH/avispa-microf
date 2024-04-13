@@ -17,17 +17,12 @@ jobs:
       - name: Build with Maven
         run: mvn -B verify
 
-      - name: Upload JaCoCo coverage report
-        uses: actions/upload-artifact@v3.1.1
-        with:
-          name: jacoco-report
-          path: aggregate-report/target/site/jacoco-aggregate/
-
       - name: Generate JaCoCo Badge
         if: github.ref == 'refs/heads/develop'
         id: jacoco
         uses: cicirello/jacoco-badge-generator@v2.9.0
         with:
+          jacoco-csv-file: aggregate-report/target/site/jacoco-aggregate/jacoco.csv
           generate-branches-badge: true
 
       - name: Log coverage percentage
