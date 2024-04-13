@@ -1,11 +1,28 @@
 ![Status](https://github.com/RHarryH/avispa-microf/actions/workflows/main.yml/badge.svg) ![Coverage](.github/badges/jacoco.svg)  [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-# Avispa μF
+# Avispa ECM Client and Avispa μF
 
-An invoice generating software built on top of Avispa ECM. It works with Polish invoices only
-however can be recustomized for own needs.
+Avispa ECM Client is a web application built on top of Avispa ECM. It allows to configure ECM for our own needs by
+configuration and plugin-like customization.
+
+Avispa μF is an invoice generating software. It works with Polish invoices only. It is a plugin for Avispa ECM Client
+introducing new invoice types and their custom implementation allowing generation of pdf invoices thanks to Avispa ECM
+rendition service, automated invoice number generation and many more.
+
+Each release tries to further down separate the codebase of ECM Client and μF. Some features developed for μF are
+migrated to the Client making it the "official" behaviour. Candidate for such migration might be templates variables.
+ECM Client might be separated to the new project in the future.
 
 ## Running
+
+To run locally pure ECM Client application by pointing `EcmClientApplication` as main class and
+`ecm-client-backend` as classpath. For development purposes it is also possible to run ECM Client app with "installed"
+μF by changing the classpath to `microf-custom` and adding
+`-Dspring.config.additional-location=file:config/microf.properties` property.
+
+`microf.properties` is not available in the project by default, however it is possible to use
+`microf.docker.template.properties` as a base. Typically, this file can contain properties for initialization script
+populating database with some initial records, issuer name, configuration location and overwrite file store paths.
 
 Two environments are available:
 
@@ -28,8 +45,7 @@ Two environments are available:
 
 In the final idea it should be the context responsibility to retrieve UI configurations. But because context operates
 now only on objects, `configuration` properties were introduced. With contexts it would use groups definitions but it
-requires
-security implementation.
+requires security implementation.
 
 ### ECM Client configuration
 
@@ -42,6 +58,9 @@ ECM Client provides an extension of ECM configuration zip file. It introduces fo
 - `ecm_menu` for defining the menus visible on the navigation bar
 - `ecm_list_widget` for defining what data type and which columns should be visible on the widget, this configuration is
   later used in `ecm_layout`
+- `ecm_link_document` extending document insertion capabilities by selecting first source document based on which the
+  new one will be created. Original document will be linked with the new one by the property specified in the
+  configuration.
 
 ### ECM Client names hierarchy
 
@@ -59,8 +78,8 @@ construct default basic application configuration.
 
 ### μF properties file
 
-The application will search for `config/microf.properties` file. Below table presents the μF specific properties, which
-can appear in the properties file.
+As already mentioned, when running μF, the application will search for `config/microf.properties` file.
+Below table presents the μF specific properties, which can appear in the properties file.
 
 | Property name                     | Description                                                                                                                    |
 |-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
@@ -70,21 +89,34 @@ can appear in the properties file.
 
 ### Docker
 
-To build μF Docker image you can use following command:
+Similarly to the local run, both ECM Client and μF can be run as separate applications. μF image is build on top of the
+Client, and it mainly copies plugin dependencies to the ECM Client classpath so they will be automatically loaded at
+ECM Client startup.
+
+To build ECM Client Docker image you can use following command:
 
 ```shell
 cd ecm-client-backend
 docker build -t avispa/ecm-client-backend:latest -t avispa/ecm-client-backend:2.2.0 .
 ```
 
+To build μF Docker image respectively you can use following command:
+
+```shell
+cd microf-custom
+docker build -t avispa/microf:latest -t avispa/microf:2.2.0 .
+```
+
 The application should be available on port `8080`.
 
 However, it is more appropriate to use Docker Compose file, which will build Docker image and
-start μF container alongside with PostgreSQL database. It is required to provide environment file.
+start ECM Client/μF container alongside with PostgreSQL database. It is required to provide environment file.
 Create it based on the `docker/.prod.template.env`.
 
+Examples below use ECM Client as example but it is also applicable for μF just by changing the folder and image names.
+
 ```shell
-cd docker
+cd ecm-client-backend
 docker compose --env-file=.prod.env up -d
 ```
 
@@ -103,9 +135,10 @@ docker compose --env-file=.prod.env up -d --no-deps --build
 #### Image details
 
 Image contains built-in LibreOffice with only Liberation fonts family supported to minimize the
-image's size. LibreOffice is required by `ecm` to perform conversion of documents to `pdf`.
+image's size. LibreOffice is required by Avispa ECM to perform conversion of documents to `pdf`.
 
-There is one build argument. `MICROF_DIR` specifies internal path of μF. It is set to `/opt/microf` by default.
+There is one build argument. `CLIENT_DIR` specifies internal path of Avispa ECM. It is set to `/opt/ecm-client` by
+default.
 
 Additionally, there are several environment variables presented in the below table.
 
@@ -118,7 +151,7 @@ Additionally, there are several environment variables presented in the below tab
 | `REMOTE_DEBUG`               | `-`                          | 1 to enable remote debugging capabilities                        |
 | `REMOTE_DEBUG_PORT`          | `-`                          | Remote debug port, `5005` by default                             |
 
-For more explanation about the ECM properties please check `README.md` of `ecm` project.
+For more explanation about the ECM properties please check `README.md` of Avispa ECM project.
 
 #### Compose details
 
@@ -135,21 +168,32 @@ Below table presents environment variables, which should be set up in `.prod.env
 
 The default structure looks like below:
 
+For ECM Client (`ecm-client-backend` module):
+
+1. Projects root path is the `WORKSPACE_PATH`
+2. Root `docker` folder is the root path for PostgreSQL data volume (`data`), logs volume (`logs`),
+   repository/file-store volume (`repository`) and initial setup SQL scripts (`sql`). It also contains template
+   for `.prod.env` file.
+3. `docker-compose.yml` and `Dockerfile` are in the module root path. This is also the expected location
+   for `.prod.env`.
+
+For μF (`microf-custom` module):
+
 1. Projects root path is the `WORKSPACE_PATH`
 2. `config` folder contains `microf.properties` properties file (see `microf.docker.template.properties`) and
    `microf-configuration.zip` customization configuration (it is automatically packed and copied by `microf-custom`
-   module)
-3. `docker` folder contains environment file and `docker-compose.yml`. It is also the root path for PostgreSQL data
-   volume (`data`),
-   logs volume (`logs`), repository/file-store volume (`repository`) and initial setup SQL scripts (`sql`).
+   module from `config-zip` folder)
+3. Root `docker` folder is the root path for PostgreSQL data volume (`data`), logs volume (`logs`),
+   repository/file-store volume (`repository`) and initial setup SQL scripts (`sql`). It also contains template
+   for `.prod.env` file.
+4. `docker-compose.yml` and `Dockerfile` are in the module root path. This is also the expected location
+   for `.prod.env`.
 
 All SQL scripts required to correctly set up application should be gathered the `docker/sql` folder. To do that follow
-below
-instructions:
+below instructions:
 
-1. Copy sql scripts to `docker/sql` from `sql` folder in `ecm` project.
-2. PostgreSQL scripts from `sql` folder (`microf` module) are automatically copied during build.
-3. PostgreSQL scripts from `emc-application` and `microf-custom` modules are automatically copied during build.
+1. Copy manually sql scripts to `docker/sql` from `sql` folder in Avispa ECM project.
+2. PostgreSQL scripts from `emc-client-backend` and `microf-custom` modules are automatically copied during build.
 
 ### Actuators
 
@@ -216,7 +260,7 @@ When creating multiple validation types it is recommended to follow below instru
 - Common validation type should just extend base validation type and include all details annotated with `@JsonUnwrapped`
   annotation.
 
-## Payments logic
+## Avispa μF payments logic
 
 1. Deadline is always required to provide no matter if paid amount is equal to gross value of whole invoice. This value
    is calculated only on the backend side.
@@ -228,9 +272,7 @@ When creating multiple validation types it is recommended to follow below instru
 
 ### General
 
-1. When a widget fails to load, reloading always reloads only properties-widget as it is hard-coded
-2. Despite there is an option to set a property page size, it is ignored and modal always use extra-large size
-3. Error handling in general requires rework
+1. Despite there is an option to set a property page size, it is ignored and modal always use extra-large size
 
 ### Problems with DTOs
 
@@ -254,12 +296,23 @@ when working with DTOs in MicroF.
    is invisible on the Property Page and wasn't sent to the server by frontend).
 6. Overall additional work needed to introduce new object
 
-## Migration guide
+One of the possible solutions is to create dedicated tool allowing to configure and generate all skeleton classes for
+the user.
+
+## Avispa μF migration guide
 
 ### 2.0.0 → 2.1.0
 
 1. Access PostgreSQL container console and connect to the db with `psql -U microf` command.
-2. Run `/ecm-client-backend/sql/03-schema-ecm-client-postgresql.sql` script to add missing tables.
-3. Run `/migration/2_0_0-2_1_0.sql` script to change the type of `id` columns for existing tables. This covers both ECM
+2. Run `/migration/2_0_0-2_1_0.sql` script to change the type of `id` columns for existing tables. This covers both ECM
    and μF tables.
+3. Run `/ecm-client-backend/sql/03-schema-ecm-client-postgresql.sql` script to add missing tables.
 4. Load `microf-configuration.zip` from Swagger without configuration override.
+
+### 2.1.0 → 2.2.0
+
+1. Access PostgreSQL container console and connect to the db with `psql -U microf` command.
+2. Run `/migration/2_0_0-2_1_0.sql` script to apply all model changes. This covers both ECM
+   and μF tables.
+3. Open Swagger and run `/v1/configuration/clear` to remove current configuration.
+4. Load `microf-configuration.zip` from Swagger without configuration override to load fresh configuration.
